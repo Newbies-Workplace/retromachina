@@ -1,0 +1,184 @@
+@use '../../../abstracts/colors';
+@use '../../../abstracts/fonts';
+@use '../../../abstracts/assets';
+
+.toolbox{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px;
+    max-width: fit-content;
+    background-color: #EBD3A8;
+
+    border-radius:16px;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.box {
+    display: flex;
+    justify-content: center;
+
+    width: 96px;
+    height: 60px;
+}
+
+.readyBox {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    & button {
+        height: 100%;
+        padding: 0 0 !important;
+    }
+}
+
+.nextPrevButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+    background-color: #EBD3A8;
+    width: 96px;
+    height: 60px;
+
+    & button {
+        width: 60px;
+        padding: 0 0 !important;
+    }
+}
+
+.button {
+    height: 100%;
+    width: 100%;
+}
+
+.readyButton {
+    background-color: #F4F2E6;
+
+    border-radius: 8px;
+    border: solid #73BDA8 3px;
+
+    width: 100%;
+
+    &.ready {
+        background-color: #73BDA8;
+    }
+}
+
+.voteState {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 16px;
+    background-color: #F4F2E6;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+
+    font-family: fonts.$font-paragraph;
+
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.clearButton {
+    background-color: colors.$warn;
+}
+
+.timerTop {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 4px;
+}
+
+.timeBubbleWrapper {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: -110px;
+
+    background-color:#EBD3A8;
+    border-radius: 16px;
+
+    padding: 8px 8px 8px 8px;
+
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.timer {
+    height: 30px;
+    width: 100%;
+
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    border-radius: 8px;
+
+    font-family: fonts.$font-paragraph;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 18px;
+}
+
+.buttonWrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    height: 30px;
+    width: 100%;
+
+    padding-top: 5px;
+
+    background-color: #EBD3A8;
+}
+
+.voteBubbleWrapper{
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    top: -92px;
+
+    background-color: #EBD3A8;
+    border-radius: 16px;
+
+    padding: 8px;
+
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.voteText {
+    text-align: center;
+    width: 100%;
+    min-width: 150px;
+    font-size: 13px;
+}
+
+.numberfield {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #ECE6C2;
+
+    width: 50px;
+    height: 30px;
+
+    border-radius: 8px;
+
+    font-weight: 700;
+}
+
+.plusminusbutton {
+    width: 40px;
+}

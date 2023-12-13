@@ -1,0 +1,32 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #F4F2E6;
+
+    height: 30px;
+    padding: 0 16px;
+
+    border-radius: 50px;
+    border: 1px solid black;
+
+    &.active {
+        border: 4px solid #73BDA8;
+    }
+}
+
+.text {
+    display: block;
+    
+    font-family: fonts.$font-paragraph;
+    font-weight: 700;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

@@ -1,0 +1,48 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    background-color: colors.$accent;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+
+    cursor: pointer;
+
+    &.small {
+        padding: 5px 10px;
+        border-radius: 8px;
+    }
+    &.medium {
+        padding: 10px 32px;
+        border-radius: 16px;
+        font-size: 24px;
+    }
+    &.big {
+        padding: 25px 42px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        min-width: 250px;
+    }
+
+    &.round {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+    }
+
+    &.disabled {
+        background-color: #c2c2c2;
+    }
+    &:active {
+        box-shadow: none;
+        transform: translateY(4px);
+    }
+}

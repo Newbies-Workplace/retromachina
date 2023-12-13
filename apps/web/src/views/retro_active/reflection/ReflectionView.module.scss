@@ -1,0 +1,6 @@
+@use '../../../abstracts/colors';
+
+.deleteButton {
+    background-color: colors.$warn;
+}
+

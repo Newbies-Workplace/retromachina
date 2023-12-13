@@ -1,0 +1,16 @@
+.group {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 100px;
+}
+
+.shifted {
+  & > :not(:last-child) {
+    transition: margin 200ms;
+  }
+
+  & > :not(:last-child):hover {
+    margin-bottom: 90px;
+  }
+}

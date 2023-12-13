@@ -1,0 +1,79 @@
+.picker {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 100px;
+  min-height: 34px;
+
+  padding: 8px;
+
+  background-color: #ffffff;
+  border-radius: 16px;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+
+  padding: 0 8px;
+  max-height: 30px;
+
+  border-radius: 16px;
+  border: 1px solid #000000;
+
+  .input {
+    flex-grow: 1;
+
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 8px 0;
+  }
+}
+
+.user {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 30px;
+  padding: 0 8px;
+
+  line-break: anywhere;
+
+  background-color: #FFFFFF;
+
+  border: 1px solid #000000;
+  border-radius: 16px;
+
+  .email {
+    flex-grow: 1;
+    font-size: 16px;
+  }
+}
+
+.separator {
+  width: 2px;
+  height: 20px;
+  background-color: black;
+}
+
+.role {
+  border-color: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.close {
+  cursor: pointer;
+
+  min-height: 24px;
+  min-width: 24px;
+  height: 24px;
+  width: 24px;
+}

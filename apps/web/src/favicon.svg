@@ -1,0 +1,53 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1237_2610)">
+<rect width="128" height="128" fill="#946847"/>
+<rect x="-9" y="34" width="144" height="60" rx="4" fill="#F4F2E6"/>
+<rect y="32" width="128" height="4" fill="#946847"/>
+<rect y="92" width="128" height="4" fill="#946847"/>
+<rect x="-6" y="104" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect x="31.3335" y="104" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect x="106" y="104" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect x="68.667" y="104" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect x="-6" y="12" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect x="31.3335" y="12" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect x="106" y="12" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect x="68.667" y="12" width="28" height="12" rx="4" fill="#F4F2E6"/>
+<rect y="116" width="2.28571" height="2.28571" fill="#F4F2E6"/>
+<circle cx="2" cy="118" r="2" fill="#946847"/>
+<rect y="24" width="2.28571" height="2.28571" fill="#F4F2E6"/>
+<circle cx="2" cy="26" r="2" fill="#946847"/>
+<rect width="2.28571" height="2.28571" fill="#F4F2E6"/>
+<circle cx="2" cy="2" r="2" fill="#946847"/>
+<rect y="104" width="2.28571" height="2.28571" transform="rotate(-90 0 104)" fill="#F4F2E6"/>
+<circle cx="2" cy="102" r="2" transform="rotate(-90 2 102)" fill="#946847"/>
+<rect y="12" width="2.28571" height="2.28571" transform="rotate(-90 0 12)" fill="#F4F2E6"/>
+<circle cx="2" cy="10" r="2" transform="rotate(-90 2 10)" fill="#946847"/>
+<rect y="128" width="2.28571" height="2.28571" transform="rotate(-90 0 128)" fill="#F4F2E6"/>
+<circle cx="2" cy="126" r="2" transform="rotate(-90 2 126)" fill="#946847"/>
+<rect y="36" width="2.28571" height="2.28571" transform="rotate(-90 0 36)" fill="#F4F2E6"/>
+<circle cx="2" cy="34" r="2" transform="rotate(-90 2 34)" fill="#946847"/>
+<rect x="128" y="92" width="2.28571" height="2.28571" transform="rotate(90 128 92)" fill="#F4F2E6"/>
+<circle cx="126" cy="94" r="2" transform="rotate(90 126 94)" fill="#946847"/>
+<rect x="128" width="2.28571" height="2.28571" transform="rotate(90 128 0)" fill="#F4F2E6"/>
+<circle cx="126" cy="2" r="2" transform="rotate(90 126 2)" fill="#946847"/>
+<rect x="128" y="104" width="2.28571" height="2.28571" transform="rotate(-180 128 104)" fill="#F4F2E6"/>
+<circle cx="126" cy="102" r="2" transform="rotate(-180 126 102)" fill="#946847"/>
+<rect x="128" y="12" width="2.28571" height="2.28571" transform="rotate(-180 128 12)" fill="#F4F2E6"/>
+<circle cx="126" cy="10" r="2" transform="rotate(-180 126 10)" fill="#946847"/>
+<rect x="128" y="128" width="2.28571" height="2.28571" transform="rotate(-180 128 128)" fill="#F4F2E6"/>
+<circle cx="126" cy="126" r="2" transform="rotate(-180 126 126)" fill="#946847"/>
+<rect x="128" y="36" width="2.28571" height="2.28571" transform="rotate(-180 128 36)" fill="#F4F2E6"/>
+<circle cx="126" cy="34" r="2" transform="rotate(-180 126 34)" fill="#946847"/>
+<rect x="128" y="116" width="2.28571" height="2.28571" transform="rotate(90 128 116)" fill="#F4F2E6"/>
+<circle cx="126" cy="118" r="2" transform="rotate(90 126 118)" fill="#946847"/>
+<rect x="128" y="24" width="2.28571" height="2.28571" transform="rotate(90 128 24)" fill="#F4F2E6"/>
+<circle cx="126" cy="26" r="2" transform="rotate(90 126 26)" fill="#946847"/>
+<rect y="92" width="2.28571" height="2.28571" fill="#F4F2E6"/>
+<circle cx="2" cy="94" r="2" fill="#946847"/>
+</g>
+<defs>
+<clipPath id="clip0_1237_2610">
+<rect width="128" height="128" rx="2" fill="white"/>
+</clipPath>
+</defs>
+</svg>

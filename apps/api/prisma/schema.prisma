@@ -1,0 +1,110 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id       String @id @default(uuid())
+  name     String
+  owner_id String
+
+  Owner User? @relation(fields: [owner_id], references: [id])
+
+  TeamUser      TeamUsers[]
+  Task          Task[]
+  Retrospective Retrospective[]
+  Invite        Invite[]
+  Board         Board?
+}
+
+model TeamUsers {
+  team_id String
+  user_id String
+  role    Role   @default(USER)
+
+  Team Team? @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  User User? @relation(fields: [user_id], references: [id])
+
+  @@unique([team_id, user_id])
+}
+
+model Board {
+  team_id           String @id
+  default_column_id String
+
+  BoardColumns BoardColumn[]
+  Tasks        Task[]
+
+  Team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+}
+
+model BoardColumn {
+  id      String @id @default(uuid())
+  team_id String
+  order   Int
+  name    String
+  color   String
+  Tasks   Task[]
+
+  Board Board @relation(fields: [team_id], references: [team_id], onDelete: Cascade)
+}
+
+model User {
+  id          String @id @default(uuid())
+  nick        String
+  email       String @unique
+  avatar_link String
+  google_id   String @unique
+
+  TeamUsers TeamUsers[]
+  Team      Team[]
+  Task      Task[]
+  Invite    Invite[]
+}
+
+model Task {
+  id          String  @id @default(uuid())
+  description String  @db.Text
+  owner_id    String
+  retro_id    String?
+  team_id     String
+  column_id   String?
+
+  Board         Board?         @relation(fields: [team_id], references: [team_id], onDelete: Cascade, map: "Task_Board_team_id_fkey")
+  User          User?          @relation(fields: [owner_id], references: [id])
+  Team          Team?          @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  Column        BoardColumn?   @relation(fields: [column_id], references: [id])
+  Retrospective Retrospective? @relation(fields: [retro_id], references: [id])
+}
+
+model Retrospective {
+  id         String   @id @default(uuid())
+  team_id    String
+  date       DateTime
+  is_running Boolean
+
+  Team Team? @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  Task Task[]
+}
+
+model Invite {
+  id      String @id @default(uuid())
+  email   String
+  team_id String
+  from    String
+  role    Role   @default(USER)
+
+  Team Team? @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  User User? @relation(fields: [from], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}

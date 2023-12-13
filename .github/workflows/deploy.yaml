@@ -1,0 +1,87 @@
+name: Deploy
+
+concurrency:
+  group: prod
+  cancel-in-progress: true
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "web: Extract metadata (tags, labels) for Docker"
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/newbies-workplace/retromachina-web
+
+      - name: "web: Create .env.production"
+        uses: iamsauravsharma/create-dotenv@v1.2.2
+        with:
+          file-name: '.env.production'
+        env:
+          RETRO_API_URL: ${{ secrets.RETRO_API_URL }}
+          RETRO_SOCKET_URL: ${{ secrets.RETRO_SOCKET_URL }}
+
+      - name: "web: Build and push Docker image"
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+
+      - name: "api: Extract metadata (tags, labels) for Docker"
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/newbies-workplace/retromachina-api
+
+      - name: "api: Build and push Docker image"
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: [ docker ]
+
+    steps:
+      - name: Deploy package to production
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SSH_IP }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd backend
+            docker-compose down
+            docker image rm ghcr.io/newbies-workplace/retromachina-web || true
+            docker image rm ghcr.io/newbies-workplace/retromachina-api || true
+            docker pull ghcr.io/newbies-workplace/retromachina-web:latest
+            docker pull ghcr.io/newbies-workplace/retromachina-api:latest
+            docker-compose up -d

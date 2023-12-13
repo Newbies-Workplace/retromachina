@@ -1,0 +1,21 @@
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+
+  &.inactive {
+    filter: grayscale(100%)
+  }
+}
+
+.photo {
+  height: 100%;
+  width: 100%;
+
+  border-radius: 50%;
+  vertical-align: middle;
+  object-fit: fill;
+}

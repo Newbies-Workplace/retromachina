@@ -1,0 +1,25 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+
+@mixin scrollbar {
+    overflow-x: auto;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+        height: 8px;
+    }   
+
+    &::-webkit-scrollbar-track {
+        border-radius: 2px;
+        border: solid 10px transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgb(97, 96, 96);
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a7a3a3;
+    }
+}

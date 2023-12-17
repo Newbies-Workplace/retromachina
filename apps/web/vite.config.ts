@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
         plugins: [
             svgrComponent(),
             react(),
-            EnvironmentPlugin('all', { prefix: 'RETRO_' }),
+            EnvironmentPlugin('all', { prefix: 'RETRO_WEB' }),
         ],
         envDir: '../',
         root: 'src',

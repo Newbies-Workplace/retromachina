@@ -4,7 +4,7 @@ import styles from './SignInView.module.scss';
 import LogoSvg from '../../../assets/images/logo.svg'
 
 export const SignInView: React.FC = () => {
-    const href = `${process.env.RETRO_API_URL}google/redirect`
+    const href = `${process.env.RETRO_WEB_API_URL}google/redirect`
 
     return (
         <div className={styles.container}>

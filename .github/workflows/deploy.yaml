@@ -38,8 +38,8 @@ jobs:
         with:
           file-name: '.env.production'
         env:
-          RETRO_API_URL: ${{ secrets.RETRO_API_URL }}
-          RETRO_SOCKET_URL: ${{ secrets.RETRO_SOCKET_URL }}
+          RETRO_WEB_API_URL: ${{ secrets.RETRO_WEB_API_URL }}
+          RETRO_WEB_SOCKET_URL: ${{ secrets.RETRO_WEB_SOCKET_URL }}
 
       - name: "web: Build and push Docker image"
         uses: docker/build-push-action@v3
@@ -78,7 +78,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd backend
             docker-compose down
             docker image rm ghcr.io/newbies-workplace/retromachina-web || true
             docker image rm ghcr.io/newbies-workplace/retromachina-api || true

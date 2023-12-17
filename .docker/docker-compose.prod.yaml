@@ -21,8 +21,8 @@ services:
     image: ghcr.io/newbies-workplace/retromachina-web:latest
     restart: unless-stopped
     environment:
-      - RETRO_API_URL
-      - RETRO_SOCKET_URL
+      - RETRO_WEB_API_URL
+      - RETRO_WEB_SOCKET_URL
     container_name: retro-web
     ports:
       - "80:8080"

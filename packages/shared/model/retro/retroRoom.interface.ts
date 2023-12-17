@@ -3,7 +3,7 @@ export interface Card {
   text: string;
   authorId: string;
   columnId: string;
-  parentCardId?: string;
+  parentCardId: string | null;
 }
 
 export interface User {

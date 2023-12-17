@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import CloseIcon from "../../../assets/icons/close-icon.svg";
 import styles from "./UserPicker.module.scss";
-import { Role } from "../../../api/user/User.interfaces";
-import { TeamUser } from "../../../api/team/Team.interface";
 import { toast } from "react-toastify";
+import {TeamUserRequest} from "shared/model/team/team.request";
+import {UserRole} from "shared/model/user/user.role";
 
 interface UserPickerProps {
-  users: TeamUser[];
-  onAdd: (user: TeamUser) => void;
-  onRoleChange: (email: string, role: Role) => void;
+  users: TeamUserRequest[];
+  onAdd: (user: TeamUserRequest) => void;
+  onRoleChange: (email: string, role: UserRole) => void;
   onDelete: (email: string) => void;
 }
 
@@ -19,7 +19,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
   onDelete,
 }) => {
   const [email, setEmail] = useState<string>("");
-  const [role, setRole] = useState<Role>("USER");
+  const [role, setRole] = useState<UserRole>("USER");
 
   const onUserAdd = () => {
     const mailRegex = /\S+@\S+\.\S+/;
@@ -82,8 +82,8 @@ export const UserPicker: React.FC<UserPickerProps> = ({
 
 interface UserProps {
   email: string;
-  role: Role;
-  onRoleChange: (role: Role) => void;
+  role: UserRole;
+  onRoleChange: (role: UserRole) => void;
   onDelete: () => void;
 }
 
@@ -96,7 +96,7 @@ const User: React.FC<UserProps> = ({ email, role, onRoleChange, onDelete }) => {
 
       <select
         value={role}
-        onChange={(e) => onRoleChange(e.target.value as Role)}
+        onChange={(e) => onRoleChange(e.target.value as UserRole)}
         className={styles.role}
       >
         <option value={"ADMIN"}>Administrator</option>

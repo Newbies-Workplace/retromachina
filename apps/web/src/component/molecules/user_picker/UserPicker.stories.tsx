@@ -1,6 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import { UserPicker } from './UserPicker';
 import {useState} from "react";
+import {TeamUserRequest} from "shared/model/team/team.request";
 
 const meta = {
     title: 'molecules/UserPicker',
@@ -11,15 +12,22 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default = () => {
-    const [users, setUsers] = useState<string[]>([
-        'john.snow@test.pl',
-        'mr.bean@hihi.en'
+    const [users, setUsers] = useState<TeamUserRequest[]>([
+        {email:'john.snow@test.pl' , role: 'USER'},
+        {email:'mr.bean@hihi.en' , role: 'ADMIN'},
     ]);
 
     return (
         <UserPicker
             users={users}
             onAdd={(email) => { setUsers([...users, email]) }}
-            onDelete={(email) => { setUsers([...users.filter(user => user !== email)]) }} />
+            onRoleChange={(email, role) => {
+                setUsers([...users.map(user => {
+                    if (user.email === email) {
+                        return {...user, role}
+                    }
+                    return user;
+                })])}}
+            onDelete={(email) => { setUsers([...users.filter(user => user.email !== email)]) }} />
     );
 }

@@ -9,10 +9,10 @@ import {
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from '../../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { ErrorTypes } from '../../retro/application/model/ErrorTypes';
+import { ErrorTypes } from 'shared/model/retro/ErrorTypes';
 import { User } from '@prisma/client';
-import { TaskCreatedEvent, TaskDeletedEvent, TaskUpdatedEvent } from './model/board.events';
-import { TaskCreateCommand, TaskDeleteCommand, TaskUpdateCommand } from './model/board.commands';
+import { TaskCreatedEvent, TaskDeletedEvent, TaskUpdatedEvent } from 'shared/model/board/board.events';
+import { TaskCreateCommand, TaskDeleteCommand, TaskUpdateCommand } from 'shared/model/board/board.commands';
 
 @Injectable()
 @WebSocketGateway(3001, { cors: true, namespace: 'board' })

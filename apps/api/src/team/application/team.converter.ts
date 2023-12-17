@@ -1,5 +1,5 @@
 import { Team } from "@prisma/client";
-import { TeamResponse } from "./model/team.response";
+import { TeamResponse } from "shared/model/team/team.response";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

@@ -13,6 +13,7 @@
     "lint": "eslint \"src/**/*.ts\" --fix"
   },
   "dependencies": {
+    "shared": "*",
     "@casl/ability": "^6.5.0",
     "@casl/prisma": "^1.4.0",
     "@nestjs/common": "^9.0.0",

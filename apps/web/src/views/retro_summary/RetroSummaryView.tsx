@@ -3,15 +3,15 @@ import {Avatar} from "../../component/atoms/avatar/Avatar";
 import {Card} from "../../component/molecules/card/Card";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import styles from "./RetroSummaryView.module.scss";
-import {TaskResponse} from "../../api/task/Task.interface";
 import {getTasksByRetroId} from "../../api/task/Task.service";
 import {useNavigate, useParams} from "react-router";
-import {UserResponse} from "../../api/user/User.interfaces";
 import {getUsersByTeamId} from "../../api/user/User.service";
-import {RetroResponse} from "../../api/retro/Retro.interface";
 import {getRetroByRetroId} from "../../api/retro/Retro.service";
 import dayjs from "dayjs";
 import {Button} from "../../component/atoms/button/Button";
+import {TaskResponse} from "shared/model/task/task.response";
+import {UserResponse} from "shared/model/user/user.response";
+import {RetroResponse} from "shared/model/retro/retro.response";
 
 export const RetroSummaryView = () => {
     const { retroId } = useParams<{retroId: string}>();

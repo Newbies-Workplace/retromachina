@@ -1,6 +1,5 @@
-import { RoomState } from 'src/retro/application/roomstate.validator';
-import { RoomSyncEvent } from '../../application/model/retro.events';
-import { ActionPoint, Card, RetroColumn, User, Vote } from './retroRoom.interface';
+import {RoomState, RoomSyncEvent} from 'shared/model/retro/retro.events';
+import { ActionPoint, Card, RetroColumn, User, Vote } from 'shared/model/retro/retroRoom.interface';
 import { v4 as uuid } from 'uuid';
 
 export class RetroRoom {
@@ -52,8 +51,9 @@ export class RetroRoom {
       }),
       users: tempUsers.map((user) => {
         return {
-          id: user.userId,
+          userId: user.userId,
           isReady: user.isReady,
+          writingInColumns: new Set<string>(),
         };
       }),
       serverTime: new Date().valueOf(),

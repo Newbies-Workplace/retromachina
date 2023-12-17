@@ -1,11 +1,11 @@
 import {useUser} from '../../context/user/UserContext.hook'
 import {useNavigate} from 'react-router'
 import {TeamForm} from '../../component/organisms/forms/TeamForm';
-import {TeamRequest} from '../../api/team/Team.interface';
 import Navbar from '../../component/organisms/navbar/Navbar';
 import {createTeam} from '../../api/team/Team.service';
 import React from "react";
 import {toast} from "react-toastify";
+import {TeamRequest} from "shared/model/team/team.request";
 
 export const TeamCreateView: React.FC = () => {
     const { user, refreshUser } = useUser();

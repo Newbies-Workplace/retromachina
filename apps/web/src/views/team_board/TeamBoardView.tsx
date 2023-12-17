@@ -11,8 +11,8 @@ import {DraggableCard} from "../../component/molecules/dragndrop/DraggableCard";
 import {Card} from "../../component/molecules/card/Card";
 import {useBoard} from "../../context/board/BoardContext.hook";
 import {useUser} from "../../context/user/UserContext.hook";
-import {TaskResponse} from "../../api/task/Task.interface";
 import {v4 as uuidv4} from "uuid";
+import {TaskResponse} from "shared/model/task/task.response";
 
 export const TeamBoardView: React.FC = () => {
     const {board, team, teamUsers, moveTask, createTask, updateTask, deleteTask} = useBoard()

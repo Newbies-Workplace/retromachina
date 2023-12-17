@@ -1,10 +1,10 @@
-import {SocketColumn} from "../../../api/retro/Retro.events";
 import React, {useEffect, useState} from "react";
 import {Input} from "../../atoms/input/Input";
 import {CardCount} from "../../atoms/card_indicator/CardIndicator";
+import {RetroColumn} from "shared/model/retro/retroRoom.interface";
 
 interface ColumnInputProps {
-    columnData: SocketColumn,
+    columnData: RetroColumn,
     onCardCreated: (text: string) => void
     onIsWriting: (value: boolean) => void
 }

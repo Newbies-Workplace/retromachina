@@ -12,8 +12,8 @@ import {getRandomTemplate} from "../../api/retro_template/RetroTemplate.service"
 import {ProgressBar} from "../../component/atoms/progress_bar/ProgressBar";
 import {createRetro} from "../../api/retro/Retro.service";
 import {getRandomColor} from "../../common/Util";
-import {RetroCreateRequest} from "../../api/retro/Retro.interface";
 import {toast} from "react-toastify";
+import {RetroCreateRequest} from "shared/model/retro/retro.request";
 
 export interface Column {
   id: string;

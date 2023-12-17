@@ -1,5 +1,5 @@
 import { BoardColumnDto } from './editBoard.dto';
-import { TaskResponse } from '../../../task/application/model/task.response';
+import { TaskResponse } from 'shared/model/task/task.response';
 
 export interface BoardResponse {
   columns: BoardColumnDto[]

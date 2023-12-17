@@ -13,10 +13,10 @@ import { RetroService } from "../domain/retro.service";
 import { User } from "src/auth/jwt/jwtuser.decorator";
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { PrismaService } from "src/prisma/prisma.service";
-import { RetroCreateRequest } from "./model/retro.request";
+import { RetroCreateRequest } from "shared/model/retro/retro.request";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { ForbiddenError, subject } from "@casl/ability";
-import { RetroResponse } from "./model/retro.response";
+import { RetroResponse } from "shared/model/retro/retro.response";
 import { toRetroResponse } from "./retro.converter";
 
 @Controller("retros")

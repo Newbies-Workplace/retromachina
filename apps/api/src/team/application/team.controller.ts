@@ -13,13 +13,13 @@ import {
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { User } from "src/auth/jwt/jwtuser.decorator";
-import { TeamRequest, EditTeamRequest } from "./model/team.request";
 import { TeamService } from "../team.service";
-import { TeamResponse } from "./model/team.response";
+import { TeamResponse } from "shared/model/team/team.response";
 import { TeamConverter } from "./team.converter";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { ForbiddenError, subject } from "@casl/ability";
+import {EditTeamRequest, TeamRequest} from "shared/model/team/team.request";
 
 @Controller("teams")
 export class TeamController {

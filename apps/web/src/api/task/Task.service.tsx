@@ -1,5 +1,5 @@
 import { axiosInstance } from "../AxiosInstance";
-import {TaskResponse} from "./Task.interface";
+import {TaskResponse} from "shared/model/task/task.response";
 
 export const getTasksByRetroId = async (retroId: string): Promise<TaskResponse[]> => {
     return axiosInstance.get(`tasks`, {

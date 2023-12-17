@@ -80,7 +80,7 @@ const RetroActiveView: React.FC = () => {
                             <TeamAvatars users={teamUsers.filter(u => u.id !== user!.id).map((user) => ({
                                 id: user.id,
                                 avatar_link: user.avatar_link,
-                                isActive: activeUsers.some(socketUser => socketUser.id === user.id)
+                                isActive: activeUsers.some(socketUser => socketUser.userId === user.id)
                             }))}/>
                         }
                     </>

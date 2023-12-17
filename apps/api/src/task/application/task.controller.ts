@@ -6,7 +6,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/jwt/jwt.guard';
-import { TaskResponse } from './model/task.response';
+import { TaskResponse } from 'shared/model/task/task.response';
 import { toTaskResponse } from './task.converter';
 import { User } from '../../auth/jwt/jwtuser.decorator';
 import { JWTUser } from '../../auth/jwt/JWTUser';

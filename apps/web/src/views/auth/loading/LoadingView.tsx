@@ -2,8 +2,8 @@ import {useEffect} from 'react';
 import {useUser} from '../../../context/user/UserContext.hook';
 import {useNavigate} from 'react-router';
 import {Loader} from '../../../component/organisms/loader/Loader';
-import {AuthParams} from '../../../api/auth/Auth.interface';
 import {getRedirectPath, setRedirectPath} from "../../../context/useRedirect";
+import {AuthParams} from "shared/model/auth/Auth.interface";
 
 const LoadingView = () => {
     const {login} = useUser()

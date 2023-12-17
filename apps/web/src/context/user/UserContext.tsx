@@ -1,12 +1,12 @@
 import React, { createContext, useEffect, useState } from "react";
 import { axiosInstance } from "../../api/AxiosInstance";
 import { getMyUser } from "../../api/user/User.service";
-import {UserResponse} from "../../api/user/User.interfaces";
-import {AuthParams} from "../../api/auth/Auth.interface";
 import {loginGoogle} from "../../api/auth/Auth.service";
+import {UserWithTeamsResponse} from "shared/model/user/user.response";
+import {AuthParams} from "shared/model/auth/Auth.interface";
 
 interface UserContext {
-    user: UserResponse | null,
+    user: UserWithTeamsResponse | null,
     refreshUser: () => Promise<void>,
     login: (params: AuthParams) => Promise<void>
 }
@@ -18,7 +18,7 @@ export const UserContext = createContext<UserContext>({
 });
 
 export const UserContextProvider: React.FC<any> = ({ children }) => {
-    const [user, setUser] = useState<UserResponse | null>(null);
+    const [user, setUser] = useState<UserWithTeamsResponse | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('Bearer');

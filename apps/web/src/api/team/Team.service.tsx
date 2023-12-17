@@ -1,5 +1,7 @@
-import { InviteResponse, TeamRequest, TeamResponse } from "./Team.interface";
 import { axiosInstance } from "../AxiosInstance";
+import {TeamResponse} from "shared/model/team/team.response";
+import {InviteResponse} from "shared/model/invite/Invite.response";
+import {TeamRequest} from "shared/model/team/team.request";
 
 export const getTeamById = async (teamId: string): Promise<TeamResponse> => {
   return axiosInstance.get(`teams/${teamId}`).then((res) => res.data);

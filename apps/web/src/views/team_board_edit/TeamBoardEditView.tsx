@@ -1,7 +1,7 @@
 import {Navigate, useNavigate, useParams} from "react-router";
 import React, {useEffect, useState} from "react";
 import Navbar from "../../component/organisms/navbar/Navbar";
-import {Board, BoardColumn} from "../../api/board/Board.interface";
+import {BoardResponse} from "shared/model/board/board.response";
 import {ColumnCreate} from "../../component/molecules/column_create/ColumnCreate";
 import styles from "./TeamBoardEditView.module.scss";
 import {Button} from "../../component/atoms/button/Button";
@@ -12,13 +12,14 @@ import NextIcon from "../../assets/icons/next.svg"
 import PrevIcon from "../../assets/icons/prev.svg"
 import {editBoard, getBoard} from "../../api/board/Board.service";
 import {toast} from "react-toastify";
+import {BoardColumnDto} from "shared/model/board/editBoard.dto";
 
 const MAX_COLUMNS = 6
 
 export const TeamBoardEditView: React.FC = () => {
     const { teamId } = useParams<{teamId: string}>()
     const navigate = useNavigate()
-    const [board, setBoard] = useState<Board>()
+    const [board, setBoard] = useState<BoardResponse>()
     if (!teamId) {
         return <Navigate to={"/"}/>
     }
@@ -35,7 +36,7 @@ export const TeamBoardEditView: React.FC = () => {
     }
 
     const onAddColumn = () => {
-        const column: BoardColumn = {
+        const column: BoardColumnDto = {
             id: uuidv4(),
             color: getRandomColor(),
             name: "",
@@ -45,7 +46,7 @@ export const TeamBoardEditView: React.FC = () => {
         setBoard({...board, columns: [...board.columns, column]});
     }
 
-    const onChangeColumn = (id: string, column: BoardColumn) => {
+    const onChangeColumn = (id: string, column: BoardColumnDto) => {
         const columnIndex = board.columns.findIndex((col) => col.id === id);
 
         const newColumns = [...board.columns]

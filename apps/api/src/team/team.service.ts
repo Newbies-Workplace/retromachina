@@ -5,7 +5,7 @@ import {
   TeamRequest,
   EditTeamRequest,
   TeamUserRequest,
-} from "./application/model/team.request";
+} from "shared/model/team/team.request";
 import { Team } from "@prisma/client";
 import { v4 as uuid } from "uuid";
 

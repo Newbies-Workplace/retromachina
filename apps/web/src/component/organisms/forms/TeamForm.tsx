@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Button } from "../../atoms/button/Button";
 import styles from "./TeamForm.module.scss";
-import { TeamRequest, TeamUser } from "../../../api/team/Team.interface";
 import { Input } from "../../atoms/input/Input";
 import { UserPicker } from "../../molecules/user_picker/UserPicker";
-import { Role } from "../../../api/user/User.interfaces";
+import {TeamRequest, TeamUserRequest} from "shared/model/team/team.request";
+import {UserRole} from "shared/model/user/user.role";
 
 interface CreateTeamFormProps {
   userEmail: string;
@@ -24,7 +24,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
   const [users, setUsers] = useState(team?.users || []);
   const [name, setName] = useState(team?.name || "");
 
-  const onAddUser = (user: TeamUser) => {
+  const onAddUser = (user: TeamUserRequest) => {
     setUsers([...users, user]);
   };
 
@@ -35,7 +35,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
     setUsers(newUsers);
   };
 
-  const onRoleChange = (email: string, role: Role) => {
+  const onRoleChange = (email: string, role: UserRole) => {
     setUsers([
       ...users.map((user) => (user.email === email ? { ...user, role } : user)),
     ]);

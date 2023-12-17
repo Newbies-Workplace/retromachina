@@ -13,7 +13,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Team } from '@prisma/client';
 import { ForbiddenError, subject } from '@casl/ability';
 import { toInviteResponse } from './invites.converter';
-import { InviteResponse } from './model/Invite.response';
+import { InviteResponse } from 'shared/model/invite/Invite.response';
 
 @Controller('invites')
 export class InvitesController {

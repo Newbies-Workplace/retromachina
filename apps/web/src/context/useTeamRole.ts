@@ -1,8 +1,8 @@
 import {useUser} from "./user/UserContext.hook";
-import {Role} from "../api/user/User.interfaces";
+import {UserRole} from "shared/model/user/user.role";
 
 interface TeamRoleResult {
-    role: Role | null
+    role: UserRole | null
     isAdmin: boolean
 }
 

@@ -1,7 +1,6 @@
 import { useUser } from "../../context/user/UserContext.hook";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { TeamForm } from "../../component/organisms/forms/TeamForm";
-import { InviteResponse, TeamRequest } from "../../api/team/Team.interface";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import {
@@ -16,6 +15,8 @@ import { toast } from "react-toastify";
 import { ConfirmDialog } from "../../component/molecules/confirm_dialog/ConfirmDialog";
 import { getUsersByTeamId } from "../../api/user/User.service";
 import { User } from "../../interfaces/User.interface";
+import {TeamRequest} from "shared/model/team/team.request";
+import {InviteResponse} from "shared/model/invite/Invite.response";
 
 const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();

@@ -1,14 +1,14 @@
 import React, {createContext, useEffect, useRef, useState} from "react";
 import io, {Socket} from "socket.io-client";
-import {TaskCreatedEvent, TaskDeletedEvent, TaskUpdatedEvent} from "../../api/board/Board.events";
-import {Board} from "../../api/board/Board.interface";
+import {TaskCreatedEvent, TaskDeletedEvent, TaskUpdatedEvent} from "shared/model/board/board.events";
+import {BoardResponse} from "shared/model/board/board.response";
 import {getBoard} from "../../api/board/Board.service";
 import {getUsersByTeamId} from "../../api/user/User.service";
-import {UserResponse} from "../../api/user/User.interfaces";
-import {TaskCreateCommand, TaskDeleteCommand, TaskUpdateCommand} from "../../api/board/Board.commands";
-import {TeamResponse} from "../../api/team/Team.interface";
+import {TaskCreateCommand, TaskDeleteCommand, TaskUpdateCommand} from "shared/model/board/board.commands";
 import {getTeamById} from "../../api/team/Team.service";
 import {toast} from "react-toastify";
+import {TeamResponse} from "shared/model/team/team.response";
+import {UserResponse} from "shared/model/user/user.response";
 
 interface BoardContextParams {
     teamId: string
@@ -16,7 +16,7 @@ interface BoardContextParams {
 
 interface BoardContext {
     teamId: string
-    board: Board | null
+    board: BoardResponse | null
     team: TeamResponse | null
     teamUsers: UserResponse[]
     moveTask: (taskId: string, targetColumnId: string) => void
@@ -43,7 +43,7 @@ export const BoardContextProvider: React.FC<React.PropsWithChildren<BoardContext
     }
 ) => {
     const socket = useRef<Socket>()
-    const [board, setBoard] = useState<Board | null>(null)
+    const [board, setBoard] = useState<BoardResponse | null>(null)
     const [team, setTeam] = useState<TeamResponse | null>(null)
     const [teamUsers, setTeamUsers] = useState<UserResponse[]>([])
 

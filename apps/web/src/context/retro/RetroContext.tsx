@@ -1,31 +1,5 @@
 import React, {createContext, useEffect, useRef, useState} from "react";
 import io, {Socket} from "socket.io-client";
-import {
-  ActionPoint,
-  TimerChangeEvent,
-  RoomSyncEvent,
-  SocketCard,
-  SocketColumn, SocketUser,
-  SocketVote
-} from "../../api/retro/Retro.events";
-import {
-  AddVoteCommand,
-  DeleteCardCommand,
-  SetMaxVotesCommand,
-  CreateCardCommand,
-  ReadyCommand,
-  RemoveVoteCommand,
-  RoomState,
-  RoomStateCommand,
-  SetTimerCommand,
-  WriteStateCommand,
-  MoveCardToColumnCommand,
-  AddCardToCardCommand,
-  UpdateActionPointCommand,
-  CreateActionPointCommand,
-  DeleteActionPointCommand, ChangeCurrentDiscussCardCommand, UpdateCardCommand
-} from "../../api/retro/Retro.commands";
-import {UserResponse} from "../../api/user/User.interfaces";
 import {v4 as uuidv4} from "uuid";
 import {useUser} from "../user/UserContext.hook";
 import {getUsersByTeamId} from "../../api/user/User.service";
@@ -33,6 +7,16 @@ import {CardMoveAction} from "../../interfaces/CardMoveAction.interface";
 import { useNavigate } from "react-router";
 import {useCardGroups} from "../useCardGroups";
 import {toast} from "react-toastify";
+import {UserResponse} from "shared/model/user/user.response";
+import {RoomState, RoomSyncEvent, TimerChangedEvent} from "shared/model/retro/retro.events";
+import {
+  AddCardToCardCommand,
+  AddCardVoteCommand, ChangeCurrentDiscussCardCommand, ChangeTimerCommand, ChangeVoteAmountCommand,
+  CreateActionPointCommand, CreateCardCommand,
+  DeleteActionPointCommand, DeleteCardCommand, MoveCardToColumnCommand, RemoveCardVoteCommand,
+  UpdateActionPointCommand, UpdateCardCommand, UpdateReadyStateCommand, UpdateRoomStateCommand, UpdateWriteStateCommand
+} from "shared/model/retro/retro.commands";
+import {ActionPoint, Card, RetroColumn, User, Vote} from "shared/model/retro/retroRoom.interface";
 
 interface RetroContextParams {
   retroId: string
@@ -41,10 +25,10 @@ interface RetroContextParams {
 interface RetroContext {
   retroId: string
   teamId: string | null
-  columns: SocketColumn[]
-  cards: SocketCard[]
+  columns: RetroColumn[]
+  cards: Card[]
   teamUsers: UserResponse[]
-  activeUsers: SocketUser[]
+  activeUsers: User[]
   roomState: RoomState
 
   discussionCardId: string | null
@@ -65,7 +49,7 @@ interface RetroContext {
   prevRoomState: () => void
   removeVote: (parentCardId: string) => void
   addVote: (parentCardId: string) => void
-  votes: SocketVote[]
+  votes: Vote[]
   maxVotes: number
   setMaxVotesAmount: (amount: number) => void
 
@@ -121,16 +105,16 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
   const socket = useRef<Socket>()
   const timeOffset = useRef<number>()
   const [teamId, setTeamId] = useState<string | null>(null)
-  const [votes, setVotes] = useState<SocketVote[]>([])
+  const [votes, setVotes] = useState<Vote[]>([])
   const [maxVotes, setMaxVotes] = useState<number>(0)
   const [timerEnds, setTimerEnds] = useState<number | null>(null)
   const [isReady, setIsReady] = useState(false)
   const [roomState, setRoomState] = useState<RoomState>("reflection")
   const [teamUsers, setTeamUsers] = useState<UserResponse[]>([])
-  const [columns, setColumns] = useState<SocketColumn[]>([])
-  const [cards, setCards] = useState<SocketCard[]>([])
+  const [columns, setColumns] = useState<RetroColumn[]>([])
+  const [cards, setCards] = useState<Card[]>([])
   const [usersReady, setUsersReady] = useState<number>(0)
-  const [users, setUsers] = useState<SocketUser[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [actionPoint,setActionPoint] = useState<ActionPoint[]>([])
   const [discussionCardId, setDiscussionCardId] = useState<string | null>(null);
 
@@ -159,7 +143,8 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
       toast.error('Wystąpił błąd')
     });
 
-    createdSocket.on("event_room_sync", ({roomData}: RoomSyncEvent) => {
+    createdSocket.on("event_room_sync", (roomData: RoomSyncEvent) => {
+      console.log(roomData)
       setRoomState(roomData.roomState)
       setTeamId(roomData.teamId)
       setColumns(roomData.retroColumns)
@@ -167,7 +152,7 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
       setUsersReady(roomData.usersReady)
       setVotes(roomData.votes)
       setMaxVotes(roomData.maxVotes)
-      setIsReady(roomData.users.find((u) => u.id === user?.id)?.isReady || false)
+      setIsReady(roomData.users.find((u) => u.userId === user?.id)?.isReady || false)
       setUsers(roomData.users)
       setActionPoint(roomData.actionPoints)
       setDiscussionCardId(roomData.discussionCardId)
@@ -177,7 +162,7 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
       handleTimerChanged(roomData.timerEnds, serverTimeOffset)
     })
 
-    createdSocket.on("event_timer_change", (e: TimerChangeEvent) => {
+    createdSocket.on("event_timer_change", (e: TimerChangedEvent) => {
       handleTimerChanged(e.timerEnds, timeOffset.current ?? 0)
     });
 
@@ -229,28 +214,28 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
   }
 
   const addVote = (parentCardId: string) => {
-    const command: AddVoteCommand = {
+    const command: AddCardVoteCommand = {
       parentCardId: parentCardId
     }
     socket.current?.emit("command_vote_on_card", command)
   }
 
   const removeVote = (parentCardId: string) => {
-    const command: RemoveVoteCommand = {
+    const command: RemoveCardVoteCommand = {
       parentCardId: parentCardId
     }
     socket.current?.emit("command_remove_vote_on_card", command)
   }
 
   const setMaxVotesAmount = (amount: number) => {
-    const command: SetMaxVotesCommand = {
+    const command: ChangeVoteAmountCommand = {
       votesAmount: amount
     }
     socket.current?.emit("command_change_vote_amount", command)
   }
 
   const setReady = (ready: boolean) => {
-    const command: ReadyCommand = {
+    const command: UpdateReadyStateCommand = {
       readyState: ready
     }
     socket.current?.emit("command_ready", command);
@@ -258,7 +243,7 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
   };
 
   const setWriting = (value: boolean, columnId: string) => {
-    const command: WriteStateCommand = {
+    const command: UpdateWriteStateCommand = {
       columnId: columnId,
       writeState: value,
     }
@@ -270,7 +255,6 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
       id: uuidv4(),
       text: text,
       columnId: columnId,
-      authorId: user!.id,
     }
     socket.current?.emit("command_create_card", command)
     setWriting(false, columnId)
@@ -293,7 +277,7 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
 
   const setTimer = (time: number | null) => {
     setTimerEnds(time)
-    const command: SetTimerCommand = {
+    const command: ChangeTimerCommand = {
       timestamp: time ? time + (timeOffset.current ?? 0) : null
     }
     socket.current?.emit("command_timer_change", command)
@@ -305,6 +289,7 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
 
   const nextRoomState = () => {
     let state: RoomState;
+
     switch (roomState) {
       case "reflection":
         state = "group"
@@ -320,7 +305,7 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
         return;
     }
 
-    const command: RoomStateCommand = {
+    const command: UpdateRoomStateCommand = {
       roomState: state
     }
 
@@ -347,7 +332,7 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
         return;
     }
 
-    const command: RoomStateCommand = {
+    const command: UpdateRoomStateCommand = {
       roomState: state
     }
     socket.current?.emit("command_room_state", command)

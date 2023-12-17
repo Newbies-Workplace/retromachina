@@ -1,12 +1,11 @@
 export interface UpdateReadyStateCommand {
-  readyState: true;
+  readyState: boolean;
 }
 
 export interface CreateCardCommand {
   id: string;
   text: string;
   columnId: string;
-  cardId: string;
 }
 
 export interface UpdateCardCommand {
@@ -28,14 +27,14 @@ export interface UpdateRoomStateCommand {
 }
 
 export interface ChangeTimerCommand {
-  timestamp: number;
+  timestamp: number | null;
 }
 
-export interface VoteOnCardCommand {
+export interface AddCardVoteCommand {
   parentCardId: string;
 }
 
-export interface RemoveVoteOnCardCommand {
+export interface RemoveCardVoteCommand {
   parentCardId: string;
 }
 
@@ -43,7 +42,7 @@ export interface ChangeVoteAmountCommand {
   votesAmount: number;
 }
 
-export interface CardAddToCardCommand {
+export interface AddCardToCardCommand {
   parentCardId: string;
   cardId: string;
 }
@@ -53,7 +52,7 @@ export interface MoveCardToColumnCommand {
   cardId: string;
 }
 
-export interface AddActionPointCommand {
+export interface CreateActionPointCommand {
   text: string;
   ownerId: string;
 }
@@ -62,7 +61,7 @@ export interface DeleteActionPointCommand {
   actionPointId: string;
 }
 
-export interface ChangeActionPointOwnerCommand {
+export interface UpdateActionPointCommand {
   actionPointId: string;
   ownerId: string;
   text: string;

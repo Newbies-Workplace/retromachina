@@ -1,9 +1,9 @@
-import { RoomState } from 'src/retro/application/roomstate.validator'
-import { ActionPoint, Card, RetroColumn, Vote } from '../../domain/model/retroRoom.interface'
+import {ActionPoint, Card, RetroColumn, User, Vote} from "./retroRoom.interface";
 
-interface UserData {
-  id: string
-  isReady: boolean
+export type RoomState = 'reflection' | 'group' | 'vote' | 'discuss' | 'summary';
+
+export interface TimerChangedEvent {
+  timerEnds: number | null //timestamp
 }
 
 export interface RoomSyncEvent {
@@ -18,7 +18,7 @@ export interface RoomSyncEvent {
   cards: Card[]
   retroColumns: RetroColumn[]
   actionPoints: ActionPoint[]
-  users: UserData[]
+  users: User[]
   votes: Vote[]
   serverTime: number
 }

@@ -1,5 +1,6 @@
 import { axiosInstance } from "../AxiosInstance"
-import {RetroCreateRequest, RetroResponse} from "./Retro.interface"
+import {RetroResponse} from "shared/model/retro/retro.response";
+import {RetroCreateRequest} from "shared/model/retro/retro.request";
 
 export const getRetrosByTeamId = (teamId: string): Promise<RetroResponse[]> => {
     return axiosInstance.get<RetroResponse[]>("retros", {

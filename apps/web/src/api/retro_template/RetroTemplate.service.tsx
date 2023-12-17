@@ -1,4 +1,4 @@
-import {RetroTemplateResponse} from "./RetroTemplate.interface";
+import {RetroTemplateResponse} from "shared/model/retro/retroTemplate.response";
 
 const templates: RetroTemplateResponse[] = [
     {

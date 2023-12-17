@@ -144,7 +144,6 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
     });
 
     createdSocket.on("event_room_sync", (roomData: RoomSyncEvent) => {
-      console.log(roomData)
       setRoomState(roomData.roomState)
       setTeamId(roomData.teamId)
       setColumns(roomData.retroColumns)

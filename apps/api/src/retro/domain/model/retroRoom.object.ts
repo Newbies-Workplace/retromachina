@@ -1,6 +1,7 @@
 import {RoomState, RoomSyncEvent} from 'shared/model/retro/retro.events';
 import { ActionPoint, Card, RetroColumn, User, Vote } from 'shared/model/retro/retroRoom.interface';
 import { v4 as uuid } from 'uuid';
+import {UserRole} from "shared/.dist/model/user/user.role";
 
 export class RetroRoom {
   users: Map<string, User> = new Map();
@@ -53,6 +54,7 @@ export class RetroRoom {
         return {
           userId: user.userId,
           isReady: user.isReady,
+          role: user.role,
           writingInColumns: new Set<string>(),
         };
       }),
@@ -90,7 +92,7 @@ export class RetroRoom {
     this.votes = filteredVotes;
   }
 
-  addUser(socketId: string, userId: string) {
+  addUser(socketId: string, userId: string, role: UserRole) {
     const result = Array.from(this.users.entries()).find(([key, localUser]) => {
       return localUser.userId == userId;
     });
@@ -98,6 +100,7 @@ export class RetroRoom {
     if (!result) {
       this.users.set(socketId, {
         userId,
+        role: role,
         isReady: false,
         writingInColumns: new Set<string>(),
       });

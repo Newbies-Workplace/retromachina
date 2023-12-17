@@ -2,7 +2,7 @@ import React, {createContext, useEffect, useRef, useState} from "react";
 import io, {Socket} from "socket.io-client";
 import {v4 as uuidv4} from "uuid";
 import {useUser} from "../user/UserContext.hook";
-import {getUsersByTeamId} from "../../api/user/User.service";
+import {getUsersByTeamId} from "../../api/User.service";
 import {CardMoveAction} from "../../interfaces/CardMoveAction.interface";
 import { useNavigate } from "react-router";
 import {useCardGroups} from "../useCardGroups";

@@ -1,4 +1,4 @@
-import { axiosInstance } from "../AxiosInstance"
+import {axiosInstance} from "./AxiosInstance";
 import {RetroResponse} from "shared/model/retro/retro.response";
 import {RetroCreateRequest} from "shared/model/retro/retro.request";
 

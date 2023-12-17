@@ -1,3 +1,5 @@
+import {UserRole} from "../user/user.role";
+
 export interface Card {
   id: string;
   text: string;
@@ -8,6 +10,7 @@ export interface Card {
 
 export interface User {
   userId: string;
+  role: UserRole;
   isReady: boolean;
   writingInColumns: Set<string>;
 }

@@ -1,4 +1,4 @@
-import { axiosInstance } from "../AxiosInstance";
+import {axiosInstance} from "./AxiosInstance";
 import {TeamResponse} from "shared/model/team/team.response";
 import {InviteResponse} from "shared/model/invite/Invite.response";
 import {TeamRequest} from "shared/model/team/team.request";

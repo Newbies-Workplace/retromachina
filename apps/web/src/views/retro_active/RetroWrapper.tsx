@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {RetroContextProvider} from "../../context/retro/RetroContext";
 import {Navigate, useNavigate, useParams} from "react-router";
-import {getRetroByRetroId} from "../../api/retro/Retro.service";
+import {getRetroByRetroId} from "../../api/Retro.service";
 
 export const RetroWrapper: React.FC<React.PropsWithChildren> = ({children}) => {
     const navigate = useNavigate()

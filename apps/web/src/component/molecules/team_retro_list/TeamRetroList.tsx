@@ -6,7 +6,7 @@ import EditIconSvg from "../../../assets/icons/edit-icon.svg";
 import {useNavigate} from "react-router-dom";
 import cs from "classnames";
 import {ActiveRetroCard} from "../retro_card/ActiveRetroCard";
-import {getRetrosByTeamId} from "../../../api/retro/Retro.service";
+import {getRetrosByTeamId} from "../../../api/Retro.service";
 import {Button} from "../../atoms/button/Button";
 import {useTeamRole} from "../../../context/useTeamRole";
 import {RetroResponse} from "shared/model/retro/retro.response";

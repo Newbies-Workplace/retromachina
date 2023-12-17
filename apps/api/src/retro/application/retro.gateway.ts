@@ -141,7 +141,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    room.addUser(client.id, user.id);
+    room.addUser(client.id, user.id, userQuery.TeamUsers[0].role);
 
     this.users.set(client.id, {
       user: userQuery,
@@ -359,7 +359,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.users.get(client.id);
 
-    if (roomUser.userId !== room.scrumMasterId) {
+    if (roomUser.userId !== room.scrumMasterId && roomUser.role !== 'ADMIN') {
       return
     }
 

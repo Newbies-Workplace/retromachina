@@ -1,4 +1,4 @@
-import { axiosInstance } from "../AxiosInstance";
+import {axiosInstance} from "./AxiosInstance";
 import {UserInTeamResponse, UserWithTeamsResponse} from "shared/model/user/user.response";
 
 export const getMyUser = (): Promise<UserWithTeamsResponse> => {

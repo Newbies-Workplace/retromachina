@@ -8,15 +8,15 @@ import {
   editTeam,
   getInvitesByTeamId,
   getTeamById,
-} from "../../api/team/Team.service";
+} from "../../api/Team.service";
 import styles from "./TeamEditView.module.scss";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
 import { toast } from "react-toastify";
 import { ConfirmDialog } from "../../component/molecules/confirm_dialog/ConfirmDialog";
-import { getUsersByTeamId } from "../../api/user/User.service";
-import { User } from "../../interfaces/User.interface";
+import { getUsersByTeamId } from "../../api/User.service";
 import {TeamRequest} from "shared/model/team/team.request";
 import {InviteResponse} from "shared/model/invite/Invite.response";
+import {UserInTeamResponse} from "shared/model/user/user.response";
 
 const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -33,7 +33,7 @@ const TeamEditView: React.FC = () => {
       const teamResponse = await getTeamById(teamId);
 
       const users = await getUsersByTeamId(teamId).then((users) =>
-        users.filter((elem: User) => {
+        users.filter((elem: UserInTeamResponse) => {
           return elem.email !== user?.email;
         })
       );

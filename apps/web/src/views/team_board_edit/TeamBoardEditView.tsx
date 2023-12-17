@@ -10,7 +10,7 @@ import {v4 as uuidv4} from "uuid";
 import {getRandomColor} from "../../common/Util";
 import NextIcon from "../../assets/icons/next.svg"
 import PrevIcon from "../../assets/icons/prev.svg"
-import {editBoard, getBoard} from "../../api/board/Board.service";
+import {editBoard, getBoard} from "../../api/Board.service";
 import {toast} from "react-toastify";
 import {BoardColumnDto} from "shared/model/board/editBoard.dto";
 

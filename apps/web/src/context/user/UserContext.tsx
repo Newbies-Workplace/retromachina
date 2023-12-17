@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { axiosInstance } from "../../api/AxiosInstance";
-import { getMyUser } from "../../api/user/User.service";
-import {loginGoogle} from "../../api/auth/Auth.service";
+import { getMyUser } from "../../api/User.service";
+import {loginGoogle} from "../../api/Auth.service";
 import {UserWithTeamsResponse} from "shared/model/user/user.response";
 import {AuthParams} from "shared/model/auth/Auth.interface";
 

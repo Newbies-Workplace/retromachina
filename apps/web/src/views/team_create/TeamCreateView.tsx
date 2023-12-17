@@ -2,7 +2,7 @@ import {useUser} from '../../context/user/UserContext.hook'
 import {useNavigate} from 'react-router'
 import {TeamForm} from '../../component/organisms/forms/TeamForm';
 import Navbar from '../../component/organisms/navbar/Navbar';
-import {createTeam} from '../../api/team/Team.service';
+import {createTeam} from '../../api/Team.service';
 import React from "react";
 import {toast} from "react-toastify";
 import {TeamRequest} from "shared/model/team/team.request";

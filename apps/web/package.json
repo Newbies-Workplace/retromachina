@@ -10,7 +10,7 @@
     "build": "vite build",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build -o dist/storybook"
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "shared": "*",

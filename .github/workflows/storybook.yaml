@@ -17,5 +17,5 @@ jobs:
       - id: build-publish
         uses: bitovi/github-actions-react-to-ghp@v1.2.0
         with:
-          path: apps/web/dist/storybook
+          path: apps/web/storybook-static
           build_command: cd apps/web && npm run build-storybook

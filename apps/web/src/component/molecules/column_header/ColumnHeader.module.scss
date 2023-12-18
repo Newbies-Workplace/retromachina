@@ -1,0 +1,75 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 5px;
+
+    width: 100%;
+    max-height: 120px;
+
+    background-color: white;
+    padding: 8px;
+    
+    border-radius: 16px;
+    border: 1px solid black;
+
+    & span {
+        font-size: 15px;
+        font-weight: 400;      
+    }
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+.title {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+
+    word-break: break-word;
+
+    & span {
+        font-size: 20px;
+        font-weight: 700;
+    }
+}
+
+.box {
+    width: 16px;
+    height: 16px;
+    
+    border-radius: 6px;
+    border: 1px solid black;
+}
+
+.description {
+    word-wrap: break-word;
+
+    max-height: 60px;
+    max-width: 274px;
+
+    @include assets.scrollbar;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+        width: 3px;
+        height: 5px;
+        border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgb(186, 186, 186);
+        border-radius: 10px;
+    }
+}

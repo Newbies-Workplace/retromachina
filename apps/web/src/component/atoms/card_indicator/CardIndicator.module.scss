@@ -1,0 +1,44 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px;
+
+    font-family: fonts.$font-paragraph;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.rect {
+    width: 60px;
+    height: 30px;
+
+    background-color: #D9D9D9;
+
+    border: 1px solid #000000;
+    border-radius: 8px;
+
+    &.active {
+        background: linear-gradient(79.95deg, #325AE8, #325AE8, #58EA66, #58EA66, #325AE8, #325AE8, #58EA66, #58EA66, #325AE8, #325AE8), #D9D9D9;
+        background-size: 1000%;
+
+        animation: gradient-flow 5s infinite;
+        animation-timing-function: linear;
+
+        background-position: right;
+    }
+}
+
+@keyframes gradient-flow {
+    0% {
+        background-position: right;
+    }
+    100% {
+        background-position: left;
+    }
+}

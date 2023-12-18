@@ -1,0 +1,52 @@
+@use  'src/abstracts/colors';
+@use  'src/abstracts/fonts';
+@use  'src/abstracts/assets';
+
+.container {
+    display: flex;
+    flex-grow: 1;
+
+    @include assets.scrollbar
+}
+
+.columns {
+    display: flex;
+    align-items: start;
+    gap: 32px;
+
+    margin-top: 32px;
+    margin-left: 12px;
+}
+
+.columnButton {
+    padding-right: 16px;
+}
+
+.actionWrapper {
+    display: flex;
+    justify-content: center;
+
+    position: fixed;
+    bottom: 20px;
+
+    width: 100%;
+}
+
+.actionButton {
+    display: flex;
+
+    min-width: 600px;
+    min-height: 100px;
+
+    & .buttonSection {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        width: 100%;
+
+        & span {
+            font-weight: 700;
+        }
+    }
+}

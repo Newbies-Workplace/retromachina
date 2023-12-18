@@ -2,14 +2,16 @@
   "name": "retromachina",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
+    "dev": "dotenv -- turbo dev",
+    "build": "dotenv -- turbo build",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "dotenv-cli": "latest",
     "prettier": "^3.1.0",
     "turbo": "latest"
   },

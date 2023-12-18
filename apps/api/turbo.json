@@ -1,0 +1,14 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "pipeline": {
+    "build": {
+      "outputs": [".nest/**"]
+    },
+    "dev": {
+      "dependsOn": ["generate", "migrate"]
+    },
+    "generate": {},
+    "migrate": {}
+  }
+}

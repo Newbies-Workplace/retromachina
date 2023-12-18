@@ -1,0 +1,52 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 36px;
+    width: 130px;
+
+    border-radius: 36px;
+    border: 2px solid black;
+    background-color: colors.$background;
+
+    font-family: fonts.$font-paragraph;
+    font-weight: 700;
+    font-size: 20px;
+
+    &.expires {
+        border-color: colors.$warn;
+        color: colors.$warn;
+        animation: blink 1s infinite;
+    }
+
+    &.end {
+        background-color: colors.$warn;
+        color: colors.$background;
+        border-color: colors.$background;
+        font-size: 20px;
+    }
+}
+
+@keyframes blink {
+    0% {
+        border-color: colors.$warn;
+        background-color: colors.$background;
+        color: colors.$warn;
+    }
+
+    50% {
+        border-color: colors.$background;
+        background-color: colors.$warn;
+        color: colors.$background;
+    }
+
+    100% {
+        border-color: colors.$warn;
+        color: colors.$warn;
+    }
+}

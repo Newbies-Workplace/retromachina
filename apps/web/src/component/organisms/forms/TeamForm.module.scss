@@ -1,0 +1,71 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.container {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+
+    background-image: url("../../../assets/images/background.svg");
+    background-size: cover;
+
+    @include assets.scrollbar;
+
+    background-color: colors.$background;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+
+    width: 600px;
+    min-height: 700px;
+    height: fit-content;
+
+    padding: 30px;
+    margin: 32px;
+
+    background-color: colors.$primary-color;
+    border-radius: 16px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    width: 100%;
+}
+
+.mailBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: 48px;
+    padding: 4px 4px 4px 20px;
+
+    background-color: white;
+    border-radius: 16px;
+}
+
+.actionSection {
+    display: flex;
+    justify-content: space-between;
+    align-self: flex-end;
+    gap: 8px;
+    width: 100%;
+}
+
+.formWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+
+    width: 100%;
+}

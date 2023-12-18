@@ -1,0 +1,35 @@
+@use '../../abstracts/colors';
+@use '../../abstracts/fonts';
+@use '../../abstracts/assets';
+
+.container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+
+  @include assets.scrollbar;
+}
+
+.noTeam {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  padding: 20px;
+}
+
+.text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+
+  & span {
+    font-size: 28px;
+    font-weight: 900;
+  }
+}

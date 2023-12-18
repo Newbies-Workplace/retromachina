@@ -1,0 +1,20 @@
+version: '3.4'
+
+name: "retromachina-monorepo"
+
+services:
+  retro-db:
+    image: mariadb:10.7
+    restart: unless-stopped
+    container_name: retro-db
+    volumes:
+      - retro-db:/var/lib/mysql
+    environment:
+      MARIADB_AUTO_UPGRADE: 1
+      MYSQL_ROOT_PASSWORD: retro
+      MYSQL_DATABASE: retro
+    ports:
+      - "3307:3306"
+
+volumes:
+  retro-db:

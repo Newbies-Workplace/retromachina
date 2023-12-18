@@ -1,0 +1,34 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    min-width: 340px;
+    padding: 8px;
+
+    border: 1px solid black;
+    border-radius: 16px;
+    background-color: #EAEAEA;
+}
+
+.topBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.name {
+    min-width: 100px;
+}
+
+.delete {
+    min-width: 32px;
+    min-height: 32px;
+
+    cursor: pointer;
+}

@@ -1,0 +1,56 @@
+version: "3.4"
+
+name: "retromachina-monorepo"
+
+services:
+  retro-db:
+    image: mariadb:10.7
+    restart: unless-stopped
+    container_name: retro-db
+    volumes:
+      - retro-db:/var/lib/mysql
+    environment:
+      MARIADB_AUTO_UPGRADE: 1
+      MYSQL_ROOT_PASSWORD: retro
+      MYSQL_DATABASE: retro
+    ports:
+      - "3306:3306"
+    networks:
+      - retro-back-local
+  retro-web:
+    image: ghcr.io/newbies-workplace/retromachina-web:latest
+    restart: unless-stopped
+    environment:
+      - RETRO_WEB_API_URL
+      - RETRO_WEB_SOCKET_URL
+    container_name: retro-web
+    ports:
+      - "80:8080"
+    networks:
+      - reverse-proxy_global
+  retro-service:
+    image: ghcr.io/newbies-workplace/retromachina-api:latest
+    restart: unless-stopped
+    container_name: retro-service
+    environment:
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_SECRET
+      - JWT_SECRET
+      - DATABASE_URL
+      - CALLBACK_URL
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    networks:
+      - retro-back-local
+      - reverse-proxy_global
+    depends_on:
+      - retro-db
+
+networks:
+  retro-back-local:
+  reverse-proxy_global:
+    external: true
+
+volumes:
+  retro-db:

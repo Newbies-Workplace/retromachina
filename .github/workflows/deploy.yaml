@@ -45,6 +45,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          target: retro-web
           push: true
           tags: ${{ steps.meta-web.outputs.tags }}
           labels: ${{ steps.meta-web.outputs.labels }}
@@ -60,6 +61,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          target: retro-api
           push: true
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}

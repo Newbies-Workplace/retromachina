@@ -28,10 +28,10 @@ services:
       - "80:8080"
     networks:
       - reverse-proxy_global
-  retro-service:
+  retro-api:
     image: ghcr.io/newbies-workplace/retromachina-api:latest
     restart: unless-stopped
-    container_name: retro-service
+    container_name: retro-api
     environment:
       - GOOGLE_CLIENT_ID
       - GOOGLE_SECRET

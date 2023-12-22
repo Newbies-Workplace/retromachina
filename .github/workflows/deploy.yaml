@@ -33,10 +33,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/newbies-workplace/retromachina-web
 
-      - name: "web: Create .env.production"
+      - name: "web: Create .env"
         uses: iamsauravsharma/create-dotenv@v1.2.2
         with:
-          file-name: '.env.production'
+          file-name: '.env'
         env:
           RETRO_WEB_API_URL: ${{ secrets.RETRO_WEB_API_URL }}
           RETRO_WEB_SOCKET_URL: ${{ secrets.RETRO_WEB_SOCKET_URL }}

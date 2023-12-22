@@ -6,7 +6,7 @@ ARG RETRO_WEB_SOCKET_URL
 WORKDIR /build
 COPY . ./
 
-RUN npm install
+RUN npm ci
 RUN npm run build
 
 FROM node:18.11.0-alpine as retromachina-api
@@ -32,7 +32,5 @@ COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/apps/web/package*.json ./
 COPY --from=builder /build/apps/web/server.js ./
 COPY --from=builder /build/apps/web/dist/ ./dist
-
-RUN npm ci --only=production --ignore-scripts
 
 CMD node server.js

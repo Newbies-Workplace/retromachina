@@ -6,8 +6,7 @@ ARG RETRO_WEB_SOCKET_URL
 WORKDIR /build
 COPY . ./
 
-RUN ls -a
-RUN npm ci
+RUN npm install
 RUN npm run build
 
 FROM node:18.11.0-alpine as retromachina-api

@@ -28,7 +28,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "web: Extract metadata (tags, labels) for Docker"
-        id: meta
+        id: meta-web
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/newbies-workplace/retromachina-web
@@ -46,12 +46,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-web.outputs.tags }}
+          labels: ${{ steps.meta-web.outputs.labels }}
 
 
       - name: "api: Extract metadata (tags, labels) for Docker"
-        id: meta
+        id: meta-api
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/newbies-workplace/retromachina-api
@@ -61,8 +61,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-api.outputs.tags }}
+          labels: ${{ steps.meta-api.outputs.labels }}
 
   deploy:
     name: Deploy

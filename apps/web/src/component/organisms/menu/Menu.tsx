@@ -1,12 +1,13 @@
 import styles from './Menu.module.scss'
 import {Button} from '../../atoms/button/Button'
-import { useUser } from '../../../context/user/UserContext.hook'
-import { useNavigate } from 'react-router'
+import {useUser} from '../../../context/user/UserContext.hook'
+import {useNavigate} from 'react-router'
 import {Avatar} from "../../atoms/avatar/Avatar";
 import AuthorsIcon from '../../../assets/icons/authors.svg';
 import BugIcon from '../../../assets/icons/bug-icon.svg';
 import React from "react";
 import {Link} from "react-router-dom";
+import CreateTeamSvg from "../../../assets/icons/create-team.svg";
 
 export const Menu = () => {
     const navigate = useNavigate();
@@ -41,6 +42,11 @@ export const Menu = () => {
             </div>
 
             <div className={styles.options}>
+                <Link className={styles.option} to={'/team/create'}>
+                    <CreateTeamSvg />
+                    Stwórz Zespół
+                </Link>
+
                 <Link className={styles.option} to={'http://newbies.pl'}>
                     <AuthorsIcon width={24} height={24}/>
                     O autorach

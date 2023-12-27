@@ -14,15 +14,7 @@ const HomeView: React.FC = () => {
 
     return (
         <>
-            <Navbar topContent={
-                <Button
-                    onClick={() => navigate("/team/create")}
-                    size="small"
-                >
-                    <CreateTeamSvg />
-                    Stwórz Zespół
-                </Button>
-            }/>
+            <Navbar/>
             <div className={styles.container}>
                 {user?.teams?.length === 0 &&
                     <div className={styles.noTeam}>
@@ -31,6 +23,13 @@ const HomeView: React.FC = () => {
                         <div className={styles.text}>
                             <span>Nie jesteś członkiem żadnego Zespołu!</span>
                             <span style={{fontSize: 18}}>Stwórz nowy zespół lub poczekaj na zaproszenie od innego członka retromachiny!</span>
+                            <Button
+                                onClick={() => navigate("/team/create")}
+                                size="small"
+                            >
+                                <CreateTeamSvg />
+                                Stwórz Zespół
+                            </Button>
                         </div>
                     </div>
                 }

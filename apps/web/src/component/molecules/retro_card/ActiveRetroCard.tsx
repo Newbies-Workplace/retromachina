@@ -2,7 +2,7 @@ import React from "react"
 import styles from "./RetroCard.module.scss"
 import {Button} from "../../atoms/button/Button";
 
-interface RetroCardProps{
+interface RetroCardProps {
     onClick(): void
 }
 

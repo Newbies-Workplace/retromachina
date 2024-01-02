@@ -9,12 +9,6 @@
   @include assets.scrollbar;
 }
 
-.headerStyle {
-  min-height: 0;
-
-  margin-top: 32px;
-}
-
 .deleteButton {
   background-color: colors.$warn;
 }

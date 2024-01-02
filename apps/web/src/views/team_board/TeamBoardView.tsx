@@ -52,7 +52,6 @@ export const TeamBoardView: React.FC = () => {
                 {board.columns?.sort((a, b) => a.order - b.order).map(column =>
                     <Column
                         key={column.id}
-                        headerStyle={styles.headerStyle}
                         columnData={{
                             name: column.name,
                             color: column.color,

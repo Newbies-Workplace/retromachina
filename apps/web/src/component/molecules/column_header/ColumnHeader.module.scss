@@ -10,17 +10,21 @@
     gap: 5px;
 
     width: 100%;
-    max-height: 120px;
+    max-height: 110px;
 
     background-color: white;
     padding: 8px;
-    
+
     border-radius: 16px;
     border: 1px solid black;
 
     & span {
         font-size: 15px;
-        font-weight: 400;      
+        font-weight: 400;
+    }
+
+    &:hover {
+        max-height: unset;
     }
 }
 
@@ -48,7 +52,7 @@
 .box {
     width: 16px;
     height: 16px;
-    
+
     border-radius: 6px;
     border: 1px solid black;
 }
@@ -56,20 +60,13 @@
 .description {
     word-wrap: break-word;
 
-    max-height: 60px;
     max-width: 274px;
 
-    @include assets.scrollbar;
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
-        width: 3px;
-        height: 5px;
+        width: 0;
+        height: 0;
         border-radius: 6px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: rgb(186, 186, 186);
-        border-radius: 10px;
     }
 }

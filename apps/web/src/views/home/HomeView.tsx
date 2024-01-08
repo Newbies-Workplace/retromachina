@@ -43,15 +43,6 @@ const HomeView: React.FC = () => {
 							teamName={team.name}
 						/>
 					))}
-					<Card
-						teamUsers={[]}
-						author={{
-							id: "aaa",
-							avatar: "assets/sample.png",
-							name: "John Doe",
-						}}
-						text={"Test"}
-					/>
 				</div>
 			</div>
 		</>

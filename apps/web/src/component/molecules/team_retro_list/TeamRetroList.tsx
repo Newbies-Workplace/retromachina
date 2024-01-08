@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "./TeamRetroList.module.scss";
 import AddIcon from "../../../assets/icons/add-icon.svg";
-import TaskIconSvg from "../../../assets/icons/task-icon.svg";
+import TaskIconSvg from "../../../assets/icons/task-list.svg";
 import EditIconSvg from "../../../assets/icons/edit-icon.svg";
 import {useNavigate} from "react-router-dom";
 import cs from "classnames";
@@ -39,10 +39,6 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = (
         <div className={styles.team}>
             <div className={styles.topBar}>
                 <h2 className={styles.title}>{teamName}</h2>
-                <Button onClick={() => navigate(`/team/${teamId}/board`)} size="small">
-                    <TaskIconSvg />
-                    Lista zadań
-                </Button>
 
                 {isAdmin &&
                     <Button onClick={() => navigate(`/team/${teamId}/edit`)} size="round">
@@ -52,15 +48,24 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = (
             </div>
 
             <div className={styles.wrapper}>
+                <Button
+                    className={styles.retroButton}
+                    onClick={() => navigate(`/team/${teamId}/board`)}>
+                    Lista zadań
+                    <TaskIconSvg />
+                </Button>
+
                 {isAdmin && !isAnyRetroRunning && (
                     <Button
                         className={styles.retroButton}
                         onClick={() => navigate(`/retro/create?teamId=${teamId}`)}
+                        style={{ backgroundColor: "#DC6E47" }}
                     >
                         Nowa Retrospektywa
                         <AddIcon />
                     </Button>
                 )}
+
                 {retros.map((retro, index) => {
                     if (retro.is_running) {
                         return (

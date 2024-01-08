@@ -7,7 +7,16 @@
   flex-grow: 1;
   flex-direction: column;
 
+  padding: 16px;
+
   @include assets.scrollbar;
+}
+
+.teams {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
 }
 
 .noTeam {

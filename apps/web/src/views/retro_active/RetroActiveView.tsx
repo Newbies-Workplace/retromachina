@@ -5,12 +5,12 @@ import Navbar from "../../component/organisms/navbar/Navbar";
 import {Timer} from "../../component/molecules/timer/Timer";
 import {useRetro} from "../../context/retro/RetroContext.hook";
 import {useNavigate} from "react-router";
-import { ReflectionView } from "./reflection/ReflectionView";
+import {ReflectionView} from "./reflection/ReflectionView";
 import {GroupView} from "./group/GroupView";
-import { Toolbox } from "../../component/molecules/toolbox/Toolbox";
-import { useUser } from "../../context/user/UserContext.hook";
-import { VoteView } from "./vote/VoteView";
-import { DiscussView } from "./discuss/DiscussView";
+import {Toolbox} from "../../component/molecules/toolbox/Toolbox";
+import {useUser} from "../../context/user/UserContext.hook";
+import {VoteView} from "./vote/VoteView";
+import {DiscussView} from "./discuss/DiscussView";
 import {TeamAvatars} from "../../component/molecules/team_avatars/TeamAvatars";
 import {ProgressBar} from "../../component/atoms/progress_bar/ProgressBar";
 import {useCardGroups} from "../../context/useCardGroups";
@@ -63,18 +63,20 @@ const RetroActiveView: React.FC = () => {
             <Navbar
                 topContent={
                     <>
-                        {timerEnds !== null && isAdmin &&
-                            <Button
-                                className={styles.quickAdd}
-                                onClick={onQuickAddTime}
-                                size={'round'}>
-                                +30
-                            </Button>
-                        }
+                        {timerEnds !== null && (
+                            <div className={styles.timer}>
+                                {isAdmin &&
+                                    <Button
+                                        className={styles.quickAdd}
+                                        onClick={onQuickAddTime}
+                                        size={'round'}>
+                                        +30
+                                    </Button>
+                                }
 
-                        {timerEnds !== null &&
-                            <Timer timerEnds={timerEnds}/>
-                        }
+                                <Timer timerEnds={timerEnds}/>
+                            </div>
+                        )}
 
                         {teamUsers.length !== 1 &&
                             <TeamAvatars users={teamUsers.filter(u => u.id !== user!.id).map((user) => ({

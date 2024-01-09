@@ -15,7 +15,7 @@ export const Timer: React.FC<PropsTimer> = ({timerEnds}) => {
 
     if (timeLeft <= 0) {
         isFinished = true
-        timeText = "po czasie"
+        timeText = "--:--"
     } else if (timeLeft <= 30) {
         isExpiring = true
     }

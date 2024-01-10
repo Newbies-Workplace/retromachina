@@ -105,6 +105,10 @@ export const RetroCreateView: React.FC = () => {
           navigator.clipboard?.writeText(retroUrl)
               .catch(console.log)
 
+          toast.success('Link został skopiowany do schowka', {
+            autoClose: 3000,
+          })
+
           navigate(`/retro/${retro.data.id}`)
         })
         .catch((e) => {

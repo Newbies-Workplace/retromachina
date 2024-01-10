@@ -45,7 +45,6 @@ export const Toolbox: React.FC = () => {
     const nextDisabled = roomState === 'discuss' && targetIndex >= groups.length
     const prevDisabled = roomState === "reflection"
     const isVotingVisible = roomState === "vote"
-    const isFinishVisible = roomState === "discuss"
     const [time, setTime] = useState(300)
     const timeText = dayjs(0)
         .add(time, 's')
@@ -94,38 +93,41 @@ export const Toolbox: React.FC = () => {
 
     return (
         <div className={styles.toolbox}>
-            {isAdmin &&
-                <div className={styles.box}>
-                    <Button
-                        className={styles.button}
-                        size="medium"
-                        onClick={() => setOpenTimer(true)}>
-                        <HourglassIconSvg/>
-                    </Button>
+            {isAdmin && (
+                <>
+                    <div className={styles.box} />
 
-                    {isTimerOpen && (
-                        <div className={styles.timeBubbleWrapper} ref={timePopover}>
-                            <div className={styles.timerTop}>
-                                <Button size='small' className={styles.clearButton} onClick={() => onClearTimer()}>
-                                    <DeleteIconSvg width={24} height={24}/>
-                                </Button>
+                    <div className={styles.box}>
+                        <Button
+                            className={styles.button}
+                            size="medium"
+                            onClick={() => setOpenTimer(true)}>
+                            <HourglassIconSvg/>
+                        </Button>
 
-                                <div className={styles.timer}>{timeText}</div>
+                        {isTimerOpen && (
+                            <div className={styles.timeBubbleWrapper} ref={timePopover}>
+                                <div className={styles.timerTop}>
+                                    <Button size='small' className={styles.clearButton} onClick={() => onClearTimer()}>
+                                        <DeleteIconSvg width={24} height={24}/>
+                                    </Button>
 
-                                <Button size="small" onClick={() => onStartTimer()}>
-                                    <TickIconSvg  width={24} height={24}/>
-                                </Button>
+                                    <div className={styles.timer}>{timeText}</div>
+
+                                    <Button size="small" onClick={() => onStartTimer()}>
+                                        <TickIconSvg  width={24} height={24}/>
+                                    </Button>
+                                </div>
+
+                                <div className={styles.buttonWrapper}>
+                                    <Button size="small" onClick={() => onZeroTimer()}>00</Button>
+                                    <Button size="small" onClick={() => onIncreaseTimer(30)}>+30s</Button>
+                                    <Button size="small" onClick={() => onIncreaseTimer(60)}>+1m</Button>
+                                </div>
                             </div>
-
-                            <div className={styles.buttonWrapper}>
-                                <Button size="small" onClick={() => onZeroTimer()}>00</Button>
-                                <Button size="small" onClick={() => onIncreaseTimer(30)}>+30s</Button>
-                                <Button size="small" onClick={() => onIncreaseTimer(60)}>+1m</Button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            }
+                        )}
+                    </div></>
+            )}
 
             <div className={styles.box}>
                 {isVotingVisible && isAdmin &&
@@ -197,22 +199,6 @@ export const Toolbox: React.FC = () => {
                         {usePlural(maxVotes, {one: "głos", few: "głosy", other: "głosów"})}
                     </div>
                 }
-
-                {isFinishVisible && isAdmin && (
-                    <>
-                        <Button className={styles.button} size="medium" onClick={()=>setOpenFinish(true)}>
-                            <CheckeredFlagIconSvg/>
-                        </Button>
-
-                        {isFinishOpen &&
-                            <ConfirmDialog
-                                title={"Zakończenie retrospektywy"}
-                                content={"Czy na pewno chcesz zakończyć retrospektywę?"}
-                                onConfirmed={endRetro}
-                                onDismiss={() => setOpenFinish(false)} />
-                        }
-                    </>
-                )}
             </div>
 
             {isAdmin &&
@@ -232,6 +218,24 @@ export const Toolbox: React.FC = () => {
                     </Button>
                 </div>
             }
+
+            <div className={styles.box}>
+                {isAdmin && (
+                    <>
+                        <Button className={cs(styles.button, styles.finishButton)} size="medium" onClick={()=>setOpenFinish(true)}>
+                            <CheckeredFlagIconSvg style={{width: 32, height: 32}}/>
+                        </Button>
+
+                        {isFinishOpen &&
+                            <ConfirmDialog
+                                title={"Zakończenie retrospektywy"}
+                                content={"Czy na pewno chcesz zakończyć retrospektywę?"}
+                                onConfirmed={endRetro}
+                                onDismiss={() => setOpenFinish(false)} />
+                        }
+                    </>
+                )}
+            </div>
         </div>
     );
 }

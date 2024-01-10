@@ -59,16 +59,20 @@
     width: 100%;
 }
 
+.finishButton {
+    background-color: colors.$warn;
+}
+
 .readyButton {
     background-color: #F4F2E6;
 
     border-radius: 8px;
-    border: solid #73BDA8 3px;
+    border: solid colors.$accent 3px;
 
     width: 100%;
 
     &.ready {
-        background-color: #73BDA8;
+        background-color: colors.$accent;
     }
 }
 

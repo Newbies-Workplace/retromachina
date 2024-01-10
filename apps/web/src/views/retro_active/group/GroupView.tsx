@@ -10,7 +10,7 @@ export const GroupView: React.FC = () => {
     const {teamUsers, columns, cards, moveCard} = useRetro()
 
     return (
-        <div style={{display: 'flex', flexDirection: 'row'}}>
+        <div style={{display: 'flex', flexDirection: 'row', height: '100%'}}>
             {columns?.map((column) => {
                 const columnCards = cards.filter(c => c.columnId === column.id)
 

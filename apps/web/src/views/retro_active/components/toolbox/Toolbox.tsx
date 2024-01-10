@@ -1,64 +1,51 @@
 import styles from './Toolbox.module.scss'
-import {Button} from "../../atoms/button/Button";
-import TickIconSvg from '../../../assets/icons/tick.svg'
-import DeleteIconSvg from '../../../assets/icons/delete-icon.svg'
-import RightArrowIconSvg from '../../../assets/icons/right-arrow.svg'
-import LeftArrowIconSvg from '../../../assets/icons/left-arrow.svg'
-import HourglassIconSvg from '../../../assets/icons/hourglass.svg'
-import VoteIconSvg from '../../../assets/icons/vote.svg'
-import CheckeredFlagIconSvg from '../../../assets/icons/finish-flag-svgrepo-com.svg'
+import {Button} from "../../../../component/atoms/button/Button";
+import TickIconSvg from '../../../../assets/icons/tick.svg'
+import DeleteIconSvg from '../../../../assets/icons/delete-icon.svg'
+import RightArrowIconSvg from '../../../../assets/icons/right-arrow.svg'
+import LeftArrowIconSvg from '../../../../assets/icons/left-arrow.svg'
+import HourglassIconSvg from '../../../../assets/icons/hourglass.svg'
+import VoteIconSvg from '../../../../assets/icons/vote.svg'
+import CheckeredFlagIconSvg from '../../../../assets/icons/finish-flag-svgrepo-com.svg'
 import ProgressBar from "@ramonak/react-progress-bar";
-import React, { useCallback, useRef, useState } from "react";
+import React, {useCallback, useRef, useState} from "react";
 import cs from 'classnames';
 import dayjs from 'dayjs';
-import useClickOutside from "../../../context/useClickOutside";
-import { useRetro } from '../../../context/retro/RetroContext.hook';
-import { useUser } from '../../../context/user/UserContext.hook';
-import {usePlural} from "../../../context/usePlural";
-import {ConfirmDialog} from "../confirm_dialog/ConfirmDialog";
+import useClickOutside from "../../../../context/useClickOutside";
+import {useRetro} from '../../../../context/retro/RetroContext.hook';
+import {useUser} from '../../../../context/user/UserContext.hook';
+import {usePlural} from "../../../../context/usePlural";
+import {ConfirmDialog} from "../../../../component/molecules/confirm_dialog/ConfirmDialog";
+import {useTeamRole} from "../../../../context/useTeamRole";
+import {useCardGroups} from "../../../../context/useCardGroups";
 
-interface ToolboxProps {
-    className?: string
-    isAdmin: boolean
-    isVotingVisible: boolean
-    isFinishVisible: boolean
 
-    onTimeChanged: (newTime: number | null) => void
-
-    isReady: boolean
-    onReadyChange: (ready: boolean) => void
-    readyPercentage: number
-
-    prevDisabled: boolean
-    nextDisabled: boolean
-
-    onNextClicked: () => void
-    onPrevClicked: () => void
-}
-
-export const Toolbox: React.FC<ToolboxProps> = (
-    {
-        className,
-        isAdmin,
-        isVotingVisible,
-        isFinishVisible,
-        onTimeChanged,
-
-        isReady,
-        onReadyChange,
+export const Toolbox: React.FC = () => {
+    const {
+        cards,
+        discussionCardId,
+        roomState,
+        teamId,
+        setTimer,
+        ready,
+        setReady,
         readyPercentage,
+        nextRoomState,
+        prevRoomState,
+    } = useRetro()
 
-        prevDisabled,
-        nextDisabled,
+    const { isAdmin } = useTeamRole(teamId!)
 
-        onNextClicked,
-        onPrevClicked,
-    }
-) => {
     const {maxVotes, setMaxVotesAmount, votes, endRetro} = useRetro();
     const {user} = useUser()
     const userVotes = maxVotes - votes.filter((vote) => user?.id === vote.voterId).length
-
+    const groups = useCardGroups(cards, votes).sort((a, b) => b.votes - a.votes)
+    const currentIndex = groups.findIndex(g => g.parentCardId === discussionCardId)
+    const targetIndex = currentIndex + 1
+    const nextDisabled = roomState === 'discuss' && targetIndex >= groups.length
+    const prevDisabled = roomState === "reflection"
+    const isVotingVisible = roomState === "vote"
+    const isFinishVisible = roomState === "discuss"
     const [time, setTime] = useState(300)
     const timeText = dayjs(0)
         .add(time, 's')
@@ -81,7 +68,7 @@ export const Toolbox: React.FC<ToolboxProps> = (
     useClickOutside(finishPopover, closeFinish);
 
     const onClearTimer = () => {
-        onTimeChanged(null)
+        setTimer(null)
         closeTimer()
         setTime(300)
     }
@@ -97,16 +84,16 @@ export const Toolbox: React.FC<ToolboxProps> = (
     const onStartTimer = () => {
         const targetTime = dayjs()
             .add(time, 's')
-            .add(1, 's') // delay
+            .add(1, 's') // client <-> server pseudo delay
             .valueOf()
 
-        onTimeChanged(targetTime)
+        setTimer(targetTime)
         closeTimer()
         setTime(300)
     }
 
     return (
-        <div className={cs(styles.toolbox, className)}>
+        <div className={styles.toolbox}>
             {isAdmin &&
                 <div className={styles.box}>
                     <Button
@@ -183,9 +170,9 @@ export const Toolbox: React.FC<ToolboxProps> = (
                 <Button
                     size="medium"
                     className={cs(styles.readyButton, {
-                        [styles.ready]: isReady
+                        [styles.ready]: ready
                     })}
-                    onClick={() => onReadyChange(!isReady)}>
+                    onClick={() => setReady(!ready)}>
 
                     <TickIconSvg width={24} height={24}/>
                 </Button>
@@ -233,14 +220,14 @@ export const Toolbox: React.FC<ToolboxProps> = (
                     <Button
                         size="medium"
                         disabled={prevDisabled}
-                        onClick={onPrevClicked}>
+                        onClick={prevRoomState}>
                         <LeftArrowIconSvg/>
                     </Button>
 
                     <Button
                         size="medium"
                         disabled={nextDisabled}
-                        onClick={onNextClicked}>
+                        onClick={nextRoomState}>
                         <RightArrowIconSvg/>
                     </Button>
                 </div>

@@ -1,18 +1,23 @@
-@use '../../../abstracts/colors';
-@use '../../../abstracts/fonts';
-@use '../../../abstracts/assets';
+@use '../../../../abstracts/colors';
+@use '../../../../abstracts/fonts';
+@use '../../../../abstracts/assets';
 
-.toolbox{
+.toolbox {
+    position: relative;
+
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 
+    margin-left: 8px;
+    margin-right: 8px;
+
     padding: 8px;
-    max-width: fit-content;
     background-color: #EBD3A8;
 
-    border-radius:16px;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 }
 
 .box {
@@ -101,7 +106,7 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: -110px;
+    bottom: 86px;
 
     background-color:#EBD3A8;
     border-radius: 16px;
@@ -142,12 +147,12 @@
     background-color: #EBD3A8;
 }
 
-.voteBubbleWrapper{
+.voteBubbleWrapper {
     display: flex;
     flex-direction: column;
 
     position: absolute;
-    top: -92px;
+    bottom: 86px;
 
     background-color: #EBD3A8;
     border-radius: 16px;

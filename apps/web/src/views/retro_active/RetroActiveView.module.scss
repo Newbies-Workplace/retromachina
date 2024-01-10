@@ -1,17 +1,6 @@
 @use 'src/abstracts/assets';
 @use 'src/abstracts/colors';
 
-.toolbox {
-    position: absolute;
-
-    bottom: 20px;
-    left: 0;
-    right: 0;
-
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .timer {
     display: flex;
     flex-direction: row;
@@ -37,10 +26,6 @@
     flex-grow: 1;
 
     @include assets.scrollbar;
-
-    &::-webkit-scrollbar-thumb {
-        border-radius: 0;
-    }
 }
 
 .content {

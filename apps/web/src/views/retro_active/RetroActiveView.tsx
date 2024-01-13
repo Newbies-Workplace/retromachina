@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import styles from "./RetroActiveView.module.scss"
 import {Route, Routes} from "react-router-dom";
 import Navbar from "../../component/organisms/navbar/Navbar";
-import {Timer} from "../../component/molecules/timer/Timer";
 import {useRetro} from "../../context/retro/RetroContext.hook";
 import {useNavigate} from "react-router";
 import {ReflectionView} from "./reflection/ReflectionView";
@@ -13,9 +12,8 @@ import {VoteView} from "./vote/VoteView";
 import {DiscussView} from "./discuss/DiscussView";
 import {TeamAvatars} from "../../component/molecules/team_avatars/TeamAvatars";
 import {ProgressBar} from "../../component/atoms/progress_bar/ProgressBar";
-import {Button} from "../../component/atoms/button/Button";
-import dayjs from "dayjs";
 import {useTeamRole} from "../../context/useTeamRole";
+import {RetroTimer} from "./components/retroTimer/RetroTimer";
 
 const RetroActiveView: React.FC = () => {
     const navigate = useNavigate()
@@ -24,7 +22,6 @@ const RetroActiveView: React.FC = () => {
         roomState,
         retroId,
         teamId,
-        setTimer,
         activeUsers,
         teamUsers,
     } = useRetro()
@@ -36,15 +33,6 @@ const RetroActiveView: React.FC = () => {
         navigate(`/retro/${retroId}/${roomState}`)
     }, [roomState, navigate, retroId])
 
-    const onQuickAddTime = () => {
-        const currentOrEndTime = timerEnds ? dayjs(timerEnds) : dayjs()
-
-        const targetTime = (currentOrEndTime.isBefore(dayjs()) ? dayjs() : currentOrEndTime)
-            .add(31, 's')
-            .valueOf()
-
-        setTimer(targetTime)
-    }
 
     return (
         <>
@@ -54,20 +42,7 @@ const RetroActiveView: React.FC = () => {
                 }}
                 topContent={
                     <>
-                        {timerEnds !== null && (
-                            <div className={styles.timer}>
-                                {isAdmin &&
-                                    <Button
-                                        className={styles.quickAdd}
-                                        onClick={onQuickAddTime}
-                                        size={'round'}>
-                                        +30
-                                    </Button>
-                                }
-
-                                <Timer timerEnds={timerEnds}/>
-                            </div>
-                        )}
+                        <RetroTimer/>
 
                         {teamUsers.length !== 1 &&
                             <TeamAvatars users={

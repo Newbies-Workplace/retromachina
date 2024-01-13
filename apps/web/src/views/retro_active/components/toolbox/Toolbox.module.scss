@@ -100,44 +100,6 @@
     background-color: colors.$warn;
 }
 
-.timerTop {
-    display: flex;
-    flex-direction: row;
-    padding-bottom: 4px;
-}
-
-.timeBubbleWrapper {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    bottom: 86px;
-
-    background-color:#EBD3A8;
-    border-radius: 16px;
-
-    padding: 8px 8px 8px 8px;
-
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
-}
-
-.timer {
-    height: 30px;
-    width: 100%;
-
-    padding-top: 2px;
-    padding-bottom: 2px;
-
-    border-radius: 8px;
-
-    font-family: fonts.$font-paragraph;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 18px;
-}
-
 .buttonWrapper {
     display: flex;
     justify-content: space-between;

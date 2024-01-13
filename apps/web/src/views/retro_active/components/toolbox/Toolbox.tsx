@@ -1,16 +1,13 @@
 import styles from './Toolbox.module.scss'
 import {Button} from "../../../../component/atoms/button/Button";
 import TickIconSvg from '../../../../assets/icons/tick.svg'
-import DeleteIconSvg from '../../../../assets/icons/delete-icon.svg'
 import RightArrowIconSvg from '../../../../assets/icons/right-arrow.svg'
 import LeftArrowIconSvg from '../../../../assets/icons/left-arrow.svg'
-import HourglassIconSvg from '../../../../assets/icons/hourglass.svg'
 import VoteIconSvg from '../../../../assets/icons/vote.svg'
 import CheckeredFlagIconSvg from '../../../../assets/icons/finish-flag-svgrepo-com.svg'
 import ProgressBar from "@ramonak/react-progress-bar";
 import React, {useCallback, useRef, useState} from "react";
 import cs from 'classnames';
-import dayjs from 'dayjs';
 import useClickOutside from "../../../../context/useClickOutside";
 import {useRetro} from '../../../../context/retro/RetroContext.hook';
 import {useUser} from '../../../../context/user/UserContext.hook';
@@ -26,7 +23,6 @@ export const Toolbox: React.FC = () => {
         discussionCardId,
         roomState,
         teamId,
-        setTimer,
         ready,
         setReady,
         readyPercentage,
@@ -45,18 +41,9 @@ export const Toolbox: React.FC = () => {
     const nextDisabled = roomState === 'discuss' && targetIndex >= groups.length
     const prevDisabled = roomState === "reflection"
     const isVotingVisible = roomState === "vote"
-    const [time, setTime] = useState(300)
-    const timeText = dayjs(0)
-        .add(time, 's')
-        .format('m:ss')
 
-    const [isTimerOpen, setOpenTimer] = useState(false)
     const [isVoteOpen, setOpenVote] = useState(false)
     const [isFinishOpen, setOpenFinish] = useState(false)
-
-    const timePopover = useRef<any>();
-    const closeTimer = useCallback(() => setOpenTimer(false), []);
-    useClickOutside(timePopover, closeTimer);
 
     const votePopover = useRef<any>();
     const closeVote = useCallback(() => setOpenVote(false),[]);
@@ -66,68 +53,11 @@ export const Toolbox: React.FC = () => {
     const closeFinish = useCallback(() => setOpenFinish(false),[]);
     useClickOutside(finishPopover, closeFinish);
 
-    const onClearTimer = () => {
-        setTimer(null)
-        closeTimer()
-        setTime(300)
-    }
-
-    const onZeroTimer = () => {
-        setTime(0)
-    }
-
-    const onIncreaseTimer = (seconds: number) => {
-        setTime(old => old + seconds)
-    }
-
-    const onStartTimer = () => {
-        const targetTime = dayjs()
-            .add(time, 's')
-            .add(1, 's') // client <-> server pseudo delay
-            .valueOf()
-
-        setTimer(targetTime)
-        closeTimer()
-        setTime(300)
-    }
-
     return (
         <div className={styles.toolbox}>
-            {isAdmin && (
-                <>
-                    <div className={styles.box} />
+            {isAdmin && (<div className={styles.box} />)}
 
-                    <div className={styles.box}>
-                        <Button
-                            className={styles.button}
-                            size="medium"
-                            onClick={() => setOpenTimer(true)}>
-                            <HourglassIconSvg/>
-                        </Button>
-
-                        {isTimerOpen && (
-                            <div className={styles.timeBubbleWrapper} ref={timePopover}>
-                                <div className={styles.timerTop}>
-                                    <Button size='small' className={styles.clearButton} onClick={() => onClearTimer()}>
-                                        <DeleteIconSvg width={24} height={24}/>
-                                    </Button>
-
-                                    <div className={styles.timer}>{timeText}</div>
-
-                                    <Button size="small" onClick={() => onStartTimer()}>
-                                        <TickIconSvg  width={24} height={24}/>
-                                    </Button>
-                                </div>
-
-                                <div className={styles.buttonWrapper}>
-                                    <Button size="small" onClick={() => onZeroTimer()}>00</Button>
-                                    <Button size="small" onClick={() => onIncreaseTimer(30)}>+30s</Button>
-                                    <Button size="small" onClick={() => onIncreaseTimer(60)}>+1m</Button>
-                                </div>
-                            </div>
-                        )}
-                    </div></>
-            )}
+            <div className={styles.box} />
 
             <div className={styles.box}>
                 {isVotingVisible && isAdmin &&

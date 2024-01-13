@@ -1,25 +1,6 @@
 @use 'src/abstracts/assets';
 @use 'src/abstracts/colors';
 
-.timer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-
-    margin-top: -4px;
-
-    background-color: colors.$primary-color;
-    padding: 4px 8px 6px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-
-    .quickAdd {
-        width: 38px !important;
-        height: 38px !important;
-    }
-}
-
 .container {
     display: flex;
     flex-direction: column;

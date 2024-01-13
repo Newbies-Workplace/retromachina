@@ -2,17 +2,17 @@ import styles from './Avatar.module.scss';
 import React from 'react';
 import cs from "classnames";
 
-interface AvatarProps {
+export type AvatarProps = {
     className?: string
     size?: number
     style?: React.CSSProperties
-    inactive?: boolean
-    url: any
+    variant?: 'inactive' | 'active' | 'ready'
+    url: string
 }
 
 export const Avatar : React.FC<AvatarProps> = (
     {
-        inactive = false,
+        variant = 'active',
         size = 40,
         style,
         url,
@@ -32,11 +32,19 @@ export const Avatar : React.FC<AvatarProps> = (
                     minWidth: size,
                     minHeight: size,
                 }}
+                alt={'avatar'}
                 className={cs(
                     styles.circle,
-                    {[styles.inactive]: inactive},
+                    styles[variant],
                     styles.photo
                 )}/>
+
+
+            {variant === 'ready' &&
+                <div className={styles.readyDotHolder} >
+                    <div className={styles.readyDot} />
+                </div>
+            }
         </div>
     );
 }

@@ -6,27 +6,19 @@ interface TeamAvatarsProps {
     users: {
         id: string
         isActive: boolean,
+        isReady: boolean,
         avatar_link: string
     }[]
 }
 
 export const TeamAvatars: React.FC<React.PropsWithChildren<TeamAvatarsProps>> = ({users})=>{
-    const activeUsers = users.filter(user => user.isActive)
-    const inactiveUsers = users.filter(user => !user.isActive)
-
     return (
         <div className={styles.wrapper}>
-            {activeUsers.map((user) =>
+            {users.map((user) =>
                 <Avatar
                     key={user.id}
                     className={styles.avatar}
-                    url={user.avatar_link} />
-            )}
-            {inactiveUsers.map((user) =>
-                <Avatar
-                    key={user.id}
-                    className={styles.avatar}
-                    inactive
+                    variant={user.isActive ? user.isReady ? 'ready': 'active': 'inactive'}
                     url={user.avatar_link} />
             )}
         </div>

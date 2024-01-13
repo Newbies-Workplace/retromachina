@@ -1,18 +1,20 @@
+
 import React, {useCallback, useRef, useState} from "react";
 import styles from "./Navbar.module.scss";
 import LogoSvg from "../../../assets/images/logo.svg";
-import {Avatar} from "../../atoms/avatar/Avatar";
+import {Avatar, AvatarProps} from "../../atoms/avatar/Avatar";
 import {useNavigate} from "react-router";
 import {useUser} from "../../../context/user/UserContext.hook";
 import {Menu} from "../menu/Menu"
 import useClickOutside from "../../../context/useClickOutside";
 
 interface NavbarProps {
+    avatarProps?: Partial<AvatarProps>,
     topContent?: React.ReactNode,
     children?: React.ReactNode,
 }
 
-const Navbar: React.FC<NavbarProps> = ({children, topContent}) => {
+const Navbar: React.FC<NavbarProps> = ({children, topContent, avatarProps}) => {
     const navigate = useNavigate();
     const {user} = useUser();
     const popover = useRef<any>();
@@ -35,7 +37,8 @@ const Navbar: React.FC<NavbarProps> = ({children, topContent}) => {
                         <div onClick={() => toggle(true)}>
                             <Avatar
                                 style={{cursor: 'pointer'}}
-                                url={user?.avatar_link} />
+                                url={user?.avatar_link!}
+                                {...avatarProps} />
 
                             {isOpen &&
                                 <div className={styles.bubbleContainer} ref={popover}>

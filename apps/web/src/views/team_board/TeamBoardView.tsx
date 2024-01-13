@@ -22,6 +22,7 @@ export const TeamBoardView: React.FC = () => {
 
     if (!board || !user) {
         return <div>
+            <Navbar/>
             loading
         </div>
     }

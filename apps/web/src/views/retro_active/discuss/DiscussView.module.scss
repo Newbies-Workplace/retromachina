@@ -2,12 +2,13 @@
 @use '../../../abstracts/fonts';
 @use '../../../abstracts/assets';
 
-.content {
+.container {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
+
     height: 100%;
-    max-height: calc(100vh - 72px);
+    max-height: calc(100vh - 64px - 76px);
 }
 
 .upNextSection {
@@ -21,7 +22,7 @@
     padding: 16px 8px;
 
     @include assets.scrollbar;
-    overflow-x: hidden;
+
 
     & .header {
         margin-left: 8px;
@@ -43,12 +44,10 @@
 }
 
 .currentCardSection {
-    @include assets.scrollbar;
-
     flex-grow: 1;
     justify-content: center;
 
-    padding: 32px 8px 116px 8px;
+    padding-top: 16px;
 
     .card {
         display: flex;
@@ -60,8 +59,8 @@
     .discussCardWrapper {
         display: flex;
         flex-direction: column;
-        
-        margin: 0 20px;
+
+        margin: 0 16px;
 
         background-color: white;
         padding: 10px;
@@ -86,24 +85,19 @@
 }
 
 .actionPointsSection {
+    display: flex;
     flex-direction: column;
     flex-grow: 1;
-    position: relative;
+
     min-width: 300px;
     max-width: 300px;
+    padding: 8px;
 
-    .actionPointContent {
-        display: flex;
-        flex-direction: column;
+    margin: 16px 0;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
 
-        background-color: colors.$primary-color;
-
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-    }
+    background-color: colors.$primary-color;
 
     .actionPointList {
         display: flex;
@@ -111,15 +105,12 @@
         gap: 8px;
 
         margin-bottom: auto;
-        
-        padding: 5px 10px 15px 16px;
+        padding-bottom: 24px;
         @include assets.scrollbar;
     }
 
     .actionPointInput {
-        border-top: 10px solid linear-gradient !important;
         justify-self: flex-end;
-        padding: 10px 10px 16px 15px;
         margin-top: -16px;
     }
 }
@@ -131,11 +122,5 @@
 @media screen and (max-width: 1000px) {
     .upNextSection {
         display: none;
-    }
-
-    .actionPointsSection {
-        .actionPointInput {
-            padding-bottom: 100px;
-        }
     }
 }

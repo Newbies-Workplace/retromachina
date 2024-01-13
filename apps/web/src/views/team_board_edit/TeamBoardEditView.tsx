@@ -31,6 +31,7 @@ export const TeamBoardEditView: React.FC = () => {
 
     if (!board) {
         return <div>
+            <Navbar/>
             loading
         </div>
     }

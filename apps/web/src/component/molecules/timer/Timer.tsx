@@ -7,17 +7,21 @@ interface PropsTimer {
     timerEnds: number | null
 }
 
+type TimerVariant = 'default' | 'expires' | 'end'
+
 export const Timer: React.FC<PropsTimer> = ({timerEnds}) => {
     const [timeLeft, setTimeLeft] = useState<number>(0)
-    let isExpiring
-    let isFinished
-    let timeText = dayjs.duration(timeLeft, 's').format('m:ss')
+    let variant: TimerVariant = 'default'
+    let timeText = timerEnds ? dayjs.duration(timeLeft, 's').format('m:ss') : "--:--"
 
-    if (timeLeft <= 0) {
-        isFinished = true
-        timeText = "po czasie"
+    if (timerEnds === null) {
+        variant = 'default'
+        timeText = "--:--"
+    } else if (timeLeft <= 0) {
+        variant = 'end'
+        timeText = "0:00"
     } else if (timeLeft <= 30) {
-        isExpiring = true
+        variant = 'expires'
     }
 
     useEffect(() => {
@@ -40,10 +44,7 @@ export const Timer: React.FC<PropsTimer> = ({timerEnds}) => {
     return (
         <div className={cs(
             styles.timer,
-            {
-                [styles.expires]: isExpiring,
-                [styles.end]: isFinished,
-            }
+            styles[variant]
         )}>
             {timeText}
         </div>

@@ -30,10 +30,11 @@ const RetroActiveView: React.FC = () => {
     } = useRetro()
     const { user} = useUser()
     const { isAdmin } = useTeamRole(teamId!)
+    const { ready } = useRetro()
 
     useEffect(() => {
         navigate(`/retro/${retroId}/${roomState}`)
-    }, [roomState])
+    }, [roomState, navigate, retroId])
 
     const onQuickAddTime = () => {
         const currentOrEndTime = timerEnds ? dayjs(timerEnds) : dayjs()
@@ -48,6 +49,9 @@ const RetroActiveView: React.FC = () => {
     return (
         <>
             <Navbar
+                avatarProps={{
+                    variant: ready ? 'ready' : 'active',
+                }}
                 topContent={
                     <>
                         {timerEnds !== null && (
@@ -66,11 +70,19 @@ const RetroActiveView: React.FC = () => {
                         )}
 
                         {teamUsers.length !== 1 &&
-                            <TeamAvatars users={teamUsers.filter(u => u.id !== user!.id).map((user) => ({
-                                id: user.id,
-                                avatar_link: user.avatar_link,
-                                isActive: activeUsers.some(socketUser => socketUser.userId === user.id)
-                            }))}/>
+                            <TeamAvatars users={
+                                teamUsers.filter(u => u.id !== user!.id)
+                                    .map((user) => {
+                                        const socketUser = activeUsers.find(socketUser => socketUser.userId === user.id)
+
+                                        return {
+                                            id: user.id,
+                                            avatar_link: user.avatar_link,
+                                            isReady: socketUser?.isReady ?? false,
+                                            isActive: socketUser !== undefined,
+                                        }}
+                                    )
+                            }/>
                         }
                     </>
                 } />

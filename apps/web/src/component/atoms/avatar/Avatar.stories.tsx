@@ -14,14 +14,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Active: Story = {
     args: {
-        url: 'assets/sample.png'
+        url: 'assets/sample.png',
+        variant: 'active',
     }
 }
 
 export const Inactive: Story = {
     args: {
         ...Active.args,
-        inactive: true,
+       variant: 'inactive',
+    }
+
+}
+export const Ready: Story = {
+    args: {
+        ...Active.args,
+        variant: 'ready',
     }
 }
 

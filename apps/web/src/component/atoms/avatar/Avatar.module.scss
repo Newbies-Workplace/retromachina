@@ -7,7 +7,7 @@
 
   border-radius: 50%;
   border: 2px solid #FFFFFF;
-  transition: border-color 0.5s ease; // Add this line
+  transition: border-color 0.5s ease;
 
   &.inactive {
     filter: grayscale(100%)

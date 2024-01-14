@@ -1,3 +1,4 @@
+import { ForbiddenError, subject } from '@casl/ability';
 import {
   BadRequestException,
   Controller,
@@ -5,14 +6,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/jwt/jwt.guard';
 import { TaskResponse } from 'shared/model/task/task.response';
-import { toTaskResponse } from './task.converter';
-import { User } from '../../auth/jwt/jwtuser.decorator';
-import { JWTUser } from '../../auth/jwt/JWTUser';
+import { JwtGuard } from 'src/auth/jwt/jwt.guard';
 import { AppAbility, AuthAbilityFactory } from '../../auth/auth.ability';
+import { JWTUser } from '../../auth/jwt/JWTUser';
+import { User } from '../../auth/jwt/jwtuser.decorator';
 import { PrismaService } from '../../prisma/prisma.service';
-import { ForbiddenError, subject } from '@casl/ability';
+import { toTaskResponse } from './task.converter';
 
 @Controller('tasks')
 export class TaskController {

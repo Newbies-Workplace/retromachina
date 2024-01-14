@@ -1,13 +1,13 @@
-import {Controller, Get, NotFoundException, Query, UseGuards,} from "@nestjs/common";
-import {JwtGuard} from "src/auth/jwt/jwt.guard";
-import {JWTUser} from "src/auth/jwt/JWTUser";
-import {User} from "src/auth/jwt/jwtuser.decorator";
-import {PrismaService} from "../../prisma/prisma.service";
-import {AuthAbilityFactory} from "../../auth/auth.ability";
 import {ForbiddenError, subject} from "@casl/ability";
-import {toUserInTeamResponse, toUserResponse} from "./user.converter";
-import {TeamConverter} from "../../team/application/team.converter";
+import {Controller, Get, NotFoundException, Query, UseGuards,} from "@nestjs/common";
 import {UserInTeamResponse, UserWithTeamsResponse} from "shared/model/user/user.response";
+import {JWTUser} from "src/auth/jwt/JWTUser";
+import {JwtGuard} from "src/auth/jwt/jwt.guard";
+import {User} from "src/auth/jwt/jwtuser.decorator";
+import {AuthAbilityFactory} from "../../auth/auth.ability";
+import {PrismaService} from "../../prisma/prisma.service";
+import {TeamConverter} from "../../team/application/team.converter";
+import {toUserInTeamResponse, toUserResponse} from "./user.converter";
 
 @Controller("users")
 export class UserController {

@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "dotenv -- turbo dev",
     "build": "dotenv -- turbo build",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "npx @biomejs/biome check --apply ./apps ./packages",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -15,7 +15,6 @@
     "dotenv-cli": "latest",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "prettier": "^3.1.0",
     "turbo": "latest"
   },
   "husky": {

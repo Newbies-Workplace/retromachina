@@ -1,13 +1,13 @@
+import { ForbiddenError, subject } from '@casl/ability';
 import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { BoardResponse } from 'shared/model/board/board.response';
+import { EditBoardDto } from 'shared/model/board/editBoard.dto';
+import { AuthAbilityFactory } from '../../auth/auth.ability';
+import { JWTUser } from '../../auth/jwt/JWTUser';
 import { JwtGuard } from '../../auth/jwt/jwt.guard';
 import { User } from '../../auth/jwt/jwtuser.decorator';
-import { JWTUser } from '../../auth/jwt/JWTUser';
-import { EditBoardDto } from 'shared/model/board/editBoard.dto';
-import { BoardService } from '../board.service';
-import { BoardResponse } from 'shared/model/board/board.response';
 import { PrismaService } from '../../prisma/prisma.service';
-import { AuthAbilityFactory } from '../../auth/auth.ability';
-import { ForbiddenError, subject } from '@casl/ability';
+import { BoardService } from '../board.service';
 
 @Controller('teams')
 export class BoardController {

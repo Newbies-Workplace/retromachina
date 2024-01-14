@@ -1,71 +1,76 @@
 import React, { createContext, useEffect, useState } from "react";
+import { AuthParams } from "shared/model/auth/Auth.interface";
+import { UserWithTeamsResponse } from "shared/model/user/user.response";
+import { loginGoogle } from "../../api/Auth.service";
 import { axiosInstance } from "../../api/AxiosInstance";
 import { getMyUser } from "../../api/User.service";
-import {loginGoogle} from "../../api/Auth.service";
-import {UserWithTeamsResponse} from "shared/model/user/user.response";
-import {AuthParams} from "shared/model/auth/Auth.interface";
 
 interface UserContext {
-    user: UserWithTeamsResponse | null,
-    refreshUser: () => Promise<void>,
-    login: (params: AuthParams) => Promise<void>
+	user: UserWithTeamsResponse | null;
+	refreshUser: () => Promise<void>;
+	login: (params: AuthParams) => Promise<void>;
 }
 
 export const UserContext = createContext<UserContext>({
-    user: null,
-    refreshUser: () => { return Promise.reject() },
-    login: () => { return Promise.reject() }
+	user: null,
+	refreshUser: () => {
+		return Promise.reject();
+	},
+	login: () => {
+		return Promise.reject();
+	},
 });
 
 export const UserContextProvider: React.FC<any> = ({ children }) => {
-    const [user, setUser] = useState<UserWithTeamsResponse | null>(null);
+	const [user, setUser] = useState<UserWithTeamsResponse | null>(null);
 
-    useEffect(() => {
-        const token = localStorage.getItem('Bearer');
+	useEffect(() => {
+		const token = localStorage.getItem("Bearer");
 
-        if (token && !user) {
-            refreshUser();
-        }
-    },[])
+		if (token && !user) {
+			refreshUser();
+		}
+	}, []);
 
-    const refreshUser = () => {
-        return getMyUser()
-            .then((response) => {
-                setUser(response)
-            })
-            .catch((error) => {
-                if (error.status == 401) {
-                    setUser(null);
-                } else {
-                    console.error(error);
-                }
-            });
-    }
+	const refreshUser = () => {
+		return getMyUser()
+			.then((response) => {
+				setUser(response);
+			})
+			.catch((error) => {
+				if (error.status == 401) {
+					setUser(null);
+				} else {
+					console.error(error);
+				}
+			});
+	};
 
-    const login = (params: AuthParams) => {
-        return loginGoogle(params)
-            .then((res) => {
-                localStorage.setItem("Bearer", res.access_token);
+	const login = (params: AuthParams) => {
+		return loginGoogle(params)
+			.then((res) => {
+				localStorage.setItem("Bearer", res.access_token);
 
-                axiosInstance.defaults.headers["Authorization"] = "Bearer " + res.access_token;
-                getMyUser()
-                    .then((response) => {
-                        setUser(response);
-                    });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
+				axiosInstance.defaults.headers["Authorization"] =
+					"Bearer " + res.access_token;
+				getMyUser().then((response) => {
+					setUser(response);
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
-    return(
-        <UserContext.Provider
-            value={{
-                user: user,
-                refreshUser: refreshUser,
-                login: login,
-            }}>
-            {children}
-        </UserContext.Provider>
-    );
+	return (
+		<UserContext.Provider
+			value={{
+				user: user,
+				refreshUser: refreshUser,
+				login: login,
+			}}
+		>
+			{children}
+		</UserContext.Provider>
+	);
 };

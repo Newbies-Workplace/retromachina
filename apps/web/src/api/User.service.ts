@@ -1,14 +1,19 @@
-import {axiosInstance} from "./AxiosInstance";
-import {UserInTeamResponse, UserWithTeamsResponse} from "shared/model/user/user.response";
+import {
+	UserInTeamResponse,
+	UserWithTeamsResponse,
+} from "shared/model/user/user.response";
+import { axiosInstance } from "./AxiosInstance";
 
 export const getMyUser = (): Promise<UserWithTeamsResponse> => {
-  return axiosInstance.get<UserWithTeamsResponse>("users/@me").then((res) => res.data);
+	return axiosInstance
+		.get<UserWithTeamsResponse>("users/@me")
+		.then((res) => res.data);
 };
 
 export const getUsersByTeamId = async (
-  teamId: string
+	teamId: string,
 ): Promise<UserInTeamResponse[]> => {
-  return axiosInstance
-    .get<UserInTeamResponse[]>(`users?team_id=${teamId}`)
-    .then((res) => res.data);
+	return axiosInstance
+		.get<UserInTeamResponse[]>(`users?team_id=${teamId}`)
+		.then((res) => res.data);
 };

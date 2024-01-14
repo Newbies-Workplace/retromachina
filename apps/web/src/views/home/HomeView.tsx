@@ -1,11 +1,11 @@
 import React from "react";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
 import CreateTeamSvg from "../../assets/icons/create-team.svg";
 import NotFoundSvg from "../../assets/images/not-found.svg";
-import {Button} from "../../component/atoms/button/Button";
-import {TeamRetroList} from "../../component/molecules/team_retro_list/TeamRetroList";
+import { Button } from "../../component/atoms/button/Button";
+import { TeamRetroList } from "../../component/molecules/team_retro_list/TeamRetroList";
 import Navbar from "../../component/organisms/navbar/Navbar";
-import {useUser} from "../../context/user/UserContext.hook";
+import { useUser } from "../../context/user/UserContext.hook";
 import styles from "./HomeView.module.scss";
 
 const HomeView: React.FC = () => {

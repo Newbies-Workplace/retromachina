@@ -19,7 +19,7 @@ export const App: React.FC = () => {
                 <ToastContainer
                     icon={false}
                     closeButton={false}
-                    theme={'colored'}
+                     theme={'colored'}
                     position={'bottom-right'}
                     hideProgressBar/>
 

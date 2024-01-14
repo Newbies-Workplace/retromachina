@@ -13,18 +13,18 @@ import { UserModule } from "./user/user.module";
 config();
 
 @Module({
-	imports: [
-		JwtModule.register({
-			secret: process.env.JWT_SECRET,
-		}),
-		AuthModule,
-		PrismaModule,
-		UserModule,
-		TeamModule,
-		TaskModule,
-		BoardModule,
-		RetroModule,
-		InvitesModule,
-	],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+    }),
+    AuthModule,
+    PrismaModule,
+    UserModule,
+    TeamModule,
+    TaskModule,
+    BoardModule,
+    RetroModule,
+    InvitesModule,
+  ],
 })
 export class AppModule {}

@@ -17,5 +17,5 @@ app.use(express.static(publicDir));
 app.use(fallback(path.join(publicDir, "index.html")));
 
 app.listen(port, () => {
-	console.log(`Listening on ${port}`);
+  console.log(`Listening on ${port}`);
 });

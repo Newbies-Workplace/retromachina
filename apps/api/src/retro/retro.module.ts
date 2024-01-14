@@ -8,8 +8,8 @@ import { RetroSchedules } from "./application/retro.schedules";
 import { RetroService } from "./domain/retro.service";
 
 @Module({
-	imports: [AuthModule, ScheduleModule.forRoot()],
-	providers: [RetroService, RetroGateway, RetroSchedules, AuthAbilityFactory],
-	controllers: [RetroController],
+  imports: [AuthModule, ScheduleModule.forRoot()],
+  providers: [RetroService, RetroGateway, RetroSchedules, AuthAbilityFactory],
+  controllers: [RetroController],
 })
 export class RetroModule {}

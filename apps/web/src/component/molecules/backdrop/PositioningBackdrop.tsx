@@ -3,87 +3,87 @@ import { Portal } from "react-portal";
 import styles from "./Backdrop.module.scss";
 
 interface PositioningBackdropProps {
-	onDismiss?: () => void;
-	visible?: boolean;
-	children: React.ReactNode;
+  onDismiss?: () => void;
+  visible?: boolean;
+  children: React.ReactNode;
 }
 
 type Position = {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
 export const PositioningBackdrop: React.FC<PositioningBackdropProps> = ({
-	children,
-	visible = true,
-	onDismiss = () => {},
+  children,
+  visible = true,
+  onDismiss = () => {},
 }) => {
-	const boxRef = useRef<HTMLDivElement>(null);
-	const [pos, setPos] = useState<Position>();
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<Position>();
 
-	useEffect(() => {
-		window.addEventListener("resize", updateElementPosition);
+  useEffect(() => {
+    window.addEventListener("resize", updateElementPosition);
 
-		return () => {
-			window.removeEventListener("resize", updateElementPosition);
-		};
-	}, []);
+    return () => {
+      window.removeEventListener("resize", updateElementPosition);
+    };
+  }, []);
 
-	useEffect(() => {
-		updateElementPosition();
-	}, [visible]);
+  useEffect(() => {
+    updateElementPosition();
+  }, [visible]);
 
-	const updateElementPosition = () => {
-		const ref = boxRef.current;
+  const updateElementPosition = () => {
+    const ref = boxRef.current;
 
-		if (ref) {
-			const viewportOffset = ref.getBoundingClientRect();
-			const newPos: Position = {
-				x: viewportOffset.left,
-				y: viewportOffset.top,
-				height: ref.clientHeight,
-				width: ref.clientWidth,
-			};
+    if (ref) {
+      const viewportOffset = ref.getBoundingClientRect();
+      const newPos: Position = {
+        x: viewportOffset.left,
+        y: viewportOffset.top,
+        height: ref.clientHeight,
+        width: ref.clientWidth,
+      };
 
-			setPos(newPos);
-		}
-	};
+      setPos(newPos);
+    }
+  };
 
-	return (
-		<>
-			{visible && pos && (
-				<Portal>
-					<div className={styles.backdrop} onClick={onDismiss} />
+  return (
+    <>
+      {visible && pos && (
+        <Portal>
+          <div className={styles.backdrop} onClick={onDismiss} />
 
-					<div
-						style={{
-							position: "absolute",
-							top: pos.y,
-							left: pos.x,
-							width: pos.width,
-							height: pos.height,
-						}}
-					>
-						{children}
-					</div>
-				</Portal>
-			)}
+          <div
+            style={{
+              position: "absolute",
+              top: pos.y,
+              left: pos.x,
+              width: pos.width,
+              height: pos.height,
+            }}
+          >
+            {children}
+          </div>
+        </Portal>
+      )}
 
-			<div ref={boxRef}>
-				{visible && pos ? (
-					<div
-						style={{
-							display: "flex",
-							width: pos.width,
-							height: pos.height,
-						}}
-					/>
-				) : (
-					children
-				)}
-			</div>
-		</>
-	);
+      <div ref={boxRef}>
+        {visible && pos ? (
+          <div
+            style={{
+              display: "flex",
+              width: pos.width,
+              height: pos.height,
+            }}
+          />
+        ) : (
+          children
+        )}
+      </div>
+    </>
+  );
 };

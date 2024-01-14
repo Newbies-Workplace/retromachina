@@ -4,7 +4,7 @@ import { AuthAbilityFactory } from "../auth/auth.ability";
 import { InvitesController } from "./invites.controller";
 
 @Module({
-	controllers: [InvitesController],
-	providers: [JwtStrategy, AuthAbilityFactory],
+  controllers: [InvitesController],
+  providers: [JwtStrategy, AuthAbilityFactory],
 })
 export class InvitesModule {}

@@ -6,25 +6,25 @@ import { getRedirectPath, setRedirectPath } from "../../../context/useRedirect";
 import { useUser } from "../../../context/user/UserContext.hook";
 
 const LoadingView = () => {
-	const { login } = useUser();
-	const navigate = useNavigate();
+  const { login } = useUser();
+  const navigate = useNavigate();
 
-	useEffect(() => {
-		const params = Object.fromEntries(
-			new URLSearchParams(window.location.search),
-		);
+  useEffect(() => {
+    const params = Object.fromEntries(
+      new URLSearchParams(window.location.search),
+    );
 
-		login({ ...(params as unknown as AuthParams) })
-			.then(() => {
-				const redirectPath = getRedirectPath();
-				setRedirectPath(null);
+    login({ ...(params as unknown as AuthParams) })
+      .then(() => {
+        const redirectPath = getRedirectPath();
+        setRedirectPath(null);
 
-				navigate(redirectPath ?? "/");
-			})
-			.catch();
-	}, []);
+        navigate(redirectPath ?? "/");
+      })
+      .catch();
+  }, []);
 
-	return <Loader />;
+  return <Loader />;
 };
 
 export default LoadingView;

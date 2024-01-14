@@ -11,21 +11,21 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.module.scss";
 
 export const App: React.FC = () => {
-	dayjs.extend(duration);
+  dayjs.extend(duration);
 
-	return (
-		<DndProvider backend={HTML5Backend}>
-			<UserContextProvider>
-				<ToastContainer
-					icon={false}
-					closeButton={false}
-					theme={"colored"}
-					position={"bottom-right"}
-					hideProgressBar
-				/>
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <UserContextProvider>
+        <ToastContainer
+          icon={false}
+          closeButton={false}
+          theme={"colored"}
+          position={"bottom-right"}
+          hideProgressBar
+        />
 
-				<AppRouter />
-			</UserContextProvider>
-		</DndProvider>
-	);
+        <AppRouter />
+      </UserContextProvider>
+    </DndProvider>
+  );
 };

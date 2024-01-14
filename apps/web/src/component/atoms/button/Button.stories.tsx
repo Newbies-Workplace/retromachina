@@ -3,44 +3,44 @@ import ActionIcon from "../../../assets/icons/action-icon.svg";
 import { Button } from "./Button";
 
 const meta = {
-	title: "atoms/Button",
-	component: Button,
+  title: "atoms/Button",
+  component: Button,
 } satisfies Meta<typeof Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Medium: Story = {
-	args: {
-		size: "medium",
-		children: "Test button",
-	},
+  args: {
+    size: "medium",
+    children: "Test button",
+  },
 };
 
 export const Big: Story = {
-	args: {
-		...Medium.args,
-		size: "big",
-	},
+  args: {
+    ...Medium.args,
+    size: "big",
+  },
 };
 
 export const Small: Story = {
-	args: {
-		...Medium.args,
-		size: "small",
-	},
+  args: {
+    ...Medium.args,
+    size: "small",
+  },
 };
 
 export const Disabled: Story = {
-	args: {
-		...Medium.args,
-		disabled: true,
-	},
+  args: {
+    ...Medium.args,
+    disabled: true,
+  },
 };
 
 export const Round: Story = {
-	args: {
-		size: "round",
-		children: <ActionIcon />,
-	},
+  args: {
+    size: "round",
+    children: <ActionIcon />,
+  },
 };

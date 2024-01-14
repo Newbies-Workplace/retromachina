@@ -4,7 +4,7 @@ import { AuthAbilityFactory } from "../auth/auth.ability";
 import { TaskController } from "./application/task.controller";
 
 @Module({
-	providers: [JwtStrategy, AuthAbilityFactory],
-	controllers: [TaskController],
+  providers: [JwtStrategy, AuthAbilityFactory],
+  controllers: [TaskController],
 })
 export class TaskModule {}

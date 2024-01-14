@@ -1,72 +1,72 @@
 export interface UpdateReadyStateCommand {
-	readyState: boolean;
+  readyState: boolean;
 }
 
 export interface CreateCardCommand {
-	id: string;
-	text: string;
-	columnId: string;
+  id: string;
+  text: string;
+  columnId: string;
 }
 
 export interface UpdateCardCommand {
-	cardId: string;
-	text: string;
+  cardId: string;
+  text: string;
 }
 
 export interface DeleteCardCommand {
-	cardId: string;
+  cardId: string;
 }
 
 export interface UpdateWriteStateCommand {
-	writeState: boolean;
-	columnId: string;
+  writeState: boolean;
+  columnId: string;
 }
 
 export interface UpdateRoomStateCommand {
-	roomState: "reflection" | "group" | "vote" | "discuss" | "summary";
+  roomState: "reflection" | "group" | "vote" | "discuss" | "summary";
 }
 
 export interface ChangeTimerCommand {
-	timestamp: number | null;
+  timestamp: number | null;
 }
 
 export interface AddCardVoteCommand {
-	parentCardId: string;
+  parentCardId: string;
 }
 
 export interface RemoveCardVoteCommand {
-	parentCardId: string;
+  parentCardId: string;
 }
 
 export interface ChangeVoteAmountCommand {
-	votesAmount: number;
+  votesAmount: number;
 }
 
 export interface AddCardToCardCommand {
-	parentCardId: string;
-	cardId: string;
+  parentCardId: string;
+  cardId: string;
 }
 
 export interface MoveCardToColumnCommand {
-	columnId: string;
-	cardId: string;
+  columnId: string;
+  cardId: string;
 }
 
 export interface CreateActionPointCommand {
-	text: string;
-	ownerId: string;
+  text: string;
+  ownerId: string;
 }
 
 export interface DeleteActionPointCommand {
-	actionPointId: string;
+  actionPointId: string;
 }
 
 export interface UpdateActionPointCommand {
-	actionPointId: string;
-	ownerId: string;
-	text: string;
+  actionPointId: string;
+  ownerId: string;
+  text: string;
 }
 
 export interface ChangeCurrentDiscussCardCommand {
-	cardId: string;
+  cardId: string;
 }

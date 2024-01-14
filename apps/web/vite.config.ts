@@ -5,21 +5,21 @@ import { svgrComponent } from "vite-plugin-svgr-component";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-	return {
-		plugins: [
-			svgrComponent(),
-			react(),
-			EnvironmentPlugin("all", { prefix: "RETRO_WEB" }),
-		],
-		envDir: "../",
-		root: "src",
-		build: {
-			outDir: "../dist",
-			sourcemap: true,
-		},
-		server: {
-			host: "0.0.0.0",
-			port: 8080,
-		},
-	};
+  return {
+    plugins: [
+      svgrComponent(),
+      react(),
+      EnvironmentPlugin("all", { prefix: "RETRO_WEB" }),
+    ],
+    envDir: "../",
+    root: "src",
+    build: {
+      outDir: "../dist",
+      sourcemap: true,
+    },
+    server: {
+      host: "0.0.0.0",
+      port: 8080,
+    },
+  };
 });

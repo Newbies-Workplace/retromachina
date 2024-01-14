@@ -6,8 +6,8 @@ import { BoardGateway } from "./application/board.gateway";
 import { BoardService } from "./board.service";
 
 @Module({
-	imports: [AuthModule],
-	providers: [BoardService, BoardGateway, AuthAbilityFactory],
-	controllers: [BoardController],
+  imports: [AuthModule],
+  providers: [BoardService, BoardGateway, AuthAbilityFactory],
+  controllers: [BoardController],
 })
 export class BoardModule {}

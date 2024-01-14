@@ -1,9 +1,9 @@
 export const ItemTypes = {
-	CARD: "card",
+  CARD: "card",
 };
 
 export interface CardDragPayload {
-	parentCardId: string | null;
-	cardId: string;
-	columnId: string;
+  parentCardId: string | null;
+  cardId: string;
+  columnId: string;
 }

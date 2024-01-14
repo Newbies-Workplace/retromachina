@@ -4,14 +4,14 @@ import { IoAdapter } from "@nestjs/platform-socket.io";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-	app.setGlobalPrefix("api/rest/v1");
-	app.useGlobalPipes(new ValidationPipe());
-	app.useWebSocketAdapter(new IoAdapter(app));
-	app.enableCors();
+  app.setGlobalPrefix("api/rest/v1");
+  app.useGlobalPipes(new ValidationPipe());
+  app.useWebSocketAdapter(new IoAdapter(app));
+  app.enableCors();
 
-	await app.listen(3000);
+  await app.listen(3000);
 }
 
 bootstrap();

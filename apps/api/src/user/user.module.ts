@@ -5,7 +5,7 @@ import { TeamConverter } from "../team/application/team.converter";
 import { UserController } from "./application/user.controller";
 
 @Module({
-	controllers: [UserController],
-	providers: [JwtStrategy, AuthAbilityFactory, TeamConverter],
+  controllers: [UserController],
+  providers: [JwtStrategy, AuthAbilityFactory, TeamConverter],
 })
 export class UserModule {}

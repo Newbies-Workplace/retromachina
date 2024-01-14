@@ -6,24 +6,24 @@ import Navbar from "../../component/organisms/navbar/Navbar";
 import styles from "./NotFoundView.module.scss";
 
 export const NotFoundView: React.FC = () => {
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	return (
-		<>
-			<Navbar />
+  return (
+    <>
+      <Navbar />
 
-			<div className={styles.container}>
-				<NotFoundSvg />
+      <div className={styles.container}>
+        <NotFoundSvg />
 
-				<div className={styles.texts}>
-					<span>404</span>
-					<span style={{ fontSize: 18 }}>Strony nie znaleziono</span>
-				</div>
+        <div className={styles.texts}>
+          <span>404</span>
+          <span style={{ fontSize: 18 }}>Strony nie znaleziono</span>
+        </div>
 
-				<Button size={"small"} onClick={() => navigate("/")}>
-					Powrót na stronę główną
-				</Button>
-			</div>
-		</>
-	);
+        <Button size={"small"} onClick={() => navigate("/")}>
+          Powrót na stronę główną
+        </Button>
+      </div>
+    </>
+  );
 };

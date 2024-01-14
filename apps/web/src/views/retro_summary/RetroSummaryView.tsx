@@ -14,108 +14,108 @@ import Navbar from "../../component/organisms/navbar/Navbar";
 import styles from "./RetroSummaryView.module.scss";
 
 export const RetroSummaryView = () => {
-	const { retroId } = useParams<{ retroId: string }>();
-	const navigate = useNavigate();
-	const [tasks, setTasks] = useState<TaskResponse[]>([]);
-	const [users, setUsers] = useState<UserResponse[]>([]);
-	const [retro, setRetro] = useState<RetroResponse | null>(null);
+  const { retroId } = useParams<{ retroId: string }>();
+  const navigate = useNavigate();
+  const [tasks, setTasks] = useState<TaskResponse[]>([]);
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [retro, setRetro] = useState<RetroResponse | null>(null);
 
-	const userWithTasks = useMemo(
-		() =>
-			users.filter(
-				(user) => tasks.filter((task) => task.ownerId === user.id).length !== 0,
-			),
-		[users],
-	);
-	const userWithoutTasks = useMemo(
-		() =>
-			users.filter(
-				(user) => tasks.filter((task) => task.ownerId === user.id).length === 0,
-			),
-		[users],
-	);
+  const userWithTasks = useMemo(
+    () =>
+      users.filter(
+        (user) => tasks.filter((task) => task.ownerId === user.id).length !== 0,
+      ),
+    [users],
+  );
+  const userWithoutTasks = useMemo(
+    () =>
+      users.filter(
+        (user) => tasks.filter((task) => task.ownerId === user.id).length === 0,
+      ),
+    [users],
+  );
 
-	useEffect(() => {
-		if (!retroId) return;
+  useEffect(() => {
+    if (!retroId) return;
 
-		getTasksByRetroId(retroId).then((tasks) => {
-			setTasks(tasks);
-		});
+    getTasksByRetroId(retroId).then((tasks) => {
+      setTasks(tasks);
+    });
 
-		getRetroByRetroId(retroId).then((retro) => {
-			setRetro(retro);
+    getRetroByRetroId(retroId).then((retro) => {
+      setRetro(retro);
 
-			getUsersByTeamId(retro.team_id).then((users) => {
-				setUsers(users);
-			});
-		});
-	}, []);
+      getUsersByTeamId(retro.team_id).then((users) => {
+        setUsers(users);
+      });
+    });
+  }, []);
 
-	return (
-		<>
-			<Navbar />
+  return (
+    <>
+      <Navbar />
 
-			<div className={styles.container}>
-				<div className={styles.wrapper}>
-					<div className={styles.textSection}>
-						<div className={styles.name}>
-							Retro {dayjs(retro?.date).format("YYYY-MM-DD")}
-						</div>
-					</div>
+      <div className={styles.container}>
+        <div className={styles.wrapper}>
+          <div className={styles.textSection}>
+            <div className={styles.name}>
+              Retro {dayjs(retro?.date).format("YYYY-MM-DD")}
+            </div>
+          </div>
 
-					{userWithTasks.map((user) => {
-						const userTasks = tasks.filter((task) => task.ownerId === user.id);
+          {userWithTasks.map((user) => {
+            const userTasks = tasks.filter((task) => task.ownerId === user.id);
 
-						return (
-							<div key={user.id} className={styles.authorAndCardSection}>
-								<div className={styles.authorSection}>
-									<Avatar url={user.avatar_link} />
-									{user.nick}
-								</div>
+            return (
+              <div key={user.id} className={styles.authorAndCardSection}>
+                <div className={styles.authorSection}>
+                  <Avatar url={user.avatar_link} />
+                  {user.nick}
+                </div>
 
-								<div className={styles.cardSection}>
-									{userTasks.map((task) => {
-										return (
-											<Card
-												className={styles.card}
-												key={task.id}
-												teamUsers={[]}
-												text={task.text}
-											/>
-										);
-									})}
-								</div>
-							</div>
-						);
-					})}
+                <div className={styles.cardSection}>
+                  {userTasks.map((task) => {
+                    return (
+                      <Card
+                        className={styles.card}
+                        key={task.id}
+                        teamUsers={[]}
+                        text={task.text}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
 
-					{userWithoutTasks.length !== 0 && (
-						<div className={styles.noTasksSection}>
-							<div className={styles.authors}>
-								{userWithoutTasks.map((user) => {
-									return (
-										<div className={styles.authorSection} key={user.id}>
-											<Avatar url={user.avatar_link} />
-											{user.nick}
-										</div>
-									);
-								})}
-							</div>
-							Brak zadań
-						</div>
-					)}
+          {userWithoutTasks.length !== 0 && (
+            <div className={styles.noTasksSection}>
+              <div className={styles.authors}>
+                {userWithoutTasks.map((user) => {
+                  return (
+                    <div className={styles.authorSection} key={user.id}>
+                      <Avatar url={user.avatar_link} />
+                      {user.nick}
+                    </div>
+                  );
+                })}
+              </div>
+              Brak zadań
+            </div>
+          )}
 
-					<div className={styles.goBack}>
-						<Button
-							onClick={() => {
-								navigate(`/team/${retro?.team_id}/board`);
-							}}
-						>
-							Powrót do listy zadań
-						</Button>
-					</div>
-				</div>
-			</div>
-		</>
-	);
+          <div className={styles.goBack}>
+            <Button
+              onClick={() => {
+                navigate(`/team/${retro?.team_id}/board`);
+              }}
+            >
+              Powrót do listy zadań
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };

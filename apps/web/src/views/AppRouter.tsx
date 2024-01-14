@@ -18,89 +18,89 @@ import { TeamCreateView } from "./team_create/TeamCreateView";
 import TeamEditView from "./team_edit/TeamEditView";
 
 export const AppRouter: React.FC = () => {
-	return (
-		<Router>
-			<Routes>
-				<Route path="/signin" element={<SignInView />} />
-				<Route path="/loading" element={<Loading />} />
-				<Route path="/privacy" element={<PrivacyPolicyView />} />
+  return (
+    <Router>
+      <Routes>
+        <Route path="/signin" element={<SignInView />} />
+        <Route path="/loading" element={<Loading />} />
+        <Route path="/privacy" element={<PrivacyPolicyView />} />
 
-				<Route
-					path="/"
-					element={
-						<RequireAuth>
-							<HomeView />
-						</RequireAuth>
-					}
-				/>
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <HomeView />
+            </RequireAuth>
+          }
+        />
 
-				<Route
-					path="/team/create"
-					element={
-						<RequireAuth>
-							<TeamCreateView />
-						</RequireAuth>
-					}
-				/>
-				<Route
-					path="/team/:teamId/edit"
-					element={
-						<RequireAuth>
-							<TeamEditView />
-						</RequireAuth>
-					}
-				/>
+        <Route
+          path="/team/create"
+          element={
+            <RequireAuth>
+              <TeamCreateView />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/team/:teamId/edit"
+          element={
+            <RequireAuth>
+              <TeamEditView />
+            </RequireAuth>
+          }
+        />
 
-				<Route
-					path="/team/:teamId/board"
-					element={
-						<RequireAuth>
-							<TeamBoardWrapper>
-								<TeamBoardView />
-							</TeamBoardWrapper>
-						</RequireAuth>
-					}
-				/>
-				<Route
-					path="/team/:teamId/board/edit"
-					element={
-						<RequireAuth>
-							<TeamBoardEditView />
-						</RequireAuth>
-					}
-				/>
+        <Route
+          path="/team/:teamId/board"
+          element={
+            <RequireAuth>
+              <TeamBoardWrapper>
+                <TeamBoardView />
+              </TeamBoardWrapper>
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/team/:teamId/board/edit"
+          element={
+            <RequireAuth>
+              <TeamBoardEditView />
+            </RequireAuth>
+          }
+        />
 
-				<Route
-					path="/retro/create"
-					element={
-						<RequireAuth>
-							<RetroCreateView />
-						</RequireAuth>
-					}
-				/>
-				<Route
-					path="/retro/:retroId/*"
-					element={
-						<RequireAuth>
-							<RetroWrapper>
-								<RetroActiveView />
-							</RetroWrapper>
-						</RequireAuth>
-					}
-				/>
+        <Route
+          path="/retro/create"
+          element={
+            <RequireAuth>
+              <RetroCreateView />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/retro/:retroId/*"
+          element={
+            <RequireAuth>
+              <RetroWrapper>
+                <RetroActiveView />
+              </RetroWrapper>
+            </RequireAuth>
+          }
+        />
 
-				<Route
-					path="/retro/:retroId/summary"
-					element={
-						<RequireAuth>
-							<RetroSummaryView />
-						</RequireAuth>
-					}
-				/>
+        <Route
+          path="/retro/:retroId/summary"
+          element={
+            <RequireAuth>
+              <RetroSummaryView />
+            </RequireAuth>
+          }
+        />
 
-				<Route path="*" element={<Navigate to={"/404"} />} />
-				<Route path="/404" element={<NotFoundView />} />
-			</Routes>
-		</Router>
-	);
+        <Route path="*" element={<Navigate to={"/404"} />} />
+        <Route path="/404" element={<NotFoundView />} />
+      </Routes>
+    </Router>
+  );
 };

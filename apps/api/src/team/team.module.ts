@@ -7,9 +7,9 @@ import { TeamConverter } from "./application/team.converter";
 import { TeamService } from "./team.service";
 
 @Module({
-	imports: [UserModule],
-	controllers: [TeamController],
-	providers: [TeamService, JwtStrategy, AuthAbilityFactory, TeamConverter],
-	exports: [AuthAbilityFactory, TeamConverter],
+  imports: [UserModule],
+  controllers: [TeamController],
+  providers: [TeamService, JwtStrategy, AuthAbilityFactory, TeamConverter],
+  exports: [AuthAbilityFactory, TeamConverter],
 })
 export class TeamModule {}

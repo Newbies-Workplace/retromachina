@@ -6,8 +6,8 @@ import { AuthService } from "./auth.service";
 import { GoogleStrategy } from "./google/google.strategy";
 
 @Module({
-	providers: [AuthService, GoogleStrategy, JwtService, AuthAbilityFactory],
-	controllers: [AuthController],
-	exports: [JwtService, AuthAbilityFactory],
+  providers: [AuthService, GoogleStrategy, JwtService, AuthAbilityFactory],
+  controllers: [AuthController],
+  exports: [JwtService, AuthAbilityFactory],
 })
 export class AuthModule {}

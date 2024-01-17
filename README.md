@@ -2,7 +2,7 @@
 
 Fajna aplikacja
 
-### Develop
+## Develop
 
 To develop retromachina, run the following commands:
 
@@ -27,3 +27,8 @@ npm run dev
 ```
 
 App will be available at http://localhost:8080
+
+## Production
+
+### Backups
+https://offen.github.io/docker-volume-backup/how-tos/

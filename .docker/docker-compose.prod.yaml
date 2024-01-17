@@ -3,10 +3,24 @@ version: "3.4"
 name: "retromachina-monorepo"
 
 services:
+  backup:
+    image: offen/docker-volume-backup:latest
+    restart: always
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_S3_BUCKET_NAME
+      - AWS_S3_PATH
+      - BACKUP_RETENTION_DAYS="14"
+    volumes:
+      - retro-db:/backup/retromachina:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
   retro-db:
     image: mariadb:10.7
     restart: unless-stopped
     container_name: retro-db
+    labels:
+      - docker-volume-backup.stop-during-backup=true
     volumes:
       - retro-db:/var/lib/mysql
     environment:

@@ -30,7 +30,7 @@ services:
       MYSQL_ROOT_PASSWORD: retro
       MYSQL_DATABASE: retro
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     networks:
       - retro-back-local
   retro-web:

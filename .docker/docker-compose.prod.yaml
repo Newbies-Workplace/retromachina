@@ -6,12 +6,13 @@ services:
   backup:
     image: offen/docker-volume-backup:latest
     restart: always
+    container_name: retro-backup
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
-      - AWS_S3_BUCKET_NAME
-      - AWS_S3_PATH
-      - BACKUP_RETENTION_DAYS="14"
+      - AWS_S3_BUCKET_NAME=backupy-newbies
+      - AWS_S3_PATH=retromachina
+      - BACKUP_RETENTION_DAYS=14
     volumes:
       - retro-db:/backup/retromachina:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro

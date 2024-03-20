@@ -3,10 +3,26 @@ version: "3.4"
 name: "retromachina-monorepo"
 
 services:
+  backup:
+    image: offen/docker-volume-backup:latest
+    restart: always
+    container_name: retro-backup
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_S3_BUCKET_NAME=backupy-newbies
+      - AWS_S3_PATH=retromachina
+      - BACKUP_RETENTION_DAYS=14
+      - BACKUP_STOP_CONTAINER_LABEL=retromachina
+    volumes:
+      - retro-db:/backup/retromachina:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
   retro-db:
     image: mariadb:10.7
     restart: unless-stopped
     container_name: retro-db
+    labels:
+      - docker-volume-backup.stop-during-backup=retromachina
     volumes:
       - retro-db:/var/lib/mysql
     environment:
@@ -14,7 +30,7 @@ services:
       MYSQL_ROOT_PASSWORD: retro
       MYSQL_DATABASE: retro
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     networks:
       - retro-back-local
   retro-web:

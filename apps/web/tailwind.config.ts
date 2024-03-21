@@ -8,26 +8,26 @@ const config: Config = {
       white: "#FFFFFF",
       black: "#000000",
       red: {
-        500: "#DC6E47"
+        500: "#DC6E47",
       },
       green: {
-        500: "#73BDA8"
+        500: "#73BDA8",
       },
       yellow: {
         50: "#F4F2E6",
-        500: "#EBD3A8"
+        500: "#EBD3A8",
       },
       brown: {
-        500: "#946847"
-      }
+        500: "#946847",
+      },
     },
     extend: {
       fontFamily: {
         "jetbrains-mono": ["JetBrains Mono", "monospace"],
-      }
-    }
+      },
+    },
   },
   plugins: [],
-}
+};
 
 export default config;

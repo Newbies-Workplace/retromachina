@@ -1,6 +1,6 @@
 import type React from "react";
+import { cn } from "../../../common/Util";
 import styles from "./Button.module.scss";
-import {cn} from "../../../common/Util";
 
 interface ButtonProps {
   onClick?: () => void;

@@ -1,5 +1,5 @@
-import type { Role, User } from "@prisma/client";
-import type {
+import { Role, User } from "@prisma/client";
+import {
   UserInTeamResponse,
   UserResponse,
 } from "shared/model/user/user.response";

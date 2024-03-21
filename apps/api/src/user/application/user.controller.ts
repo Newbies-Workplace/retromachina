@@ -6,16 +6,16 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import type {
+import {
   UserInTeamResponse,
   UserWithTeamsResponse,
 } from "shared/model/user/user.response";
-import type { JWTUser } from "src/auth/jwt/JWTUser";
+import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
-import type { AuthAbilityFactory } from "../../auth/auth.ability";
-import type { PrismaService } from "../../prisma/prisma.service";
-import type { TeamConverter } from "../../team/application/team.converter";
+import { AuthAbilityFactory } from "../../auth/auth.ability";
+import { PrismaService } from "../../prisma/prisma.service";
+import { TeamConverter } from "../../team/application/team.converter";
 import { toUserInTeamResponse, toUserResponse } from "./user.converter";
 
 @Controller("users")

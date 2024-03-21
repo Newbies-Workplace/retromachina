@@ -1,4 +1,4 @@
-import type { RoomState } from "shared/model/retro/retro.events";
+import { RoomState } from "shared/model/retro/retro.events";
 
 export class RoomStateValidator {
   static validate(value: RoomState) {

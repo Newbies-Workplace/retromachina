@@ -12,7 +12,6 @@
     "start:migrate:prod": "prisma migrate deploy && npm run start:prod"
   },
   "dependencies": {
-    "shared": "*",
     "@casl/ability": "^6.5.0",
     "@casl/prisma": "^1.4.0",
     "@nestjs/common": "^9.0.0",
@@ -35,6 +34,7 @@
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.5",
+    "shared": "*",
     "socket.io": "^4.5.3"
   },
   "devDependencies": {
@@ -46,6 +46,7 @@
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.3",
     "@types/passport": "^1.0.11",
+    "@types/passport-google-oauth20": "^2.0.14",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^8.3.4",
     "jest": "^28.1.2",
@@ -59,13 +60,19 @@
     "typescript": "^4.7.4"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "collectCoverageFrom": ["**/*.(t|j)s"],
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

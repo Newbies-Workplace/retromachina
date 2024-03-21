@@ -1,6 +1,6 @@
-import type { UserRole } from "shared/.dist/model/user/user.role";
-import type { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
-import type {
+import { UserRole } from "shared/.dist/model/user/user.role";
+import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
+import {
   ActionPoint,
   Card,
   RetroColumn,

@@ -11,18 +11,18 @@ import {
   Put,
   UseGuards,
 } from "@nestjs/common";
-import type {
+import {
   EditTeamRequest,
   TeamRequest,
 } from "shared/model/team/team.request";
-import type { TeamResponse } from "shared/model/team/team.response";
-import type { JWTUser } from "src/auth/jwt/JWTUser";
+import { TeamResponse } from "shared/model/team/team.response";
+import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
-import type { AuthAbilityFactory } from "../../auth/auth.ability";
-import type { PrismaService } from "../../prisma/prisma.service";
-import type { TeamService } from "../team.service";
-import type { TeamConverter } from "./team.converter";
+import { AuthAbilityFactory } from "../../auth/auth.ability";
+import { PrismaService } from "../../prisma/prisma.service";
+import { TeamService } from "../team.service";
+import { TeamConverter } from "./team.converter";
 
 @Controller("teams")
 export class TeamController {

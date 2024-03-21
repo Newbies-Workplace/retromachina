@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import type { Team } from "@prisma/client";
-import type {
+import { Team } from "@prisma/client";
+import {
   EditTeamRequest,
   TeamRequest,
   TeamUserRequest,
 } from "shared/model/team/team.request";
-import type { JWTUser } from "src/auth/jwt/JWTUser";
-import type { PrismaService } from "src/prisma/prisma.service";
+import { JWTUser } from "src/auth/jwt/JWTUser";
+import { PrismaService } from "src/prisma/prisma.service";
 import { v4 as uuid } from "uuid";
 
 @Injectable()

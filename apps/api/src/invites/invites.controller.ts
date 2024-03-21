@@ -6,13 +6,13 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import type { Team } from "@prisma/client";
-import type { InviteResponse } from "shared/model/invite/Invite.response";
-import type { JWTUser } from "src/auth/jwt/JWTUser";
+import { Team } from "@prisma/client";
+import { InviteResponse } from "shared/model/invite/Invite.response";
+import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
-import type { AuthAbilityFactory } from "../auth/auth.ability";
-import type { PrismaService } from "../prisma/prisma.service";
+import { AuthAbilityFactory } from "../auth/auth.ability";
+import { PrismaService } from "../prisma/prisma.service";
 import { toInviteResponse } from "./invites.converter";
 
 @Controller("invites")

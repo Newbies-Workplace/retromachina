@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import type { Board, BoardColumn } from "@prisma/client";
-import type {
+import { Board, BoardColumn } from "@prisma/client";
+import {
   BoardColumnDto,
   EditBoardDto,
 } from "shared/model/board/editBoard.dto";
-import type { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class BoardService {

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import {
   type OnGatewayConnection,
   type OnGatewayDisconnect,
@@ -7,20 +7,20 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import type { User } from "@prisma/client";
-import type {
+import { User } from "@prisma/client";
+import {
   TaskCreateCommand,
   TaskDeleteCommand,
   TaskUpdateCommand,
 } from "shared/model/board/board.commands";
-import type {
+import {
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
 } from "shared/model/board/board.events";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
-import type { Server, Socket } from "socket.io";
-import type { PrismaService } from "../../prisma/prisma.service";
+import { Server, Socket } from "socket.io";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 @WebSocketGateway(3001, { cors: true, namespace: "board" })

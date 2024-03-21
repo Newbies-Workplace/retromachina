@@ -9,14 +9,14 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import type { RetroCreateRequest } from "shared/model/retro/retro.request";
-import type { RetroResponse } from "shared/model/retro/retro.response";
-import type { JWTUser } from "src/auth/jwt/JWTUser";
+import { RetroCreateRequest } from "shared/model/retro/retro.request";
+import { RetroResponse } from "shared/model/retro/retro.response";
+import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
-import type { PrismaService } from "src/prisma/prisma.service";
-import type { AuthAbilityFactory } from "../../auth/auth.ability";
-import type { RetroService } from "../domain/retro.service";
+import { PrismaService } from "src/prisma/prisma.service";
+import { AuthAbilityFactory } from "../../auth/auth.ability";
+import { RetroService } from "../domain/retro.service";
 import { toRetroResponse } from "./retro.converter";
 
 @Controller("retros")

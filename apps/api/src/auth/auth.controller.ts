@@ -1,8 +1,8 @@
 import { Controller, Get, Response, UseGuards } from "@nestjs/common";
 import { config } from "dotenv";
 import { User } from "src/auth/jwt/jwtuser.decorator";
-import type { AuthService } from "./auth.service";
-import type { GoogleUser } from "./google/GoogleUser";
+import { AuthService } from "./auth.service";
+import { GoogleUser } from "./google/GoogleUser";
 import { GoogleGuard } from "./google/google.guard";
 
 config();

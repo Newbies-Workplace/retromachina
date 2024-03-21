@@ -5,9 +5,9 @@ import {
   createPrismaAbility,
 } from "@casl/prisma";
 import { Injectable } from "@nestjs/common";
-import type { Board, Retrospective, Team } from "@prisma/client";
-import type { PrismaService } from "../prisma/prisma.service";
-import type { JWTUser } from "./jwt/JWTUser";
+import { Board, Retrospective, Team } from "@prisma/client";
+import { PrismaService } from "../prisma/prisma.service";
+import { JWTUser } from "./jwt/JWTUser";
 
 export type Action = "create" | "read" | "update" | "delete" | "startRetro";
 
@@ -20,8 +20,6 @@ export type AppAbility = PureAbility<[Action, AppSubjects], PrismaQuery>;
 
 @Injectable()
 export class AuthAbilityFactory {
-  constructor(private prismaService: PrismaService) {}
-
   create(user: JWTUser) {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(
       createPrismaAbility,

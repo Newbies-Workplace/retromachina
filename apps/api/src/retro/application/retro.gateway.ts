@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import {
   type OnGatewayConnection,
   type OnGatewayDisconnect,
@@ -7,10 +7,10 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import type { User } from "@prisma/client";
+import { User } from "@prisma/client";
 import * as dayjs from "dayjs";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
-import type {
+import {
   AddCardToCardCommand,
   AddCardVoteCommand,
   ChangeCurrentDiscussCardCommand,
@@ -28,12 +28,12 @@ import type {
   UpdateRoomStateCommand,
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
-import type { TimerChangedEvent } from "shared/model/retro/retro.events";
-import type { Card, RetroColumn } from "shared/model/retro/retroRoom.interface";
-import type { Server, Socket } from "socket.io";
+import { TimerChangedEvent } from "shared/model/retro/retro.events";
+import { Card, RetroColumn } from "shared/model/retro/retroRoom.interface";
+import { Server, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
-import type { JWTUser } from "../../auth/jwt/JWTUser";
-import type { PrismaService } from "../../prisma/prisma.service";
+import { JWTUser } from "../../auth/jwt/JWTUser";
+import { PrismaService } from "../../prisma/prisma.service";
 import { RetroRoom } from "../domain/model/retroRoom.object";
 import { RoomStateValidator } from "./roomstate.validator";
 

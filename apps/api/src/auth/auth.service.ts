@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import { config } from "dotenv";
-import type { PrismaService } from "src/prisma/prisma.service";
-import type { GoogleUser } from "./google/GoogleUser";
+import { PrismaService } from "src/prisma/prisma.service";
+import { GoogleUser } from "./google/GoogleUser";
 
 config();
 

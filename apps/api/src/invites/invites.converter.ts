@@ -1,5 +1,5 @@
-import type { Invite } from "@prisma/client";
-import type { InviteResponse } from "shared/model/invite/Invite.response";
+import { Invite } from "@prisma/client";
+import { InviteResponse } from "shared/model/invite/Invite.response";
 
 export const toInviteResponse = (invite: Invite): InviteResponse => {
   return {

@@ -23,7 +23,8 @@
         "noExplicitAny": "warn"
       },
       "style": {
-        "noNonNullAssertion": "warn"
+        "noNonNullAssertion": "warn",
+        "useImportType": "off"
       },
       "complexity": {
         "noForEach": "warn",

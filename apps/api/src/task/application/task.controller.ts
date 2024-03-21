@@ -6,12 +6,12 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import type { TaskResponse } from "shared/model/task/task.response";
+import { TaskResponse } from "shared/model/task/task.response";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
-import type { AppAbility, AuthAbilityFactory } from "../../auth/auth.ability";
-import type { JWTUser } from "../../auth/jwt/JWTUser";
+import { AppAbility, AuthAbilityFactory } from "../../auth/auth.ability";
+import { JWTUser } from "../../auth/jwt/JWTUser";
 import { User } from "../../auth/jwt/jwtuser.decorator";
-import type { PrismaService } from "../../prisma/prisma.service";
+import { PrismaService } from "../../prisma/prisma.service";
 import { toTaskResponse } from "./task.converter";
 
 @Controller("tasks")

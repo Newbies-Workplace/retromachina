@@ -6,7 +6,7 @@ import { Input } from "../../../component/atoms/input/Input";
 import { Card } from "../../../component/molecules/card/Card";
 import { GroupCardContainer } from "../../../component/molecules/dragndrop/group_card_container/GroupCardContainer";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
-import { Group, useCardGroups } from "../../../context/useCardGroups";
+import { type Group, useCardGroups } from "../../../context/useCardGroups";
 import { usePlural } from "../../../context/usePlural";
 import { useUser } from "../../../context/user/UserContext.hook";
 import styles from "./DiscussView.module.scss";

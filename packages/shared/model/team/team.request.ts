@@ -1,5 +1,5 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { UserRole } from "../user/user.role";
+import type { UserRole } from "../user/user.role";
 
 export class TeamRequest {
   @IsNotEmpty()

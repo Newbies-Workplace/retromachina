@@ -1,7 +1,8 @@
 import cs from "classnames";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RetroResponse } from "shared/model/retro/retro.response";
+import type { RetroResponse } from "shared/model/retro/retro.response";
 import { getRetrosByTeamId } from "../../../api/Retro.service";
 import AddIcon from "../../../assets/icons/add-icon.svg";
 import EditIconSvg from "../../../assets/icons/edit-icon.svg";

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { getRetroByRetroId } from "../../api/Retro.service";
 import { RetroContextProvider } from "../../context/retro/RetroContext";

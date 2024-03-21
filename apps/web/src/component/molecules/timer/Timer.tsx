@@ -1,6 +1,7 @@
 import cs from "classnames";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import styles from "./Timer.module.scss";
 
 interface PropsTimer {

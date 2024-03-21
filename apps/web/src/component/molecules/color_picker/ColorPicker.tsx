@@ -1,4 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import EditIconSvg from "../../../assets/icons/edit-icon.svg";
 import useClickOutside from "../../../context/useClickOutside";

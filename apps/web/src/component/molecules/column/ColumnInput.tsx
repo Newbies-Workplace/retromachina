@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { RetroColumn } from "shared/model/retro/retroRoom.interface";
+import type React from "react";
+import { useEffect, useState } from "react";
+import type { RetroColumn } from "shared/model/retro/retroRoom.interface";
 import { CardCount } from "../../atoms/card_indicator/CardIndicator";
 import { Input } from "../../atoms/input/Input";
 

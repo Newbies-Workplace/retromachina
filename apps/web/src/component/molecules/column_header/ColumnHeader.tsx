@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import style from "./ColumnHeader.module.scss";
 
 interface ColumnHeaderProps {

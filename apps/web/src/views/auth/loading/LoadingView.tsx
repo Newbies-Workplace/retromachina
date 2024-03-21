@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { AuthParams } from "shared/model/auth/Auth.interface";
+import type { AuthParams } from "shared/model/auth/Auth.interface";
 import { Loader } from "../../../component/organisms/loader/Loader";
 import { getRedirectPath, setRedirectPath } from "../../../context/useRedirect";
 import { useUser } from "../../../context/user/UserContext.hook";

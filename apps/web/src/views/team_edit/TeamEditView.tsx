@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
-import { InviteResponse } from "shared/model/invite/Invite.response";
-import { TeamRequest } from "shared/model/team/team.request";
-import { UserInTeamResponse } from "shared/model/user/user.response";
+import type { InviteResponse } from "shared/model/invite/Invite.response";
+import type { TeamRequest } from "shared/model/team/team.request";
+import type { UserInTeamResponse } from "shared/model/user/user.response";
 import {
   deleteTeam,
   editTeam,

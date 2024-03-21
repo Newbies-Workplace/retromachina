@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { Navigate, useParams } from "react-router";
 import { BoardContextProvider } from "../../context/board/BoardContext";
 

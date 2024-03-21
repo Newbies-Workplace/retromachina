@@ -16,7 +16,7 @@ const useClickOutside = (ref: any, handler: (event: MouseEvent) => void) => {
 
     const validateEventStart = (event: MouseEvent | TouchEvent) => {
       startedWhenMounted = ref.current;
-      startedInside = ref.current && ref.current.contains(event.target);
+      startedInside = ref.current?.contains(event.target);
     };
 
     document.addEventListener("mousedown", validateEventStart);

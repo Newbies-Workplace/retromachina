@@ -1,6 +1,7 @@
 import ProgressBar from "@ramonak/react-progress-bar";
 import cs from "classnames";
-import React, { useCallback, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
 import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag-svgrepo-com.svg";
 import LeftArrowIconSvg from "../../../../assets/icons/left-arrow.svg";
 import RightArrowIconSvg from "../../../../assets/icons/right-arrow.svg";

@@ -9,14 +9,14 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { RetroCreateRequest } from "shared/model/retro/retro.request";
-import { RetroResponse } from "shared/model/retro/retro.response";
-import { JWTUser } from "src/auth/jwt/JWTUser";
+import type { RetroCreateRequest } from "shared/model/retro/retro.request";
+import type { RetroResponse } from "shared/model/retro/retro.response";
+import type { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
-import { PrismaService } from "src/prisma/prisma.service";
-import { AuthAbilityFactory } from "../../auth/auth.ability";
-import { RetroService } from "../domain/retro.service";
+import type { PrismaService } from "src/prisma/prisma.service";
+import type { AuthAbilityFactory } from "../../auth/auth.ability";
+import type { RetroService } from "../domain/retro.service";
 import { toRetroResponse } from "./retro.converter";
 
 @Controller("retros")
@@ -24,14 +24,14 @@ export class RetroController {
   constructor(
     private retroService: RetroService,
     private prismaService: PrismaService,
-    private abilityFactory: AuthAbilityFactory
+    private abilityFactory: AuthAbilityFactory,
   ) {}
 
   @Get()
   @UseGuards(JwtGuard)
   async getTeamRetros(
     @User() user: JWTUser,
-    @Query("team_id") teamId: string
+    @Query("team_id") teamId: string,
   ): Promise<RetroResponse[]> {
     if (teamId.trim().length === 0)
       throw new BadRequestException("No `team_id` query param");
@@ -60,7 +60,7 @@ export class RetroController {
   @UseGuards(JwtGuard)
   async getRetro(
     @User() user: JWTUser,
-    @Param("id") retroId: string
+    @Param("id") retroId: string,
   ): Promise<RetroResponse> {
     const retro = await this.prismaService.retrospective.findUniqueOrThrow({
       where: {
@@ -71,7 +71,7 @@ export class RetroController {
 
     ForbiddenError.from(ability).throwUnlessCan(
       "read",
-      subject("Retro", retro)
+      subject("Retro", retro),
     );
 
     return toRetroResponse(retro);
@@ -81,7 +81,7 @@ export class RetroController {
   @UseGuards(JwtGuard)
   async createRetro(
     @User() user: JWTUser,
-    @Body() request: RetroCreateRequest
+    @Body() request: RetroCreateRequest,
   ): Promise<RetroResponse> {
     const team = await this.prismaService.team.findUniqueOrThrow({
       where: {
@@ -92,7 +92,7 @@ export class RetroController {
 
     ForbiddenError.from(ability).throwUnlessCan(
       "startRetro",
-      subject("Team", team)
+      subject("Team", team),
     );
 
     await this.assertNotRunningRetro(team.id);
@@ -111,7 +111,7 @@ export class RetroController {
     });
     if (runningRetro) {
       throw new BadRequestException(
-        "One retro for this team is already running."
+        "One retro for this team is already running.",
       );
     }
   }

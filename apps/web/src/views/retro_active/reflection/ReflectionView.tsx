@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 import { Button } from "../../../component/atoms/button/Button";
 import { Card } from "../../../component/molecules/card/Card";

@@ -1,4 +1,4 @@
-import {
+import type {
   UserInTeamResponse,
   UserWithTeamsResponse,
 } from "shared/model/user/user.response";

@@ -1,9 +1,13 @@
-import { AbilityBuilder, PureAbility } from "@casl/ability";
-import { PrismaQuery, Subjects, createPrismaAbility } from "@casl/prisma";
+import { AbilityBuilder, type PureAbility } from "@casl/ability";
+import {
+  type PrismaQuery,
+  type Subjects,
+  createPrismaAbility,
+} from "@casl/prisma";
 import { Injectable } from "@nestjs/common";
-import { Board, Retrospective, Team } from "@prisma/client";
-import { PrismaService } from "../prisma/prisma.service";
-import { JWTUser } from "./jwt/JWTUser";
+import type { Board, Retrospective, Team } from "@prisma/client";
+import type { PrismaService } from "../prisma/prisma.service";
+import type { JWTUser } from "./jwt/JWTUser";
 
 export type Action = "create" | "read" | "update" | "delete" | "startRetro";
 

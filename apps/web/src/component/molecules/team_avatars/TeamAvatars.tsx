@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { Avatar } from "../../atoms/avatar/Avatar";
 import styles from "./TeamAvatars.module.scss";
 

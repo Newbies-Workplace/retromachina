@@ -1,6 +1,6 @@
-import { InviteResponse } from "shared/model/invite/Invite.response";
-import { TeamRequest } from "shared/model/team/team.request";
-import { TeamResponse } from "shared/model/team/team.response";
+import type { InviteResponse } from "shared/model/invite/Invite.response";
+import type { TeamRequest } from "shared/model/team/team.request";
+import type { TeamResponse } from "shared/model/team/team.response";
 import { axiosInstance } from "./AxiosInstance";
 
 export const getTeamById = async (teamId: string): Promise<TeamResponse> => {

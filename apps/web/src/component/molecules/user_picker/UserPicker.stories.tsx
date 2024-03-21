@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { TeamUserRequest } from "shared/model/team/team.request";
+import type { TeamUserRequest } from "shared/model/team/team.request";
 import { UserPicker } from "./UserPicker";
 
 const meta = {

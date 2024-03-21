@@ -1,9 +1,10 @@
 import cs from "classnames";
-import React, { KeyboardEventHandler } from "react";
+import type React from "react";
+import type { KeyboardEventHandler } from "react";
 import styles from "./Input.module.scss";
 
 interface InputProps {
-  style?: any;
+  style?: React.CSSProperties;
   className?: string;
   value: string;
   setValue: (value: string) => void;

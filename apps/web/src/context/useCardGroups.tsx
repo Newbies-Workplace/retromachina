@@ -1,4 +1,4 @@
-import { Card, Vote } from "shared/model/retro/retroRoom.interface";
+import type { Card, Vote } from "shared/model/retro/retroRoom.interface";
 
 export const useCardGroups = (cards: Card[], votes: Vote[]): Group[] => {
   return cards

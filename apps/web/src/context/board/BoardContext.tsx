@@ -1,19 +1,20 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import type React from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import {
+import type {
   TaskCreateCommand,
   TaskDeleteCommand,
   TaskUpdateCommand,
 } from "shared/model/board/board.commands";
-import {
+import type {
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
 } from "shared/model/board/board.events";
-import { BoardResponse } from "shared/model/board/board.response";
-import { TeamResponse } from "shared/model/team/team.response";
-import { UserResponse } from "shared/model/user/user.response";
-import io, { Socket } from "socket.io-client";
+import type { BoardResponse } from "shared/model/board/board.response";
+import type { TeamResponse } from "shared/model/team/team.response";
+import type { UserResponse } from "shared/model/user/user.response";
+import io, { type Socket } from "socket.io-client";
 import { getBoard } from "../../api/Board.service";
 import { getTeamById } from "../../api/Team.service";
 import { getUsersByTeamId } from "../../api/User.service";

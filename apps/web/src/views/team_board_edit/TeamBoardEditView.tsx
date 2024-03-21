@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
-import { BoardResponse } from "shared/model/board/board.response";
-import { BoardColumnDto } from "shared/model/board/editBoard.dto";
+import type { BoardResponse } from "shared/model/board/board.response";
+import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
 import { v4 as uuidv4 } from "uuid";
 import { editBoard, getBoard } from "../../api/Board.service";
 import AddIcon from "../../assets/icons/add-icon.svg";

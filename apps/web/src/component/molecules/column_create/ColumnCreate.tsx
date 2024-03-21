@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 import { Input } from "../../atoms/input/Input";
 import { ColorPicker } from "../color_picker/ColorPicker";

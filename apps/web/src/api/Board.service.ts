@@ -1,4 +1,4 @@
-import { BoardResponse } from "shared/model/board/board.response";
+import type { BoardResponse } from "shared/model/board/board.response";
 import { axiosInstance } from "./AxiosInstance";
 
 export const editBoard = async (teamId: string, board: BoardResponse) => {

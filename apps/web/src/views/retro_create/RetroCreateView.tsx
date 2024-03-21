@@ -1,8 +1,9 @@
 import * as qs from "query-string";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { RetroCreateRequest } from "shared/model/retro/retro.request";
+import type { RetroCreateRequest } from "shared/model/retro/retro.request";
 import { v4 as uuidv4 } from "uuid";
 import { createRetro } from "../../api/Retro.service";
 import { getRandomTemplate } from "../../api/RetroTemplate.service";

@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
-import React, { useCallback, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
 import DeleteIconSvg from "../../../../assets/icons/delete-icon.svg";
 import HourglassIconSvg from "../../../../assets/icons/hourglass.svg";
 import TickIconSvg from "../../../../assets/icons/tick.svg";

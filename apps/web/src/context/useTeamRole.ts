@@ -1,4 +1,4 @@
-import { UserRole } from "shared/model/user/user.role";
+import type { UserRole } from "shared/model/user/user.role";
 import { useUser } from "./user/UserContext.hook";
 
 interface TeamRoleResult {

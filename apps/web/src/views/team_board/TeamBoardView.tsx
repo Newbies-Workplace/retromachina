@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
-import { TaskResponse } from "shared/model/task/task.response";
+import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "../../component/atoms/button/Button";
 import { Card } from "../../component/molecules/card/Card";

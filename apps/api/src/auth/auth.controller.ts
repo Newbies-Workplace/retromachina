@@ -1,22 +1,22 @@
-import { Controller, Get, Response, UseGuards } from '@nestjs/common';
-import { config } from 'dotenv';
-import { User } from 'src/auth/jwt/jwtuser.decorator';
-import { AuthService } from './auth.service';
-import { GoogleUser } from './google/GoogleUser';
-import { GoogleGuard } from './google/google.guard';
+import { Controller, Get, Response, UseGuards } from "@nestjs/common";
+import { config } from "dotenv";
+import { User } from "src/auth/jwt/jwtuser.decorator";
+import type { AuthService } from "./auth.service";
+import type { GoogleUser } from "./google/GoogleUser";
+import { GoogleGuard } from "./google/google.guard";
 
 config();
 
-@Controller('google')
+@Controller("google")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(GoogleGuard)
-  @Get('redirect')
+  @Get("redirect")
   async googleAuth() {}
 
   @UseGuards(GoogleGuard)
-  @Get('login')
+  @Get("login")
   async googleLogin(@User() user: GoogleUser, @Response() response) {
     const token = await this.authService.googleAuth(user);
 

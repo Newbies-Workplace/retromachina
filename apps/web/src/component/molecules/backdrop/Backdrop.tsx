@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { Portal } from "react-portal";
 import styles from "./Backdrop.module.scss";
 

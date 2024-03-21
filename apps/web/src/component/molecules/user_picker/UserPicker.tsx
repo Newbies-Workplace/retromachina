@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import { TeamUserRequest } from "shared/model/team/team.request";
-import { UserRole } from "shared/model/user/user.role";
+import type { TeamUserRequest } from "shared/model/team/team.request";
+import type { UserRole } from "shared/model/user/user.role";
 import CloseIcon from "../../../assets/icons/close-icon.svg";
 import styles from "./UserPicker.module.scss";
 
@@ -25,7 +26,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
     const mailRegex = /\S+@\S+\.\S+/;
     const trimmedEmail = email.trim();
 
-    if (trimmedEmail.length == 0 || !mailRegex.test(trimmedEmail)) {
+    if (trimmedEmail.length === 0 || !mailRegex.test(trimmedEmail)) {
       return;
     }
 

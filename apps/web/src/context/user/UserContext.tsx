@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState } from "react";
-import { AuthParams } from "shared/model/auth/Auth.interface";
-import { UserWithTeamsResponse } from "shared/model/user/user.response";
+import type React from "react";
+import { createContext, useEffect, useState } from "react";
+import type { AuthParams } from "shared/model/auth/Auth.interface";
+import type { UserWithTeamsResponse } from "shared/model/user/user.response";
 import { loginGoogle } from "../../api/Auth.service";
 import { axiosInstance } from "../../api/AxiosInstance";
 import { getMyUser } from "../../api/User.service";
@@ -38,7 +39,7 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
         setUser(response);
       })
       .catch((error) => {
-        if (error.status == 401) {
+        if (error.status === 401) {
           setUser(null);
         } else {
           console.error(error);
@@ -51,8 +52,7 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
       .then((res) => {
         localStorage.setItem("Bearer", res.access_token);
 
-        axiosInstance.defaults.headers["Authorization"] =
-          "Bearer " + res.access_token;
+        axiosInstance.defaults.headers.Authorization = `Bearer ${res.access_token}`;
         getMyUser().then((response) => {
           setUser(response);
         });

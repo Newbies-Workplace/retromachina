@@ -4,14 +4,14 @@
   "scripts": {
     "dev": "dotenv -- turbo dev",
     "build": "dotenv -- turbo build",
-    "format": "npx @biomejs/biome check --apply ./apps ./packages",
+    "format": "npx @biomejs/biome check --apply ./",
     "prepare": "husky install"
   },
   "dependencies": {
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.5.1",
+    "@biomejs/biome": "1.6.1",
     "dotenv-cli": "latest",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",

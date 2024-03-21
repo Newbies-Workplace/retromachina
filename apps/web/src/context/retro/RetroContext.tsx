@@ -1,7 +1,8 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import type React from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import {
+import type {
   AddCardToCardCommand,
   AddCardVoteCommand,
   ChangeCurrentDiscussCardCommand,
@@ -19,23 +20,23 @@ import {
   UpdateRoomStateCommand,
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
-import {
+import type {
   RoomState,
   RoomSyncEvent,
   TimerChangedEvent,
 } from "shared/model/retro/retro.events";
-import {
+import type {
   ActionPoint,
   Card,
   RetroColumn,
   User,
   Vote,
 } from "shared/model/retro/retroRoom.interface";
-import { UserResponse } from "shared/model/user/user.response";
-import io, { Socket } from "socket.io-client";
+import type { UserResponse } from "shared/model/user/user.response";
+import io, { type Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { getUsersByTeamId } from "../../api/User.service";
-import { CardMoveAction } from "../../interfaces/CardMoveAction.interface";
+import type { CardMoveAction } from "../../interfaces/CardMoveAction.interface";
 import { useCardGroups } from "../useCardGroups";
 import { useUser } from "../user/UserContext.hook";
 
@@ -373,7 +374,8 @@ export const RetroContextProvider: React.FC<
 
     if (to === "next" && targetIndex >= groups.length) {
       return true;
-    } else if (to === "prev" && targetIndex < 0) {
+    }
+    if (to === "prev" && targetIndex < 0) {
       return true;
     }
 
@@ -388,13 +390,13 @@ export const RetroContextProvider: React.FC<
   };
 
   const moveCard = (move: CardMoveAction) => {
-    if (move.targetType == "column") {
+    if (move.targetType === "column") {
       const command: MoveCardToColumnCommand = {
         cardId: move.cardId,
         columnId: move.targetId,
       };
       socket.current?.emit("command_move_card_to_column", command);
-    } else if (move.targetType == "card") {
+    } else if (move.targetType === "card") {
       const command: AddCardToCardCommand = {
         cardId: move.cardId,
         parentCardId: move.targetId,

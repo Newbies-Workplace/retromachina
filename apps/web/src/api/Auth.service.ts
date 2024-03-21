@@ -1,4 +1,7 @@
-import { AuthParams, AuthResponse } from "shared/model/auth/Auth.interface";
+import type {
+  AuthParams,
+  AuthResponse,
+} from "shared/model/auth/Auth.interface";
 import { axiosInstance } from "./AxiosInstance";
 
 export const loginGoogle = (params: AuthParams): Promise<AuthResponse> => {

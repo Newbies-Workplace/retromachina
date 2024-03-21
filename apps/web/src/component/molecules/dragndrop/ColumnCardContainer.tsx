@@ -1,7 +1,7 @@
-import React from "react";
+import type React from "react";
 import { useDrop } from "react-dnd";
 import styles from "../column/ColumnCardContainer.module.scss";
-import { CardDragPayload, ItemTypes } from "./dragndrop";
+import { type CardDragPayload, ItemTypes } from "./dragndrop";
 
 interface ColumnCardContainerProps {
   columnId: string;

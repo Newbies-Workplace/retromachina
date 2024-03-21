@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Route, Routes } from "react-router-dom";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
@@ -40,7 +41,7 @@ const RetroActiveView: React.FC = () => {
             {teamUsers.length !== 1 && (
               <TeamAvatars
                 users={teamUsers
-                  .filter((u) => u.id !== user!.id)
+                  .filter((u) => u.id !== user?.id)
                   .map((user) => {
                     const socketUser = activeUsers.find(
                       (socketUser) => socketUser.userId === user.id,

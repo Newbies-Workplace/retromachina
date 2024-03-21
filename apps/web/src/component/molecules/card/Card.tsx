@@ -1,5 +1,6 @@
 import cs from "classnames";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import EditIconSvg from "../../../assets/icons/edit-icon.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
 import useClickOutside from "../../../context/useClickOutside";
@@ -104,7 +105,6 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
               className={cs(styles.text, styles.input)}
               value={editingText}
               onChange={(e) => setEditingText(e.target.value)}
-              autoFocus
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();

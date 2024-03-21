@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import React from "react";
+import type React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { ToastContainer } from "react-toastify";

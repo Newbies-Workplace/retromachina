@@ -2,8 +2,8 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { config } from "dotenv";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { JWTUser, Token } from "src/auth/jwt/JWTUser";
-import { PrismaService } from "src/prisma/prisma.service";
+import type { JWTUser, Token } from "src/auth/jwt/JWTUser";
+import type { PrismaService } from "src/prisma/prisma.service";
 
 config();
 

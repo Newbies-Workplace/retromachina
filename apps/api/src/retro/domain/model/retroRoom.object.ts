@@ -1,6 +1,6 @@
-import { UserRole } from "shared/.dist/model/user/user.role";
-import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
-import {
+import type { UserRole } from "shared/.dist/model/user/user.role";
+import type { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
+import type {
   ActionPoint,
   Card,
   RetroColumn,
@@ -48,7 +48,7 @@ export class RetroRoom {
       actionPoints: this.actionPoints,
       retroColumns: this.retroColumns.map((column) => {
         column.cards = this.cards.filter((card) => {
-          return card.columnId == column.id;
+          return card.columnId === column.id;
         });
         column.isWriting =
           tempUsers.filter((user) =>
@@ -101,7 +101,7 @@ export class RetroRoom {
 
   addUser(socketId: string, userId: string, role: UserRole) {
     const result = Array.from(this.users.entries()).find(([key, localUser]) => {
-      return localUser.userId == userId;
+      return localUser.userId === userId;
     });
 
     if (!result) {
@@ -119,7 +119,7 @@ export class RetroRoom {
 
   removeUser(socketId: string, userId: string) {
     const result = Array.from(this.users.entries()).find(([key, localUser]) => {
-      return localUser.userId == userId;
+      return localUser.userId === userId;
     });
 
     if (result) {

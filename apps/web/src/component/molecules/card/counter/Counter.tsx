@@ -1,5 +1,5 @@
 import cs from "classnames";
-import React from "react";
+import type React from "react";
 import AddIcon from "../../../../assets/icons/add-icon.svg";
 import MinusIcons from "../../../../assets/icons/minus-icon.svg";
 import styles from "./Counter.module.scss";

@@ -1,5 +1,5 @@
 import cs from "classnames";
-import React from "react";
+import type React from "react";
 import styles from "./Button.module.scss";
 
 interface ButtonProps {

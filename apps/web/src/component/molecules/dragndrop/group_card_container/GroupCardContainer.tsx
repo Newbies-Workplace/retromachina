@@ -1,8 +1,8 @@
 import cs from "classnames";
-import React from "react";
+import type React from "react";
 import { useDrop } from "react-dnd";
 import { useKeyDownListener } from "../../../../context/useKeyDownListener";
-import { CardDragPayload, ItemTypes } from "../dragndrop";
+import { type CardDragPayload, ItemTypes } from "../dragndrop";
 import styles from "./GroupCardContainer.module.scss";
 
 interface GroupCardContainerProps {

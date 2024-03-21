@@ -1,6 +1,6 @@
-import React from "react";
+import type React from "react";
 import { useDrag } from "react-dnd";
-import { CardDragPayload, ItemTypes } from "./dragndrop";
+import { type CardDragPayload, ItemTypes } from "./dragndrop";
 
 interface DraggableCardProps {
   parentCardId: string | null;

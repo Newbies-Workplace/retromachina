@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { RetroResponse } from "shared/model/retro/retro.response";
-import { TaskResponse } from "shared/model/task/task.response";
-import { UserResponse } from "shared/model/user/user.response";
+import type { RetroResponse } from "shared/model/retro/retro.response";
+import type { TaskResponse } from "shared/model/task/task.response";
+import type { UserResponse } from "shared/model/user/user.response";
 import { getRetroByRetroId } from "../../api/Retro.service";
 import { getTasksByRetroId } from "../../api/Task.service";
 import { getUsersByTeamId } from "../../api/User.service";

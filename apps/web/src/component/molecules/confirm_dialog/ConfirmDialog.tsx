@@ -1,5 +1,5 @@
 import cs from "classnames";
-import React from "react";
+import type React from "react";
 import { Button } from "../../atoms/button/Button";
 import { Backdrop } from "../backdrop/Backdrop";
 import styles from "./ConfirmDialog.module.scss";

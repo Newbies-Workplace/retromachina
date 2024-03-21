@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { RetroGateway } from "./retro.gateway";
+import type { RetroGateway } from "./retro.gateway";
 
 @Injectable()
 export class RetroSchedules {

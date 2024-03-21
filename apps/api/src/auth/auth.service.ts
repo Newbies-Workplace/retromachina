@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import type { JwtService } from "@nestjs/jwt";
 import { config } from "dotenv";
-import { PrismaService } from "src/prisma/prisma.service";
-import { GoogleUser } from "./google/GoogleUser";
+import type { PrismaService } from "src/prisma/prisma.service";
+import type { GoogleUser } from "./google/GoogleUser";
 
 config();
 
@@ -23,7 +23,7 @@ export class AuthService {
     if (!queryUser) {
       queryUser = await this.prismaService.user.create({
         data: {
-          nick: `${user.firstName}${user.lastName ? " " + user.lastName : ""}`,
+          nick: `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`,
           email: user.email,
           avatar_link: user.picture,
           google_id: user.id,

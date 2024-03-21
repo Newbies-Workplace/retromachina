@@ -1,5 +1,5 @@
 import cs from "classnames";
-import React from "react";
+import type React from "react";
 import { usePlural } from "../../../context/usePlural";
 import styles from "./CardIndicator.module.scss";
 

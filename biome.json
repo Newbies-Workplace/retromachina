@@ -1,19 +1,42 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.5.1/schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"formatter": {
-		"indentStyle": "space",
-		"indentWidth": 2
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"a11y": {
-				"useKeyWithClickEvents": "off"
-			}
-		}
-	}
+  "$schema": "https://biomejs.dev/schemas/1.6.1/schema.json",
+  "files": {
+    "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+    "ignore": ["**/node_modules/**", "**/.dist/**", "**/dist/**"]
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "useButtonType": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "warn"
+      },
+      "complexity": {
+        "noForEach": "warn",
+        "noStaticOnlyClass": "warn"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "warn"
+      }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
 }

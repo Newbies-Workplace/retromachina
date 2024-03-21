@@ -1,5 +1,5 @@
-import { TeamResponse } from "../team/team.response";
-import { UserRole } from "./user.role";
+import type { TeamResponse } from "../team/team.response";
+import type { UserRole } from "./user.role";
 
 export interface UserResponse {
   id: string;

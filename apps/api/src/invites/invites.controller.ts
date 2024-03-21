@@ -1,21 +1,21 @@
-import { ForbiddenError, subject } from '@casl/ability';
+import { ForbiddenError, subject } from "@casl/ability";
 import {
   Controller,
   Get,
   NotFoundException,
   Query,
   UseGuards,
-} from '@nestjs/common';
-import { Team } from '@prisma/client';
-import { InviteResponse } from 'shared/model/invite/Invite.response';
-import { JWTUser } from 'src/auth/jwt/JWTUser';
-import { JwtGuard } from 'src/auth/jwt/jwt.guard';
-import { User } from 'src/auth/jwt/jwtuser.decorator';
-import { AuthAbilityFactory } from '../auth/auth.ability';
-import { PrismaService } from '../prisma/prisma.service';
-import { toInviteResponse } from './invites.converter';
+} from "@nestjs/common";
+import type { Team } from "@prisma/client";
+import type { InviteResponse } from "shared/model/invite/Invite.response";
+import type { JWTUser } from "src/auth/jwt/JWTUser";
+import { JwtGuard } from "src/auth/jwt/jwt.guard";
+import { User } from "src/auth/jwt/jwtuser.decorator";
+import type { AuthAbilityFactory } from "../auth/auth.ability";
+import type { PrismaService } from "../prisma/prisma.service";
+import { toInviteResponse } from "./invites.converter";
 
-@Controller('invites')
+@Controller("invites")
 export class InvitesController {
   constructor(
     private prismaService: PrismaService,
@@ -26,7 +26,7 @@ export class InvitesController {
   @UseGuards(JwtGuard)
   async getInvites(
     @User() user: JWTUser,
-    @Query('team_id') teamId: string
+    @Query("team_id") teamId: string,
   ): Promise<InviteResponse[]> {
     if (!teamId || teamId.trim().length === 0) throw new NotFoundException();
 
@@ -35,10 +35,9 @@ export class InvitesController {
         id: teamId,
       },
     });
-    const ability = this.abilityFactory.create(user)
+    const ability = this.abilityFactory.create(user);
 
-    ForbiddenError.from(ability).throwUnlessCan('read', subject('Team', team));
-
+    ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
 
     const invites = await this.prismaService.invite.findMany({
       where: {

@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { useNavigate } from "react-router";
 import CreateTeamSvg from "../../assets/icons/create-team.svg";
 import NotFoundSvg from "../../assets/images/not-found.svg";

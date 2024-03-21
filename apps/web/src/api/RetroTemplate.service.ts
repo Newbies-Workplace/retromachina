@@ -1,4 +1,4 @@
-import { RetroTemplateResponse } from "shared/model/retro/retroTemplate.response";
+import type { RetroTemplateResponse } from "shared/model/retro/retroTemplate.response";
 
 const templates: RetroTemplateResponse[] = [
   {

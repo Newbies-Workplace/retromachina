@@ -49,7 +49,7 @@ export const VoteView = () => {
                         (vote) =>
                           user?.id === vote.voterId &&
                           (vote.parentCardId === card.id ||
-                            vote.parentCardId == card.parentCardId),
+                            vote.parentCardId === card.parentCardId),
                       ).length;
 
                       return (

@@ -1,5 +1,5 @@
 import cs from "classnames";
-import React from "react";
+import type React from "react";
 import { ColumnHeader } from "../column_header/ColumnHeader";
 import styles from "./Column.module.scss";
 

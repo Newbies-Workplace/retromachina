@@ -1,8 +1,8 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
-import { RetroCreateRequest } from "shared/model/retro/retro.request";
-import { PrismaService } from "src/prisma/prisma.service";
+import { Injectable, type OnModuleInit } from "@nestjs/common";
+import type { RetroCreateRequest } from "shared/model/retro/retro.request";
+import type { PrismaService } from "src/prisma/prisma.service";
 import { v4 as uuid } from "uuid";
-import { RetroGateway } from "../application/retro.gateway";
+import type { RetroGateway } from "../application/retro.gateway";
 
 @Injectable()
 export class RetroService implements OnModuleInit {

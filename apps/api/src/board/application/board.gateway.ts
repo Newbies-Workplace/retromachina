@@ -1,26 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import type { JwtService } from "@nestjs/jwt";
 import {
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+  type OnGatewayConnection,
+  type OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import { User } from "@prisma/client";
-import {
+import type { User } from "@prisma/client";
+import type {
   TaskCreateCommand,
   TaskDeleteCommand,
   TaskUpdateCommand,
 } from "shared/model/board/board.commands";
-import {
+import type {
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
 } from "shared/model/board/board.events";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
-import { Server, Socket } from "socket.io";
-import { PrismaService } from "../../prisma/prisma.service";
+import type { Server, Socket } from "socket.io";
+import type { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 @WebSocketGateway(3001, { cors: true, namespace: "board" })
@@ -175,7 +175,7 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
       return result.user;
     } catch (error) {
-      if (error.name == "JsonWebTokenError") {
+      if (error.name === "JsonWebTokenError") {
         this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
       }
     }

@@ -1,9 +1,10 @@
-import React, { useCallback, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import LogoSvg from "../../../assets/images/logo.svg";
 import useClickOutside from "../../../context/useClickOutside";
 import { useUser } from "../../../context/user/UserContext.hook";
-import { Avatar, AvatarProps } from "../../atoms/avatar/Avatar";
+import { Avatar, type AvatarProps } from "../../atoms/avatar/Avatar";
 import { Menu } from "../menu/Menu";
 import styles from "./Navbar.module.scss";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { Card } from "../../../component/molecules/card/Card";
 import { Column } from "../../../component/molecules/column/Column";
 import { ColumnCardContainer } from "../../../component/molecules/dragndrop/ColumnCardContainer";

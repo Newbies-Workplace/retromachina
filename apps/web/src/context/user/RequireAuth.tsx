@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import { Loader } from "../../component/organisms/loader/Loader";
 import { setRedirectPath } from "../useRedirect";

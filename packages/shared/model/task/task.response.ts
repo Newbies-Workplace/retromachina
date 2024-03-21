@@ -1,6 +1,6 @@
 export interface TaskResponse {
-  id: string
-  ownerId: string
-  columnId: string
-  text: string
+  id: string;
+  ownerId: string;
+  columnId: string;
+  text: string;
 }

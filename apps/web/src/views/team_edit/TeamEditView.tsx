@@ -1,22 +1,23 @@
-import { useUser } from "../../context/user/UserContext.hook";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
-import { TeamForm } from "../../component/organisms/forms/TeamForm";
-import React, { useEffect, useState } from "react";
-import Navbar from "../../component/organisms/navbar/Navbar";
+import { toast } from "react-toastify";
+import type { InviteResponse } from "shared/model/invite/Invite.response";
+import type { TeamRequest } from "shared/model/team/team.request";
+import type { UserInTeamResponse } from "shared/model/user/user.response";
 import {
   deleteTeam,
   editTeam,
   getInvitesByTeamId,
   getTeamById,
 } from "../../api/Team.service";
-import styles from "./TeamEditView.module.scss";
-import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
-import { toast } from "react-toastify";
-import { ConfirmDialog } from "../../component/molecules/confirm_dialog/ConfirmDialog";
 import { getUsersByTeamId } from "../../api/User.service";
-import {TeamRequest} from "shared/model/team/team.request";
-import {InviteResponse} from "shared/model/invite/Invite.response";
-import {UserInTeamResponse} from "shared/model/user/user.response";
+import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
+import { ConfirmDialog } from "../../component/molecules/confirm_dialog/ConfirmDialog";
+import { TeamForm } from "../../component/organisms/forms/TeamForm";
+import Navbar from "../../component/organisms/navbar/Navbar";
+import { useUser } from "../../context/user/UserContext.hook";
+import styles from "./TeamEditView.module.scss";
 
 const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -35,14 +36,14 @@ const TeamEditView: React.FC = () => {
       const users = await getUsersByTeamId(teamId).then((users) =>
         users.filter((elem: UserInTeamResponse) => {
           return elem.email !== user?.email;
-        })
+        }),
       );
 
       const invites = await getInvitesByTeamId(teamId).then((data) =>
         data.map((invite: InviteResponse) => ({
           email: invite.email,
           role: invite.role,
-        }))
+        })),
       );
 
       setTeam({

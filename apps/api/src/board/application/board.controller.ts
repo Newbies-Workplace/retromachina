@@ -1,17 +1,16 @@
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
-import { JwtGuard } from '../../auth/jwt/jwt.guard';
-import { User } from '../../auth/jwt/jwtuser.decorator';
-import { JWTUser } from '../../auth/jwt/JWTUser';
-import { EditBoardDto } from 'shared/model/board/editBoard.dto';
-import { BoardService } from '../board.service';
-import { BoardResponse } from 'shared/model/board/board.response';
-import { PrismaService } from '../../prisma/prisma.service';
-import { AuthAbilityFactory } from '../../auth/auth.ability';
-import { ForbiddenError, subject } from '@casl/ability';
+import { ForbiddenError, subject } from "@casl/ability";
+import { Body, Controller, Get, Param, Put, UseGuards } from "@nestjs/common";
+import { BoardResponse } from "shared/model/board/board.response";
+import { EditBoardDto } from "shared/model/board/editBoard.dto";
+import { AuthAbilityFactory } from "../../auth/auth.ability";
+import { JWTUser } from "../../auth/jwt/JWTUser";
+import { JwtGuard } from "../../auth/jwt/jwt.guard";
+import { User } from "../../auth/jwt/jwtuser.decorator";
+import { PrismaService } from "../../prisma/prisma.service";
+import { BoardService } from "../board.service";
 
-@Controller('teams')
+@Controller("teams")
 export class BoardController {
-
   constructor(
     private boardService: BoardService,
     private prismaService: PrismaService,
@@ -19,32 +18,35 @@ export class BoardController {
   ) {}
 
   @UseGuards(JwtGuard)
-  @Put(':id/board')
+  @Put(":id/board")
   async editBoard(
     @User() user: JWTUser,
     @Body() boardDto: EditBoardDto,
-    @Param('id') teamId: string,
+    @Param("id") teamId: string,
   ) {
     const board = await this.prismaService.board.findUniqueOrThrow({
       where: {
         team_id: teamId,
       },
       include: {
-        BoardColumns: true
-      }
-    })
+        BoardColumns: true,
+      },
+    });
     const ability = this.abilityFactory.create(user);
 
-    ForbiddenError.from(ability).throwUnlessCan('update', subject('Board', board));
+    ForbiddenError.from(ability).throwUnlessCan(
+      "update",
+      subject("Board", board),
+    );
 
-    await this.boardService.editBoard(teamId, board, boardDto)
+    await this.boardService.editBoard(teamId, board, boardDto);
   }
 
   @UseGuards(JwtGuard)
-  @Get(':id/board')
+  @Get(":id/board")
   async getBoard(
     @User() user: JWTUser,
-    @Param('id') teamId: string,
+    @Param("id") teamId: string,
   ): Promise<BoardResponse> {
     const board = await this.prismaService.board.findUniqueOrThrow({
       where: {
@@ -58,11 +60,14 @@ export class BoardController {
         },
         BoardColumns: true,
         Tasks: true,
-      }
-    })
+      },
+    });
     const ability = this.abilityFactory.create(user);
 
-    ForbiddenError.from(ability).throwUnlessCan('read', subject('Board', board));
+    ForbiddenError.from(ability).throwUnlessCan(
+      "read",
+      subject("Board", board),
+    );
 
     return {
       defaultColumnId: board.default_column_id,
@@ -77,7 +82,7 @@ export class BoardController {
         ownerId: task.owner_id,
         text: task.description,
         columnId: task.column_id,
-      }))
-    }
+      })),
+    };
   }
 }

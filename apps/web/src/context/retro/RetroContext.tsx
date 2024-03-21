@@ -1,66 +1,92 @@
-import React, {createContext, useEffect, useRef, useState} from "react";
-import io, {Socket} from "socket.io-client";
-import {v4 as uuidv4} from "uuid";
-import {useUser} from "../user/UserContext.hook";
-import {getUsersByTeamId} from "../../api/User.service";
-import {CardMoveAction} from "../../interfaces/CardMoveAction.interface";
+import type React from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import {useCardGroups} from "../useCardGroups";
-import {toast} from "react-toastify";
-import {UserResponse} from "shared/model/user/user.response";
-import {RoomState, RoomSyncEvent, TimerChangedEvent} from "shared/model/retro/retro.events";
-import {
+import { toast } from "react-toastify";
+import type {
   AddCardToCardCommand,
-  AddCardVoteCommand, ChangeCurrentDiscussCardCommand, ChangeTimerCommand, ChangeVoteAmountCommand,
-  CreateActionPointCommand, CreateCardCommand,
-  DeleteActionPointCommand, DeleteCardCommand, MoveCardToColumnCommand, RemoveCardVoteCommand,
-  UpdateActionPointCommand, UpdateCardCommand, UpdateReadyStateCommand, UpdateRoomStateCommand, UpdateWriteStateCommand
+  AddCardVoteCommand,
+  ChangeCurrentDiscussCardCommand,
+  ChangeTimerCommand,
+  ChangeVoteAmountCommand,
+  CreateActionPointCommand,
+  CreateCardCommand,
+  DeleteActionPointCommand,
+  DeleteCardCommand,
+  MoveCardToColumnCommand,
+  RemoveCardVoteCommand,
+  UpdateActionPointCommand,
+  UpdateCardCommand,
+  UpdateReadyStateCommand,
+  UpdateRoomStateCommand,
+  UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
-import {ActionPoint, Card, RetroColumn, User, Vote} from "shared/model/retro/retroRoom.interface";
+import type {
+  RoomState,
+  RoomSyncEvent,
+  TimerChangedEvent,
+} from "shared/model/retro/retro.events";
+import type {
+  ActionPoint,
+  Card,
+  RetroColumn,
+  User,
+  Vote,
+} from "shared/model/retro/retroRoom.interface";
+import type { UserResponse } from "shared/model/user/user.response";
+import io, { type Socket } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
+import { getUsersByTeamId } from "../../api/User.service";
+import type { CardMoveAction } from "../../interfaces/CardMoveAction.interface";
+import { useCardGroups } from "../useCardGroups";
+import { useUser } from "../user/UserContext.hook";
 
 interface RetroContextParams {
-  retroId: string
+  retroId: string;
 }
 
 interface RetroContext {
-  retroId: string
-  teamId: string | null
-  columns: RetroColumn[]
-  cards: Card[]
-  teamUsers: UserResponse[]
-  activeUsers: User[]
-  roomState: RoomState
+  retroId: string;
+  teamId: string | null;
+  columns: RetroColumn[];
+  cards: Card[];
+  teamUsers: UserResponse[];
+  activeUsers: User[];
+  roomState: RoomState;
 
-  discussionCardId: string | null
-  timerEnds: number | null
-  setTimer: (time: number | null) => void
+  discussionCardId: string | null;
+  timerEnds: number | null;
+  setTimer: (time: number | null) => void;
 
-  ready: boolean
-  setReady: (ready: boolean) => void
-  readyPercentage: number
+  ready: boolean;
+  setReady: (ready: boolean) => void;
+  readyPercentage: number;
 
-  setWriting: (value: boolean, columnId: string) => void
+  setWriting: (value: boolean, columnId: string) => void;
 
-  createCard: (text: string, columnId: string) => void
-  updateCard: (cardId: string, text: string) => void
-  deleteCard: (cardId: string) => void
+  createCard: (text: string, columnId: string) => void;
+  updateCard: (cardId: string, text: string) => void;
+  deleteCard: (cardId: string) => void;
 
-  nextRoomState: () => void
-  prevRoomState: () => void
-  removeVote: (parentCardId: string) => void
-  addVote: (parentCardId: string) => void
-  votes: Vote[]
-  maxVotes: number
-  setMaxVotesAmount: (amount: number) => void
+  nextRoomState: () => void;
+  prevRoomState: () => void;
+  removeVote: (parentCardId: string) => void;
+  addVote: (parentCardId: string) => void;
+  votes: Vote[];
+  maxVotes: number;
+  setMaxVotesAmount: (amount: number) => void;
 
-  moveCard: (action: CardMoveAction) => void
+  moveCard: (action: CardMoveAction) => void;
 
-  endRetro: () => void
+  endRetro: () => void;
 
-  updateActionPoint: (actionPointId: string, userId: string, text: string) => void
-  createActionPoint: (text: string, ownerId: string) => void
-  deleteActionPoint: (actionPointId: string) => void
-  actionPoints: ActionPoint[]
+  updateActionPoint: (
+    actionPointId: string,
+    userId: string,
+    text: string,
+  ) => void;
+  createActionPoint: (text: string, ownerId: string) => void;
+  deleteActionPoint: (actionPointId: string) => void;
+  actionPoints: ActionPoint[];
 }
 
 export const RetroContext = createContext<RetroContext>({
@@ -96,77 +122,73 @@ export const RetroContext = createContext<RetroContext>({
   actionPoints: [],
 });
 
-export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContextParams>> = (
-    {
-      children,
-      retroId,
-    }
-) => {
-  const socket = useRef<Socket>()
-  const timeOffset = useRef<number>()
-  const [teamId, setTeamId] = useState<string | null>(null)
-  const [votes, setVotes] = useState<Vote[]>([])
-  const [maxVotes, setMaxVotes] = useState<number>(0)
-  const [timerEnds, setTimerEnds] = useState<number | null>(null)
-  const [isReady, setIsReady] = useState(false)
-  const [roomState, setRoomState] = useState<RoomState>("reflection")
-  const [teamUsers, setTeamUsers] = useState<UserResponse[]>([])
-  const [columns, setColumns] = useState<RetroColumn[]>([])
-  const [cards, setCards] = useState<Card[]>([])
-  const [usersReady, setUsersReady] = useState<number>(0)
-  const [users, setUsers] = useState<User[]>([])
-  const [actionPoint,setActionPoint] = useState<ActionPoint[]>([])
+export const RetroContextProvider: React.FC<
+  React.PropsWithChildren<RetroContextParams>
+> = ({ children, retroId }) => {
+  const socket = useRef<Socket>();
+  const timeOffset = useRef<number>();
+  const [teamId, setTeamId] = useState<string | null>(null);
+  const [votes, setVotes] = useState<Vote[]>([]);
+  const [maxVotes, setMaxVotes] = useState<number>(0);
+  const [timerEnds, setTimerEnds] = useState<number | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const [roomState, setRoomState] = useState<RoomState>("reflection");
+  const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
+  const [columns, setColumns] = useState<RetroColumn[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [usersReady, setUsersReady] = useState<number>(0);
+  const [users, setUsers] = useState<User[]>([]);
+  const [actionPoint, setActionPoint] = useState<ActionPoint[]>([]);
   const [discussionCardId, setDiscussionCardId] = useState<string | null>(null);
 
-  const {user} = useUser()
-  const navigate = useNavigate()
-  const readyPercentage = (usersReady / users.length) * 100
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const readyPercentage = (usersReady / users.length) * 100;
 
   useEffect(() => {
-    const createdSocket = io(
-        `${process.env.RETRO_WEB_SOCKET_URL}/retro`,
-        {
-          query: {
-            retro_id: retroId,
-          },
-          extraHeaders: {
-            //@ts-ignore
-            Authorization: window.localStorage.getItem("Bearer"),
-          },
-          forceNew: true
-        }
-    );
+    const createdSocket = io(`${process.env.RETRO_WEB_SOCKET_URL}/retro`, {
+      query: {
+        retro_id: retroId,
+      },
+      extraHeaders: {
+        //@ts-ignore
+        Authorization: window.localStorage.getItem("Bearer"),
+      },
+      forceNew: true,
+    });
     socket.current = createdSocket;
 
     createdSocket.on("error", (e) => {
-      console.log(e)
-      toast.error('Wystąpił błąd')
+      console.log(e);
+      toast.error("Wystąpił błąd");
     });
 
     createdSocket.on("event_room_sync", (roomData: RoomSyncEvent) => {
-      setRoomState(roomData.roomState)
-      setTeamId(roomData.teamId)
-      setColumns(roomData.retroColumns)
-      setCards(roomData.cards)
-      setUsersReady(roomData.usersReady)
-      setVotes(roomData.votes)
-      setMaxVotes(roomData.maxVotes)
-      setIsReady(roomData.users.find((u) => u.userId === user?.id)?.isReady || false)
-      setUsers(roomData.users)
-      setActionPoint(roomData.actionPoints)
-      setDiscussionCardId(roomData.discussionCardId)
+      setRoomState(roomData.roomState);
+      setTeamId(roomData.teamId);
+      setColumns(roomData.retroColumns);
+      setCards(roomData.cards);
+      setUsersReady(roomData.usersReady);
+      setVotes(roomData.votes);
+      setMaxVotes(roomData.maxVotes);
+      setIsReady(
+        roomData.users.find((u) => u.userId === user?.id)?.isReady || false,
+      );
+      setUsers(roomData.users);
+      setActionPoint(roomData.actionPoints);
+      setDiscussionCardId(roomData.discussionCardId);
 
-      const serverTimeOffset = roomData.serverTime - new Date().valueOf()
-      timeOffset.current = serverTimeOffset
-      handleTimerChanged(roomData.timerEnds, serverTimeOffset)
-    })
+      const serverTimeOffset = roomData.serverTime - new Date().valueOf();
+      timeOffset.current = serverTimeOffset;
+      handleTimerChanged(roomData.timerEnds, serverTimeOffset);
+    });
 
     createdSocket.on("event_timer_change", (e: TimerChangedEvent) => {
-      handleTimerChanged(e.timerEnds, timeOffset.current ?? 0)
+      handleTimerChanged(e.timerEnds, timeOffset.current ?? 0);
     });
 
     createdSocket.on("event_close_room", () => {
-      navigate(`/retro/${retroId}/summary`)
+      navigate(`/retro/${retroId}/summary`);
     });
 
     return () => {
@@ -178,65 +200,65 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
   useEffect(() => {
     if (teamId) {
       getUsersByTeamId(teamId)
-          .then((users) => setTeamUsers(users))
-          .catch(console.log);
+        .then((users) => setTeamUsers(users))
+        .catch(console.log);
     }
-  }, [teamId])
+  }, [teamId]);
 
   const createActionPoint = (text: string, ownerId: string) => {
     const command: CreateActionPointCommand = {
       text: text,
       ownerId: ownerId,
-    }
-    socket.current?.emit("command_create_action_point", command)
-  }
+    };
+    socket.current?.emit("command_create_action_point", command);
+  };
 
   const deleteActionPoint = (actionPointId: string) => {
     const command: DeleteActionPointCommand = {
-      actionPointId: actionPointId
-    }
+      actionPointId: actionPointId,
+    };
 
-    socket.current?.emit("command_delete_action_point", command)
-  }
+    socket.current?.emit("command_delete_action_point", command);
+  };
 
   const updateActionPoint = (apId: string, userId: string, text: string) => {
     const command: UpdateActionPointCommand = {
       actionPointId: apId,
       ownerId: userId,
-      text: text
-    }
-    socket.current?.emit("command_update_action_point", command)
-  }
+      text: text,
+    };
+    socket.current?.emit("command_update_action_point", command);
+  };
 
   const endRetro = () => {
-    socket.current?.emit("command_close_room")
-  }
+    socket.current?.emit("command_close_room");
+  };
 
   const addVote = (parentCardId: string) => {
     const command: AddCardVoteCommand = {
-      parentCardId: parentCardId
-    }
-    socket.current?.emit("command_vote_on_card", command)
-  }
+      parentCardId: parentCardId,
+    };
+    socket.current?.emit("command_vote_on_card", command);
+  };
 
   const removeVote = (parentCardId: string) => {
     const command: RemoveCardVoteCommand = {
-      parentCardId: parentCardId
-    }
-    socket.current?.emit("command_remove_vote_on_card", command)
-  }
+      parentCardId: parentCardId,
+    };
+    socket.current?.emit("command_remove_vote_on_card", command);
+  };
 
   const setMaxVotesAmount = (amount: number) => {
     const command: ChangeVoteAmountCommand = {
-      votesAmount: amount
-    }
-    socket.current?.emit("command_change_vote_amount", command)
-  }
+      votesAmount: amount,
+    };
+    socket.current?.emit("command_change_vote_amount", command);
+  };
 
   const setReady = (ready: boolean) => {
     const command: UpdateReadyStateCommand = {
-      readyState: ready
-    }
+      readyState: ready,
+    };
     socket.current?.emit("command_ready", command);
     setIsReady(ready);
   };
@@ -245,53 +267,53 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
     const command: UpdateWriteStateCommand = {
       columnId: columnId,
       writeState: value,
-    }
+    };
     socket.current?.emit("command_write_state", command);
-  }
+  };
 
   const createCard = (text: string, columnId: string) => {
     const command: CreateCardCommand = {
       id: uuidv4(),
       text: text,
       columnId: columnId,
-    }
-    socket.current?.emit("command_create_card", command)
-    setWriting(false, columnId)
-  }
+    };
+    socket.current?.emit("command_create_card", command);
+    setWriting(false, columnId);
+  };
 
   const updateCard = (cardId: string, text: string) => {
     const command: UpdateCardCommand = {
       cardId: cardId,
       text: text,
-    }
-    socket.current?.emit("command_update_card", command)
-  }
+    };
+    socket.current?.emit("command_update_card", command);
+  };
 
   const deleteCard = (cardId: string) => {
     const command: DeleteCardCommand = {
-      cardId: cardId
-    }
-    socket.current?.emit("command_delete_card", command)
-  }
+      cardId: cardId,
+    };
+    socket.current?.emit("command_delete_card", command);
+  };
 
   const setTimer = (time: number | null) => {
-    setTimerEnds(time)
+    setTimerEnds(time);
     const command: ChangeTimerCommand = {
-      timestamp: time ? time + (timeOffset.current ?? 0) : null
-    }
-    socket.current?.emit("command_timer_change", command)
-  }
+      timestamp: time ? time + (timeOffset.current ?? 0) : null,
+    };
+    socket.current?.emit("command_timer_change", command);
+  };
 
   const handleTimerChanged = (time: number | null, serverOffset: number) => {
-    setTimerEnds(time ? time - serverOffset : null)
-  }
+    setTimerEnds(time ? time - serverOffset : null);
+  };
 
   const nextRoomState = () => {
     let state: RoomState;
 
     switch (roomState) {
       case "reflection":
-        state = "group"
+        state = "group";
         break;
       case "group":
         state = "vote";
@@ -300,16 +322,16 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
         state = "discuss";
         break;
       case "discuss":
-        changeDiscussCard("next")
+        changeDiscussCard("next");
         return;
     }
 
     const command: UpdateRoomStateCommand = {
-      roomState: state
-    }
+      roomState: state,
+    };
 
-    socket.current?.emit("command_room_state", command)
-  }
+    socket.current?.emit("command_room_state", command);
+  };
 
   const prevRoomState = () => {
     let state: RoomState;
@@ -332,90 +354,93 @@ export const RetroContextProvider: React.FC<React.PropsWithChildren<RetroContext
     }
 
     const command: UpdateRoomStateCommand = {
-      roomState: state
-    }
-    socket.current?.emit("command_room_state", command)
-  }
+      roomState: state,
+    };
+    socket.current?.emit("command_room_state", command);
+  };
 
   const changeDiscussCard = (to: "next" | "prev") => {
-    const groups = useCardGroups(cards, votes).sort((a, b) => b.votes - a.votes)
+    const groups = useCardGroups(cards, votes).sort(
+      (a, b) => b.votes - a.votes,
+    );
 
     if (!discussionCardId) {
       return false;
     }
-    const currentIndex = groups.findIndex(g => g.parentCardId === discussionCardId)
-    const targetIndex = to === "next"
-        ? currentIndex + 1
-        : currentIndex - 1
+    const currentIndex = groups.findIndex(
+      (g) => g.parentCardId === discussionCardId,
+    );
+    const targetIndex = to === "next" ? currentIndex + 1 : currentIndex - 1;
 
     if (to === "next" && targetIndex >= groups.length) {
       return true;
-    } else if (to === "prev" && targetIndex < 0) {
+    }
+    if (to === "prev" && targetIndex < 0) {
       return true;
     }
 
-    const targetCardId = groups[targetIndex]?.parentCardId
+    const targetCardId = groups[targetIndex]?.parentCardId;
 
     const command: ChangeCurrentDiscussCardCommand = {
-      cardId: targetCardId
-    }
-    socket.current?.emit("command_change_discussion_card", command)
+      cardId: targetCardId,
+    };
+    socket.current?.emit("command_change_discussion_card", command);
 
-    return false
-  }
+    return false;
+  };
 
   const moveCard = (move: CardMoveAction) => {
-    if (move.targetType == 'column') {
+    if (move.targetType === "column") {
       const command: MoveCardToColumnCommand = {
         cardId: move.cardId,
         columnId: move.targetId,
-      }
-      socket.current?.emit("command_move_card_to_column", command)
-    } else if (move.targetType == 'card') {
+      };
+      socket.current?.emit("command_move_card_to_column", command);
+    } else if (move.targetType === "card") {
       const command: AddCardToCardCommand = {
         cardId: move.cardId,
         parentCardId: move.targetId,
-      }
-      socket.current?.emit("command_card_add_to_card", command)
+      };
+      socket.current?.emit("command_card_add_to_card", command);
     }
-  }
+  };
 
   return (
-      <RetroContext.Provider
-          value={{
-            retroId: retroId,
-            teamId: teamId,
-            columns: columns,
-            cards: cards,
-            roomState: roomState,
-            teamUsers: teamUsers,
-            activeUsers: users,
-            timerEnds: timerEnds,
-            discussionCardId: discussionCardId,
-            setTimer: setTimer,
-            ready: isReady,
-            setReady: setReady,
-            readyPercentage: readyPercentage,
-            setWriting: setWriting,
-            createCard: createCard,
-            updateCard: updateCard,
-            deleteCard: deleteCard,
-            nextRoomState: nextRoomState,
-            prevRoomState: prevRoomState,
-            removeVote: removeVote,
-            addVote: addVote,
-            votes: votes,
-            maxVotes: maxVotes,
-            setMaxVotesAmount: setMaxVotesAmount,
-            moveCard: moveCard,
-            endRetro:endRetro,
-            updateActionPoint: updateActionPoint,
-            createActionPoint: createActionPoint,
-            deleteActionPoint: deleteActionPoint,
-            actionPoints: actionPoint,
-          }}
-      >
-        {children}
-      </RetroContext.Provider>
+    <RetroContext.Provider
+      value={{
+        retroId: retroId,
+        teamId: teamId,
+        columns: columns,
+        cards: cards,
+        roomState: roomState,
+        teamUsers: teamUsers,
+        activeUsers: users,
+        timerEnds: timerEnds,
+        discussionCardId: discussionCardId,
+        setTimer: setTimer,
+        ready: isReady,
+        setReady: setReady,
+        readyPercentage: readyPercentage,
+        setWriting: setWriting,
+        createCard: createCard,
+        updateCard: updateCard,
+        deleteCard: deleteCard,
+        nextRoomState: nextRoomState,
+        prevRoomState: prevRoomState,
+        removeVote: removeVote,
+        addVote: addVote,
+        votes: votes,
+        maxVotes: maxVotes,
+        setMaxVotesAmount: setMaxVotesAmount,
+        moveCard: moveCard,
+        endRetro: endRetro,
+        updateActionPoint: updateActionPoint,
+        createActionPoint: createActionPoint,
+        deleteActionPoint: deleteActionPoint,
+        actionPoints: actionPoint,
+      }}
+    >
+      {children}
+    </RetroContext.Provider>
   );
 };

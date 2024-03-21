@@ -1,8 +1,8 @@
-import { BoardColumnDto } from './editBoard.dto';
-import { TaskResponse } from 'shared/model/task/task.response';
+import type { TaskResponse } from "shared/model/task/task.response";
+import type { BoardColumnDto } from "./editBoard.dto";
 
 export interface BoardResponse {
-  columns: BoardColumnDto[]
-  defaultColumnId: string
-  tasks: TaskResponse[]
+  columns: BoardColumnDto[];
+  defaultColumnId: string;
+  tasks: TaskResponse[];
 }

@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
-import {UserRole} from "../user/user.role";
+import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import type { UserRole } from "../user/user.role";
 
 export class TeamRequest {
   @IsNotEmpty()
@@ -20,9 +20,9 @@ export class EditTeamRequest {
 }
 
 export class TeamUserRequest {
-    @IsString()
-    email: string;
+  @IsString()
+  email: string;
 
-    @IsString()
-    role: UserRole;
+  @IsString()
+  role: UserRole;
 }

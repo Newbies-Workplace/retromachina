@@ -4,16 +4,28 @@
   "scripts": {
     "dev": "dotenv -- turbo dev",
     "build": "dotenv -- turbo build",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "npx @biomejs/biome check --apply ./",
+    "prepare": "husky install"
   },
   "dependencies": {
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.6.1",
     "dotenv-cli": "latest",
-    "prettier": "^3.1.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "turbo": "latest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**.{js,ts,jsx,tsx,json}": [
+      "biome check --apply --no-errors-on-unmatched"
+    ]
   },
   "engines": {
     "node": ">=18"

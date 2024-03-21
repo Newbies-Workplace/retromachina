@@ -1,26 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import {
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+  type OnGatewayConnection,
+  type OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { PrismaService } from '../../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { ErrorTypes } from 'shared/model/retro/ErrorTypes';
-import { User } from '@prisma/client';
-import { TaskCreatedEvent, TaskDeletedEvent, TaskUpdatedEvent } from 'shared/model/board/board.events';
-import { TaskCreateCommand, TaskDeleteCommand, TaskUpdateCommand } from 'shared/model/board/board.commands';
+} from "@nestjs/websockets";
+import { User } from "@prisma/client";
+import {
+  TaskCreateCommand,
+  TaskDeleteCommand,
+  TaskUpdateCommand,
+} from "shared/model/board/board.commands";
+import {
+  TaskCreatedEvent,
+  TaskDeletedEvent,
+  TaskUpdatedEvent,
+} from "shared/model/board/board.events";
+import { ErrorTypes } from "shared/model/retro/ErrorTypes";
+import { Server, Socket } from "socket.io";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
-@WebSocketGateway(3001, { cors: true, namespace: 'board' })
+@WebSocketGateway(3001, { cors: true, namespace: "board" })
 export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private users = new Map<string, {teamId: string, user: User}>();
+  private users = new Map<string, { teamId: string; user: User }>();
 
   constructor(
     private prismaService: PrismaService,
@@ -38,10 +46,10 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       include: {
         TeamUsers: {
           where: {
-            team_id: teamId
-          }
-        }
-      }
+            team_id: teamId,
+          },
+        },
+      },
     });
 
     if (!userQuery) {
@@ -65,14 +73,14 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.users.set(client.id, {
       user: userQuery,
       teamId: teamId,
-    })
+    });
 
-    client.join(teamId)
+    client.join(teamId);
   }
 
-  @SubscribeMessage('command_create_task')
+  @SubscribeMessage("command_create_task")
   async handleCreateTask(client: Socket, payload: TaskCreateCommand) {
-    const teamId = this.users.get(client.id).teamId
+    const teamId = this.users.get(client.id).teamId;
     const col = await this.prismaService.task.create({
       data: {
         id: payload.taskId,
@@ -93,21 +101,21 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
         },
         description: payload.text,
       },
-    })
+    });
 
     const event: TaskCreatedEvent = {
       taskId: col.id,
       columnId: col.column_id,
       ownerId: col.owner_id,
       text: col.description,
-    }
+    };
 
-    this.server.to(teamId).emit('task_created_event', event)
+    this.server.to(teamId).emit("task_created_event", event);
   }
 
-  @SubscribeMessage('command_update_task')
+  @SubscribeMessage("command_update_task")
   async handleUpdateTask(client: Socket, payload: TaskUpdateCommand) {
-    const teamId = this.users.get(client.id).teamId
+    const teamId = this.users.get(client.id).teamId;
     const col = await this.prismaService.task.update({
       data: {
         column_id: payload.columnId,
@@ -117,42 +125,42 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       where: {
         id: payload.taskId,
       },
-    })
+    });
 
     const event: TaskUpdatedEvent = {
       taskId: col.id,
       columnId: col.column_id,
       ownerId: col.owner_id,
       text: col.description,
-    }
+    };
 
-    this.server.to(teamId).emit('task_updated_event', event)
+    this.server.to(teamId).emit("task_updated_event", event);
   }
 
-  @SubscribeMessage('command_delete_task')
+  @SubscribeMessage("command_delete_task")
   async handleDeleteTask(client: Socket, payload: TaskDeleteCommand) {
-    const teamId = this.users.get(client.id).teamId
+    const teamId = this.users.get(client.id).teamId;
     const col = await this.prismaService.task.delete({
       where: {
         id: payload.taskId,
       },
-    })
+    });
 
     const event: TaskDeletedEvent = {
       taskId: col.id,
-    }
+    };
 
-    this.server.to(teamId).emit('task_deleted_event', event)
+    this.server.to(teamId).emit("task_deleted_event", event);
   }
 
   handleDisconnect(client: Socket) {
-    this.users.delete(client.id)
+    this.users.delete(client.id);
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {
     this.users.delete(client.id);
 
-    client.emit('error', {
+    client.emit("error", {
       type,
       message,
     });
@@ -167,8 +175,8 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
       return result.user;
     } catch (error) {
-      if (error.name == 'JsonWebTokenError') {
-        this.doException(client, ErrorTypes.JwtError, 'JWT must be provided!');
+      if (error.name === "JsonWebTokenError") {
+        this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
       }
     }
   }

@@ -1,12 +1,18 @@
-import {RoomState, RoomSyncEvent} from 'shared/model/retro/retro.events';
-import { ActionPoint, Card, RetroColumn, User, Vote } from 'shared/model/retro/retroRoom.interface';
-import { v4 as uuid } from 'uuid';
-import {UserRole} from "shared/.dist/model/user/user.role";
+import { UserRole } from "shared/.dist/model/user/user.role";
+import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
+import {
+  ActionPoint,
+  Card,
+  RetroColumn,
+  User,
+  Vote,
+} from "shared/model/retro/retroRoom.interface";
+import { v4 as uuid } from "uuid";
 
 export class RetroRoom {
   users: Map<string, User> = new Map();
 
-  roomState: RoomState = 'reflection';
+  roomState: RoomState = "reflection";
   maxVotes?: number = 3;
   timerEnds?: number = null;
   discussionCardId = null;
@@ -33,7 +39,7 @@ export class RetroRoom {
       teamId: this.teamId,
       createdDate: this.createdDate,
       maxVotes: this.maxVotes,
-      usersReady: tempUsers.filter(user => user.isReady).length,
+      usersReady: tempUsers.filter((user) => user.isReady).length,
       roomState: this.roomState,
       timerEnds: this.timerEnds,
       cards: this.cards,
@@ -42,11 +48,12 @@ export class RetroRoom {
       actionPoints: this.actionPoints,
       retroColumns: this.retroColumns.map((column) => {
         column.cards = this.cards.filter((card) => {
-          return card.columnId == column.id;
+          return card.columnId === column.id;
         });
-        column.isWriting = tempUsers.filter(
-          user => Array.from(user.writingInColumns.values()).includes(column.id)
-        ).length > 0
+        column.isWriting =
+          tempUsers.filter((user) =>
+            Array.from(user.writingInColumns.values()).includes(column.id),
+          ).length > 0;
         column.teamCardsAmount = column.cards.length;
         return column;
       }),
@@ -94,7 +101,7 @@ export class RetroRoom {
 
   addUser(socketId: string, userId: string, role: UserRole) {
     const result = Array.from(this.users.entries()).find(([key, localUser]) => {
-      return localUser.userId == userId;
+      return localUser.userId === userId;
     });
 
     if (!result) {
@@ -112,7 +119,7 @@ export class RetroRoom {
 
   removeUser(socketId: string, userId: string) {
     const result = Array.from(this.users.entries()).find(([key, localUser]) => {
-      return localUser.userId == userId;
+      return localUser.userId === userId;
     });
 
     if (result) {
@@ -189,12 +196,16 @@ export class RetroRoom {
 
     this.clearUsersReady();
 
-    if (roomState === 'discuss') {
+    if (roomState === "discuss") {
       this.initDiscussionCard();
     }
   }
 
-  updateActionPoint(actionPointId: string, newOwnerId: string, newText: string) {
+  updateActionPoint(
+    actionPointId: string,
+    newOwnerId: string,
+    newText: string,
+  ) {
     const actionPoint = this.actionPoints.find(
       (actionPoint) => actionPoint.id === actionPointId,
     );

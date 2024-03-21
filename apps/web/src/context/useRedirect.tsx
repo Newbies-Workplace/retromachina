@@ -1,29 +1,23 @@
-import Cookies from 'js-cookie'
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
 
-const REDIRECT_COOKIE_NAME = "@redirect"
+const REDIRECT_COOKIE_NAME = "@redirect";
 
 export const setRedirectPath = (path: string | null) => {
-    let value = path
-    if (path === '/') {
-        value = null
-    }
+  let value = path;
+  if (path === "/") {
+    value = null;
+  }
 
-    Cookies.remove(REDIRECT_COOKIE_NAME)
+  Cookies.remove(REDIRECT_COOKIE_NAME);
 
-    if (value) {
-        Cookies.set(
-            REDIRECT_COOKIE_NAME,
-            value,
-            {
-                expires: dayjs()
-                    .add(5, 'm')
-                    .toDate()
-            },
-        )
-    }
-}
+  if (value) {
+    Cookies.set(REDIRECT_COOKIE_NAME, value, {
+      expires: dayjs().add(5, "m").toDate(),
+    });
+  }
+};
 
 export const getRedirectPath = (): string | null => {
-    return Cookies.get(REDIRECT_COOKIE_NAME) ?? null
-}
+  return Cookies.get(REDIRECT_COOKIE_NAME) ?? null;
+};

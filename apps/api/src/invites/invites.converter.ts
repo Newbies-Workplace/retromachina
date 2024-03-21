@@ -1,5 +1,5 @@
-import { Invite } from '@prisma/client';
-import { InviteResponse } from 'shared/model/invite/Invite.response';
+import { Invite } from "@prisma/client";
+import { InviteResponse } from "shared/model/invite/Invite.response";
 
 export const toInviteResponse = (invite: Invite): InviteResponse => {
   return {
@@ -7,4 +7,4 @@ export const toInviteResponse = (invite: Invite): InviteResponse => {
     team_id: invite.team_id,
     role: invite.role,
   };
-}
+};

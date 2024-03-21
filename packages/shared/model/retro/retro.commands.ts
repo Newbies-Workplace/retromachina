@@ -23,7 +23,7 @@ export interface UpdateWriteStateCommand {
 }
 
 export interface UpdateRoomStateCommand {
-  roomState: 'reflection' | 'group' | 'vote' | 'discuss' | 'summary';
+  roomState: "reflection" | "group" | "vote" | "discuss" | "summary";
 }
 
 export interface ChangeTimerCommand {

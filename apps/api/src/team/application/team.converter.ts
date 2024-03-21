@@ -1,6 +1,6 @@
+import { Injectable } from "@nestjs/common";
 import { Team } from "@prisma/client";
 import { TeamResponse } from "shared/model/team/team.response";
-import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class TeamConverter {

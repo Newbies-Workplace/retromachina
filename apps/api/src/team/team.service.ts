@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { JWTUser } from "src/auth/jwt/JWTUser";
+import { Team } from "@prisma/client";
 import {
-  TeamRequest,
   EditTeamRequest,
+  TeamRequest,
   TeamUserRequest,
 } from "shared/model/team/team.request";
-import { Team } from "@prisma/client";
+import { JWTUser } from "src/auth/jwt/JWTUser";
+import { PrismaService } from "src/prisma/prisma.service";
 import { v4 as uuid } from "uuid";
 
 @Injectable()
@@ -54,7 +54,7 @@ export class TeamService {
   async editTeam(
     user: JWTUser,
     team: Team,
-    editTeamDto: EditTeamRequest
+    editTeamDto: EditTeamRequest,
   ): Promise<Team> {
     await this.prismaService.team.update({
       where: {
@@ -98,7 +98,7 @@ export class TeamService {
   private async addUsersToTeamUsers(
     requestUsers: TeamUserRequest[],
     teamId: string,
-    scrumId: string
+    scrumId: string,
   ) {
     for (const requestUser of requestUsers) {
       const user = await this.prismaService.user.findFirst({

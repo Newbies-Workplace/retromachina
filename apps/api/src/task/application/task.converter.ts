@@ -1,5 +1,5 @@
-import { Task } from '@prisma/client';
-import { TaskResponse } from 'shared/model/task/task.response';
+import { Task } from "@prisma/client";
+import { TaskResponse } from "shared/model/task/task.response";
 
 export const toTaskResponse = (task: Task): TaskResponse => {
   return {
@@ -7,5 +7,5 @@ export const toTaskResponse = (task: Task): TaskResponse => {
     ownerId: task.owner_id,
     columnId: task.column_id,
     text: task.description,
-  }
-}
+  };
+};

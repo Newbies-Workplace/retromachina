@@ -1,5 +1,5 @@
-import { RetroResponse } from 'shared/model/retro/retro.response';
-import {Retrospective} from '@prisma/client';
+import { Retrospective } from "@prisma/client";
+import { RetroResponse } from "shared/model/retro/retro.response";
 
 export const toRetroResponse = (retro: Retrospective): RetroResponse => {
   return {
@@ -7,5 +7,5 @@ export const toRetroResponse = (retro: Retrospective): RetroResponse => {
     team_id: retro.team_id,
     date: retro.date,
     is_running: retro.is_running,
-  }
-}
+  };
+};

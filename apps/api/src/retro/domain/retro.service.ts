@@ -1,12 +1,11 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { v4 as uuid } from 'uuid';
-import { RetroGateway } from '../application/retro.gateway';
-import { RetroCreateRequest } from 'shared/model/retro/retro.request';
+import { Injectable, type OnModuleInit } from "@nestjs/common";
+import { RetroCreateRequest } from "shared/model/retro/retro.request";
+import { PrismaService } from "src/prisma/prisma.service";
+import { v4 as uuid } from "uuid";
+import { RetroGateway } from "../application/retro.gateway";
 
 @Injectable()
 export class RetroService implements OnModuleInit {
-
   constructor(
     private prismaService: PrismaService,
     private retroGateway: RetroGateway,
@@ -43,11 +42,11 @@ export class RetroService implements OnModuleInit {
           description: column.desc,
           cards: [],
           isWriting: false,
-          teamCardsAmount: 0
+          teamCardsAmount: 0,
         };
       }),
     );
 
-    return retro
+    return retro;
   }
 }

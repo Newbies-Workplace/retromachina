@@ -1,20 +1,29 @@
-import {Controller, Get, NotFoundException, Query, UseGuards,} from "@nestjs/common";
-import {JwtGuard} from "src/auth/jwt/jwt.guard";
-import {JWTUser} from "src/auth/jwt/JWTUser";
-import {User} from "src/auth/jwt/jwtuser.decorator";
-import {PrismaService} from "../../prisma/prisma.service";
-import {AuthAbilityFactory} from "../../auth/auth.ability";
-import {ForbiddenError, subject} from "@casl/ability";
-import {toUserInTeamResponse, toUserResponse} from "./user.converter";
-import {TeamConverter} from "../../team/application/team.converter";
-import {UserInTeamResponse, UserWithTeamsResponse} from "shared/model/user/user.response";
+import { ForbiddenError, subject } from "@casl/ability";
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
+import {
+  UserInTeamResponse,
+  UserWithTeamsResponse,
+} from "shared/model/user/user.response";
+import { JWTUser } from "src/auth/jwt/JWTUser";
+import { JwtGuard } from "src/auth/jwt/jwt.guard";
+import { User } from "src/auth/jwt/jwtuser.decorator";
+import { AuthAbilityFactory } from "../../auth/auth.ability";
+import { PrismaService } from "../../prisma/prisma.service";
+import { TeamConverter } from "../../team/application/team.converter";
+import { toUserInTeamResponse, toUserResponse } from "./user.converter";
 
 @Controller("users")
 export class UserController {
   constructor(
-      private prismaService: PrismaService,
-      private abilityFactory: AuthAbilityFactory,
-      private teamConverter: TeamConverter
+    private prismaService: PrismaService,
+    private abilityFactory: AuthAbilityFactory,
+    private teamConverter: TeamConverter,
   ) {}
 
   @Get("@me")
@@ -52,8 +61,8 @@ export class UserController {
   @Get("")
   @UseGuards(JwtGuard)
   async getUsers(
-      @User() user: JWTUser,
-      @Query("team_id") teamId: string
+    @User() user: JWTUser,
+    @Query("team_id") teamId: string,
   ): Promise<UserInTeamResponse[]> {
     if (!teamId || teamId.trim().length === 0) throw new NotFoundException();
     const team = await this.prismaService.team.findUniqueOrThrow({
@@ -73,6 +82,8 @@ export class UserController {
 
     ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
 
-    return team.TeamUser.map((teamUser) => toUserInTeamResponse(teamUser.User, teamUser.role));
+    return team.TeamUser.map((teamUser) =>
+      toUserInTeamResponse(teamUser.User, teamUser.role),
+    );
   }
 }

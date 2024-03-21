@@ -1,9 +1,9 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { config } from 'dotenv';
-import { Token, JWTUser } from 'src/auth/jwt/JWTUser';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { config } from "dotenv";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { JWTUser, Token } from "src/auth/jwt/JWTUser";
+import { PrismaService } from "src/prisma/prisma.service";
 
 config();
 
@@ -27,16 +27,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           select: {
             team_id: true,
             role: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (!user) throw new UnauthorizedException();
 
     return {
       ...user,
-      teams: user.TeamUsers.map(teamUser => ({
+      teams: user.TeamUsers.map((teamUser) => ({
         id: teamUser.team_id,
         role: teamUser.role,
       })),

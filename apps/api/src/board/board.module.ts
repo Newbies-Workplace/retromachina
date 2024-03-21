@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { BoardController } from './application/board.controller';
-import { BoardService } from './board.service';
-import { BoardGateway } from './application/board.gateway';
-import { AuthModule } from '../auth/auth.module';
-import { AuthAbilityFactory } from '../auth/auth.ability';
+import { Module } from "@nestjs/common";
+import { AuthAbilityFactory } from "../auth/auth.ability";
+import { AuthModule } from "../auth/auth.module";
+import { BoardController } from "./application/board.controller";
+import { BoardGateway } from "./application/board.gateway";
+import { BoardService } from "./board.service";
 
 @Module({
   imports: [AuthModule],

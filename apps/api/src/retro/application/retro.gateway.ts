@@ -1,49 +1,49 @@
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import {
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+  type OnGatewayConnection,
+  type OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+} from "@nestjs/websockets";
+import { User } from "@prisma/client";
+import * as dayjs from "dayjs";
+import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import {
-  CreateActionPointCommand,
   AddCardToCardCommand,
-  UpdateActionPointCommand,
+  AddCardVoteCommand,
   ChangeCurrentDiscussCardCommand,
   ChangeTimerCommand,
   ChangeVoteAmountCommand,
+  CreateActionPointCommand,
+  CreateCardCommand,
   DeleteActionPointCommand,
   DeleteCardCommand,
   MoveCardToColumnCommand,
-  CreateCardCommand,
-  UpdateReadyStateCommand,
   RemoveCardVoteCommand,
-  UpdateRoomStateCommand,
-  AddCardVoteCommand,
-  UpdateWriteStateCommand,
+  UpdateActionPointCommand,
   UpdateCardCommand,
-} from 'shared/model/retro/retro.commands';
-import { PrismaService } from '../../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { RetroRoom } from '../domain/model/retroRoom.object';
-import { Card, RetroColumn } from 'shared/model/retro/retroRoom.interface';
-import { v4 as uuid } from 'uuid';
-import { RoomStateValidator } from './roomstate.validator';
-import { ErrorTypes } from 'shared/model/retro/ErrorTypes';
-import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
-import * as dayjs from 'dayjs'
-import { JWTUser } from '../../auth/jwt/JWTUser';
-import {TimerChangedEvent} from "shared/model/retro/retro.events";
+  UpdateReadyStateCommand,
+  UpdateRoomStateCommand,
+  UpdateWriteStateCommand,
+} from "shared/model/retro/retro.commands";
+import { TimerChangedEvent } from "shared/model/retro/retro.events";
+import { Card, RetroColumn } from "shared/model/retro/retroRoom.interface";
+import { Server, Socket } from "socket.io";
+import { v4 as uuid } from "uuid";
+import { JWTUser } from "../../auth/jwt/JWTUser";
+import { PrismaService } from "../../prisma/prisma.service";
+import { RetroRoom } from "../domain/model/retroRoom.object";
+import { RoomStateValidator } from "./roomstate.validator";
 
 @Injectable()
-@WebSocketGateway(3001, { cors: true, namespace: 'retro' })
+@WebSocketGateway(3001, { cors: true, namespace: "retro" })
 export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private users = new Map<string, {roomId: string; user: User}>();
+  private users = new Map<string, { roomId: string; user: User }>();
   private retroRooms = new Map<string, RetroRoom>();
 
   constructor(
@@ -63,14 +63,16 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async closeStaleRooms(): Promise<number> {
-    let closedRooms = 0
+    let closedRooms = 0;
 
     for (const [, room] of this.retroRooms) {
-      const isStaleRoom = room.users.size === 0 && dayjs(room.lastDisconnectionDate).add(30, 'm').isBefore(dayjs())
+      const isStaleRoom =
+        room.users.size === 0 &&
+        dayjs(room.lastDisconnectionDate).add(30, "m").isBefore(dayjs());
 
       if (isStaleRoom) {
         closedRooms += 1;
-        await this.closeRoom(room)
+        await this.closeRoom(room);
       }
     }
 
@@ -80,9 +82,9 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async closeRoom(room: RetroRoom) {
     const board = await this.prismaService.board.findUnique({
       where: {
-        team_id: room.teamId
-      }
-    })
+        team_id: room.teamId,
+      },
+    });
 
     await this.prismaService.task.createMany({
       data: room.actionPoints.map((actionPoint) => {
@@ -102,7 +104,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
 
     this.retroRooms.delete(room.id);
-    this.server.to(room.id).emit('event_close_room');
+    this.server.to(room.id).emit("event_close_room");
   }
 
   async handleConnection(client: Socket) {
@@ -126,10 +128,10 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       include: {
         TeamUsers: {
           where: {
-            team_id: room.teamId
-          }
-        }
-      }
+            team_id: room.teamId,
+          },
+        },
+      },
     });
 
     if (!userQuery) {
@@ -150,11 +152,11 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(retroId);
 
-    this.server.to(room.id).emit('event_room_sync', room.getFrontData());
+    this.server.to(room.id).emit("event_room_sync", room.getFrontData());
   }
 
-  @SubscribeMessage('command_ready')
-  async handleReady(client: Socket, {readyState}: UpdateReadyStateCommand) {
+  @SubscribeMessage("command_ready")
+  async handleReady(client: Socket, { readyState }: UpdateReadyStateCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.users.get(client.id);
@@ -166,7 +168,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage('command_create_card')
+  @SubscribeMessage("command_create_card")
   async handleNewCard(client: Socket, payload: CreateCardCommand) {
     if (payload.text.trim().length === 0) return;
     if (payload.text.length > 1000) payload.text = payload.text.slice(0, 1000);
@@ -191,7 +193,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_update_card')
+  @SubscribeMessage("command_update_card")
   async handleUpdateCard(client: Socket, payload: UpdateCardCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -204,16 +206,16 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       (card) => card.id === payload.cardId && card.authorId === roomUser.userId,
     );
     if (cardIndex === -1) {
-      return
+      return;
     }
 
-    room.cards[cardIndex].text = payload.text
+    room.cards[cardIndex].text = payload.text;
 
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_delete_card')
-  handleDeleteCard(client: Socket, {cardId}: DeleteCardCommand) {
+  @SubscribeMessage("command_delete_card")
+  handleDeleteCard(client: Socket, { cardId }: DeleteCardCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.users.get(client.id);
@@ -223,7 +225,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
 
     if (cardIndex === -1) {
-      return
+      return;
     }
 
     room.cards = room.cards.filter(
@@ -232,7 +234,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_write_state')
+  @SubscribeMessage("command_write_state")
   handleWriteState(client: Socket, payload: UpdateWriteStateCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -243,19 +245,19 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
 
     if (!column) {
-      return
+      return;
     }
 
     if (payload.writeState) {
-      roomUser.writingInColumns.add(column.id)
+      roomUser.writingInColumns.add(column.id);
     } else {
-      roomUser.writingInColumns.delete(column.id)
+      roomUser.writingInColumns.delete(column.id);
     }
 
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_room_state')
+  @SubscribeMessage("command_room_state")
   handleRoomState(client: Socket, payload: UpdateRoomStateCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -275,7 +277,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_timer_change')
+  @SubscribeMessage("command_timer_change")
   handleChangeTimer(client: Socket, payload: ChangeTimerCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -283,13 +285,13 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     room.timerEnds = payload.timestamp;
 
     const event: TimerChangedEvent = {
-        timerEnds: room.timerEnds,
-    }
+      timerEnds: room.timerEnds,
+    };
 
-    this.server.to(roomId).emit('event_timer_change', event);
+    this.server.to(roomId).emit("event_timer_change", event);
   }
 
-  @SubscribeMessage('command_vote_on_card')
+  @SubscribeMessage("command_vote_on_card")
   handleVoteOnCard(client: Socket, payload: AddCardVoteCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -312,7 +314,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_remove_vote_on_card')
+  @SubscribeMessage("command_remove_vote_on_card")
   handleRemoveVoteOnCard(client: Socket, payload: RemoveCardVoteCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -322,7 +324,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_change_vote_amount')
+  @SubscribeMessage("command_change_vote_amount")
   handleChangeVoteAmount(client: Socket, payload: ChangeVoteAmountCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -335,7 +337,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_card_add_to_card')
+  @SubscribeMessage("command_card_add_to_card")
   handleCardAddToCard(client: Socket, payload: AddCardToCardCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -344,7 +346,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_move_card_to_column')
+  @SubscribeMessage("command_move_card_to_column")
   handleMoveCardToColumn(client: Socket, payload: MoveCardToColumnCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -353,20 +355,20 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_close_room')
+  @SubscribeMessage("command_close_room")
   async handleCloseRoom(client: Socket) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.users.get(client.id);
 
-    if (roomUser.userId !== room.scrumMasterId && roomUser.role !== 'ADMIN') {
-      return
+    if (roomUser.userId !== room.scrumMasterId && roomUser.role !== "ADMIN") {
+      return;
     }
 
-    await this.closeRoom(room)
+    await this.closeRoom(room);
   }
 
-  @SubscribeMessage('command_create_action_point')
+  @SubscribeMessage("command_create_action_point")
   handleAddActionPoint(client: Socket, payload: CreateActionPointCommand) {
     if (payload.text.trim().length === 0) {
       return;
@@ -379,7 +381,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_delete_action_point')
+  @SubscribeMessage("command_delete_action_point")
   handleDeleteActionPoint(client: Socket, payload: DeleteActionPointCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
@@ -388,7 +390,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_update_action_point')
+  @SubscribeMessage("command_update_action_point")
   handleChangeActionPointOwner(
     client: Socket,
     payload: UpdateActionPointCommand,
@@ -396,11 +398,15 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    room.updateActionPoint(payload.actionPointId, payload.ownerId, payload.text);
+    room.updateActionPoint(
+      payload.actionPointId,
+      payload.ownerId,
+      payload.text,
+    );
     this.emitRoomSync(roomId, room);
   }
 
-  @SubscribeMessage('command_change_discussion_card')
+  @SubscribeMessage("command_change_discussion_card")
   handleChangeDiscussionCard(
     client: Socket,
     payload: ChangeCurrentDiscussCardCommand,
@@ -415,7 +421,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleDisconnect(client: Socket) {
     const user = this.users.get(client.id);
     if (!user) {
-      return
+      return;
     }
     const roomId = user.roomId;
     const room = this.retroRooms.get(user.roomId);
@@ -423,21 +429,21 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.users.delete(client.id);
 
     if (!room) {
-      return
+      return;
     }
     room.removeUser(client.id, user.user.id);
 
-    this.server.to(roomId).emit('event_room_sync', room.getFrontData());
+    this.server.to(roomId).emit("event_room_sync", room.getFrontData());
   }
 
   private emitRoomSync(roomId: string, room: RetroRoom) {
-    this.server.to(roomId).emit('event_room_sync', room.getFrontData());
+    this.server.to(roomId).emit("event_room_sync", room.getFrontData());
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {
     this.users.delete(client.id);
 
-    client.emit('error', {
+    client.emit("error", {
       type,
       message,
     });
@@ -452,8 +458,8 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
       return result.user;
     } catch (error) {
-      if (error.name == 'JsonWebTokenError') {
-        this.doException(client, ErrorTypes.JwtError, 'JWT must be provided!');
+      if (error.name === "JsonWebTokenError") {
+        this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
       }
     }
   }

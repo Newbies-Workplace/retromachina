@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
+import type {
+  TeamRequest,
+  TeamUserRequest,
+} from "shared/model/team/team.request";
+import type { UserRole } from "shared/model/user/user.role";
 import { Button } from "../../atoms/button/Button";
-import styles from "./TeamForm.module.scss";
 import { Input } from "../../atoms/input/Input";
 import { UserPicker } from "../../molecules/user_picker/UserPicker";
-import {TeamRequest, TeamUserRequest} from "shared/model/team/team.request";
-import {UserRole} from "shared/model/user/user.role";
+import styles from "./TeamForm.module.scss";
 
 interface CreateTeamFormProps {
   userEmail: string;
@@ -29,7 +33,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
   };
 
   const onDeleteEmailClick = (index: number) => {
-    let newUsers = [...users];
+    const newUsers = [...users];
     newUsers.splice(index, 1);
 
     setUsers(newUsers);
@@ -71,7 +75,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
               onRoleChange={(email, role) => onRoleChange(email, role)}
               onDelete={(email) =>
                 onDeleteEmailClick(
-                  users.findIndex((user) => user.email === email)
+                  users.findIndex((user) => user.email === email),
                 )
               }
             />

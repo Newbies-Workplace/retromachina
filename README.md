@@ -1,6 +1,6 @@
 # Retromachina
 
-Fajna aplikacja
+Cool app for retrospectives
 
 ## Develop
 

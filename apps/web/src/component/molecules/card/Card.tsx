@@ -173,7 +173,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
         <div className={styles.childrenWrapper}>
           {isEditingText ? (
             <Button size={"round"} onClick={onSaveClick}>
-              <SaveIcon />
+              <SaveIcon width={18} height={18} />
             </Button>
           ) : (
             children

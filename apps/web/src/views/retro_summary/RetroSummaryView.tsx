@@ -57,10 +57,8 @@ export const RetroSummaryView = () => {
 
       <div className={styles.container}>
         <div className={styles.wrapper}>
-          <div className={styles.textSection}>
-            <div className={styles.name}>
-              Retro {dayjs(retro?.date).format("YYYY-MM-DD")}
-            </div>
+          <div className={"flex justify-center font-bold text-2xl w-full"}>
+            Retro {dayjs(retro?.date).format("YYYY-MM-DD")}
           </div>
 
           {userWithTasks.map((user) => {

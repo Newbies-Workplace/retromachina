@@ -73,7 +73,7 @@ export const ReflectionView: React.FC = () => {
                       onClick={() => deleteCard(card.id)}
                       className={styles.deleteButton}
                     >
-                      <DeleteIcon />
+                      <DeleteIcon width={18} height={18} />
                     </Button>
                   </Card>
                 );

@@ -1,5 +1,5 @@
-import cs from "classnames";
 import type React from "react";
+import { cn } from "../../../common/Util";
 import styles from "./Button.module.scss";
 
 interface ButtonProps {
@@ -22,8 +22,8 @@ export const Button: React.FC<React.PropsWithChildren<ButtonProps>> = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      style={{ ...style }}
-      className={cs(
+      style={style}
+      className={cn(
         styles.button,
         {
           [styles.disabled]: disabled,

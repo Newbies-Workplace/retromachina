@@ -162,7 +162,7 @@ export const DiscussView = () => {
                     onClick={() => deleteActionPoint(actionPoint.id)}
                     className={styles.deleteButton}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon width={18} height={18} />
                   </Button>
                 </Card>
               );

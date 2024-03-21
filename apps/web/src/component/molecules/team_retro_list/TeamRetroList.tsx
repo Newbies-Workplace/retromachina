@@ -41,7 +41,7 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
 
         {isAdmin && (
           <Button onClick={() => navigate(`/team/${teamId}/edit`)} size="round">
-            <EditIconSvg />
+            <EditIconSvg width={18} height={18} />
           </Button>
         )}
       </div>

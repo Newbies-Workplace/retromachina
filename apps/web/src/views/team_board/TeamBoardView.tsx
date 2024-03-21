@@ -79,7 +79,7 @@ export const TeamBoardView: React.FC = () => {
                   size={"round"}
                   onClick={() => onCreateCardClick(column.id)}
                 >
-                  <AddIcon />
+                  <AddIcon width={18} height={18} />
                 </Button>
               }
             >
@@ -153,7 +153,7 @@ export const TeamBoardView: React.FC = () => {
                             onClick={() => deleteTask(task.id)}
                             className={styles.deleteButton}
                           >
-                            <DeleteIcon />
+                            <DeleteIcon width={18} height={18} />
                           </Button>
                         </Card>
                       </DraggableCard>

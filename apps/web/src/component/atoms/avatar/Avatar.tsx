@@ -1,6 +1,7 @@
 import cs from "classnames";
 import type React from "react";
 import styles from "./Avatar.module.scss";
+import {cn} from "../../../common/Util";
 
 export type AvatarProps = {
   className?: string;
@@ -29,7 +30,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           minHeight: size,
         }}
         alt={"avatar"}
-        className={cs(styles.circle, styles[variant], styles.photo)}
+        className={cn("rounded-full", styles.circle, styles[variant], styles.photo)}
       />
 
       {variant === "ready" && (

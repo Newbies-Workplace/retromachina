@@ -11,10 +11,7 @@ import {
   Put,
   UseGuards,
 } from "@nestjs/common";
-import {
-  EditTeamRequest,
-  TeamRequest,
-} from "shared/model/team/team.request";
+import { EditTeamRequest, TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";

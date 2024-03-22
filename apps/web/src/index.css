@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    .scrollbar {
+        overflow-x: auto;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 4px;
+        height: 8px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        border-radius: 2px;
+        border: solid 10px transparent;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: rgb(97, 96, 96);
+        border-radius: 10px;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #a7a3a3;
+    }
+}
+
 body, main {
     min-height: 100%;
     margin: 0;

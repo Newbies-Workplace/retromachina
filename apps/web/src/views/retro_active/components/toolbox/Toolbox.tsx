@@ -1,5 +1,6 @@
 import ProgressBar from "@ramonak/react-progress-bar";
 import cs from "classnames";
+import { AnimatePresence } from "framer-motion";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag-svgrepo-com.svg";
@@ -174,14 +175,16 @@ export const Toolbox: React.FC = () => {
               <CheckeredFlagIconSvg style={{ width: 32, height: 32 }} />
             </Button>
 
-            {isFinishOpen && (
-              <ConfirmDialog
-                title={"Zakończenie retrospektywy"}
-                content={"Czy na pewno chcesz zakończyć retrospektywę?"}
-                onConfirmed={endRetro}
-                onDismiss={() => setOpenFinish(false)}
-              />
-            )}
+            <AnimatePresence>
+              {isFinishOpen && (
+                <ConfirmDialog
+                  title={"Zakończenie retrospektywy"}
+                  content={"Czy na pewno chcesz zakończyć retrospektywę?"}
+                  onConfirmed={endRetro}
+                  onDismiss={() => setOpenFinish(false)}
+                />
+              )}
+            </AnimatePresence>
           </>
         )}
       </div>

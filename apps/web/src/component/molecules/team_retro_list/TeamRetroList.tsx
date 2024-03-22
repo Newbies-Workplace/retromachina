@@ -6,7 +6,6 @@ import type { RetroResponse } from "shared/model/retro/retro.response";
 import { getRetrosByTeamId } from "../../../api/Retro.service";
 import { useTeamRole } from "../../../context/useTeamRole";
 import { Button } from "../../atoms/button/Button";
-import styles from "./TeamRetroList.module.scss";
 
 interface TeamRetroListProps {
   teamName: string;
@@ -31,9 +30,13 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
   }, []);
 
   return (
-    <div className={styles.team}>
-      <div className={styles.topBar}>
-        <h2 className={styles.title}>{teamName}</h2>
+    <div
+      className={"flex flex-col gap-2 w-full bg-background-500 p-2 rounded-md"}
+    >
+      <div className={"flex flex-row justify-between gap-2"}>
+        <span className={"text-xl font-bold"}>
+          {teamName} aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa sadas asd asd as dasd
+        </span>
 
         {isAdmin && (
           <Button onClick={() => navigate(`/team/${teamId}/edit`)} size="icon">
@@ -42,10 +45,10 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
         )}
       </div>
 
-      <div className={styles.wrapper}>
+      <div className={"flex gap-2 pb-2 scrollbar"}>
         <Button
           size={"xl"}
-          className={"min-w-[256px] min-h-[126px] flex-col"}
+          className={"min-w-[256px] min-h-[126px] flex-col scrollbar"}
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
           Lista zadań

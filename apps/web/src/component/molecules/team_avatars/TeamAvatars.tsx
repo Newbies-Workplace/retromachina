@@ -14,7 +14,7 @@ interface TeamAvatarsProps {
 export const TeamAvatars: React.FC<React.PropsWithChildren<TeamAvatarsProps>> =
   ({ users }) => {
     return (
-      <div className={styles.wrapper}>
+      <div className={"flex ml-2"}>
         {users.map((user) => (
           <Avatar
             key={user.id}

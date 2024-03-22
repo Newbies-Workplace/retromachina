@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -99,14 +100,16 @@ const TeamEditView: React.FC = () => {
         </div>
       )}
 
-      {confirmOpen && (
-        <ConfirmDialog
-          title={"Usunięcie zespołu"}
-          content={`Czy na pewno chcesz usunąć zespół ${team?.name ?? ""}?`}
-          onConfirmed={onDelete}
-          onDismiss={() => setConfirmOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {confirmOpen && (
+          <ConfirmDialog
+            title={"Usunięcie zespołu"}
+            content={`Czy na pewno chcesz usunąć zespół ${team?.name ?? ""}?`}
+            onConfirmed={onDelete}
+            onDismiss={() => setConfirmOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {team && (
         <TeamForm

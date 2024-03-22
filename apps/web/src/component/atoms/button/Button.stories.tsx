@@ -10,30 +10,37 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+export const Small: Story = {
+  args: {
+    children: "Test button",
+    size: "sm",
+  },
+};
+
 export const Medium: Story = {
   args: {
+    ...Small.args,
     size: "md",
-    children: "Test button",
   },
 };
 
 export const Large: Story = {
   args: {
-    ...Medium.args,
+    ...Small.args,
     size: "lg",
   },
 };
 
-export const Small: Story = {
+export const ExtraLarge: Story = {
   args: {
-    ...Medium.args,
-    size: "sm",
+    ...Small.args,
+    size: "xl",
   },
 };
 
 export const Disabled: Story = {
   args: {
-    ...Medium.args,
+    ...Small.args,
     disabled: true,
   },
 };

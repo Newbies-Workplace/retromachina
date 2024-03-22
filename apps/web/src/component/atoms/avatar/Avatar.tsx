@@ -1,22 +1,35 @@
-import cs from "classnames";
+import { type VariantProps, cva } from "class-variance-authority";
+import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
+import type { BaseHTMLAttributes } from "react";
 import { cn } from "../../../common/Util";
-import styles from "./Avatar.module.scss";
 
-export type AvatarProps = {
-  className?: string;
+const avatarVariants = cva(
+  "rounded-full border-2 border-white transition-all overflow-hidden",
+  {
+    variants: {
+      variant: {
+        inactive: "grayscale",
+        active: "",
+        ready: "border-primary-500",
+      },
+    },
+  },
+);
+
+export interface AvatarProps
+  extends BaseHTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof avatarVariants> {
   size?: number;
-  style?: React.CSSProperties;
-  variant?: "inactive" | "active" | "ready";
   url: string;
-};
+}
 
 export const Avatar: React.FC<AvatarProps> = ({
+  className,
+  style,
   variant = "active",
   size = 40,
-  style,
   url,
-  className,
 }) => {
   return (
     <div style={style} className={className}>
@@ -30,19 +43,33 @@ export const Avatar: React.FC<AvatarProps> = ({
           minHeight: size,
         }}
         alt={"avatar"}
-        className={cn(
-          "rounded-full",
-          styles.circle,
-          styles[variant],
-          styles.photo,
-        )}
+        className={cn(avatarVariants({ variant, className }))}
       />
 
-      {variant === "ready" && (
-        <div className={styles.readyDotHolder}>
-          <div className={styles.readyDot} />
-        </div>
-      )}
+      <AnimatePresence>
+        {variant === "ready" && (
+          <motion.div layout className={"relative"}>
+            <motion.div
+              initial={{ opacity: 0, bottom: 0 }}
+              animate={{
+                opacity: 1,
+                bottom: 4,
+              }}
+              exit={{
+                opacity: 0,
+                bottom: 0,
+              }}
+              transition={{
+                duration: 0.25,
+                type: "spring",
+              }}
+              className={
+                "absolute w-3 h-3 bg-primary-500 rounded-[50%] bottom-1 -translate-x-1/2 left-1/2"
+              }
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

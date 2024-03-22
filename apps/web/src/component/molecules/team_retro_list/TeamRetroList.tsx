@@ -75,7 +75,7 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >
-                Retrospektywa w trakcie
+                Retro w trakcie
                 <PlusIcon className={"size-6"} />
               </Button>
             );

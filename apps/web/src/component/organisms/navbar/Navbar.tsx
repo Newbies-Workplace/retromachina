@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className={styles.profile}>
             <div onClick={() => toggle(true)}>
               <Avatar
-                style={{ cursor: "pointer" }}
+                className={"cursor-pointer"}
                 url={user?.avatar_link!}
                 {...avatarProps}
               />

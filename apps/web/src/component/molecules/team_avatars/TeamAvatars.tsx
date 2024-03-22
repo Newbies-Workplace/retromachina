@@ -18,7 +18,7 @@ export const TeamAvatars: React.FC<React.PropsWithChildren<TeamAvatarsProps>> =
         {users.map((user) => (
           <Avatar
             key={user.id}
-            className={styles.avatar}
+            className={"-mr-2"}
             variant={
               user.isActive ? (user.isReady ? "ready" : "active") : "inactive"
             }

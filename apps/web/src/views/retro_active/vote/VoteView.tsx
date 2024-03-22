@@ -70,7 +70,7 @@ export const VoteView = () => {
                         >
                           {groupCards.length === index + 1 && (
                             <Counter
-                              style={{ height: "100%" }}
+                              className={"h-full"}
                               canIncrement={votesLeft > 0}
                               count={userVotes}
                               onIncrement={() => {

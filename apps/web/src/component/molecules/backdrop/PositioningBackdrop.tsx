@@ -75,6 +75,7 @@ export const PositioningBackdrop: React.FC<PositioningBackdropProps> = ({
           </Portal>
         )}
       </AnimatePresence>
+
       <div ref={boxRef}>
         {visible && pos ? (
           <div

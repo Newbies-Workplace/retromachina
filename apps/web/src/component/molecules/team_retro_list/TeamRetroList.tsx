@@ -34,9 +34,7 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
       className={"flex flex-col gap-2 w-full bg-background-500 p-2 rounded-md"}
     >
       <div className={"flex flex-row justify-between gap-2"}>
-        <span className={"text-xl font-bold"}>
-          {teamName} aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa sadas asd asd as dasd
-        </span>
+        <span className={"text-xl font-bold"}>{teamName}</span>
 
         {isAdmin && (
           <Button onClick={() => navigate(`/team/${teamId}/edit`)} size="icon">
@@ -79,7 +77,6 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >
                 Retro w trakcie
-                <PlusIcon className={"size-6"} />
               </Button>
             );
           }

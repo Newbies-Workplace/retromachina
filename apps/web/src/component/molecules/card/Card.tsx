@@ -1,7 +1,7 @@
+import { Pencil1Icon } from "@radix-ui/react-icons";
 import cs from "classnames";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import EditIconSvg from "../../../assets/icons/edit-icon.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
 import useClickOutside from "../../../context/useClickOutside";
 import { Avatar } from "../../atoms/avatar/Avatar";
@@ -164,7 +164,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
               >
                 <Avatar url={author.avatar} size={24} />
                 <span>{author.name}</span>
-                {editableUser && <EditIconSvg width={12} height={12} />}
+                {editableUser && <Pencil1Icon width={12} height={12} />}
               </div>
             </div>
           )}
@@ -172,7 +172,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
 
         <div className={styles.childrenWrapper}>
           {isEditingText ? (
-            <Button size={"round"} onClick={onSaveClick}>
+            <Button size={"icon"} onClick={onSaveClick}>
               <SaveIcon width={18} height={18} />
             </Button>
           ) : (

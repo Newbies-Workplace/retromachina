@@ -1,4 +1,3 @@
-import cs from "classnames";
 import type React from "react";
 import { Button } from "../../atoms/button/Button";
 import { Backdrop } from "../backdrop/Backdrop";
@@ -26,18 +25,15 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
         <div className={styles.buttons}>
           <Button
-            size={"small"}
-            className={cs(styles.button, styles.noButton)}
+            size={"sm"}
+            className={"px-8"}
+            variant={"destructive"}
             onClick={onDismiss}
           >
             Nie
           </Button>
 
-          <Button
-            size={"small"}
-            className={styles.button}
-            onClick={onConfirmed}
-          >
+          <Button size={"sm"} className={"px-8"} onClick={onConfirmed}>
             Tak
           </Button>
         </div>

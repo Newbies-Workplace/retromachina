@@ -40,12 +40,3 @@
   margin-top: auto;
   margin-bottom: 8px;
 }
-
-.button {
-  padding-left: 32px !important;
-  padding-right: 32px !important;
-
-  &.noButton {
-    background-color: colors.$warn;
-  }
-}

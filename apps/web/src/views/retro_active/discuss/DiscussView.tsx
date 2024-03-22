@@ -1,5 +1,5 @@
+import { TrashIcon } from "@radix-ui/react-icons";
 import React, { useEffect, useState } from "react";
-import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 import { Avatar } from "../../../component/atoms/avatar/Avatar";
 import { Button } from "../../../component/atoms/button/Button";
 import { Input } from "../../../component/atoms/input/Input";
@@ -158,11 +158,11 @@ export const DiscussView = () => {
                   }
                 >
                   <Button
-                    size={"round"}
+                    size={"icon"}
+                    variant={"destructive"}
                     onClick={() => deleteActionPoint(actionPoint.id)}
-                    className={styles.deleteButton}
                   >
-                    <DeleteIcon width={18} height={18} />
+                    <TrashIcon className={"size-6"} />
                   </Button>
                 </Card>
               );

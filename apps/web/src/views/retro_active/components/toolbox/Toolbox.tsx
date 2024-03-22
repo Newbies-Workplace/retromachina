@@ -67,11 +67,7 @@ export const Toolbox: React.FC = () => {
       <div className={styles.box}>
         {isVotingVisible && isAdmin && (
           <>
-            <Button
-              className={styles.button}
-              size="medium"
-              onClick={() => setOpenVote(true)}
-            >
+            <Button className={"size-full"} onClick={() => setOpenVote(true)}>
               <VoteIconSvg />
             </Button>
 
@@ -88,8 +84,8 @@ export const Toolbox: React.FC = () => {
 
                 <div className={styles.buttonWrapper}>
                   <Button
-                    size="small"
-                    className={styles.plusminusbutton}
+                    className={"size-full"}
+                    size={"sm"}
                     onClick={() =>
                       maxVotes > 0 && setMaxVotesAmount(maxVotes - 1)
                     }
@@ -98,8 +94,8 @@ export const Toolbox: React.FC = () => {
                   </Button>
                   <div className={styles.numberfield}>{maxVotes}</div>
                   <Button
-                    size="small"
-                    className={styles.plusminusbutton}
+                    className={"size-full"}
+                    size={"sm"}
                     onClick={() => setMaxVotesAmount(maxVotes + 1)}
                   >
                     +
@@ -113,7 +109,6 @@ export const Toolbox: React.FC = () => {
 
       <div className={cs(styles.box, styles.readyBox)}>
         <Button
-          size="medium"
           className={cs(styles.readyButton, {
             [styles.ready]: ready,
           })}
@@ -150,11 +145,19 @@ export const Toolbox: React.FC = () => {
 
       {isAdmin && (
         <div className={styles.nextPrevButtons}>
-          <Button size="medium" disabled={prevDisabled} onClick={prevRoomState}>
+          <Button
+            className={"size-full"}
+            disabled={prevDisabled}
+            onClick={prevRoomState}
+          >
             <LeftArrowIconSvg />
           </Button>
 
-          <Button size="medium" disabled={nextDisabled} onClick={nextRoomState}>
+          <Button
+            className={"size-full"}
+            disabled={nextDisabled}
+            onClick={nextRoomState}
+          >
             <RightArrowIconSvg />
           </Button>
         </div>
@@ -164,8 +167,8 @@ export const Toolbox: React.FC = () => {
         {isAdmin && (
           <>
             <Button
-              className={cs(styles.button, styles.finishButton)}
-              size="medium"
+              variant={"destructive"}
+              className={"size-full"}
               onClick={() => setOpenFinish(true)}
             >
               <CheckeredFlagIconSvg style={{ width: 32, height: 32 }} />

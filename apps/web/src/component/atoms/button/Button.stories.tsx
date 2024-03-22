@@ -12,22 +12,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Medium: Story = {
   args: {
-    size: "medium",
+    size: "md",
     children: "Test button",
   },
 };
 
-export const Big: Story = {
+export const Large: Story = {
   args: {
     ...Medium.args,
-    size: "big",
+    size: "lg",
   },
 };
 
 export const Small: Story = {
   args: {
     ...Medium.args,
-    size: "small",
+    size: "sm",
   },
 };
 
@@ -38,9 +38,9 @@ export const Disabled: Story = {
   },
 };
 
-export const Round: Story = {
+export const Icon: Story = {
   args: {
-    size: "round",
-    children: <ActionIcon />,
+    size: "icon",
+    children: <ActionIcon className={"size-6"} />,
   },
 };

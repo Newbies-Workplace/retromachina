@@ -103,15 +103,15 @@ export const RetroSummaryView = () => {
             </div>
           )}
 
-          <div className={styles.goBack}>
-            <Button
-              onClick={() => {
-                navigate(`/team/${retro?.team_id}/board`);
-              }}
-            >
-              Powrót do listy zadań
-            </Button>
-          </div>
+          <Button
+            className={"mt-4 mx-auto"}
+            size={"lg"}
+            onClick={() => {
+              navigate(`/team/${retro?.team_id}/board`);
+            }}
+          >
+            Powrót do listy zadań
+          </Button>
         </div>
       </div>
     </>

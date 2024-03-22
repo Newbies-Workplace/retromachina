@@ -60,7 +60,12 @@ export const Menu = () => {
         </Link>
       </div>
 
-      <Button size="small" className={styles.logout} onClick={onLogoutClick}>
+      <Button
+        size="sm"
+        className={"mx-2 mb-2"}
+        variant={"destructive"}
+        onClick={onLogoutClick}
+      >
         Wyloguj
       </Button>
     </div>

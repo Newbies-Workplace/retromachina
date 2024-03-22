@@ -1,3 +1,4 @@
+import { PlusIcon, Share1Icon } from "@radix-ui/react-icons";
 import * as qs from "query-string";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -7,8 +8,6 @@ import type { RetroCreateRequest } from "shared/model/retro/retro.request";
 import { v4 as uuidv4 } from "uuid";
 import { createRetro } from "../../api/Retro.service";
 import { getRandomTemplate } from "../../api/RetroTemplate.service";
-import ActionIconSvg from "../../assets/icons/action-icon.svg";
-import AddIcon from "../../assets/icons/add-icon.svg";
 import { getRandomColor } from "../../common/Util";
 import { Button } from "../../component/atoms/button/Button";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
@@ -136,7 +135,7 @@ export const RetroCreateView: React.FC = () => {
     <>
       <Navbar
         topContent={
-          <Button size={"small"} onClick={() => randomizeTemplate()}>
+          <Button size={"sm"} onClick={() => randomizeTemplate()}>
             Losuj szablon
           </Button>
         }
@@ -161,22 +160,30 @@ export const RetroCreateView: React.FC = () => {
           <div className={styles.columnButton}>
             <Button
               disabled={columns.length >= MAX_COLUMNS}
-              size="big"
+              size="xl"
               onClick={onAddColumn}
             >
-              <span>Nowa Kolumna</span>
-              <AddIcon />
+              <PlusIcon className={"size-6"} />
+              Nowa kolumna
             </Button>
           </div>
         </div>
 
         <div className={styles.actionWrapper}>
-          <Button className={styles.actionButton} onClick={onCreateRetroClick}>
+          <Button
+            size={"xl"}
+            className={"min-w-[600px]"}
+            onClick={onCreateRetroClick}
+          >
             <div className={styles.buttonSection}>
-              <span>Akcja</span>
+              <span>Akcja!</span>
               (Zacznij & skopiuj link)
             </div>
-            {clicked ? <ProgressBar color="black" /> : <ActionIconSvg />}
+            {clicked ? (
+              <ProgressBar color="black" />
+            ) : (
+              <Share1Icon className={"size-8"} />
+            )}
           </Button>
         </div>
       </div>

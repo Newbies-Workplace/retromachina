@@ -9,15 +9,17 @@ const config: Config = {
       black: "#000000",
       red: {
         500: "#DC6E47",
+        600: "#b75939",
       },
-      green: {
+      primary: {
         500: "#73BDA8",
+        600: "#5e9b8a",
       },
-      yellow: {
+      background: {
         50: "#F4F2E6",
         500: "#EBD3A8",
       },
-      brown: {
+      secondary: {
         500: "#946847",
       },
     },

@@ -83,7 +83,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
         </div>
         <div className={styles.actionSection}>
           {deletable ? (
-            <Button style={{ backgroundColor: "#DC6E47" }} onClick={onDelete}>
+            <Button variant={"destructive"} onClick={onDelete}>
               Usuń
             </Button>
           ) : (

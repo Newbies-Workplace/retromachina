@@ -1,5 +1,5 @@
-import cs from "classnames";
 import type React from "react";
+import { cn } from "../../../common/Util";
 import { ColumnHeader } from "../column_header/ColumnHeader";
 import styles from "./Column.module.scss";
 
@@ -21,7 +21,7 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
 }) => {
   return (
     <div className={styles.cardWrapper}>
-      <div className={cs(styles.columnHeaderWrapper, headerStyle)}>
+      <div className={cn(styles.columnHeaderWrapper, headerStyle)}>
         <ColumnHeader
           color={columnData.color}
           header={columnData.name}

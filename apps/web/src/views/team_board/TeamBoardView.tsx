@@ -1,3 +1,4 @@
+import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -11,8 +12,6 @@ import { DraggableCard } from "../../component/molecules/dragndrop/DraggableCard
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useBoard } from "../../context/board/BoardContext.hook";
 import { useUser } from "../../context/user/UserContext.hook";
-import AddIcon from "./../../assets/icons/add-icon.svg";
-import DeleteIcon from "./../../assets/icons/delete-icon.svg";
 import styles from "./TeamBoardView.module.scss";
 
 export const TeamBoardView: React.FC = () => {
@@ -56,7 +55,7 @@ export const TeamBoardView: React.FC = () => {
       <Navbar
         topContent={
           team?.owner_id === user?.id && (
-            <Button size={"small"} onClick={onEditClick}>
+            <Button size={"sm"} onClick={onEditClick}>
               Edytuj
             </Button>
           )
@@ -76,10 +75,10 @@ export const TeamBoardView: React.FC = () => {
               }}
               headerRight={
                 <Button
-                  size={"round"}
+                  size={"icon"}
                   onClick={() => onCreateCardClick(column.id)}
                 >
-                  <AddIcon width={18} height={18} />
+                  <PlusIcon className={"size-6"} />
                 </Button>
               }
             >
@@ -149,11 +148,11 @@ export const TeamBoardView: React.FC = () => {
                           }
                         >
                           <Button
-                            size={"round"}
+                            size={"icon"}
+                            variant={"destructive"}
                             onClick={() => deleteTask(task.id)}
-                            className={styles.deleteButton}
                           >
-                            <DeleteIcon width={18} height={18} />
+                            <TrashIcon className={"size-6"} />
                           </Button>
                         </Card>
                       </DraggableCard>

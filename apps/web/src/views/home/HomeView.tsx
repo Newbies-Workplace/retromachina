@@ -26,7 +26,7 @@ const HomeView: React.FC = () => {
                 Stwórz nowy zespół lub poczekaj na zaproszenie od innego członka
                 retromachiny!
               </span>
-              <Button onClick={() => navigate("/team/create")} size="small">
+              <Button onClick={() => navigate("/team/create")}>
                 <CreateTeamSvg />
                 Stwórz Zespół
               </Button>

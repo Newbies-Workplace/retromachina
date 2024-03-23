@@ -81,7 +81,6 @@ export const PositioningBackdrop: React.FC<PositioningBackdropProps> = ({
           <div
             style={{
               display: "flex",
-              width: pos.width,
               height: pos.height,
             }}
           />

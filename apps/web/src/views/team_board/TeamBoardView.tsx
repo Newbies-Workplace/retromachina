@@ -62,7 +62,7 @@ export const TeamBoardView: React.FC = () => {
         }
       />
 
-      <div className={styles.container}>
+      <div className={"grid grid-flow-col h-full scrollbar"}>
         {board.columns
           ?.sort((a, b) => a.order - b.order)
           .map((column) => (

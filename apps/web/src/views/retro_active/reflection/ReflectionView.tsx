@@ -20,7 +20,7 @@ export const ReflectionView: React.FC = () => {
   } = useRetro();
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+    <div className={"grid grid-flow-col h-full scrollbar"}>
       {columns?.map((column) => {
         const columnCards = cards.filter((c) => c.columnId === column.id);
 

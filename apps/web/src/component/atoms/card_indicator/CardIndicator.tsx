@@ -1,6 +1,6 @@
 import React from "react";
-import {cn} from "../../../common/Util";
-import {usePlural} from "../../../context/usePlural";
+import { cn } from "../../../common/Util";
+import { usePlural } from "../../../context/usePlural";
 import styles from "./CardIndicator.module.scss";
 
 interface PropsCardCount {

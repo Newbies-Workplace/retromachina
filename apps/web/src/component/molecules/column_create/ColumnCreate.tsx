@@ -1,8 +1,8 @@
+import { TrashIcon } from "@radix-ui/react-icons";
 import type React from "react";
-import DeleteIcon from "../../../assets/icons/delete-icon.svg";
+import { Button } from "../../atoms/button/Button";
 import { Input } from "../../atoms/input/Input";
 import { ColorPicker } from "../color_picker/ColorPicker";
-import styles from "./ColumnCreate.module.scss";
 
 export interface ColumnCreateProps {
   color: string;
@@ -26,8 +26,12 @@ export const ColumnCreate: React.FC<ColumnCreateProps> = ({
   withDescription = false,
 }) => {
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.topBar}>
+    <div
+      className={
+        "flex flex-col gap-2 min-w-[300px] max-w-[300px] border bg-background-500 p-2 rounded-2xl"
+      }
+    >
+      <div className={"flex justify-center items-center gap-2"}>
         <ColorPicker
           color={color}
           onChange={(color) => {
@@ -50,10 +54,11 @@ export const ColumnCreate: React.FC<ColumnCreateProps> = ({
             });
           }}
           placeholder="Nazwa Kolumny"
-          className={styles.name}
         />
 
-        <DeleteIcon onClick={onDelete} className={styles.delete} />
+        <Button size={"icon"} variant={"destructive"} onClick={onDelete}>
+          <TrashIcon className={"size-6"} />
+        </Button>
       </div>
 
       {withDescription && (

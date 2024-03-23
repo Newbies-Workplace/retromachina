@@ -1,7 +1,6 @@
 import type React from "react";
 import { cn } from "../../../common/Util";
 import { ColumnHeader } from "../column_header/ColumnHeader";
-import styles from "./Column.module.scss";
 
 interface ColumnProps {
   headerStyle?: string;
@@ -20,8 +19,12 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
   columnData,
 }) => {
   return (
-    <div className={styles.cardWrapper}>
-      <div className={cn(styles.columnHeaderWrapper, headerStyle)}>
+    <div
+      className={
+        "flex flex-col items-stretch gap-2 min-w-[300px] max-w-[300px] px-2 py-4"
+      }
+    >
+      <div className={cn("flex items-end mb-4", headerStyle)}>
         <ColumnHeader
           color={columnData.color}
           header={columnData.name}

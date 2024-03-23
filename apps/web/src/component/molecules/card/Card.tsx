@@ -1,13 +1,12 @@
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import cs from "classnames";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import SaveIcon from "../../../assets/icons/save.svg";
+import { cn } from "../../../common/Util";
 import useClickOutside from "../../../context/useClickOutside";
 import { Avatar } from "../../atoms/avatar/Avatar";
 import { Button } from "../../atoms/button/Button";
 import { PositioningBackdrop } from "../backdrop/PositioningBackdrop";
-import styles from "./Card.module.scss";
 
 export interface CardProps {
   style?: React.CSSProperties;
@@ -82,27 +81,24 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
     setIsEditingText(false);
   };
 
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  function IsHeightValid(): boolean {
-    if (cardRef.current) {
-      const height = document.body.offsetHeight;
-      const top = cardRef.current.getBoundingClientRect().top;
-      if (height - top > height * 0.25) return true;
-    }
-    return false;
-  }
-
   return (
     <PositioningBackdrop
       onDismiss={() => closeEditingMode()}
       visible={isEditingText || isUsersOpen}
     >
-      <div style={style} className={cs(styles.wrapper, className)}>
-        <div className={styles.content}>
+      <div
+        style={style}
+        className={cn(
+          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border p-2 rounded-2xl",
+          className,
+        )}
+      >
+        <div className={"flex flex-col justify-between w-full"}>
           {isEditingText ? (
             <textarea
-              className={cs(styles.text, styles.input)}
+              className={
+                "whitespace-pre-line w-full h-full text-sm scrollbar break-words resize-none p-0 outline-none"
+              }
               value={editingText}
               onChange={(e) => setEditingText(e.target.value)}
               onKeyDown={(e) => {
@@ -119,24 +115,36 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
               }}
             />
           ) : (
-            <span className={styles.text} onClick={onTextClick}>
+            <span
+              className={
+                "whitespace-pre-line w-full h-full text-sm scrollbar break-words"
+              }
+              onClick={onTextClick}
+            >
               {text}
             </span>
           )}
 
           {author && (
-            <div className={styles.creator} ref={cardRef}>
+            <div className={"flex items-center pt-1"}>
               <div style={{ position: "relative" }}>
                 {isUsersOpen && teamUsers.length > 1 && (
                   <div
-                    className={
-                      IsHeightValid()
-                        ? styles.viewContainerDown
-                        : styles.viewContainerUp
-                    }
+                    className={cn(
+                      "flex items-end absolute top-[-200px] w-[265px] h-[180px] -left-1.5",
+                    )}
                   >
-                    <div className={styles.bubbleContainer} ref={teamUsersRef}>
-                      <div className={styles.scrollableContent}>
+                    <div
+                      className={
+                        "flex flex-col items-start gap-2 min-w-[250px] max-h-36 bg-white p-1 rounded-lg shadow-[0px_4px_4px_rgba(0,0,0,0.25)]"
+                      }
+                      ref={teamUsersRef}
+                    >
+                      <div
+                        className={
+                          "flex flex-col items-start overflow-auto gap-2 min-w-[250px] scrollbar"
+                        }
+                      >
                         <TeamUserPicker
                           authorId={author?.id || ""}
                           teamUsers={teamUsers}
@@ -163,14 +171,14 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
                 }}
               >
                 <Avatar url={author.avatar} size={24} />
-                <span>{author.name}</span>
+                <span className={"text-sm"}>{author.name}</span>
                 {editableUser && <Pencil1Icon width={12} height={12} />}
               </div>
             </div>
           )}
         </div>
 
-        <div className={styles.childrenWrapper}>
+        <div className={"flex flex-col select-none"}>
           {isEditingText ? (
             <Button size={"icon"} onClick={onSaveClick}>
               <SaveIcon width={18} height={18} />
@@ -203,14 +211,16 @@ const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
           return (
             <div
               key={user.id}
-              className={styles.userWrapper}
+              className={
+                "flex flex-row items-center gap-2 min-w-[99%] cursor-pointer rounded -order-1 p-0.5 hover:bg-[#D9D9D9]"
+              }
               onClick={() => {
                 onUserPicked(user.id);
               }}
             >
               <Avatar url={user.avatar} size={24} />
 
-              <span>{user.name}</span>
+              <span className={"text-sm"}>{user.name}</span>
             </div>
           );
         })}

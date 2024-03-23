@@ -1,6 +1,6 @@
-import cs from "classnames";
-import type React from "react";
-import { usePlural } from "../../../context/usePlural";
+import React from "react";
+import {cn} from "../../../common/Util";
+import {usePlural} from "../../../context/usePlural";
 import styles from "./CardIndicator.module.scss";
 
 interface PropsCardCount {
@@ -10,9 +10,9 @@ interface PropsCardCount {
 
 export const CardCount: React.FC<PropsCardCount> = ({ count, isWriting }) => {
   return (
-    <div className={styles.wrapper}>
+    <div className={"flex items-center gap-2 p-2"}>
       <div
-        className={cs(styles.rect, {
+        className={cn("w-[60px] h-[30px] border rounded-lg bg-[lightgray]", {
           [styles.active]: isWriting,
         })}
       />

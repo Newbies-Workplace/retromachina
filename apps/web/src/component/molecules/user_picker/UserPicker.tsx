@@ -1,10 +1,9 @@
+import { Cross1Icon } from "@radix-ui/react-icons";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import type { TeamUserRequest } from "shared/model/team/team.request";
 import type { UserRole } from "shared/model/user/user.role";
-import CloseIcon from "../../../assets/icons/close-icon.svg";
-import styles from "./UserPicker.module.scss";
 
 interface UserPickerProps {
   users: TeamUserRequest[];
@@ -42,7 +41,11 @@ export const UserPicker: React.FC<UserPickerProps> = ({
   };
 
   return (
-    <div className={styles.picker}>
+    <div
+      className={
+        "flex flex-row flex-wrap items-center gap-2 min-w-[100px] min-h-[34px] bg-white p-2 rounded-2xl"
+      }
+    >
       {users.map((user) => (
         <User
           key={user.email}
@@ -53,9 +56,13 @@ export const UserPicker: React.FC<UserPickerProps> = ({
         />
       ))}
 
-      <div className={styles.inputWrapper}>
+      <div
+        className={
+          "flex items-center grow max-h-[30px] border px-2 py-0 rounded-2xl"
+        }
+      >
         <input
-          className={styles.input}
+          className={"grow bg-transparent px-0 py-2 border-[none] outline-none"}
           value={email}
           placeholder="Podaj adres email..."
           onBlur={onUserAdd}
@@ -68,8 +75,8 @@ export const UserPicker: React.FC<UserPickerProps> = ({
         />
 
         {email.length > 0 && (
-          <CloseIcon
-            className={styles.close}
+          <Cross1Icon
+            className={"min-w-4 min-h-4 cursor-pointer"}
             onClick={() => {
               setEmail("");
               setRole("USER");
@@ -90,23 +97,30 @@ interface UserProps {
 
 const User: React.FC<UserProps> = ({ email, role, onRoleChange, onDelete }) => {
   return (
-    <div className={styles.user}>
-      <span className={styles.email}>{email}</span>
+    <div
+      className={
+        "flex grow items-center gap-2.5 min-h-[30px] bg-white border px-2 py-0 rounded-2xl border-solid border-black [line-break:anywhere]"
+      }
+    >
+      <span className={"grow"}>{email}</span>
 
-      <div className={styles.separator} />
+      <div className={"h-5 min-w-0.5 bg-black"} />
 
       <select
         value={role}
         onChange={(e) => onRoleChange(e.target.value as UserRole)}
-        className={styles.role}
+        className={"cursor-pointer border-transparent outline-none"}
       >
         <option value={"ADMIN"}>Administrator</option>
         <option value={"USER"}>Użytkownik</option>
       </select>
 
-      <div className={styles.separator} />
+      <div className={"h-5 min-w-0.5 bg-black"} />
 
-      <CloseIcon className={styles.close} onClick={onDelete} />
+      <Cross1Icon
+        className={"min-w-4 min-h-4 cursor-pointer"}
+        onClick={onDelete}
+      />
     </div>
   );
 };

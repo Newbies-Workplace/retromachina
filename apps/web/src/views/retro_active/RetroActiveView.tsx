@@ -6,9 +6,7 @@ import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
 import { TeamAvatars } from "../../component/molecules/team_avatars/TeamAvatars";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useRetro } from "../../context/retro/RetroContext.hook";
-import { useTeamRole } from "../../context/useTeamRole";
 import { useUser } from "../../context/user/UserContext.hook";
-import styles from "./RetroActiveView.module.scss";
 import { RetroTimer } from "./components/retroTimer/RetroTimer";
 import { Toolbox } from "./components/toolbox/Toolbox";
 import { DiscussView } from "./discuss/DiscussView";
@@ -18,10 +16,8 @@ import { VoteView } from "./vote/VoteView";
 
 const RetroActiveView: React.FC = () => {
   const navigate = useNavigate();
-  const { timerEnds, roomState, retroId, teamId, activeUsers, teamUsers } =
-    useRetro();
+  const { roomState, retroId, activeUsers, teamUsers } = useRetro();
   const { user } = useUser();
-  const { isAdmin } = useTeamRole(teamId!);
   const { ready } = useRetro();
 
   useEffect(() => {
@@ -38,30 +34,35 @@ const RetroActiveView: React.FC = () => {
           <>
             <RetroTimer />
 
-            {teamUsers.length !== 1 && (
-              <TeamAvatars
-                users={teamUsers
+            <TeamAvatars
+              users={
+                teamUsers
                   .filter((u) => u.id !== user?.id)
                   .map((user) => {
                     const socketUser = activeUsers.find(
                       (socketUser) => socketUser.userId === user.id,
                     );
 
+                    if (!socketUser) {
+                      return undefined;
+                    }
+
                     return {
                       id: user.id,
                       avatar_link: user.avatar_link,
                       isReady: socketUser?.isReady ?? false,
-                      isActive: socketUser !== undefined,
+                      isActive: true,
                     };
-                  })}
-              />
-            )}
+                  })
+                  .filter((u) => u !== undefined) as any[]
+              }
+            />
           </>
         }
       />
 
-      <div className={styles.container}>
-        <div className={styles.content}>
+      <div className={"flex flex-col grow scrollbar"}>
+        <div className={"flex-1 flex-row"}>
           <Routes>
             <Route path="reflection" element={<ReflectionView />} />
             <Route path="group" element={<GroupView />} />

@@ -1,11 +1,12 @@
 import React from "react";
 import LogoSvg from "../../../assets/images/logo.svg";
 import { ProgressBar } from "../../atoms/progress_bar/ProgressBar";
+import { AnimatedBackground } from "../animated_background/AnimatedBackground";
 import styles from "./LoadingView.module.scss";
 
 export const Loader = () => {
   return (
-    <div className={styles.container}>
+    <AnimatedBackground className={"items-center"}>
       <div className={styles.dialog}>
         <div className={styles.text}>
           <LogoSvg width={400} height={40} />
@@ -16,6 +17,6 @@ export const Loader = () => {
 
         <ProgressBar />
       </div>
-    </div>
+    </AnimatedBackground>
   );
 };

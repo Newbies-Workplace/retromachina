@@ -15,7 +15,6 @@ import { getRandomColor } from "../../common/Util";
 import { Button } from "../../component/atoms/button/Button";
 import { ColumnCreate } from "../../component/molecules/column_create/ColumnCreate";
 import Navbar from "../../component/organisms/navbar/Navbar";
-import styles from "./TeamBoardEditView.module.scss";
 
 const MAX_COLUMNS = 6;
 
@@ -113,8 +112,8 @@ export const TeamBoardEditView: React.FC = () => {
         }
       />
 
-      <div className={styles.container}>
-        <div className={styles.columns}>
+      <div className={"flex grow scrollbar"}>
+        <div className={"flex items-start gap-4 mt-4 ml-3"}>
           {board.columns
             .sort((a, b) => a.order - b.order)
             .map((col, index) => (
@@ -134,7 +133,7 @@ export const TeamBoardEditView: React.FC = () => {
                   onDelete={() => onDeleteColumn(col.id)}
                 />
 
-                <div className={styles.columnAction}>
+                <div className={"flex items-center gap-1 mt-4"}>
                   {index !== 0 && (
                     <Button
                       size={"icon"}

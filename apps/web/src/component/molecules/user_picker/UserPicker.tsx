@@ -43,7 +43,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
   return (
     <div
       className={
-        "flex flex-row flex-wrap items-center gap-2 min-w-[100px] min-h-[34px] bg-white p-2 rounded-2xl"
+        "flex flex-row flex-wrap items-center gap-2 min-w-[100px] min-h-[34px] bg-white p-2 rounded-lg border"
       }
     >
       {users.map((user) => (

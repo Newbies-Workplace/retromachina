@@ -2,16 +2,6 @@
 @use '../../../abstracts/fonts';
 @use '../../../abstracts/assets';
 
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    height: 100vh;
-    background-image: url("../../../assets/images/background.svg");
-    background-size: cover;
-}
-
 .dialog {
     display: flex;
     flex-direction: column;

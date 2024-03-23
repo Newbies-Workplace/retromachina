@@ -13,12 +13,16 @@ interface TeamAvatarsProps {
 
 export const TeamAvatars: React.FC<React.PropsWithChildren<TeamAvatarsProps>> =
   ({ users }) => {
+    if (users.length === 0) {
+      return null;
+    }
+
     return (
-      <div className={"flex ml-2"}>
+      <div className={"flex flex-row-reverse ml-2.5"}>
         {users.map((user) => (
           <Avatar
+            style={{ marginLeft: -10 }}
             key={user.id}
-            className={"-mr-2"}
             variant={
               user.isActive ? (user.isReady ? "ready" : "active") : "inactive"
             }

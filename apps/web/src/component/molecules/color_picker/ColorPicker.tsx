@@ -27,15 +27,15 @@ export const ColorPicker: React.FC<PopoverPickerProps> = ({
   useClickOutside(popover, close);
 
   return (
-    <div className={"relative size-[50px]"}>
+    <div className={"relative size-[34px]"}>
       <div
         className={
-          "flex items-center justify-center size-[50px] rounded-xl border cursor-pointer"
+          "flex items-center justify-center size-[34px] rounded-lg border cursor-pointer"
         }
         style={{ backgroundColor: color }}
         onClick={() => toggle(true)}
       >
-        <Pencil1Icon className={"size-6 opacity-50"} />
+        <Pencil1Icon className={"size-4 opacity-50"} />
       </div>
 
       {isOpen && (

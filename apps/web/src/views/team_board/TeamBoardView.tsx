@@ -12,7 +12,6 @@ import { DraggableCard } from "../../component/molecules/dragndrop/DraggableCard
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useBoard } from "../../context/board/BoardContext.hook";
 import { useUser } from "../../context/user/UserContext.hook";
-import styles from "./TeamBoardView.module.scss";
 
 export const TeamBoardView: React.FC = () => {
   const {

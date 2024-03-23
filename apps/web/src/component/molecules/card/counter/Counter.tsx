@@ -1,15 +1,13 @@
-import cs from "classnames";
+import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
 import type React from "react";
-import AddIcon from "../../../../assets/icons/add-icon.svg";
-import MinusIcons from "../../../../assets/icons/minus-icon.svg";
-import styles from "./Counter.module.scss";
+import { cn } from "../../../../common/Util";
 
 interface CounterProps {
+  className?: string;
   canIncrement: boolean;
   count: number;
   onIncrement(): void;
   onDecrement(): void;
-  style?: React.CSSProperties;
 }
 
 const Counter: React.FC<CounterProps> = ({
@@ -17,7 +15,7 @@ const Counter: React.FC<CounterProps> = ({
   canIncrement,
   onIncrement,
   onDecrement,
-  style,
+  className,
 }) => {
   const onMinusClick = () => {
     if (count > 0) {
@@ -32,26 +30,31 @@ const Counter: React.FC<CounterProps> = ({
   };
 
   return (
-    <div className={styles.wrapper} style={style}>
-      <MinusIcons
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-2",
+        className,
+      )}
+    >
+      <MinusIcon
         onClick={onMinusClick}
-        className={cs(styles.action, {
-          [styles.inactive]: count <= 0,
+        className={cn("cursor-pointer size-8", {
+          "*:fill-[#888888]": count <= 0,
         })}
       />
 
       <span
-        className={cs(styles.count, {
-          [styles.accented]: count > 0,
+        className={cn("flex justify-center items-center size-8 rounded-full", {
+          "bg-primary-500": count > 0,
         })}
       >
         {count}
       </span>
 
-      <AddIcon
+      <PlusIcon
         onClick={onPlusClick}
-        className={cs(styles.action, {
-          [styles.inactive]: !canIncrement,
+        className={cn("cursor-pointer size-8", {
+          "*:fill-[#888888]": !canIncrement,
         })}
       />
     </div>

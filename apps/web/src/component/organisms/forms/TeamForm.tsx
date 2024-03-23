@@ -8,10 +8,8 @@ import type { UserRole } from "shared/model/user/user.role";
 import { Button } from "../../atoms/button/Button";
 import { Input } from "../../atoms/input/Input";
 import { UserPicker } from "../../molecules/user_picker/UserPicker";
-import styles from "./TeamForm.module.scss";
 
 interface CreateTeamFormProps {
-  userEmail: string;
   team: TeamRequest | null;
   onSubmit: (team: TeamRequest) => void;
   onDelete?: () => void;
@@ -19,7 +17,6 @@ interface CreateTeamFormProps {
 }
 
 export const TeamForm: React.FC<CreateTeamFormProps> = ({
-  userEmail,
   team,
   onSubmit,
   onDelete,
@@ -53,45 +50,47 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.wrapper}>
-        <div className={styles.formWrapper}>
-          <div className={styles.section}>
-            <h1>Team</h1>
-            <Input
-              value={name}
-              setValue={setName}
-              placeholder={"Nazwa zespołu"}
-              style={{ border: "none", paddingLeft: "10px" }}
-            />
-          </div>
-
-          <div className={styles.section}>
-            <h1>Członkowie</h1>
-
-            <UserPicker
-              users={users}
-              onAdd={(user) => onAddUser(user)}
-              onRoleChange={(email, role) => onRoleChange(email, role)}
-              onDelete={(email) =>
-                onDeleteEmailClick(
-                  users.findIndex((user) => user.email === email),
-                )
-              }
-            />
-          </div>
+    <div
+      className={
+        "flex flex-col justify-between items-center gap-8 w-[600px] min-h-[700px] h-fit bg-background-500 m-8 p-[30px] rounded-2xl"
+      }
+    >
+      <div className={"flex flex-col items-center gap-4 w-full"}>
+        <div className={"flex flex-col gap-2 w-full"}>
+          <h1>Team</h1>
+          <Input
+            value={name}
+            setValue={setName}
+            placeholder={"Nazwa zespołu"}
+          />
         </div>
-        <div className={styles.actionSection}>
-          {deletable ? (
-            <Button style={{ backgroundColor: "#DC6E47" }} onClick={onDelete}>
-              Usuń
-            </Button>
-          ) : (
-            <span />
-          )}
 
-          <Button onClick={onSubmitClick}>Zapisz</Button>
+        <div className={"flex flex-col gap-2 w-full"}>
+          <h1>Członkowie</h1>
+
+          <UserPicker
+            users={users}
+            onAdd={(user) => onAddUser(user)}
+            onRoleChange={(email, role) => onRoleChange(email, role)}
+            onDelete={(email) =>
+              onDeleteEmailClick(
+                users.findIndex((user) => user.email === email),
+              )
+            }
+          />
         </div>
+      </div>
+
+      <div className={"flex justify-between gap-2 w-full"}>
+        {deletable ? (
+          <Button variant={"destructive"} onClick={onDelete}>
+            Usuń
+          </Button>
+        ) : (
+          <div />
+        )}
+
+        <Button onClick={onSubmitClick}>Zapisz</Button>
       </div>
     </div>
   );

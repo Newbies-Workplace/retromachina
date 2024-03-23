@@ -1,0 +1,16 @@
+@use 'src/abstracts/colors';
+@use 'src/abstracts/fonts';
+@use 'src/abstracts/assets';
+
+.container {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+
+  background-image: url("../../../assets/images/background.svg");
+  background-size: cover;
+
+  @include assets.scrollbar;
+
+  background-color: colors.$background;
+}

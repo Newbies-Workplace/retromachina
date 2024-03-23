@@ -10,6 +10,7 @@ import { getUsersByTeamId } from "../../api/User.service";
 import { Avatar } from "../../component/atoms/avatar/Avatar";
 import { Button } from "../../component/atoms/button/Button";
 import { Card } from "../../component/molecules/card/Card";
+import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import styles from "./RetroSummaryView.module.scss";
 
@@ -55,7 +56,7 @@ export const RetroSummaryView = () => {
     <>
       <Navbar />
 
-      <div className={styles.container}>
+      <AnimatedBackground>
         <div className={styles.wrapper}>
           <div className={"flex justify-center font-bold text-2xl w-full"}>
             Retro {dayjs(retro?.date).format("YYYY-MM-DD")}
@@ -103,17 +104,17 @@ export const RetroSummaryView = () => {
             </div>
           )}
 
-          <div className={styles.goBack}>
-            <Button
-              onClick={() => {
-                navigate(`/team/${retro?.team_id}/board`);
-              }}
-            >
-              Powrót do listy zadań
-            </Button>
-          </div>
+          <Button
+            className={"mt-4 mx-auto"}
+            size={"lg"}
+            onClick={() => {
+              navigate(`/team/${retro?.team_id}/board`);
+            }}
+          >
+            Powrót do listy zadań
+          </Button>
         </div>
-      </div>
+      </AnimatedBackground>
     </>
   );
 };

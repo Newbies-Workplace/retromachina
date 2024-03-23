@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -14,10 +15,10 @@ import {
 import { getUsersByTeamId } from "../../api/User.service";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
 import { ConfirmDialog } from "../../component/molecules/confirm_dialog/ConfirmDialog";
+import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
 import { TeamForm } from "../../component/organisms/forms/TeamForm";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useUser } from "../../context/user/UserContext.hook";
-import styles from "./TeamEditView.module.scss";
 
 const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -91,32 +92,33 @@ const TeamEditView: React.FC = () => {
     <>
       <Navbar />
 
-      {!team && (
-        <div className={styles.container}>
-          <div className={styles.loadingWrapper}>
-            <ProgressBar />
+      <AnimatedBackground>
+        {!team && (
+          <div className={"flex items-center justify-center"}>
+            <ProgressBar color={"black"} />
           </div>
-        </div>
-      )}
+        )}
 
-      {confirmOpen && (
-        <ConfirmDialog
-          title={"Usunięcie zespołu"}
-          content={`Czy na pewno chcesz usunąć zespół ${team?.name ?? ""}?`}
-          onConfirmed={onDelete}
-          onDismiss={() => setConfirmOpen(false)}
-        />
-      )}
+        <AnimatePresence>
+          {confirmOpen && (
+            <ConfirmDialog
+              title={"Usunięcie zespołu"}
+              content={`Czy na pewno chcesz usunąć zespół ${team?.name ?? ""}?`}
+              onConfirmed={onDelete}
+              onDismiss={() => setConfirmOpen(false)}
+            />
+          )}
+        </AnimatePresence>
 
-      {team && (
-        <TeamForm
-          onSubmit={onSubmit}
-          onDelete={() => setConfirmOpen(true)}
-          userEmail={user?.email || ""}
-          team={team}
-          deletable
-        />
-      )}
+        {team && (
+          <TeamForm
+            onSubmit={onSubmit}
+            onDelete={() => setConfirmOpen(true)}
+            team={team}
+            deletable
+          />
+        )}
+      </AnimatedBackground>
     </>
   );
 };

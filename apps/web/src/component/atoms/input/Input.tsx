@@ -1,10 +1,8 @@
-import cs from "classnames";
 import type React from "react";
 import type { KeyboardEventHandler } from "react";
-import styles from "./Input.module.scss";
+import { cn } from "../../../common/Util";
 
 interface InputProps {
-  style?: React.CSSProperties;
   className?: string;
   value: string;
   setValue: (value: string) => void;
@@ -13,7 +11,9 @@ interface InputProps {
   type?: React.HTMLInputTypeAttribute;
   required?: boolean;
   right?: React.ReactNode;
-  onKeyDown?: KeyboardEventHandler<any> | undefined;
+  onKeyDown?:
+    | KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>
+    | undefined;
   maxLength?: number;
 }
 
@@ -27,37 +27,34 @@ export const Input: React.FC<InputProps> = ({
   type,
   right,
   required,
-  style,
   maxLength,
 }) => {
+  const Element = multiline ? "textarea" : "input";
+
   return (
-    <div className={styles.wrapper} style={style}>
-      {multiline ? (
-        <textarea
-          style={style}
-          className={cs(styles.multiline, className)}
-          value={value}
-          required={required}
-          placeholder={placeholder}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={onKeyDown}
-        />
-      ) : (
-        <input
-          maxLength={maxLength}
-          style={style}
-          className={cs(styles.oneline, className)}
-          value={value}
-          type={type}
-          required={required}
-          placeholder={placeholder}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={onKeyDown}
-        />
+    <div
+      className={cn(
+        "flex h-9 w-full rounded-md border border-input bg-white text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        multiline && "min-h-[120px]",
       )}
+    >
+      <Element
+        maxLength={maxLength}
+        className={cn(
+          "p-1 w-full h-full rounded-md border-none outline-none resize-none",
+          multiline && "scrollbar",
+          className,
+        )}
+        value={value}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={onKeyDown}
+      />
 
       {right !== undefined && (
-        <div className={styles.rightWrapper}>{right}</div>
+        <div className={"flex items-center"}>{right}</div>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
+import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
-import DeleteIconSvg from "../../../../assets/icons/delete-icon.svg";
 import HourglassIconSvg from "../../../../assets/icons/hourglass.svg";
 import TickIconSvg from "../../../../assets/icons/tick.svg";
 import { Button } from "../../../../component/atoms/button/Button";
@@ -67,7 +67,7 @@ export const RetroTimer: React.FC = () => {
         <Button
           className={styles.quickAdd}
           onClick={onQuickAddTime}
-          size={"round"}
+          size={"icon"}
         >
           +30
         </Button>
@@ -79,7 +79,7 @@ export const RetroTimer: React.FC = () => {
         <Button
           className={styles.quickAdd}
           onClick={() => setDialogTimerOpen(true)}
-          size={"round"}
+          size={"icon"}
         >
           <HourglassIconSvg />
         </Button>
@@ -88,29 +88,25 @@ export const RetroTimer: React.FC = () => {
       {isTimerDialogOpen && (
         <div className={styles.timeBubbleWrapper} ref={timePopover}>
           <div className={styles.timerTop}>
-            <Button
-              size="small"
-              className={styles.clearButton}
-              onClick={onClearTimer}
-            >
-              <DeleteIconSvg width={24} height={24} />
+            <Button size="sm" variant={"destructive"} onClick={onClearTimer}>
+              <TrashIcon className={"size-6"} />
             </Button>
 
             <div className={styles.timerText}>{timeText}</div>
 
-            <Button size="small" onClick={() => onStartTimer()}>
-              <TickIconSvg width={24} height={24} />
+            <Button size="sm" onClick={() => onStartTimer()}>
+              <CheckIcon className={"size-6"} />
             </Button>
           </div>
 
           <div className={styles.buttonWrapper}>
-            <Button size="small" onClick={() => onZeroTimer()}>
+            <Button size="sm" onClick={() => onZeroTimer()}>
               00
             </Button>
-            <Button size="small" onClick={() => onIncreaseTimer(30)}>
+            <Button size="sm" onClick={() => onIncreaseTimer(30)}>
               +30s
             </Button>
-            <Button size="small" onClick={() => onIncreaseTimer(60)}>
+            <Button size="sm" onClick={() => onIncreaseTimer(60)}>
               +1m
             </Button>
           </div>

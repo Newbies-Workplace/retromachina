@@ -1,3 +1,8 @@
+import {
+  PlusIcon,
+  TrackNextIcon,
+  TrackPreviousIcon,
+} from "@radix-ui/react-icons";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -6,14 +11,10 @@ import type { BoardResponse } from "shared/model/board/board.response";
 import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
 import { v4 as uuidv4 } from "uuid";
 import { editBoard, getBoard } from "../../api/Board.service";
-import AddIcon from "../../assets/icons/add-icon.svg";
-import NextIcon from "../../assets/icons/next.svg";
-import PrevIcon from "../../assets/icons/prev.svg";
 import { getRandomColor } from "../../common/Util";
 import { Button } from "../../component/atoms/button/Button";
 import { ColumnCreate } from "../../component/molecules/column_create/ColumnCreate";
 import Navbar from "../../component/organisms/navbar/Navbar";
-import styles from "./TeamBoardEditView.module.scss";
 
 const MAX_COLUMNS = 6;
 
@@ -105,14 +106,14 @@ export const TeamBoardEditView: React.FC = () => {
     <>
       <Navbar
         topContent={
-          <Button className={styles.action} size={"small"} onClick={saveBoard}>
+          <Button size={"sm"} onClick={saveBoard}>
             Zapisz
           </Button>
         }
       />
 
-      <div className={styles.container}>
-        <div className={styles.columns}>
+      <div className={"flex grow scrollbar"}>
+        <div className={"flex items-start gap-4 mt-4 ml-3"}>
           {board.columns
             .sort((a, b) => a.order - b.order)
             .map((col, index) => (
@@ -132,22 +133,22 @@ export const TeamBoardEditView: React.FC = () => {
                   onDelete={() => onDeleteColumn(col.id)}
                 />
 
-                <div className={styles.columnAction}>
+                <div className={"flex items-center gap-1 mt-4"}>
                   {index !== 0 && (
                     <Button
-                      size={"round"}
+                      size={"icon"}
                       onClick={() => onChangeOrder(index, "prev")}
                     >
-                      <PrevIcon />
+                      <TrackPreviousIcon className={"size-4"} />
                     </Button>
                   )}
 
                   {index !== board.columns.length - 1 && (
                     <Button
-                      size={"round"}
+                      size={"icon"}
                       onClick={() => onChangeOrder(index, "next")}
                     >
-                      <NextIcon />
+                      <TrackNextIcon className={"size-4"} />
                     </Button>
                   )}
 
@@ -164,16 +165,14 @@ export const TeamBoardEditView: React.FC = () => {
               </div>
             ))}
 
-          <div className={styles.columnButton}>
-            <Button
-              disabled={board.columns.length >= MAX_COLUMNS}
-              size="big"
-              onClick={onAddColumn}
-            >
-              <span>Nowa Kolumna</span>
-              <AddIcon />
-            </Button>
-          </div>
+          <Button
+            className={"mr-4"}
+            disabled={board.columns.length >= MAX_COLUMNS}
+            onClick={onAddColumn}
+          >
+            <PlusIcon className={"size-6"} />
+            Nowa Kolumna
+          </Button>
         </div>
       </div>
     </>

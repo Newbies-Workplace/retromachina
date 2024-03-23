@@ -1,5 +1,4 @@
 import type React from "react";
-import style from "./ColumnHeader.module.scss";
 
 interface ColumnHeaderProps {
   color: string;
@@ -15,21 +14,26 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   right,
 }) => {
   return (
-    <div className={style.wrapper}>
-      <div className={style.top}>
-        <div className={style.title}>
-          <div className={style.boxWrapper}>
-            <div className={style.box} style={{ backgroundColor: color }} />
-          </div>
+    <div
+      className={
+        "flex flex-col justify-center items-start gap-[5px] w-full bg-[white] border p-2 rounded-2xl"
+      }
+    >
+      <div className={"flex gap-2 w-full justify-between"}>
+        <div className={"flex flex-nowrap items-center gap-2 break-words"}>
+          <div
+            className={"size-5 rounded"}
+            style={{ backgroundColor: color }}
+          />
 
-          <span>{header}</span>
+          <span className={"text-lg font-bold"}>{header}</span>
         </div>
 
         {right}
       </div>
 
       {description !== undefined && (
-        <div className={style.description}>
+        <div className={"break-words max-w-[274px] max-h-[140px] scrollbar"}>
           <span>{description}</span>
         </div>
       )}

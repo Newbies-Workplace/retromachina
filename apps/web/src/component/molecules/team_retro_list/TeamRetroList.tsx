@@ -1,16 +1,11 @@
-import cs from "classnames";
+import { ClipboardIcon, Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import { getRetrosByTeamId } from "../../../api/Retro.service";
-import AddIcon from "../../../assets/icons/add-icon.svg";
-import EditIconSvg from "../../../assets/icons/edit-icon.svg";
-import TaskIconSvg from "../../../assets/icons/task-list.svg";
 import { useTeamRole } from "../../../context/useTeamRole";
 import { Button } from "../../atoms/button/Button";
-import { ActiveRetroCard } from "../retro_card/ActiveRetroCard";
-import styles from "./TeamRetroList.module.scss";
 
 interface TeamRetroListProps {
   teamName: string;
@@ -35,59 +30,66 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
   }, []);
 
   return (
-    <div className={styles.team}>
-      <div className={styles.topBar}>
-        <h2 className={styles.title}>{teamName}</h2>
+    <div
+      className={"flex flex-col gap-2 w-full bg-background-500 p-2 rounded-md"}
+    >
+      <div className={"flex flex-row justify-between gap-2"}>
+        <span className={"text-xl font-bold"}>{teamName}</span>
 
         {isAdmin && (
-          <Button onClick={() => navigate(`/team/${teamId}/edit`)} size="round">
-            <EditIconSvg width={18} height={18} />
+          <Button onClick={() => navigate(`/team/${teamId}/edit`)} size="icon">
+            <Pencil1Icon className={"size-4"} />
           </Button>
         )}
       </div>
 
-      <div className={styles.wrapper}>
+      <div className={"flex gap-2 pb-2 scrollbar"}>
         <Button
-          className={styles.retroButton}
+          size={"xl"}
+          className={"min-w-[256px] min-h-[126px] flex-col scrollbar"}
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
           Lista zadań
-          <TaskIconSvg />
+          <ClipboardIcon className={"size-6"} />
         </Button>
 
         {isAdmin && !isAnyRetroRunning && (
           <Button
-            className={styles.retroButton}
+            size={"xl"}
+            variant={"destructive"}
+            className={"min-w-[256px] min-h-[126px] flex-col"}
             onClick={() => navigate(`/retro/create?teamId=${teamId}`)}
-            style={{ backgroundColor: "#DC6E47" }}
           >
-            Nowa Retrospektywa
-            <AddIcon />
+            Nowe Retro
+            <PlusIcon className={"size-6"} />
           </Button>
         )}
 
         {retros.map((retro, index) => {
           if (retro.is_running) {
             return (
-              <ActiveRetroCard
+              <Button
                 key={retro.id}
+                size={"xl"}
+                className={
+                  "min-w-[256px] min-h-[126px] flex-col bg-white border-4 border-red-500"
+                }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
-              />
+              >
+                Retro w trakcie
+              </Button>
             );
           }
 
           return (
             <Button
-              className={cs(styles.retroButton, styles.retro)}
               key={retro.id}
+              size={"xl"}
+              className={"min-w-[256px] min-h-[126px] flex-col bg-white"}
               onClick={() => navigate(`/retro/${retro.id}/summary`)}
             >
-              <span style={{ fontSize: 24 }}>
-                {`Retro #${retros.length - index}`}
-              </span>
-              <span style={{ fontSize: 24 }}>
-                {new Date(retro.date).toLocaleDateString("pl-Pl")}
-              </span>
+              <div>{`Retro #${retros.length - index}`}</div>
+              <div>{new Date(retro.date).toLocaleDateString("pl-Pl")}</div>
             </Button>
           );
         })}

@@ -1,6 +1,6 @@
 import type React from "react";
 import { useDrop } from "react-dnd";
-import styles from "../column/ColumnCardContainer.module.scss";
+import { cn } from "../../../common/Util";
 import { type CardDragPayload, ItemTypes } from "./dragndrop";
 
 interface ColumnCardContainerProps {
@@ -32,13 +32,12 @@ export const ColumnCardContainer: React.FC<
   return (
     <div
       ref={drop}
-      style={{
-        border:
-          isOverCurrent && canDrop
-            ? "0.5px dashed black"
-            : "0.5px solid transparent",
-      }}
-      className={styles.container}
+      className={cn(
+        "flex flex-col gap-2 min-h-[500px] h-full pb-[70px] rounded-2xl",
+        isOverCurrent && canDrop
+          ? "border border-dashed"
+          : "border border-transparent",
+      )}
     >
       {children}
     </div>

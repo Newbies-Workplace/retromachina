@@ -1,13 +1,14 @@
 import type React from "react";
 import GoogleButton from "react-google-button";
 import LogoSvg from "../../../assets/images/logo.svg";
+import { AnimatedBackground } from "../../../component/organisms/animated_background/AnimatedBackground";
 import styles from "./SignInView.module.scss";
 
 export const SignInView: React.FC = () => {
   const href = `${process.env.RETRO_WEB_API_URL}google/redirect`;
 
   return (
-    <div className={styles.container}>
+    <AnimatedBackground className={"items-center"}>
       <div className={styles.dialog}>
         <div className={styles.text}>
           <LogoSvg width={400} height={40} />
@@ -28,6 +29,6 @@ export const SignInView: React.FC = () => {
           </span>
         </div>
       </div>
-    </div>
+    </AnimatedBackground>
   );
 };

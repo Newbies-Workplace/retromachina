@@ -20,7 +20,7 @@ export const NotFoundView: React.FC = () => {
           <span style={{ fontSize: 18 }}>Strony nie znaleziono</span>
         </div>
 
-        <Button size={"small"} onClick={() => navigate("/")}>
+        <Button size={"sm"} onClick={() => navigate("/")}>
           Powrót na stronę główną
         </Button>
       </div>

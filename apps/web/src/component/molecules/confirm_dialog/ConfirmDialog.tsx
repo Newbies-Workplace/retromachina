@@ -1,8 +1,6 @@
-import cs from "classnames";
 import type React from "react";
 import { Button } from "../../atoms/button/Button";
 import { Backdrop } from "../backdrop/Backdrop";
-import styles from "./ConfirmDialog.module.scss";
 
 interface ConfirmDialogProps {
   title: string;
@@ -19,25 +17,29 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
   return (
     <Backdrop onDismiss={onDismiss}>
-      <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.title}>{title}</div>
+      <div
+        className={
+          "flex flex-col min-w-[500px] min-h-[150px] bg-background-500 rounded-lg"
+        }
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={"bg-red-500 p-2 rounded-t-lg font-bold text-lg"}>
+          {title}
+        </div>
 
-        <div className={styles.content}>{content}</div>
+        <div className={"flex p-2"}>{content}</div>
 
-        <div className={styles.buttons}>
+        <div className={"flex justify-center items-center gap-4 mt-auto mb-2"}>
           <Button
-            size={"small"}
-            className={cs(styles.button, styles.noButton)}
+            size={"sm"}
+            className={"px-8"}
+            variant={"destructive"}
             onClick={onDismiss}
           >
             Nie
           </Button>
 
-          <Button
-            size={"small"}
-            className={styles.button}
-            onClick={onConfirmed}
-          >
+          <Button size={"sm"} className={"px-8"} onClick={onConfirmed}>
             Tak
           </Button>
         </div>

@@ -36,7 +36,7 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
   return (
     <>
       <Input
-        style={{ backgroundColor: "#EAEAEA" }}
+        className={"bg-[#EAEAEA]"}
         value={value}
         setValue={setValue}
         multiline={true}

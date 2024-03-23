@@ -15,7 +15,7 @@ export const VoteView = () => {
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+    <div className={"grid grid-flow-col h-full scrollbar"}>
       {columns?.map((column) => {
         const columnCards = cards.filter((c) => c.columnId === column.id);
 
@@ -70,7 +70,7 @@ export const VoteView = () => {
                         >
                           {groupCards.length === index + 1 && (
                             <Counter
-                              style={{ height: "100%" }}
+                              className={"h-full"}
                               canIncrement={votesLeft > 0}
                               count={userVotes}
                               onIncrement={() => {

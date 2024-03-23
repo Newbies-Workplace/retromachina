@@ -1,7 +1,8 @@
+import { AnimatePresence } from "framer-motion";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Portal } from "react-portal";
-import styles from "./Backdrop.module.scss";
+import { Backdrop } from "./Backdrop";
 
 interface PositioningBackdropProps {
   onDismiss?: () => void;
@@ -54,30 +55,32 @@ export const PositioningBackdrop: React.FC<PositioningBackdropProps> = ({
 
   return (
     <>
-      {visible && pos && (
-        <Portal>
-          <div className={styles.backdrop} onClick={onDismiss} />
-
-          <div
-            style={{
-              position: "absolute",
-              top: pos.y,
-              left: pos.x,
-              width: pos.width,
-              height: pos.height,
-            }}
-          >
-            {children}
-          </div>
-        </Portal>
-      )}
+      <AnimatePresence>
+        {visible && pos && (
+          <Portal>
+            <Backdrop onDismiss={onDismiss}>
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: "absolute",
+                  top: pos.y,
+                  left: pos.x,
+                  width: pos.width,
+                  height: pos.height,
+                }}
+              >
+                {children}
+              </div>
+            </Backdrop>
+          </Portal>
+        )}
+      </AnimatePresence>
 
       <div ref={boxRef}>
         {visible && pos ? (
           <div
             style={{
               display: "flex",
-              width: pos.width,
               height: pos.height,
             }}
           />

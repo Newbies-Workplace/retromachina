@@ -1,6 +1,6 @@
+import { motion } from "framer-motion";
 import type React from "react";
 import { Portal } from "react-portal";
-import styles from "./Backdrop.module.scss";
 
 interface BackdropProps {
   onDismiss?: () => void;
@@ -13,9 +13,18 @@ export const Backdrop: React.FC<BackdropProps> = ({
 }) => {
   return (
     <Portal>
-      <div className={styles.backdrop} onClick={onDismiss}>
+      <motion.div
+        initial={{ backgroundColor: "#00000000" }}
+        animate={{ backgroundColor: "#00000045" }}
+        exit={{ backgroundColor: "#00000000" }}
+        transition={{ duration: 0.15 }}
+        className={
+          "absolute top-0 flex justify-center items-center h-screen w-screen bg-black"
+        }
+        onClick={onDismiss}
+      >
         {children}
-      </div>
+      </motion.div>
     </Portal>
   );
 };

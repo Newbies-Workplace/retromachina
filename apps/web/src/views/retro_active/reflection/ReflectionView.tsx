@@ -22,7 +22,7 @@ export const ReflectionView: React.FC = () => {
   return (
     <div
       className={
-        "grid grid-flow-col [grid-auto-columns:minmax(0,1fr)] h-full scrollbar"
+        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar"
       }
     >
       {columns?.map((column) => {

@@ -12,6 +12,7 @@ export interface User {
   userId: string;
   role: UserRole;
   isReady: boolean;
+  isCreatingTask: boolean;
   writingInColumns: Set<string>;
 }
 
@@ -33,6 +34,6 @@ export interface Vote {
 export interface ActionPoint {
   id: string;
   ownerId: string;
-  text: string;
+  description: string;
   parentCardId: string;
 }

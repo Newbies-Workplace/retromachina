@@ -22,6 +22,10 @@ export interface UpdateWriteStateCommand {
   columnId: string;
 }
 
+export interface UpdateCreatingTaskStateCommand {
+  creatingTaskState: boolean;
+}
+
 export interface UpdateRoomStateCommand {
   roomState: "reflection" | "group" | "vote" | "discuss" | "summary";
 }
@@ -52,19 +56,19 @@ export interface MoveCardToColumnCommand {
   cardId: string;
 }
 
-export interface CreateActionPointCommand {
-  text: string;
+export interface CreateTaskCommand {
+  description: string;
   ownerId: string;
 }
 
-export interface DeleteActionPointCommand {
-  actionPointId: string;
+export interface DeleteTaskCommand {
+  taskId: string;
 }
 
-export interface UpdateActionPointCommand {
-  actionPointId: string;
+export interface UpdateTaskCommand {
+  taskId: string;
   ownerId: string;
-  text: string;
+  description: string;
 }
 
 export interface ChangeCurrentDiscussCardCommand {

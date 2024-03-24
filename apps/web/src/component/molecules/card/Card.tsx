@@ -1,5 +1,5 @@
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import type React from "react";
+import React, { createRef } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import SaveIcon from "../../../assets/icons/save.svg";
 import { cn } from "../../../common/Util";
@@ -40,10 +40,23 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
   onUpdate,
   onEditDismiss,
 }) => {
-  const teamUsersRef = useRef<any>();
   const [isUsersOpen, setUsersOpen] = useState(false);
   const [isEditingText, setIsEditingText] = useState(autoFocus);
   const [editingText, setEditingText] = useState(text);
+
+  const userPickerRef = createRef<HTMLDivElement>();
+  const userPickerDirection = useRef<"up" | "down">("down");
+
+  useEffect(() => {
+    if (userPickerRef.current) {
+      const rect = userPickerRef.current.getBoundingClientRect();
+      if (rect.top > window.innerHeight / 2) {
+        userPickerDirection.current = "up";
+      } else {
+        userPickerDirection.current = "down";
+      }
+    }
+  }, []);
 
   const closeUserPickerPopover = useCallback(() => {
     setUsersOpen(false);
@@ -60,7 +73,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
     setEditingText(text);
   }, [text]);
 
-  useClickOutside(teamUsersRef, closeUserPickerPopover);
+  useClickOutside(userPickerRef, closeUserPickerPopover);
 
   const onTextClick = () => {
     if (editableText) {
@@ -97,7 +110,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
           {isEditingText ? (
             <textarea
               className={
-                "whitespace-pre-line w-full h-full text-sm scrollbar break-words resize-none p-0 outline-none"
+                "word-break whitespace-pre-line w-full h-full text-sm scrollbar resize-none p-0 outline-none"
               }
               value={editingText}
               onChange={(e) => setEditingText(e.target.value)}
@@ -117,7 +130,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
           ) : (
             <span
               className={
-                "whitespace-pre-line w-full h-full text-sm scrollbar break-words"
+                "word-break whitespace-pre-line w-full h-full text-sm scrollbar"
               }
               onClick={onTextClick}
             >
@@ -126,19 +139,22 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
           )}
 
           {author && (
-            <div className={"flex items-center pt-1"}>
+            <div className={"flex items-center pt-1"} ref={userPickerRef}>
               <div style={{ position: "relative" }}>
                 {isUsersOpen && teamUsers.length > 1 && (
                   <div
                     className={cn(
-                      "flex items-end absolute top-[-200px] w-[265px] h-[180px] -left-1.5",
+                      "flex absolute w-[265px] max-h-[180px] -left-1.5",
+                      userPickerDirection.current === "up" &&
+                        "items-end bottom-6",
+                      userPickerDirection.current === "down" &&
+                        "items-start top-6",
                     )}
                   >
                     <div
                       className={
                         "flex flex-col items-start gap-2 min-w-[250px] max-h-36 bg-white p-1 rounded-lg shadow-[0px_4px_4px_rgba(0,0,0,0.25)]"
                       }
-                      ref={teamUsersRef}
                     >
                       <div
                         className={

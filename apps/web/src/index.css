@@ -25,6 +25,10 @@
     .scrollbar::-webkit-scrollbar-thumb:hover {
         background: #a7a3a3;
     }
+
+    .word-break {
+        word-break: break-word;
+    }
 }
 
 body, main {

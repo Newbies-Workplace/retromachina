@@ -61,7 +61,11 @@ export const TeamBoardView: React.FC = () => {
         }
       />
 
-      <div className={"grid grid-flow-col h-full scrollbar"}>
+      <div
+        className={
+          "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar"
+        }
+      >
         {board.columns
           ?.sort((a, b) => a.order - b.order)
           .map((column) => (

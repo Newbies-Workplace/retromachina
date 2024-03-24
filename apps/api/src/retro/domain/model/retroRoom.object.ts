@@ -1,13 +1,14 @@
+import { Task } from "@prisma/client";
 import { UserRole } from "shared/.dist/model/user/user.role";
 import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
 import {
-  ActionPoint,
   Card,
   RetroColumn,
   User,
   Vote,
 } from "shared/model/retro/retroRoom.interface";
-import { v4 as uuid } from "uuid";
+
+type RetroTask = Task & { parentCardId: string };
 
 export class RetroRoom {
   users: Map<string, User> = new Map();
@@ -19,7 +20,7 @@ export class RetroRoom {
   cards: Card[] = [];
   votes: Vote[] = [];
 
-  actionPoints: ActionPoint[] = [];
+  tasks: RetroTask[] = [];
 
   createdDate: Date = new Date();
   lastDisconnectionDate: Date = new Date();
@@ -31,7 +32,7 @@ export class RetroRoom {
     public retroColumns: RetroColumn[],
   ) {}
 
-  getFrontData() {
+  getRoomSyncData() {
     const tempUsers = Array.from(this.users.values());
 
     const roomData: RoomSyncEvent = {
@@ -45,7 +46,14 @@ export class RetroRoom {
       cards: this.cards,
       votes: this.votes,
       discussionCardId: this.discussionCardId,
-      actionPoints: this.actionPoints,
+      tasks: this.tasks.map((task) => {
+        return {
+          id: task.id,
+          description: task.description,
+          ownerId: task.owner_id,
+          parentCardId: task.parentCardId,
+        };
+      }),
       retroColumns: this.retroColumns.map((column) => {
         column.cards = this.cards.filter((card) => {
           return card.columnId === column.id;
@@ -62,6 +70,7 @@ export class RetroRoom {
           userId: user.userId,
           isReady: user.isReady,
           role: user.role,
+          isCreatingTask: user.isCreatingTask,
           writingInColumns: new Set<string>(),
         };
       }),
@@ -109,6 +118,7 @@ export class RetroRoom {
         userId,
         role: role,
         isReady: false,
+        isCreatingTask: false,
         writingInColumns: new Set<string>(),
       });
     } else {
@@ -152,13 +162,8 @@ export class RetroRoom {
     });
   }
 
-  addActionPoint(text: string, ownerId: string) {
-    this.actionPoints.push({
-      id: uuid(),
-      text,
-      ownerId,
-      parentCardId: this.discussionCardId,
-    });
+  addTask(task: RetroTask) {
+    this.tasks.push(task);
   }
 
   moveCardToColumn(cardId: string, columnId: string) {
@@ -169,18 +174,16 @@ export class RetroRoom {
       const groupedCards = this.cards.filter(
         (_card) => _card.parentCardId === card.id,
       );
-      groupedCards.forEach((card) => {
-        card.columnId = columnId;
-      });
+      for (const card1 of groupedCards) {
+        card1.columnId = columnId;
+      }
     }
 
     card.parentCardId = null;
   }
 
-  deleteActionPoint(actionPointId: string) {
-    this.actionPoints = this.actionPoints.filter(
-      (actionPoint) => actionPoint.id !== actionPointId,
-    );
+  deleteTask(taskId: string) {
+    this.tasks = this.tasks.filter((task) => task.id !== taskId);
   }
 
   removeVote(userId: string, parentCardId: string) {
@@ -201,16 +204,10 @@ export class RetroRoom {
     }
   }
 
-  updateActionPoint(
-    actionPointId: string,
-    newOwnerId: string,
-    newText: string,
-  ) {
-    const actionPoint = this.actionPoints.find(
-      (actionPoint) => actionPoint.id === actionPointId,
-    );
-    actionPoint.ownerId = newOwnerId;
-    actionPoint.text = newText;
+  updateTask(task: Task) {
+    this.tasks = this.tasks.map((t) => {
+      return t.id === task.id ? { ...t, ...task } : t;
+    });
   }
 
   changeDiscussionCard(cardId: string) {

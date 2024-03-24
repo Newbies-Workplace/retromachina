@@ -8,16 +8,17 @@ import type {
   ChangeCurrentDiscussCardCommand,
   ChangeTimerCommand,
   ChangeVoteAmountCommand,
-  CreateActionPointCommand,
   CreateCardCommand,
-  DeleteActionPointCommand,
+  CreateTaskCommand,
   DeleteCardCommand,
+  DeleteTaskCommand,
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
-  UpdateActionPointCommand,
   UpdateCardCommand,
+  UpdateCreatingTaskStateCommand,
   UpdateReadyStateCommand,
   UpdateRoomStateCommand,
+  UpdateTaskCommand,
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
 import type {
@@ -62,6 +63,7 @@ interface RetroContext {
   readyPercentage: number;
 
   setWriting: (value: boolean, columnId: string) => void;
+  setCreatingTask: (creatingTask: boolean) => void;
 
   createCard: (text: string, columnId: string) => void;
   updateCard: (cardId: string, text: string) => void;
@@ -104,6 +106,7 @@ export const RetroContext = createContext<RetroContext>({
   activeUsers: [],
   setReady: () => {},
   setWriting: () => {},
+  setCreatingTask: () => {},
   createCard: () => {},
   updateCard: () => {},
   deleteCard: () => {},
@@ -175,7 +178,7 @@ export const RetroContextProvider: React.FC<
         roomData.users.find((u) => u.userId === user?.id)?.isReady || false,
       );
       setUsers(roomData.users);
-      setActionPoint(roomData.actionPoints);
+      setActionPoint(roomData.tasks);
       setDiscussionCardId(roomData.discussionCardId);
 
       const serverTimeOffset = roomData.serverTime - new Date().valueOf();
@@ -205,27 +208,28 @@ export const RetroContextProvider: React.FC<
     }
   }, [teamId]);
 
-  const createActionPoint = (text: string, ownerId: string) => {
-    const command: CreateActionPointCommand = {
-      text: text,
+  const createTask = (text: string, ownerId: string) => {
+    const command: CreateTaskCommand = {
+      description: text,
       ownerId: ownerId,
     };
     socket.current?.emit("command_create_action_point", command);
+    setCreatingTask(false);
   };
 
-  const deleteActionPoint = (actionPointId: string) => {
-    const command: DeleteActionPointCommand = {
-      actionPointId: actionPointId,
+  const deleteTask = (taskId: string) => {
+    const command: DeleteTaskCommand = {
+      taskId: taskId,
     };
 
     socket.current?.emit("command_delete_action_point", command);
   };
 
-  const updateActionPoint = (apId: string, userId: string, text: string) => {
-    const command: UpdateActionPointCommand = {
-      actionPointId: apId,
+  const updateTask = (taskId: string, userId: string, text: string) => {
+    const command: UpdateTaskCommand = {
+      taskId: taskId,
       ownerId: userId,
-      text: text,
+      description: text,
     };
     socket.current?.emit("command_update_action_point", command);
   };
@@ -261,6 +265,13 @@ export const RetroContextProvider: React.FC<
     };
     socket.current?.emit("command_ready", command);
     setIsReady(ready);
+  };
+
+  const setCreatingTask = (creatingTask: boolean) => {
+    const command: UpdateCreatingTaskStateCommand = {
+      creatingTaskState: creatingTask,
+    };
+    socket.current?.emit("command_creating_task_state", command);
   };
 
   const setWriting = (value: boolean, columnId: string) => {
@@ -421,6 +432,7 @@ export const RetroContextProvider: React.FC<
         ready: isReady,
         setReady: setReady,
         readyPercentage: readyPercentage,
+        setCreatingTask: setCreatingTask,
         setWriting: setWriting,
         createCard: createCard,
         updateCard: updateCard,
@@ -434,9 +446,9 @@ export const RetroContextProvider: React.FC<
         setMaxVotesAmount: setMaxVotesAmount,
         moveCard: moveCard,
         endRetro: endRetro,
-        updateActionPoint: updateActionPoint,
-        createActionPoint: createActionPoint,
-        deleteActionPoint: deleteActionPoint,
+        updateActionPoint: updateTask,
+        createActionPoint: createTask,
+        deleteActionPoint: deleteTask,
         actionPoints: actionPoint,
       }}
     >

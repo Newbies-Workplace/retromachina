@@ -1,5 +1,6 @@
 import { TrashIcon } from "@radix-ui/react-icons";
-import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
 import { Avatar } from "../../../component/atoms/avatar/Avatar";
 import { Button } from "../../../component/atoms/button/Button";
 import { Input } from "../../../component/atoms/input/Input";
@@ -15,20 +16,52 @@ export const DiscussView = () => {
   const {
     cards,
     teamUsers,
+    activeUsers,
     votes,
     createActionPoint,
     deleteActionPoint,
     updateActionPoint,
+    setCreatingTask,
     actionPoints,
     discussionCardId,
   } = useRetro();
-  const [value, setValue] = useState("");
   const { user } = useUser();
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    const onStopWriting = () => {
+      setCreatingTask(false);
+    };
+
+    const isCurrentlyCreatingTask = activeUsers.find(
+      (u) => u.userId === user?.id,
+    )?.isCreatingTask;
+
+    if (value !== "" && !isCurrentlyCreatingTask) {
+      setCreatingTask(true);
+    }
+    const timeout = setTimeout(onStopWriting, 3000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [value]);
+
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
     setGroups(useCardGroups(cards, votes));
   }, [cards, votes]);
+
+  const usersWritingTasks = useMemo(() => {
+    const socketUsers = activeUsers.filter((user) => user.isCreatingTask);
+
+    return teamUsers.filter((teamUser) => {
+      return socketUsers.some(
+        (socketUser) => socketUser.userId === teamUser.id,
+      );
+    });
+  }, [activeUsers, teamUsers]);
 
   return (
     <div className={styles.container}>
@@ -90,7 +123,7 @@ export const DiscussView = () => {
           {(() => {
             const group = groups.find(
               (g) => g.parentCardId === discussionCardId,
-            )!;
+            );
             if (!group) {
               return null;
             }
@@ -146,7 +179,7 @@ export const DiscussView = () => {
                     name: user.nick,
                     avatar: user.avatar_link,
                   }))}
-                  text={actionPoint.text}
+                  text={actionPoint.description}
                   author={
                     author
                       ? {
@@ -170,9 +203,30 @@ export const DiscussView = () => {
         </div>
 
         <div className={styles.actionPointInput}>
+          <div className={"flex w-full -mb-7 px-1"}>
+            <AnimatePresence>
+              {usersWritingTasks.slice(0, 8).map((user) => (
+                <motion.div
+                  layout
+                  key={user.id}
+                  initial={{ y: 24 }}
+                  animate={{ y: 0 }}
+                  exit={{ y: 24 }}
+                >
+                  <Avatar
+                    className={"animate-bounce"}
+                    url={user.avatar_link}
+                    size={32}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
           <Input
             multiline
             value={value}
+            className={"z-[1]"}
             setValue={setValue}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {

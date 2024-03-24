@@ -10,7 +10,11 @@ export const GroupView: React.FC = () => {
   const { teamUsers, columns, cards, moveCard } = useRetro();
 
   return (
-    <div className={"grid grid-flow-col h-full scrollbar"}>
+    <div
+      className={
+        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar"
+      }
+    >
       {columns?.map((column) => {
         const columnCards = cards.filter((c) => c.columnId === column.id);
 

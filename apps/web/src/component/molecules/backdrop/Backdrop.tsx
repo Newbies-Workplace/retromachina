@@ -19,7 +19,7 @@ export const Backdrop: React.FC<BackdropProps> = ({
         exit={{ backgroundColor: "#00000000" }}
         transition={{ duration: 0.15 }}
         className={
-          "absolute top-0 flex justify-center items-center h-screen w-screen bg-black"
+          "absolute z-10 top-0 flex justify-center items-center h-screen w-screen bg-black"
         }
         onClick={onDismiss}
       >

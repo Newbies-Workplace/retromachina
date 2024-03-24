@@ -15,7 +15,11 @@ export const VoteView = () => {
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
 
   return (
-    <div className={"grid grid-flow-col h-full scrollbar"}>
+    <div
+      className={
+        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar"
+      }
+    >
       {columns?.map((column) => {
         const columnCards = cards.filter((c) => c.columnId === column.id);
 

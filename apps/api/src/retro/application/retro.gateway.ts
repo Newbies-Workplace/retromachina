@@ -23,6 +23,7 @@ import {
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
   UpdateCardCommand,
+  UpdateCreatingTaskStateCommand,
   UpdateReadyStateCommand,
   UpdateRoomStateCommand,
   UpdateTaskCommand,
@@ -134,7 +135,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.join(retroId);
 
-    this.server.to(room.id).emit("event_room_sync", room.getFrontData());
+    this.server.to(room.id).emit("event_room_sync", room.getRoomSyncData());
   }
 
   @SubscribeMessage("command_ready")
@@ -145,6 +146,22 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (roomUser.isReady !== readyState) {
       roomUser.isReady = readyState;
+
+      this.emitRoomSync(roomId, room);
+    }
+  }
+
+  @SubscribeMessage("command_creating_task_state")
+  async handleCreatingTaskState(
+    client: Socket,
+    { creatingTaskState }: UpdateCreatingTaskStateCommand,
+  ) {
+    const roomId = this.users.get(client.id).roomId;
+    const room = this.retroRooms.get(roomId);
+    const roomUser = room.users.get(client.id);
+
+    if (roomUser.isCreatingTask !== creatingTaskState) {
+      roomUser.isCreatingTask = creatingTaskState;
 
       this.emitRoomSync(roomId, room);
     }
@@ -435,11 +452,11 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     room.removeUser(client.id, user.user.id);
 
-    this.server.to(roomId).emit("event_room_sync", room.getFrontData());
+    this.server.to(roomId).emit("event_room_sync", room.getRoomSyncData());
   }
 
   private emitRoomSync(roomId: string, room: RetroRoom) {
-    this.server.to(roomId).emit("event_room_sync", room.getFrontData());
+    this.server.to(roomId).emit("event_room_sync", room.getRoomSyncData());
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {

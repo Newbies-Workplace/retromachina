@@ -22,6 +22,10 @@ export interface UpdateWriteStateCommand {
   columnId: string;
 }
 
+export interface UpdateCreatingTaskStateCommand {
+  creatingTaskState: boolean;
+}
+
 export interface UpdateRoomStateCommand {
   roomState: "reflection" | "group" | "vote" | "discuss" | "summary";
 }

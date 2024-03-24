@@ -32,7 +32,7 @@ export class RetroRoom {
     public retroColumns: RetroColumn[],
   ) {}
 
-  getFrontData() {
+  getRoomSyncData() {
     const tempUsers = Array.from(this.users.values());
 
     const roomData: RoomSyncEvent = {
@@ -70,6 +70,7 @@ export class RetroRoom {
           userId: user.userId,
           isReady: user.isReady,
           role: user.role,
+          isCreatingTask: user.isCreatingTask,
           writingInColumns: new Set<string>(),
         };
       }),
@@ -117,6 +118,7 @@ export class RetroRoom {
         userId,
         role: role,
         isReady: false,
+        isCreatingTask: false,
         writingInColumns: new Set<string>(),
       });
     } else {

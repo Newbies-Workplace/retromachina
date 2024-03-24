@@ -15,6 +15,7 @@ import type {
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
   UpdateCardCommand,
+  UpdateCreatingTaskStateCommand,
   UpdateReadyStateCommand,
   UpdateRoomStateCommand,
   UpdateTaskCommand,
@@ -62,6 +63,7 @@ interface RetroContext {
   readyPercentage: number;
 
   setWriting: (value: boolean, columnId: string) => void;
+  setCreatingTask: (creatingTask: boolean) => void;
 
   createCard: (text: string, columnId: string) => void;
   updateCard: (cardId: string, text: string) => void;
@@ -104,6 +106,7 @@ export const RetroContext = createContext<RetroContext>({
   activeUsers: [],
   setReady: () => {},
   setWriting: () => {},
+  setCreatingTask: () => {},
   createCard: () => {},
   updateCard: () => {},
   deleteCard: () => {},
@@ -211,6 +214,7 @@ export const RetroContextProvider: React.FC<
       ownerId: ownerId,
     };
     socket.current?.emit("command_create_action_point", command);
+    setCreatingTask(false);
   };
 
   const deleteTask = (taskId: string) => {
@@ -261,6 +265,13 @@ export const RetroContextProvider: React.FC<
     };
     socket.current?.emit("command_ready", command);
     setIsReady(ready);
+  };
+
+  const setCreatingTask = (creatingTask: boolean) => {
+    const command: UpdateCreatingTaskStateCommand = {
+      creatingTaskState: creatingTask,
+    };
+    socket.current?.emit("command_creating_task_state", command);
   };
 
   const setWriting = (value: boolean, columnId: string) => {
@@ -421,6 +432,7 @@ export const RetroContextProvider: React.FC<
         ready: isReady,
         setReady: setReady,
         readyPercentage: readyPercentage,
+        setCreatingTask: setCreatingTask,
         setWriting: setWriting,
         createCard: createCard,
         updateCard: updateCard,

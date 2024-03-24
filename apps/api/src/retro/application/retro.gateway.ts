@@ -16,16 +16,16 @@ import {
   ChangeCurrentDiscussCardCommand,
   ChangeTimerCommand,
   ChangeVoteAmountCommand,
-  CreateActionPointCommand,
   CreateCardCommand,
-  DeleteActionPointCommand,
+  CreateTaskCommand,
   DeleteCardCommand,
+  DeleteTaskCommand,
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
-  UpdateActionPointCommand,
   UpdateCardCommand,
   UpdateReadyStateCommand,
   UpdateRoomStateCommand,
+  UpdateTaskCommand,
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
 import { TimerChangedEvent } from "shared/model/retro/retro.events";
@@ -80,24 +80,6 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async closeRoom(room: RetroRoom) {
-    const board = await this.prismaService.board.findUnique({
-      where: {
-        team_id: room.teamId,
-      },
-    });
-
-    await this.prismaService.task.createMany({
-      data: room.actionPoints.map((actionPoint) => {
-        return {
-          description: actionPoint.text,
-          owner_id: actionPoint.ownerId,
-          retro_id: room.id,
-          team_id: room.teamId,
-          column_id: board.default_column_id,
-        };
-      }),
-    });
-
     await this.prismaService.retrospective.update({
       where: { id: room.id },
       data: { is_running: false },
@@ -369,40 +351,60 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage("command_create_action_point")
-  handleAddActionPoint(client: Socket, payload: CreateActionPointCommand) {
-    if (payload.text.trim().length === 0) {
+  async handleAddTask(client: Socket, payload: CreateTaskCommand) {
+    if (payload.description.trim().length === 0) {
       return;
     }
 
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    room.addActionPoint(payload.text, payload.ownerId);
+    const board = await this.prismaService.board.findUnique({
+      where: {
+        team_id: room.teamId,
+      },
+    });
+    const task = await this.prismaService.task.create({
+      data: {
+        description: payload.description,
+        owner_id: payload.ownerId,
+        retro_id: room.id,
+        team_id: room.teamId,
+        column_id: board.default_column_id,
+      },
+    });
+
+    room.addTask({ ...task, parentCardId: room.discussionCardId });
     this.emitRoomSync(roomId, room);
   }
 
   @SubscribeMessage("command_delete_action_point")
-  handleDeleteActionPoint(client: Socket, payload: DeleteActionPointCommand) {
+  async handleDeleteTask(client: Socket, payload: DeleteTaskCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    room.deleteActionPoint(payload.actionPointId);
+    await this.prismaService.task.delete({
+      where: { id: payload.taskId },
+    });
+
+    room.deleteTask(payload.taskId);
     this.emitRoomSync(roomId, room);
   }
 
   @SubscribeMessage("command_update_action_point")
-  handleChangeActionPointOwner(
-    client: Socket,
-    payload: UpdateActionPointCommand,
-  ) {
+  async handleUpdateTask(client: Socket, payload: UpdateTaskCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    room.updateActionPoint(
-      payload.actionPointId,
-      payload.ownerId,
-      payload.text,
-    );
+    const task = await this.prismaService.task.update({
+      data: {
+        description: payload.description,
+        owner_id: payload.ownerId,
+      },
+      where: { id: payload.taskId },
+    });
+
+    room.updateTask(task);
     this.emitRoomSync(roomId, room);
   }
 

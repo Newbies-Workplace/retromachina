@@ -23,7 +23,7 @@ export interface RoomSyncEvent {
   discussionCardId: string | null;
   cards: Card[];
   retroColumns: RetroColumn[];
-  actionPoints: ActionPoint[];
+  tasks: ActionPoint[];
   users: User[];
   votes: Vote[];
   serverTime: number;

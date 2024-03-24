@@ -33,6 +33,6 @@ export interface Vote {
 export interface ActionPoint {
   id: string;
   ownerId: string;
-  text: string;
+  description: string;
   parentCardId: string;
 }

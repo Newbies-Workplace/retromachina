@@ -90,7 +90,7 @@ export const DiscussView = () => {
           {(() => {
             const group = groups.find(
               (g) => g.parentCardId === discussionCardId,
-            )!;
+            );
             if (!group) {
               return null;
             }
@@ -146,7 +146,7 @@ export const DiscussView = () => {
                     name: user.nick,
                     avatar: user.avatar_link,
                   }))}
-                  text={actionPoint.text}
+                  text={actionPoint.description}
                   author={
                     author
                       ? {

@@ -116,7 +116,7 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage("command_update_task")
   async handleUpdateTask(client: Socket, payload: TaskUpdateCommand) {
     const teamId = this.users.get(client.id).teamId;
-    const col = await this.prismaService.task.update({
+    const task = await this.prismaService.task.update({
       data: {
         column_id: payload.columnId,
         owner_id: payload.ownerId,
@@ -128,10 +128,10 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
 
     const event: TaskUpdatedEvent = {
-      taskId: col.id,
-      columnId: col.column_id,
-      ownerId: col.owner_id,
-      text: col.description,
+      taskId: task.id,
+      columnId: task.column_id,
+      ownerId: task.owner_id,
+      text: task.description,
     };
 
     this.server.to(teamId).emit("task_updated_event", event);
@@ -140,14 +140,14 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage("command_delete_task")
   async handleDeleteTask(client: Socket, payload: TaskDeleteCommand) {
     const teamId = this.users.get(client.id).teamId;
-    const col = await this.prismaService.task.delete({
+    const task = await this.prismaService.task.delete({
       where: {
         id: payload.taskId,
       },
     });
 
     const event: TaskDeletedEvent = {
-      taskId: col.id,
+      taskId: task.id,
     };
 
     this.server.to(teamId).emit("task_deleted_event", event);

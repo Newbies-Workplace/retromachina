@@ -3,6 +3,8 @@ export interface TaskCreatedEvent {
   columnId: string;
   ownerId: string;
   text: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TaskUpdatedEvent {
@@ -10,6 +12,8 @@ export interface TaskUpdatedEvent {
   columnId: string;
   ownerId: string;
   text: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TaskDeletedEvent {

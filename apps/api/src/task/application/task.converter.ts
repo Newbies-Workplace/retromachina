@@ -7,5 +7,7 @@ export const toTaskResponse = (task: Task): TaskResponse => {
     ownerId: task.owner_id,
     columnId: task.column_id,
     text: task.description,
+    createdAt: task.created_at,
+    updatedAt: task.updated_at,
   };
 };

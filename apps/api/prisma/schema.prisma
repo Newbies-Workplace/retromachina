@@ -9,9 +9,11 @@ datasource db {
 }
 
 model Team {
-  id       String @id @default(uuid())
-  name     String
-  owner_id String
+  id         String   @id @default(uuid())
+  name       String
+  owner_id   String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   Owner User? @relation(fields: [owner_id], references: [id])
 
@@ -55,11 +57,13 @@ model BoardColumn {
 }
 
 model User {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   nick        String
-  email       String @unique
+  email       String   @unique
   avatar_link String
-  google_id   String @unique
+  google_id   String   @unique
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
 
   TeamUsers TeamUsers[]
   Team      Team[]
@@ -68,12 +72,14 @@ model User {
 }
 
 model Task {
-  id          String  @id @default(uuid())
-  description String  @db.Text
+  id          String   @id @default(uuid())
+  description String   @db.Text
   owner_id    String
   retro_id    String?
   team_id     String
   column_id   String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
 
   Board         Board?         @relation(fields: [team_id], references: [team_id], onDelete: Cascade, map: "Task_Board_team_id_fkey")
   User          User?          @relation(fields: [owner_id], references: [id])
@@ -94,11 +100,13 @@ model Retrospective {
 }
 
 model Invite {
-  id      String @id @default(uuid())
-  email   String
-  team_id String
-  from    String
-  role    Role   @default(USER)
+  id         String   @id @default(uuid())
+  email      String
+  team_id    String
+  from       String
+  role       Role     @default(USER)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   Team Team? @relation(fields: [team_id], references: [id], onDelete: Cascade)
   User User? @relation(fields: [from], references: [id])

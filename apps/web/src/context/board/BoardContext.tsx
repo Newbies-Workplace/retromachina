@@ -92,6 +92,8 @@ export const BoardContextProvider: React.FC<
                   columnId: event.columnId,
                   ownerId: event.ownerId,
                   text: event.text,
+                  createdAt: event.createdAt,
+                  updatedAt: event.updatedAt,
                 },
               ],
             }
@@ -109,6 +111,8 @@ export const BoardContextProvider: React.FC<
                   task.columnId = event.columnId;
                   task.ownerId = event.ownerId;
                   task.text = event.text;
+                  task.createdAt = event.createdAt;
+                  task.updatedAt = event.updatedAt;
                 }
 
                 return task;

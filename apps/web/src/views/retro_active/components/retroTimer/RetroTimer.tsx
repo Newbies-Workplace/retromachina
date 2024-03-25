@@ -1,4 +1,4 @@
-import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
+import { CheckIcon, LapTimerIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
@@ -81,7 +81,7 @@ export const RetroTimer: React.FC = () => {
           onClick={() => setDialogTimerOpen(true)}
           size={"icon"}
         >
-          <HourglassIconSvg />
+          <LapTimerIcon className={"size-6"} />
         </Button>
       )}
 

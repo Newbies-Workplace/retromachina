@@ -1,4 +1,5 @@
-import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { InfoCircledIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import dayjs from "dayjs";
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -9,6 +10,11 @@ import { Card } from "../../component/molecules/card/Card";
 import { Column } from "../../component/molecules/column/Column";
 import { ColumnCardContainer } from "../../component/molecules/dragndrop/ColumnCardContainer";
 import { DraggableCard } from "../../component/molecules/dragndrop/DraggableCard";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../component/molecules/tooltip/Tooltip";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useBoard } from "../../context/board/BoardContext.hook";
 import { useUser } from "../../context/user/UserContext.hook";
@@ -46,6 +52,8 @@ export const TeamBoardView: React.FC = () => {
       text: "",
       columnId: columnId,
       ownerId: user?.id,
+      createdAt: dayjs().toDate(),
+      updatedAt: dayjs().toDate(),
     });
   };
 
@@ -157,6 +165,51 @@ export const TeamBoardView: React.FC = () => {
                           >
                             <TrashIcon className={"size-6"} />
                           </Button>
+
+                          <div className={"mt-auto self-end h-6"}>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <InfoCircledIcon
+                                  className={
+                                    "size-6 p-1 rounded-full hover:bg-gray-500"
+                                  }
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side={"bottom"}
+                                className={"flex flex-col gap-2"}
+                              >
+                                <div
+                                  className={
+                                    "flex flex-row justify-between gap-1"
+                                  }
+                                >
+                                  <span className={"text-xs font-bold"}>
+                                    Stworzono:
+                                  </span>
+                                  <span className={"text-xs"}>
+                                    {dayjs(task.createdAt).format(
+                                      "DD.MM.YYYY HH:mm",
+                                    )}
+                                  </span>
+                                </div>
+                                <div
+                                  className={
+                                    "flex flex-row justify-between gap-1"
+                                  }
+                                >
+                                  <span className={"text-xs font-bold"}>
+                                    Zaktualizowano:
+                                  </span>
+                                  <span className={"text-xs"}>
+                                    {dayjs(task.updatedAt).format(
+                                      "DD.MM.YYYY HH:mm",
+                                    )}
+                                  </span>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                         </Card>
                       </DraggableCard>
                     );

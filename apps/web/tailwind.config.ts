@@ -7,6 +7,9 @@ const config: Config = {
       transparent: "transparent",
       white: "#FFFFFF",
       black: "#000000",
+      gray: {
+        500: "#D9D9D9",
+      },
       red: {
         500: "#DC6E47",
         600: "#b75939",

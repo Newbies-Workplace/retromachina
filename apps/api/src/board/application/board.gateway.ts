@@ -81,7 +81,7 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage("command_create_task")
   async handleCreateTask(client: Socket, payload: TaskCreateCommand) {
     const teamId = this.users.get(client.id).teamId;
-    const col = await this.prismaService.task.create({
+    const task = await this.prismaService.task.create({
       data: {
         id: payload.taskId,
         Column: {
@@ -104,10 +104,12 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
 
     const event: TaskCreatedEvent = {
-      taskId: col.id,
-      columnId: col.column_id,
-      ownerId: col.owner_id,
-      text: col.description,
+      taskId: task.id,
+      columnId: task.column_id,
+      ownerId: task.owner_id,
+      text: task.description,
+      createdAt: task.created_at,
+      updatedAt: task.updated_at,
     };
 
     this.server.to(teamId).emit("task_created_event", event);
@@ -132,6 +134,8 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       columnId: task.column_id,
       ownerId: task.owner_id,
       text: task.description,
+      createdAt: task.created_at,
+      updatedAt: task.updated_at,
     };
 
     this.server.to(teamId).emit("task_updated_event", event);

@@ -7,6 +7,7 @@ import { JWTUser } from "../../auth/jwt/JWTUser";
 import { JwtGuard } from "../../auth/jwt/jwt.guard";
 import { User } from "../../auth/jwt/jwtuser.decorator";
 import { PrismaService } from "../../prisma/prisma.service";
+import { toTaskResponse } from "../../task/application/task.converter";
 import { BoardService } from "../board.service";
 
 @Controller("teams")
@@ -77,12 +78,7 @@ export class BoardController {
         color: col.color,
         name: col.name,
       })),
-      tasks: board.Tasks.map((task) => ({
-        id: task.id,
-        ownerId: task.owner_id,
-        text: task.description,
-        columnId: task.column_id,
-      })),
+      tasks: board.Tasks.map(toTaskResponse),
     };
   }
 }

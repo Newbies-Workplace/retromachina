@@ -102,13 +102,14 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
       <div
         style={style}
         className={cn(
-          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border p-2 rounded-2xl",
+          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border p-2 rounded-2xl h-full",
           className,
         )}
       >
         <div className={"flex flex-col justify-between w-full"}>
           {isEditingText ? (
             <textarea
+              ref={(el) => el?.focus()}
               className={
                 "word-break whitespace-pre-line w-full h-full text-sm scrollbar resize-none p-0 outline-none"
               }
@@ -173,13 +174,10 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
               </div>
 
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 8,
-                  cursor: editableUser ? "pointer" : "default",
-                }}
+                className={cn(
+                  "flex items-center gap-2 p-0.5 rounded",
+                  editableUser && "cursor-pointer hover:bg-gray-500",
+                )}
                 onClick={() => {
                   if (editableUser) {
                     setUsersOpen(true);
@@ -194,7 +192,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
           )}
         </div>
 
-        <div className={"flex flex-col select-none"}>
+        <div className={"flex flex-col select-none gap-2"}>
           {isEditingText ? (
             <Button size={"icon"} onClick={onSaveClick}>
               <SaveIcon width={18} height={18} />

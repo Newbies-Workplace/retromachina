@@ -9,23 +9,26 @@ import { AppRouter } from "./views/AppRouter";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.module.scss";
+import { TooltipProvider } from "./component/molecules/tooltip/Tooltip";
 
 export const App: React.FC = () => {
   dayjs.extend(duration);
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <UserContextProvider>
-        <ToastContainer
-          icon={false}
-          closeButton={false}
-          theme={"colored"}
-          position={"bottom-right"}
-          hideProgressBar
-        />
+      <TooltipProvider>
+        <UserContextProvider>
+          <ToastContainer
+            icon={false}
+            closeButton={false}
+            theme={"colored"}
+            position={"bottom-right"}
+            hideProgressBar
+          />
 
-        <AppRouter />
-      </UserContextProvider>
+          <AppRouter />
+        </UserContextProvider>
+      </TooltipProvider>
     </DndProvider>
   );
 };

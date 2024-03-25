@@ -3,4 +3,6 @@ export interface TaskResponse {
   ownerId: string;
   columnId: string;
   text: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

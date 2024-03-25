@@ -119,6 +119,8 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
                   onSaveClick();
+                } else if (e.key === "Escape") {
+                  closeEditingMode();
                 }
               }}
               onFocus={(e) => {

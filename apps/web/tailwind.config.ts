@@ -29,6 +29,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         "jetbrains-mono": ["JetBrains Mono", "monospace"],
+        "harlow-solid-italic": ["Harlow Solid Italic", "cursive"],
       },
     },
   },

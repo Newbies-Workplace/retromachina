@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    @font-face {
+        font-family: "Harlow Solid Italic";
+        src: url("assets/fonts/Harlow_Solid_Italic.TTF");
+    }
+}
+
 @layer components {
     .scrollbar {
         overflow-x: auto;

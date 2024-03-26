@@ -29,11 +29,8 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
     setUsers([...users, user]);
   };
 
-  const onDeleteEmailClick = (index: number) => {
-    const newUsers = [...users];
-    newUsers.splice(index, 1);
-
-    setUsers(newUsers);
+  const onDeleteEmailClick = (email: string) => {
+    setUsers(users.filter((user) => user.email !== email));
   };
 
   const onRoleChange = (email: string, role: UserRole) => {
@@ -72,11 +69,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
             users={users}
             onAdd={(user) => onAddUser(user)}
             onRoleChange={(email, role) => onRoleChange(email, role)}
-            onDelete={(email) =>
-              onDeleteEmailClick(
-                users.findIndex((user) => user.email === email),
-              )
-            }
+            onDelete={(email) => onDeleteEmailClick(email)}
           />
         </div>
       </div>

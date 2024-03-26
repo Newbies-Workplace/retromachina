@@ -52,7 +52,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
           email={user.email}
           role={user.role}
           onRoleChange={(role) => onRoleChange(user.email, role)}
-          onDelete={() => onDelete(email)}
+          onDelete={() => onDelete(user.email)}
         />
       ))}
 

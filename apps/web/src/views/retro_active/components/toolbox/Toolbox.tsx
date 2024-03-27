@@ -5,7 +5,7 @@ import {
 } from "@radix-ui/react-icons";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { AnimatePresence } from "framer-motion";
-import type React from "react";
+import React, { useEffect } from "react";
 import { useCallback, useRef, useState } from "react";
 import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag-svgrepo-com.svg";
 import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
@@ -63,10 +63,18 @@ export const Toolbox: React.FC = () => {
   const closeFinish = useCallback(() => setOpenFinish(false), []);
   useClickOutside(finishPopover, closeFinish);
 
+  useEffect(() => {
+    if (roomState !== "group") {
+      setDrawingMachineVisible(false);
+    }
+  }, [roomState]);
+
   return (
     <>
       <div className={"flex flex-row gap-2 mx-2"}>
-        <SlotMachine isVisible={isSlotMachineVisible} />
+        <SlotMachine
+          isVisible={roomState === "group" && isSlotMachineVisible}
+        />
 
         <div
           className={
@@ -75,14 +83,18 @@ export const Toolbox: React.FC = () => {
         >
           {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}
 
-          <div className={"flex justify-center gap-2 w-24 h-16"}>
-            <Button
-              className={"w-full h-full"}
-              onClick={() => setDrawingMachineVisible((prev) => !prev)}
-            >
-              <SlotMachineIcon className={"size-7"} />
-            </Button>
-          </div>
+          {roomState === "group" ? (
+            <div className={"flex justify-center gap-2 w-24 h-16"}>
+              <Button
+                className={"w-full h-full"}
+                onClick={() => setDrawingMachineVisible((prev) => !prev)}
+              >
+                <SlotMachineIcon className={"size-7"} />
+              </Button>
+            </div>
+          ) : (
+            <div className={"flex justify-center gap-2 w-24 h-16"} />
+          )}
 
           <div className={"flex justify-center gap-2 w-24 h-16"}>
             {isVotingVisible && isAdmin && (

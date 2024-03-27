@@ -9,7 +9,7 @@ const rowAnimation = {
     y: 0,
   },
   idle: {
-    y: 832,
+    y: 1000,
   },
 };
 
@@ -36,13 +36,11 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({ isVisible }) => {
   const controls = useAnimation();
 
   const { teamUsers } = useRetro();
-  const [isDrawing, setIsDrawing] = useState(true);
   const [pickedUser, setPickedUser] = useState<UserResponse | null>(null);
 
   const draw = async () => {
     setPickedUser(getRandomUsers(teamUsers, 1)[0]);
-    await controls.start(isDrawing ? "drawing" : "idle");
-    setIsDrawing(!isDrawing);
+    await controls.start("drawing");
   };
 
   return (
@@ -59,10 +57,12 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({ isVisible }) => {
         >
           <div
             className={
-              "flex flex-col items-center gap-6 bg-secondary-500 p-4 rounded-xl shadow-lg w-96 h-48 z-[1]"
+              "flex flex-col items-center gap-6 bg-secondary-500 p-4 rounded-xl rounded-t-[48px] shadow-lg w-96 h-48 z-[1]"
             }
           >
-            <span className={"font-harlow-solid-italic text-white text-4xl"}>
+            <span
+              className={"font-harlow-solid-italic text-background-50 text-4xl"}
+            >
               Losowanko
             </span>
 
@@ -75,42 +75,48 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({ isVisible }) => {
                 animate={controls}
                 variants={rowAnimation}
                 initial={"idle"}
-                className={"flex flex-col gap-12 mb-7"}
+                className={"flex flex-col gap-12 mb-4"}
                 transition={transition}
               >
                 {getRandomUsers(teamUsers, 8).map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
-                  <Avatar key={index} url={user.avatar_link} />
+                  <Avatar size={64} key={index} url={user.avatar_link} />
                 ))}
-                {pickedUser && <Avatar url={pickedUser.avatar_link} />}
+                {pickedUser && (
+                  <Avatar size={64} url={pickedUser.avatar_link} />
+                )}
               </motion.div>
 
               <motion.div
                 animate={controls}
                 variants={rowAnimation}
                 initial={"idle"}
-                className={"flex flex-col gap-12 mb-7"}
+                className={"flex flex-col gap-12 mb-4"}
                 transition={transition}
               >
                 {getRandomUsers(teamUsers, 5).map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
-                  <Avatar key={index} url={user.avatar_link} />
+                  <Avatar size={64} key={index} url={user.avatar_link} />
                 ))}
-                {pickedUser && <Avatar url={pickedUser.avatar_link} />}
+                {pickedUser && (
+                  <Avatar size={64} url={pickedUser.avatar_link} />
+                )}
               </motion.div>
 
               <motion.div
                 animate={controls}
                 variants={rowAnimation}
                 initial={"idle"}
-                className={"flex flex-col gap-12 mb-7"}
+                className={"flex flex-col gap-12 mb-4"}
                 transition={transition}
               >
                 {getRandomUsers(teamUsers, 2).map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
-                  <Avatar key={index} url={user.avatar_link} />
+                  <Avatar size={64} key={index} url={user.avatar_link} />
                 ))}
-                {pickedUser && <Avatar url={pickedUser.avatar_link} />}
+                {pickedUser && (
+                  <Avatar size={64} url={pickedUser.avatar_link} />
+                )}
               </motion.div>
             </div>
           </div>
@@ -129,7 +135,6 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({ isVisible }) => {
               className={
                 "relative flex flex-col justify-end items-center ml-6 rounded-full"
               }
-              onClick={() => {}}
             >
               <div
                 className={

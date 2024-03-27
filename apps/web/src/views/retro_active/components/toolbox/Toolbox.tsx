@@ -4,15 +4,14 @@ import {
   ThickArrowRightIcon,
 } from "@radix-ui/react-icons";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag-svgrepo-com.svg";
+import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
 import VoteIconSvg from "../../../../assets/icons/vote.svg";
 import { cn } from "../../../../common/Util";
-import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { Button } from "../../../../component/atoms/button/Button";
-import { Backdrop } from "../../../../component/molecules/backdrop/Backdrop";
 import { ConfirmDialog } from "../../../../component/molecules/confirm_dialog/ConfirmDialog";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import { useCardGroups } from "../../../../context/useCardGroups";
@@ -20,7 +19,7 @@ import useClickOutside from "../../../../context/useClickOutside";
 import { usePlural } from "../../../../context/usePlural";
 import { useTeamRole } from "../../../../context/useTeamRole";
 import { useUser } from "../../../../context/user/UserContext.hook";
-import { DrawingMachine } from "./DrawingMachine";
+import { SlotMachine } from "./SlotMachine";
 
 export const Toolbox: React.FC = () => {
   const {
@@ -29,8 +28,6 @@ export const Toolbox: React.FC = () => {
     roomState,
     teamId,
     ready,
-    teamUsers,
-    activeUsers,
     setReady,
     readyPercentage,
     nextRoomState,
@@ -53,7 +50,7 @@ export const Toolbox: React.FC = () => {
     cards.length <= 0;
   const prevDisabled = roomState === "reflection";
   const isVotingVisible = roomState === "vote";
-  const [isDrawingMachineVisible, setDrawingMachineVisible] = useState(false);
+  const [isSlotMachineVisible, setDrawingMachineVisible] = useState(false);
 
   const [isVoteOpen, setOpenVote] = useState(false);
   const [isFinishOpen, setOpenFinish] = useState(false);
@@ -69,7 +66,7 @@ export const Toolbox: React.FC = () => {
   return (
     <>
       <div className={"flex flex-row gap-2 mx-2"}>
-        <DrawingMachine isVisible={isDrawingMachineVisible} />
+        <SlotMachine isVisible={isSlotMachineVisible} />
 
         <div
           className={
@@ -83,9 +80,7 @@ export const Toolbox: React.FC = () => {
               className={"w-full h-full"}
               onClick={() => setDrawingMachineVisible((prev) => !prev)}
             >
-              Maszyna
-              <br />
-              losująca
+              <SlotMachineIcon className={"size-7"} />
             </Button>
           </div>
 

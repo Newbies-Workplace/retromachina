@@ -14,12 +14,14 @@ import {
   AddCardToCardCommand,
   AddCardVoteCommand,
   ChangeCurrentDiscussCardCommand,
+  ChangeSlotMachineVisibilityCommand,
   ChangeTimerCommand,
   ChangeVoteAmountCommand,
   CreateCardCommand,
   CreateTaskCommand,
   DeleteCardCommand,
   DeleteTaskCommand,
+  DrawMachineCommand,
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
   UpdateCardCommand,
@@ -29,7 +31,10 @@ import {
   UpdateTaskCommand,
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
-import { TimerChangedEvent } from "shared/model/retro/retro.events";
+import {
+  SlotMachineDrawnEvent,
+  TimerChangedEvent,
+} from "shared/model/retro/retro.events";
 import { Card, RetroColumn } from "shared/model/retro/retroRoom.interface";
 import { Server, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
@@ -149,6 +154,39 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       this.emitRoomSync(roomId, room);
     }
+  }
+
+  @SubscribeMessage("command_change_slot_machine_visibility")
+  async handleChangeSlotMachineVisibility(
+    client: Socket,
+    { isVisible }: ChangeSlotMachineVisibilityCommand,
+  ) {
+    const roomId = this.users.get(client.id).roomId;
+    const room = this.retroRooms.get(roomId);
+    const roomUser = room.users.get(client.id);
+
+    if (roomUser.role !== "ADMIN") {
+      return;
+    }
+
+    room.setSlotMachineVisibility(isVisible);
+
+    this.emitRoomSync(roomId, room);
+  }
+
+  @SubscribeMessage("command_draw_slot_machine")
+  async handleDrawSlotMachine(client: Socket, {}: DrawMachineCommand) {
+    const roomId = this.users.get(client.id).roomId;
+    const room = this.retroRooms.get(roomId);
+
+    room.drawMachine();
+
+    const event: SlotMachineDrawnEvent = {
+      highlightedUserId: room.highlightedUserId,
+      actorId: this.users.get(client.id).user.id,
+    };
+
+    this.server.to(roomId).emit("event_slot_machine_drawn", event);
   }
 
   @SubscribeMessage("command_creating_task_state")

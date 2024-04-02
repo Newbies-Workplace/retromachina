@@ -31,7 +31,7 @@ export interface Vote {
   voterId: string;
 }
 
-export interface ActionPoint {
+export interface RetroTask {
   id: string;
   ownerId: string;
   description: string;

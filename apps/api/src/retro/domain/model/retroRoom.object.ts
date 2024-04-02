@@ -14,16 +14,24 @@ export class RetroRoom {
   users: Map<string, User> = new Map();
 
   roomState: RoomState = "reflection";
-  maxVotes?: number = 3;
   timerEnds?: number = null;
-  discussionCardId = null;
   cards: Card[] = [];
-  votes: Vote[] = [];
-
-  tasks: RetroTask[] = [];
 
   createdDate: Date = new Date();
   lastDisconnectionDate: Date = new Date();
+
+  // group
+  slotMachineVisible = false;
+  userIdsQueue: string[] = [];
+  highlightedUserId: string | null = null;
+  maxVotes?: number = 3;
+
+  // vote
+  votes: Vote[] = [];
+
+  // discuss
+  discussionCardId = null;
+  tasks: RetroTask[] = [];
 
   constructor(
     public id: string,
@@ -46,6 +54,8 @@ export class RetroRoom {
       cards: this.cards,
       votes: this.votes,
       discussionCardId: this.discussionCardId,
+      slotMachineVisible: this.slotMachineVisible,
+      highlightedUserId: this.highlightedUserId,
       tasks: this.tasks.map((task) => {
         return {
           id: task.id,
@@ -109,7 +119,7 @@ export class RetroRoom {
   }
 
   addUser(socketId: string, userId: string, role: UserRole) {
-    const result = Array.from(this.users.entries()).find(([key, localUser]) => {
+    const result = Array.from(this.users.entries()).find(([_, localUser]) => {
       return localUser.userId === userId;
     });
 
@@ -145,11 +155,11 @@ export class RetroRoom {
       (card) => card.parentCardId === cardId,
     );
 
-    childCards.forEach((card) => {
-      this.pushCardToEnd(card.id);
-      card.parentCardId = parentCardId;
-      card.columnId = parentCard.columnId;
-    });
+    for (const childCard of childCards) {
+      this.pushCardToEnd(childCard.id);
+      childCard.parentCardId = parentCardId;
+      childCard.columnId = parentCard.columnId;
+    }
 
     card.parentCardId = parentCardId;
     card.columnId = parentCard.columnId;
@@ -234,7 +244,7 @@ export class RetroRoom {
   }
 
   private clearUsersReady() {
-    for (const [key, user] of this.users) {
+    for (const [, user] of this.users) {
       user.isReady = false;
     }
   }
@@ -260,5 +270,21 @@ export class RetroRoom {
       .sort((a, b) => b.votes - a.votes);
 
     this.discussionCardId = sortedCards[0].parentCardId;
+  }
+
+  drawMachine() {
+    //todo randomized from queue
+    const randomUser = Array.from(this.users.values())[
+      Math.floor(Math.random() * this.users.size)
+    ];
+    this.highlightedUserId = randomUser.userId;
+  }
+
+  setSlotMachineVisibility(isVisible: boolean) {
+    this.slotMachineVisible = isVisible;
+
+    if (!isVisible) {
+      this.highlightedUserId = null;
+    }
   }
 }

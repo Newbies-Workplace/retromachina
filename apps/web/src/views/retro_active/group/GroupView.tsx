@@ -1,4 +1,5 @@
 import type React from "react";
+import { cn } from "../../../common/Util";
 import { Card } from "../../../component/molecules/card/Card";
 import { Column } from "../../../component/molecules/column/Column";
 import { ColumnCardContainer } from "../../../component/molecules/dragndrop/ColumnCardContainer";
@@ -7,13 +8,15 @@ import { GroupCardContainer } from "../../../component/molecules/dragndrop/group
 import { useRetro } from "../../../context/retro/RetroContext.hook";
 
 export const GroupView: React.FC = () => {
-  const { teamUsers, columns, cards, moveCard } = useRetro();
+  const { teamUsers, columns, cards, moveCard, slotMachineVisible } =
+    useRetro();
 
   return (
     <div
-      className={
-        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar"
-      }
+      className={cn(
+        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar",
+        slotMachineVisible && "pb-28",
+      )}
     >
       {columns?.map((column) => {
         const columnCards = cards.filter((c) => c.columnId === column.id);

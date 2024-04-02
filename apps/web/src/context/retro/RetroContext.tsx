@@ -6,12 +6,14 @@ import type {
   AddCardToCardCommand,
   AddCardVoteCommand,
   ChangeCurrentDiscussCardCommand,
+  ChangeSlotMachineVisibilityCommand,
   ChangeTimerCommand,
   ChangeVoteAmountCommand,
   CreateCardCommand,
   CreateTaskCommand,
   DeleteCardCommand,
   DeleteTaskCommand,
+  DrawMachineCommand,
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
   UpdateCardCommand,
@@ -24,12 +26,13 @@ import type {
 import type {
   RoomState,
   RoomSyncEvent,
+  SlotMachineDrawnEvent,
   TimerChangedEvent,
 } from "shared/model/retro/retro.events";
 import type {
-  ActionPoint,
   Card,
   RetroColumn,
+  RetroTask,
   User,
   Vote,
 } from "shared/model/retro/retroRoom.interface";
@@ -45,6 +48,11 @@ interface RetroContextParams {
   retroId: string;
 }
 
+export type SlotMachineDrawnListener = (event: {
+  highlightedUserId: string;
+  actorId: string;
+}) => void;
+
 interface RetroContext {
   retroId: string;
   teamId: string | null;
@@ -52,9 +60,13 @@ interface RetroContext {
   cards: Card[];
   teamUsers: UserResponse[];
   activeUsers: User[];
-  roomState: RoomState;
 
-  discussionCardId: string | null;
+  // common
+  roomState: RoomState;
+  nextRoomState: () => void;
+  prevRoomState: () => void;
+  endRetro: () => void;
+
   timerEnds: number | null;
   setTimer: (time: number | null) => void;
 
@@ -62,91 +74,121 @@ interface RetroContext {
   setReady: (ready: boolean) => void;
   readyPercentage: number;
 
+  // reflection
   setWriting: (value: boolean, columnId: string) => void;
-  setCreatingTask: (creatingTask: boolean) => void;
-
   createCard: (text: string, columnId: string) => void;
   updateCard: (cardId: string, text: string) => void;
   deleteCard: (cardId: string) => void;
 
-  nextRoomState: () => void;
-  prevRoomState: () => void;
+  // group
+  slotMachineVisible: boolean;
+  setSlotMachineVisible: (visible: boolean) => void;
+  drawMachine: () => void;
+  highlightedUserId: string | null;
+  addDrawSlotMachineListener: (listener: SlotMachineDrawnListener) => void;
+  removeDrawSlotMachineListener: (listener: SlotMachineDrawnListener) => void;
+  moveCard: (action: CardMoveAction) => void;
+
+  // vote
   removeVote: (parentCardId: string) => void;
   addVote: (parentCardId: string) => void;
   votes: Vote[];
   maxVotes: number;
   setMaxVotesAmount: (amount: number) => void;
 
-  moveCard: (action: CardMoveAction) => void;
-
-  endRetro: () => void;
-
-  updateActionPoint: (
-    actionPointId: string,
-    userId: string,
-    text: string,
-  ) => void;
-  createActionPoint: (text: string, ownerId: string) => void;
-  deleteActionPoint: (actionPointId: string) => void;
-  actionPoints: ActionPoint[];
+  // discuss
+  discussionCardId: string | null;
+  setCreatingTask: (creatingTask: boolean) => void;
+  createTask: (text: string, ownerId: string) => void;
+  updateTask: (actionPointId: string, userId: string, text: string) => void;
+  deleteTask: (actionPointId: string) => void;
+  tasks: RetroTask[];
 }
 
 export const RetroContext = createContext<RetroContext>({
-  columns: [],
-  cards: [],
   retroId: "",
   teamId: null,
-  roomState: "reflection",
-  timerEnds: null,
-  discussionCardId: null,
-  setTimer: () => {},
-  ready: false,
-  readyPercentage: 0,
+  columns: [],
+  cards: [],
   teamUsers: [],
   activeUsers: [],
+
+  // common
+  roomState: "reflection",
+  nextRoomState: () => {},
+  prevRoomState: () => {},
+  endRetro: () => {},
+
+  timerEnds: null,
+  setTimer: () => {},
+
+  ready: false,
   setReady: () => {},
+  readyPercentage: 0,
+
+  // reflection
   setWriting: () => {},
-  setCreatingTask: () => {},
   createCard: () => {},
   updateCard: () => {},
   deleteCard: () => {},
-  nextRoomState: () => {},
-  prevRoomState: () => {},
+
+  // group
+  slotMachineVisible: false,
+  setSlotMachineVisible: () => {},
+  drawMachine: () => {},
+  highlightedUserId: null,
+  addDrawSlotMachineListener: () => {},
+  removeDrawSlotMachineListener: () => {},
+  moveCard: () => {},
+
+  // vote
   removeVote: () => {},
   addVote: () => {},
   votes: [],
   maxVotes: 0,
   setMaxVotesAmount: () => {},
-  moveCard: () => {},
-  endRetro: () => {},
-  updateActionPoint: () => {},
-  createActionPoint: () => {},
-  deleteActionPoint: () => {},
-  actionPoints: [],
+
+  // discuss
+  discussionCardId: null,
+  setCreatingTask: () => {},
+  createTask: () => {},
+  updateTask: () => {},
+  deleteTask: () => {},
+  tasks: [],
 });
 
 export const RetroContextProvider: React.FC<
   React.PropsWithChildren<RetroContextParams>
 > = ({ children, retroId }) => {
-  const socket = useRef<Socket>();
-  const timeOffset = useRef<number>();
-  const [teamId, setTeamId] = useState<string | null>(null);
-  const [votes, setVotes] = useState<Vote[]>([]);
-  const [maxVotes, setMaxVotes] = useState<number>(0);
-  const [timerEnds, setTimerEnds] = useState<number | null>(null);
-  const [isReady, setIsReady] = useState(false);
-  const [roomState, setRoomState] = useState<RoomState>("reflection");
-  const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
-  const [columns, setColumns] = useState<RetroColumn[]>([]);
-  const [cards, setCards] = useState<Card[]>([]);
-  const [usersReady, setUsersReady] = useState<number>(0);
-  const [users, setUsers] = useState<User[]>([]);
-  const [actionPoint, setActionPoint] = useState<ActionPoint[]>([]);
-  const [discussionCardId, setDiscussionCardId] = useState<string | null>(null);
-
   const { user } = useUser();
   const navigate = useNavigate();
+
+  const timeOffset = useRef<number>();
+  const socket = useRef<Socket>();
+  const [teamId, setTeamId] = useState<string | null>(null);
+  const [columns, setColumns] = useState<RetroColumn[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [roomState, setRoomState] = useState<RoomState>("reflection");
+  const [timerEnds, setTimerEnds] = useState<number | null>(null);
+
+  const [isReady, setIsReady] = useState(false);
+  const [usersReady, setUsersReady] = useState<number>(0);
   const readyPercentage = (usersReady / users.length) * 100;
+
+  const slotMachineDrawnListeners = useRef<SlotMachineDrawnListener[]>([]);
+  const [isSlotMachineVisible, setIsSlotMachineVisible] =
+    useState<boolean>(false);
+  const [highlightedUserId, setHighlightedUserId] = useState<string | null>(
+    null,
+  );
+
+  const [votes, setVotes] = useState<Vote[]>([]);
+  const [maxVotes, setMaxVotes] = useState<number>(0);
+
+  const [discussionCardId, setDiscussionCardId] = useState<string | null>(null);
+  const [tasks, setTasks] = useState<RetroTask[]>([]);
 
   useEffect(() => {
     const createdSocket = io(`${process.env.RETRO_WEB_SOCKET_URL}/retro`, {
@@ -177,8 +219,10 @@ export const RetroContextProvider: React.FC<
       setIsReady(
         roomData.users.find((u) => u.userId === user?.id)?.isReady || false,
       );
+      setIsSlotMachineVisible(roomData.slotMachineVisible);
+      setHighlightedUserId(roomData.highlightedUserId);
       setUsers(roomData.users);
-      setActionPoint(roomData.tasks);
+      setTasks(roomData.tasks);
       setDiscussionCardId(roomData.discussionCardId);
 
       const serverTimeOffset = roomData.serverTime - new Date().valueOf();
@@ -189,6 +233,20 @@ export const RetroContextProvider: React.FC<
     createdSocket.on("event_timer_change", (e: TimerChangedEvent) => {
       handleTimerChanged(e.timerEnds, timeOffset.current ?? 0);
     });
+
+    createdSocket.on(
+      "event_slot_machine_drawn",
+      (event: SlotMachineDrawnEvent) => {
+        setHighlightedUserId(event.highlightedUserId);
+
+        for (const listener of slotMachineDrawnListeners.current) {
+          listener({
+            highlightedUserId: event.highlightedUserId,
+            actorId: event.actorId,
+          });
+        }
+      },
+    );
 
     createdSocket.on("event_close_room", () => {
       navigate(`/retro/${retroId}/summary`);
@@ -208,103 +266,13 @@ export const RetroContextProvider: React.FC<
     }
   }, [teamId]);
 
-  const createTask = (text: string, ownerId: string) => {
-    const command: CreateTaskCommand = {
-      description: text,
-      ownerId: ownerId,
-    };
-    socket.current?.emit("command_create_action_point", command);
-    setCreatingTask(false);
-  };
-
-  const deleteTask = (taskId: string) => {
-    const command: DeleteTaskCommand = {
-      taskId: taskId,
-    };
-
-    socket.current?.emit("command_delete_action_point", command);
-  };
-
-  const updateTask = (taskId: string, userId: string, text: string) => {
-    const command: UpdateTaskCommand = {
-      taskId: taskId,
-      ownerId: userId,
-      description: text,
-    };
-    socket.current?.emit("command_update_action_point", command);
-  };
-
-  const endRetro = () => {
-    socket.current?.emit("command_close_room");
-  };
-
-  const addVote = (parentCardId: string) => {
-    const command: AddCardVoteCommand = {
-      parentCardId: parentCardId,
-    };
-    socket.current?.emit("command_vote_on_card", command);
-  };
-
-  const removeVote = (parentCardId: string) => {
-    const command: RemoveCardVoteCommand = {
-      parentCardId: parentCardId,
-    };
-    socket.current?.emit("command_remove_vote_on_card", command);
-  };
-
-  const setMaxVotesAmount = (amount: number) => {
-    const command: ChangeVoteAmountCommand = {
-      votesAmount: amount,
-    };
-    socket.current?.emit("command_change_vote_amount", command);
-  };
-
+  // common
   const setReady = (ready: boolean) => {
     const command: UpdateReadyStateCommand = {
       readyState: ready,
     };
     socket.current?.emit("command_ready", command);
     setIsReady(ready);
-  };
-
-  const setCreatingTask = (creatingTask: boolean) => {
-    const command: UpdateCreatingTaskStateCommand = {
-      creatingTaskState: creatingTask,
-    };
-    socket.current?.emit("command_creating_task_state", command);
-  };
-
-  const setWriting = (value: boolean, columnId: string) => {
-    const command: UpdateWriteStateCommand = {
-      columnId: columnId,
-      writeState: value,
-    };
-    socket.current?.emit("command_write_state", command);
-  };
-
-  const createCard = (text: string, columnId: string) => {
-    const command: CreateCardCommand = {
-      id: uuidv4(),
-      text: text,
-      columnId: columnId,
-    };
-    socket.current?.emit("command_create_card", command);
-    setWriting(false, columnId);
-  };
-
-  const updateCard = (cardId: string, text: string) => {
-    const command: UpdateCardCommand = {
-      cardId: cardId,
-      text: text,
-    };
-    socket.current?.emit("command_update_card", command);
-  };
-
-  const deleteCard = (cardId: string) => {
-    const command: DeleteCardCommand = {
-      cardId: cardId,
-    };
-    socket.current?.emit("command_delete_card", command);
   };
 
   const setTimer = (time: number | null) => {
@@ -370,6 +338,107 @@ export const RetroContextProvider: React.FC<
     socket.current?.emit("command_room_state", command);
   };
 
+  const endRetro = () => {
+    socket.current?.emit("command_close_room");
+  };
+
+  // reflection
+  const setWriting = (value: boolean, columnId: string) => {
+    const command: UpdateWriteStateCommand = {
+      columnId: columnId,
+      writeState: value,
+    };
+    socket.current?.emit("command_write_state", command);
+  };
+
+  const createCard = (text: string, columnId: string) => {
+    const command: CreateCardCommand = {
+      id: uuidv4(),
+      text: text,
+      columnId: columnId,
+    };
+    socket.current?.emit("command_create_card", command);
+    setWriting(false, columnId);
+  };
+
+  const updateCard = (cardId: string, text: string) => {
+    const command: UpdateCardCommand = {
+      cardId: cardId,
+      text: text,
+    };
+    socket.current?.emit("command_update_card", command);
+  };
+
+  const deleteCard = (cardId: string) => {
+    const command: DeleteCardCommand = {
+      cardId: cardId,
+    };
+    socket.current?.emit("command_delete_card", command);
+  };
+
+  // group
+  const drawMachine = () => {
+    const command: DrawMachineCommand = {};
+    socket.current?.emit("command_draw_slot_machine", command);
+  };
+
+  const setSlotMachineVisible = (visible: boolean) => {
+    const command: ChangeSlotMachineVisibilityCommand = {
+      isVisible: visible,
+    };
+    socket.current?.emit("command_change_slot_machine_visibility", command);
+  };
+
+  const addDrawSlotMachineListener = (listener: SlotMachineDrawnListener) => {
+    slotMachineDrawnListeners.current.push(listener);
+  };
+
+  const removeDrawSlotMachineListener = (
+    listener: SlotMachineDrawnListener,
+  ) => {
+    slotMachineDrawnListeners.current =
+      slotMachineDrawnListeners.current.filter((l) => l !== listener);
+  };
+
+  const moveCard = (move: CardMoveAction) => {
+    if (move.targetType === "column") {
+      const command: MoveCardToColumnCommand = {
+        cardId: move.cardId,
+        columnId: move.targetId,
+      };
+      socket.current?.emit("command_move_card_to_column", command);
+    } else if (move.targetType === "card") {
+      const command: AddCardToCardCommand = {
+        cardId: move.cardId,
+        parentCardId: move.targetId,
+      };
+      socket.current?.emit("command_card_add_to_card", command);
+    }
+  };
+
+  // vote
+  const addVote = (parentCardId: string) => {
+    const command: AddCardVoteCommand = {
+      parentCardId: parentCardId,
+    };
+    socket.current?.emit("command_vote_on_card", command);
+  };
+
+  const removeVote = (parentCardId: string) => {
+    const command: RemoveCardVoteCommand = {
+      parentCardId: parentCardId,
+    };
+    socket.current?.emit("command_remove_vote_on_card", command);
+  };
+
+  const setMaxVotesAmount = (amount: number) => {
+    const command: ChangeVoteAmountCommand = {
+      votesAmount: amount,
+    };
+    socket.current?.emit("command_change_vote_amount", command);
+  };
+
+  // discuss
   const changeDiscussCard = (to: "next" | "prev") => {
     const groups = useCardGroups(cards, votes).sort(
       (a, b) => b.votes - a.votes,
@@ -400,20 +469,37 @@ export const RetroContextProvider: React.FC<
     return false;
   };
 
-  const moveCard = (move: CardMoveAction) => {
-    if (move.targetType === "column") {
-      const command: MoveCardToColumnCommand = {
-        cardId: move.cardId,
-        columnId: move.targetId,
-      };
-      socket.current?.emit("command_move_card_to_column", command);
-    } else if (move.targetType === "card") {
-      const command: AddCardToCardCommand = {
-        cardId: move.cardId,
-        parentCardId: move.targetId,
-      };
-      socket.current?.emit("command_card_add_to_card", command);
-    }
+  const setCreatingTask = (creatingTask: boolean) => {
+    const command: UpdateCreatingTaskStateCommand = {
+      creatingTaskState: creatingTask,
+    };
+    socket.current?.emit("command_creating_task_state", command);
+  };
+
+  const createTask = (text: string, ownerId: string) => {
+    const command: CreateTaskCommand = {
+      description: text,
+      ownerId: ownerId,
+    };
+    socket.current?.emit("command_create_action_point", command);
+    setCreatingTask(false);
+  };
+
+  const updateTask = (taskId: string, userId: string, text: string) => {
+    const command: UpdateTaskCommand = {
+      taskId: taskId,
+      ownerId: userId,
+      description: text,
+    };
+    socket.current?.emit("command_update_action_point", command);
+  };
+
+  const deleteTask = (taskId: string) => {
+    const command: DeleteTaskCommand = {
+      taskId: taskId,
+    };
+
+    socket.current?.emit("command_delete_action_point", command);
   };
 
   return (
@@ -423,33 +509,50 @@ export const RetroContextProvider: React.FC<
         teamId: teamId,
         columns: columns,
         cards: cards,
-        roomState: roomState,
         teamUsers: teamUsers,
         activeUsers: users,
+
+        roomState: roomState,
+        nextRoomState: nextRoomState,
+        prevRoomState: prevRoomState,
+        endRetro: endRetro,
+
         timerEnds: timerEnds,
-        discussionCardId: discussionCardId,
         setTimer: setTimer,
+
         ready: isReady,
         setReady: setReady,
         readyPercentage: readyPercentage,
-        setCreatingTask: setCreatingTask,
+
+        // reflection
         setWriting: setWriting,
         createCard: createCard,
         updateCard: updateCard,
         deleteCard: deleteCard,
-        nextRoomState: nextRoomState,
-        prevRoomState: prevRoomState,
+
+        // group
+        slotMachineVisible: isSlotMachineVisible,
+        setSlotMachineVisible: setSlotMachineVisible,
+        drawMachine: drawMachine,
+        highlightedUserId: highlightedUserId,
+        addDrawSlotMachineListener: addDrawSlotMachineListener,
+        removeDrawSlotMachineListener: removeDrawSlotMachineListener,
+        moveCard: moveCard,
+
+        // vote
         removeVote: removeVote,
         addVote: addVote,
         votes: votes,
         maxVotes: maxVotes,
         setMaxVotesAmount: setMaxVotesAmount,
-        moveCard: moveCard,
-        endRetro: endRetro,
-        updateActionPoint: updateTask,
-        createActionPoint: createTask,
-        deleteActionPoint: deleteTask,
-        actionPoints: actionPoint,
+
+        // discuss
+        discussionCardId: discussionCardId,
+        setCreatingTask: setCreatingTask,
+        createTask: createTask,
+        updateTask: updateTask,
+        deleteTask: deleteTask,
+        tasks: tasks,
       }}
     >
       {children}

@@ -5,7 +5,7 @@ import {
 } from "@radix-ui/react-icons";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { AnimatePresence } from "framer-motion";
-import React, { useEffect } from "react";
+import React from "react";
 import { useCallback, useRef, useState } from "react";
 import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag-svgrepo-com.svg";
 import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
@@ -36,7 +36,15 @@ export const Toolbox: React.FC = () => {
 
   const { isAdmin } = useTeamRole(teamId!);
 
-  const { maxVotes, setMaxVotesAmount, votes, endRetro } = useRetro();
+  const {
+    maxVotes,
+    setMaxVotesAmount,
+    votes,
+    activeUsers,
+    endRetro,
+    slotMachineVisible,
+    setSlotMachineVisible,
+  } = useRetro();
   const { user } = useUser();
   const userVotes =
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
@@ -50,7 +58,6 @@ export const Toolbox: React.FC = () => {
     cards.length <= 0;
   const prevDisabled = roomState === "reflection";
   const isVotingVisible = roomState === "vote";
-  const [isSlotMachineVisible, setDrawingMachineVisible] = useState(false);
 
   const [isVoteOpen, setOpenVote] = useState(false);
   const [isFinishOpen, setOpenFinish] = useState(false);
@@ -63,18 +70,10 @@ export const Toolbox: React.FC = () => {
   const closeFinish = useCallback(() => setOpenFinish(false), []);
   useClickOutside(finishPopover, closeFinish);
 
-  useEffect(() => {
-    if (roomState !== "group") {
-      setDrawingMachineVisible(false);
-    }
-  }, [roomState]);
-
   return (
     <>
       <div className={"flex flex-row gap-2 mx-2"}>
-        <SlotMachine
-          isVisible={roomState === "group" && isSlotMachineVisible}
-        />
+        <SlotMachine />
 
         <div
           className={
@@ -83,11 +82,12 @@ export const Toolbox: React.FC = () => {
         >
           {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}
 
-          {roomState === "group" ? (
+          {isAdmin && roomState === "group" ? (
             <div className={"flex justify-center gap-2 w-24 h-16"}>
               <Button
                 className={"w-full h-full"}
-                onClick={() => setDrawingMachineVisible((prev) => !prev)}
+                disabled={activeUsers.length < 2}
+                onClick={() => setSlotMachineVisible(!slotMachineVisible)}
               >
                 <SlotMachineIcon className={"size-7"} />
               </Button>

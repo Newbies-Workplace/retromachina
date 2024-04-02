@@ -212,6 +212,9 @@ export class RetroRoom {
     if (roomState === "discuss") {
       this.initDiscussionCard();
     }
+    if (roomState !== "group") {
+      this.slotMachineVisible = false;
+    }
   }
 
   updateTask(task: Task) {
@@ -282,9 +285,5 @@ export class RetroRoom {
 
   setSlotMachineVisibility(isVisible: boolean) {
     this.slotMachineVisible = isVisible;
-
-    if (!isVisible) {
-      this.highlightedUserId = null;
-    }
   }
 }

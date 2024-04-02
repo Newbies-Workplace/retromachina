@@ -106,6 +106,7 @@ export const TeamBoardView: React.FC = () => {
 
                     return (
                       <Card
+                        id={creatingTask.id}
                         text={creatingTask.text}
                         author={{
                           avatar: author?.avatar_link || "",
@@ -141,6 +142,7 @@ export const TeamBoardView: React.FC = () => {
                         columnId={column.id}
                       >
                         <Card
+                          id={task.id}
                           text={task.text}
                           author={{
                             avatar: author?.avatar_link || "",

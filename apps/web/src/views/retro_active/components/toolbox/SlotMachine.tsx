@@ -11,6 +11,7 @@ import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import { useUser } from "../../../../context/user/UserContext.hook";
 
+export const SLOT_MACHINE_ANIMATION_DURATION = 2200;
 const rowAnimation = {
   drawing: {
     y: 0,
@@ -48,6 +49,8 @@ export const SlotMachine: React.FC = () => {
     removeDrawSlotMachineListener,
   } = useRetro();
   const { user } = useUser();
+
+  // todo fix current user blink before animation
   const highlightedUser = useMemo(
     () => teamUsers.find((u) => u.id === highlightedUserId),
     [highlightedUserId, teamUsers],
@@ -78,10 +81,14 @@ export const SlotMachine: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (highlightedUserId !== null && teamUsers.length > 0) {
+    if (
+      slotMachineVisible &&
+      highlightedUserId !== null &&
+      teamUsers.length > 0
+    ) {
       controls.start("drawing", { duration: 0 });
     }
-  }, [teamUsers]);
+  }, [teamUsers, slotMachineVisible]);
 
   return (
     <AnimatePresence>

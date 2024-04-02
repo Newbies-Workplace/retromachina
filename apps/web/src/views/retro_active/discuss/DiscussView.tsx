@@ -89,6 +89,7 @@ export const DiscussView = () => {
 
                   return (
                     <Card
+                      id={card.id}
                       key={card.id}
                       style={{ marginTop: index === 0 ? 0 : -80 }}
                       text={card.text}
@@ -168,6 +169,7 @@ export const DiscussView = () => {
 
               return (
                 <Card
+                  id={actionPoint.id}
                   key={actionPoint.id}
                   editableUser
                   editableText

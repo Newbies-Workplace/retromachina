@@ -1,17 +1,19 @@
 import {
   AnimatePresence,
+  delay,
   motion,
   useAnimate,
   useAnimation,
 } from "framer-motion";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import ConfettiExplosion from "react-confetti-explosion";
 import { UserResponse } from "shared/model/user/user.response";
 import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import { useUser } from "../../../../context/user/UserContext.hook";
 
-export const SLOT_MACHINE_ANIMATION_DURATION = 2200;
+export const SLOT_MACHINE_ANIMATION_DURATION = 2400;
 const rowAnimation = {
   drawing: {
     y: 0,
@@ -55,6 +57,7 @@ export const SlotMachine: React.FC = () => {
     () => teamUsers.find((u) => u.id === highlightedUserId),
     [highlightedUserId, teamUsers],
   );
+  const [hasConfetti, setHasConfetti] = useState(false);
 
   const [leverRef, animate] = useAnimate();
   const controls = useAnimation();
@@ -66,6 +69,10 @@ export const SlotMachine: React.FC = () => {
 
     await controls.start("idle", { duration: 0 });
     await controls.start("drawing");
+    setHasConfetti(true);
+    delay(() => {
+      setHasConfetti(false);
+    }, 1500);
   };
 
   useEffect(() => {
@@ -109,8 +116,13 @@ export const SlotMachine: React.FC = () => {
             }
           >
             <span
-              className={"font-harlow-solid-italic text-background-50 text-3xl"}
+              className={
+                "flex flex-col justify-center items-center font-harlow-solid-italic text-background-50 text-3xl"
+              }
             >
+              {hasConfetti && (
+                <ConfettiExplosion className={"my-auto"} zIndex={1} />
+              )}
               Losowanko
             </span>
 

@@ -175,7 +175,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage("command_draw_slot_machine")
-  async handleDrawSlotMachine(client: Socket, {}: DrawMachineCommand) {
+  async handleDrawSlotMachine(client: Socket, _: DrawMachineCommand) {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 

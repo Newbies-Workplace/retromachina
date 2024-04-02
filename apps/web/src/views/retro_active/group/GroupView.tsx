@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { cn } from "../../../common/Util";
 import { useDebounce } from "../../../common/useDebounce";
 import { Card } from "../../../component/molecules/card/Card";
@@ -18,21 +18,10 @@ export const GroupView: React.FC = () => {
     slotMachineVisible,
     highlightedUserId,
   } = useRetro();
-  const [filteredCards, setFilteredCards] = useState(cards);
   const delayedHighlightedUserId = useDebounce(
     highlightedUserId,
     SLOT_MACHINE_ANIMATION_DURATION,
   );
-
-  useEffect(() => {
-    if (slotMachineVisible && delayedHighlightedUserId) {
-      setFilteredCards(
-        cards.filter((card) => card.authorId === delayedHighlightedUserId),
-      );
-    } else {
-      setFilteredCards(cards);
-    }
-  }, [cards, slotMachineVisible, delayedHighlightedUserId]);
 
   return (
     <div
@@ -42,9 +31,7 @@ export const GroupView: React.FC = () => {
       )}
     >
       {columns.map((column) => {
-        const columnCards = filteredCards.filter(
-          (c) => c.columnId === column.id,
-        );
+        const columnCards = cards.filter((c) => c.columnId === column.id);
 
         return (
           <Column
@@ -67,6 +54,21 @@ export const GroupView: React.FC = () => {
             >
               {columnCards
                 .filter((c) => c.parentCardId === null)
+                .sort((a, b) => {
+                  if (!slotMachineVisible || a.authorId === b.authorId) {
+                    return 0;
+                  }
+
+                  if (a.authorId === delayedHighlightedUserId) {
+                    return -1;
+                  }
+
+                  if (b.authorId === delayedHighlightedUserId) {
+                    return 1;
+                  }
+
+                  return 0;
+                })
                 .map((group) => {
                   const groupCards = [
                     group,
@@ -77,6 +79,11 @@ export const GroupView: React.FC = () => {
                     <GroupCardContainer
                       key={group.id}
                       parentCardId={group.id}
+                      className={cn(
+                        slotMachineVisible &&
+                          delayedHighlightedUserId !== group.authorId &&
+                          "opacity-30",
+                      )}
                       onCardDropped={(cardId) =>
                         moveCard({
                           targetType: "card",

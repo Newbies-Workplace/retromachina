@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import type React from "react";
 import { cn } from "../../../common/Util";
 import { ColumnHeader } from "../column_header/ColumnHeader";
@@ -30,8 +31,7 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
           right={headerRight}
         />
       </div>
-
-      {children}
+      <AnimatePresence>{children}</AnimatePresence>
     </div>
   );
 };

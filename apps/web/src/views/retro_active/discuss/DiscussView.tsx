@@ -18,11 +18,11 @@ export const DiscussView = () => {
     teamUsers,
     activeUsers,
     votes,
-    createActionPoint,
-    deleteActionPoint,
-    updateActionPoint,
+    createTask,
+    deleteTask,
+    updateTask,
     setCreatingTask,
-    actionPoints,
+    tasks,
     discussionCardId,
   } = useRetro();
   const { user } = useUser();
@@ -89,6 +89,7 @@ export const DiscussView = () => {
 
                   return (
                     <Card
+                      id={card.id}
                       key={card.id}
                       style={{ marginTop: index === 0 ? 0 : -80 }}
                       text={card.text}
@@ -157,7 +158,7 @@ export const DiscussView = () => {
       )}
       <div className={styles.actionPointsSection}>
         <div className={styles.actionPointList}>
-          {actionPoints
+          {tasks
             ?.filter(
               (actionPoint) => actionPoint.parentCardId === discussionCardId,
             )
@@ -168,11 +169,12 @@ export const DiscussView = () => {
 
               return (
                 <Card
+                  id={actionPoint.id}
                   key={actionPoint.id}
                   editableUser
                   editableText
                   onUpdate={(ownerId, text) => {
-                    updateActionPoint(actionPoint.id, ownerId, text);
+                    updateTask(actionPoint.id, ownerId, text);
                   }}
                   teamUsers={teamUsers.map((user) => ({
                     id: user.id,
@@ -193,7 +195,7 @@ export const DiscussView = () => {
                   <Button
                     size={"icon"}
                     variant={"destructive"}
-                    onClick={() => deleteActionPoint(actionPoint.id)}
+                    onClick={() => deleteTask(actionPoint.id)}
                   >
                     <TrashIcon className={"size-6"} />
                   </Button>
@@ -232,7 +234,7 @@ export const DiscussView = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                createActionPoint(value, user?.id!);
+                createTask(value, user?.id!);
                 setValue("");
               }
             }}

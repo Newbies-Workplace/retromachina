@@ -18,7 +18,7 @@ docker compose -f .docker/docker-compose.local.yaml up retro-db -d
 
 To install all dependencies:
 ```
-npm install
+npm i
 ```
 
 And finally, to start the development server:

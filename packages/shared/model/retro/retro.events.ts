@@ -1,30 +1,46 @@
 import type {
-  ActionPoint,
   Card,
   RetroColumn,
+  RetroTask,
   User,
   Vote,
 } from "./retroRoom.interface";
 
-export type RoomState = "reflection" | "group" | "vote" | "discuss" | "summary";
+export type RoomState = "reflection" | "group" | "vote" | "discuss";
 
 export interface TimerChangedEvent {
   timerEnds: number | null; //timestamp
 }
 
+export interface SlotMachineDrawnEvent {
+  highlightedUserId: string;
+  actorId: string;
+}
+
 export interface RoomSyncEvent {
   id: string;
   teamId: string;
-  createdDate: Date;
-  maxVotes: number;
-  usersReady: number;
-  roomState: RoomState;
-  timerEnds: number;
-  discussionCardId: string | null;
-  cards: Card[];
   retroColumns: RetroColumn[];
-  tasks: ActionPoint[];
+
+  roomState: RoomState;
   users: User[];
-  votes: Vote[];
+  usersReady: number;
+  createdDate: Date;
+  cards: Card[];
+
+  // timer
+  timerEnds: number;
   serverTime: number;
+
+  // group
+  slotMachineVisible: boolean;
+  highlightedUserId: string | null;
+
+  // vote
+  maxVotes: number;
+  votes: Vote[];
+
+  // discuss
+  discussionCardId: string | null;
+  tasks: RetroTask[];
 }

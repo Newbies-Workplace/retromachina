@@ -1,3 +1,5 @@
+import { RoomState } from "./retro.events";
+
 export interface UpdateReadyStateCommand {
   readyState: boolean;
 }
@@ -27,7 +29,7 @@ export interface UpdateCreatingTaskStateCommand {
 }
 
 export interface UpdateRoomStateCommand {
-  roomState: "reflection" | "group" | "vote" | "discuss" | "summary";
+  roomState: RoomState;
 }
 
 export interface ChangeTimerCommand {
@@ -70,6 +72,13 @@ export interface UpdateTaskCommand {
   ownerId: string;
   description: string;
 }
+
+export interface ChangeSlotMachineVisibilityCommand {
+  isVisible: boolean;
+}
+
+// biome-ignore lint/suspicious/noEmptyInterface: <explanation>
+export interface DrawMachineCommand {}
 
 export interface ChangeCurrentDiscussCardCommand {
   cardId: string;

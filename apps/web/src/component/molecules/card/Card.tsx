@@ -1,4 +1,5 @@
 import { Pencil1Icon } from "@radix-ui/react-icons";
+import { motion } from "framer-motion";
 import React, { createRef } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import SaveIcon from "../../../assets/icons/save.svg";
@@ -11,6 +12,7 @@ import { PositioningBackdrop } from "../backdrop/PositioningBackdrop";
 export interface CardProps {
   style?: React.CSSProperties;
   className?: string;
+  id: string;
   text: string;
   author?: CardUser;
   teamUsers: CardUser[];
@@ -31,6 +33,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
   className,
   style,
   children,
+  id,
   text,
   author,
   teamUsers,
@@ -99,8 +102,14 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
       onDismiss={() => closeEditingMode()}
       visible={isEditingText || isUsersOpen}
     >
-      <div
+      <motion.div
+        layout
+        key={id}
         style={style}
+        layoutId={id}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         className={cn(
           "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border p-2 rounded-2xl h-full",
           className,
@@ -203,7 +212,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
             children
           )}
         </div>
-      </div>
+      </motion.div>
     </PositioningBackdrop>
   );
 };

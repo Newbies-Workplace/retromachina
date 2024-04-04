@@ -1,5 +1,4 @@
 import { Task } from "@prisma/client";
-import { UserRole } from "shared/.dist/model/user/user.role";
 import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
 import {
   Card,
@@ -7,6 +6,7 @@ import {
   User,
   Vote,
 } from "shared/model/retro/retroRoom.interface";
+import { UserRole } from "shared/model/user/user.role";
 
 type RetroTask = Task & { parentCardId: string };
 
@@ -14,16 +14,24 @@ export class RetroRoom {
   users: Map<string, User> = new Map();
 
   roomState: RoomState = "reflection";
-  maxVotes?: number = 3;
   timerEnds?: number = null;
-  discussionCardId = null;
   cards: Card[] = [];
-  votes: Vote[] = [];
-
-  tasks: RetroTask[] = [];
 
   createdDate: Date = new Date();
   lastDisconnectionDate: Date = new Date();
+
+  // group
+  slotMachineVisible = false;
+  userIdsQueue: Set<string> = new Set();
+  highlightedUserId: string | null = null;
+  maxVotes?: number = 3;
+
+  // vote
+  votes: Vote[] = [];
+
+  // discuss
+  discussionCardId = null;
+  tasks: RetroTask[] = [];
 
   constructor(
     public id: string,
@@ -46,6 +54,8 @@ export class RetroRoom {
       cards: this.cards,
       votes: this.votes,
       discussionCardId: this.discussionCardId,
+      slotMachineVisible: this.slotMachineVisible,
+      highlightedUserId: this.highlightedUserId,
       tasks: this.tasks.map((task) => {
         return {
           id: task.id,
@@ -109,7 +119,7 @@ export class RetroRoom {
   }
 
   addUser(socketId: string, userId: string, role: UserRole) {
-    const result = Array.from(this.users.entries()).find(([key, localUser]) => {
+    const result = Array.from(this.users.entries()).find(([_, localUser]) => {
       return localUser.userId === userId;
     });
 
@@ -145,11 +155,11 @@ export class RetroRoom {
       (card) => card.parentCardId === cardId,
     );
 
-    childCards.forEach((card) => {
-      this.pushCardToEnd(card.id);
-      card.parentCardId = parentCardId;
-      card.columnId = parentCard.columnId;
-    });
+    for (const childCard of childCards) {
+      this.pushCardToEnd(childCard.id);
+      childCard.parentCardId = parentCardId;
+      childCard.columnId = parentCard.columnId;
+    }
 
     card.parentCardId = parentCardId;
     card.columnId = parentCard.columnId;
@@ -202,6 +212,9 @@ export class RetroRoom {
     if (roomState === "discuss") {
       this.initDiscussionCard();
     }
+    if (roomState !== "group") {
+      this.slotMachineVisible = false;
+    }
   }
 
   updateTask(task: Task) {
@@ -234,7 +247,7 @@ export class RetroRoom {
   }
 
   private clearUsersReady() {
-    for (const [key, user] of this.users) {
+    for (const [, user] of this.users) {
       user.isReady = false;
     }
   }
@@ -260,5 +273,24 @@ export class RetroRoom {
       .sort((a, b) => b.votes - a.votes);
 
     this.discussionCardId = sortedCards[0].parentCardId;
+  }
+
+  drawMachine() {
+    if (this.userIdsQueue.size === 0) {
+      this.userIdsQueue = new Set<string>(
+        Array.from(this.users.values()).map((user) => user.userId),
+      );
+    }
+
+    const userIdsArray = Array.from(this.userIdsQueue);
+    const randomUserId =
+      userIdsArray[Math.floor(Math.random() * userIdsArray.length)];
+
+    this.highlightedUserId = randomUserId;
+    this.userIdsQueue.delete(randomUserId);
+  }
+
+  setSlotMachineVisibility(isVisible: boolean) {
+    this.slotMachineVisible = isVisible;
   }
 }

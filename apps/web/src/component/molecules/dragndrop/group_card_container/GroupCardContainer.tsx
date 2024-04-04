@@ -1,18 +1,19 @@
-import cs from "classnames";
 import type React from "react";
 import { useDrop } from "react-dnd";
+import { cn } from "../../../../common/Util";
 import { useKeyDownListener } from "../../../../context/useKeyDownListener";
 import { type CardDragPayload, ItemTypes } from "../dragndrop";
 import styles from "./GroupCardContainer.module.scss";
 
 interface GroupCardContainerProps {
+  className?: string;
   parentCardId: string;
   onCardDropped: (cardId: string, fromColumnId: string) => void;
 }
 
 export const GroupCardContainer: React.FC<
   React.PropsWithChildren<GroupCardContainerProps>
-> = ({ children, parentCardId, onCardDropped }) => {
+> = ({ className, children, parentCardId, onCardDropped }) => {
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ItemTypes.CARD,
@@ -34,9 +35,13 @@ export const GroupCardContainer: React.FC<
   return (
     <div
       ref={drop}
-      className={cs(styles.group, {
-        [styles.shifted]: isShiftPressed,
-      })}
+      className={cn(
+        styles.group,
+        {
+          [styles.shifted]: isShiftPressed,
+        },
+        className,
+      )}
     >
       {children}
     </div>

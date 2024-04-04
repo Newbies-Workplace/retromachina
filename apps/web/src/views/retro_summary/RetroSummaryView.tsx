@@ -76,8 +76,9 @@ export const RetroSummaryView = () => {
                   {userTasks.map((task) => {
                     return (
                       <Card
-                        className={styles.card}
+                        id={task.id}
                         key={task.id}
+                        className={styles.card}
                         teamUsers={[]}
                         text={task.text}
                       />

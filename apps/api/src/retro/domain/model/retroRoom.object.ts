@@ -1,5 +1,4 @@
 import { Task } from "@prisma/client";
-import { UserRole } from "shared/.dist/model/user/user.role";
 import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
 import {
   Card,
@@ -7,6 +6,7 @@ import {
   User,
   Vote,
 } from "shared/model/retro/retroRoom.interface";
+import { UserRole } from "shared/model/user/user.role";
 
 type RetroTask = Task & { parentCardId: string };
 
@@ -22,7 +22,7 @@ export class RetroRoom {
 
   // group
   slotMachineVisible = false;
-  userIdsQueue: string[] = [];
+  userIdsQueue: Set<string> = new Set();
   highlightedUserId: string | null = null;
   maxVotes?: number = 3;
 
@@ -276,11 +276,18 @@ export class RetroRoom {
   }
 
   drawMachine() {
-    //todo randomized from queue
-    const randomUser = Array.from(this.users.values())[
-      Math.floor(Math.random() * this.users.size)
-    ];
-    this.highlightedUserId = randomUser.userId;
+    if (this.userIdsQueue.size === 0) {
+      this.userIdsQueue = new Set<string>(
+        Array.from(this.users.values()).map((user) => user.userId),
+      );
+    }
+
+    const userIdsArray = Array.from(this.userIdsQueue);
+    const randomUserId =
+      userIdsArray[Math.floor(Math.random() * userIdsArray.length)];
+
+    this.highlightedUserId = randomUserId;
+    this.userIdsQueue.delete(randomUserId);
   }
 
   setSlotMachineVisibility(isVisible: boolean) {

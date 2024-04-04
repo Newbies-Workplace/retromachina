@@ -8,6 +8,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 import { UserResponse } from "shared/model/user/user.response";
+import { useDebounce } from "../../../../common/useDebounce";
 import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
@@ -52,11 +53,11 @@ export const SlotMachine: React.FC = () => {
   } = useRetro();
   const { user } = useUser();
 
-  // todo fix current user blink before animation
   const highlightedUser = useMemo(
     () => teamUsers.find((u) => u.id === highlightedUserId),
     [highlightedUserId, teamUsers],
   );
+  const delayedHighlightedUser = useDebounce(highlightedUser, 1000);
   const [hasConfetti, setHasConfetti] = useState(false);
 
   const [leverRef, animate] = useAnimate();
@@ -142,11 +143,11 @@ export const SlotMachine: React.FC = () => {
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}
-                {highlightedUser !== undefined && (
+                {delayedHighlightedUser !== undefined && (
                   <Avatar
                     size={60}
-                    key={highlightedUser.id}
-                    url={highlightedUser.avatar_link}
+                    key={delayedHighlightedUser.id}
+                    url={delayedHighlightedUser.avatar_link}
                   />
                 )}
               </motion.div>
@@ -162,11 +163,11 @@ export const SlotMachine: React.FC = () => {
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}
-                {highlightedUser !== undefined && (
+                {delayedHighlightedUser !== undefined && (
                   <Avatar
                     size={60}
-                    key={highlightedUser.id}
-                    url={highlightedUser.avatar_link}
+                    key={delayedHighlightedUser.id}
+                    url={delayedHighlightedUser.avatar_link}
                   />
                 )}
               </motion.div>
@@ -182,11 +183,11 @@ export const SlotMachine: React.FC = () => {
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}
-                {highlightedUser !== undefined && (
+                {delayedHighlightedUser !== undefined && (
                   <Avatar
                     size={60}
-                    key={highlightedUser.id}
-                    url={highlightedUser.avatar_link}
+                    key={delayedHighlightedUser.id}
+                    url={delayedHighlightedUser.avatar_link}
                   />
                 )}
               </motion.div>

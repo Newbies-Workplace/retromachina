@@ -80,7 +80,9 @@ export const GroupView: React.FC = () => {
                       key={group.id}
                       parentCardId={group.id}
                       className={cn(
+                        "transition-opacity",
                         slotMachineVisible &&
+                          delayedHighlightedUserId !== null &&
                           delayedHighlightedUserId !== group.authorId &&
                           "opacity-30",
                       )}

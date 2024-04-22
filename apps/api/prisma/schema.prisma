@@ -60,7 +60,7 @@ model User {
   id          String   @id @default(uuid())
   nick        String
   email       String   @unique
-  avatar_link String
+  avatar_link String   @db.Text
   google_id   String   @unique
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt

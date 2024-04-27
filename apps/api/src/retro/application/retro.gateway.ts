@@ -131,7 +131,9 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    room.addUser(client.id, user.id, userQuery.TeamUsers[0].role);
+    const userRole = userQuery.TeamUsers.at(0)?.role ?? "USER";
+
+    room.addUser(client.id, user.id, userRole);
 
     this.users.set(client.id, {
       user: userQuery,

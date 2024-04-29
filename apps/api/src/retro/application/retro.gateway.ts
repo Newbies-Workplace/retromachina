@@ -122,7 +122,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       },
     });
 
-    if (!userQuery) {
+    if (!userQuery || userQuery.TeamUsers.length === 0) {
       this.doException(
         client,
         ErrorTypes.UserNotFound,
@@ -131,7 +131,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const userRole = userQuery.TeamUsers.at(0)?.role ?? "USER";
+    const userRole = userQuery.TeamUsers.at(0).role;
 
     room.addUser(client.id, user.id, userRole);
 

@@ -29,8 +29,6 @@ export class UserController {
   @Get("@me")
   @UseGuards(JwtGuard)
   async getUser(@User() user: JWTUser): Promise<UserWithTeamsResponse> {
-    //todo rewrite NotFoundError and ForbiddenError
-
     const userWithTeams = await this.prismaService.user.findUnique({
       where: {
         google_id: user.google_id,

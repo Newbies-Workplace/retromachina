@@ -18,14 +18,12 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
   const [value, setValue] = useState("");
   const onStopWriting = () => {
     if (columnData.isWriting) {
-      console.log("stop writing");
       onIsWriting(false);
     }
   };
 
   useEffect(() => {
     if (value !== "" && !columnData.isWriting) {
-      console.log("start writing");
       onIsWriting(true);
     }
     const timeout = setTimeout(onStopWriting, 3000);

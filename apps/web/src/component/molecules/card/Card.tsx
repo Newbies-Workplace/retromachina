@@ -9,6 +9,7 @@ import useClickOutside from "../../../context/useClickOutside";
 import { Avatar } from "../../atoms/avatar/Avatar";
 import { Button } from "../../atoms/button/Button";
 import { PositioningBackdrop } from "../backdrop/PositioningBackdrop";
+import { TeamUserPicker } from "./user_picker/TeamUserPicker";
 
 export interface CardProps {
   style?: React.CSSProperties;
@@ -24,7 +25,7 @@ export interface CardProps {
   onEditDismiss?: () => void;
 }
 
-type CardUser = {
+export type CardUser = {
   avatar: string;
   name: string;
   id: string;
@@ -75,9 +76,8 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
   const closeEditingMode = useCallback(() => {
     setIsEditingText(false);
     setUsersOpen(false);
-    setEditingText(text);
     onEditDismiss?.();
-  }, [text]);
+  }, []);
 
   useEffect(() => {
     setEditingText(text);
@@ -122,7 +122,17 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
           className,
         )}
       >
-        <div className={"flex flex-col justify-between w-full"}>
+        <div className={"flex flex-col justify-between gap-1 w-full"}>
+          {!isEditingText && editingText !== text && (
+            <div
+              className={
+                "w-fit bg-red-500 px-1 rounded-full text-xs text-center text-white"
+              }
+            >
+              Niezapisane zmiany
+            </div>
+          )}
+
           {isEditingText ? (
             <textarea
               ref={(el) => el?.focus()}
@@ -213,41 +223,5 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
         </div>
       </motion.div>
     </PositioningBackdrop>
-  );
-};
-
-interface TeamUserPickerProps {
-  authorId: string;
-  teamUsers: CardUser[];
-  onUserPicked: (userId: string) => void;
-}
-
-const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
-  teamUsers,
-  authorId,
-  onUserPicked,
-}) => {
-  return (
-    <>
-      {teamUsers
-        ?.filter((user) => user.id !== authorId)
-        .map((user) => {
-          return (
-            <div
-              key={user.id}
-              className={
-                "flex flex-row items-center gap-2 min-w-[99%] cursor-pointer rounded -order-1 p-0.5 hover:bg-[#D9D9D9]"
-              }
-              onClick={() => {
-                onUserPicked(user.id);
-              }}
-            >
-              <Avatar url={user.avatar} size={24} />
-
-              <span className={"text-sm"}>{user.name}</span>
-            </div>
-          );
-        })}
-    </>
   );
 };

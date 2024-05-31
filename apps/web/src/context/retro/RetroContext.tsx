@@ -200,6 +200,11 @@ export const RetroContextProvider: React.FC<
         Authorization: window.localStorage.getItem("Bearer"),
       },
       forceNew: true,
+      reconnection: true,
+      reconnectionAttempts: Number.POSITIVE_INFINITY,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 8000,
+      randomizationFactor: 0.5,
     });
     socket.current = createdSocket;
 

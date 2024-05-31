@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import { useEffect, useState } from "react";
 import type { RetroColumn } from "shared/model/retro/retroRoom.interface";
 import { CardCount } from "../../atoms/card_indicator/CardIndicator";
@@ -18,12 +18,14 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
   const [value, setValue] = useState("");
   const onStopWriting = () => {
     if (columnData.isWriting) {
+      console.log("stop writing");
       onIsWriting(false);
     }
   };
 
   useEffect(() => {
     if (value !== "" && !columnData.isWriting) {
+      console.log("start writing");
       onIsWriting(true);
     }
     const timeout = setTimeout(onStopWriting, 3000);

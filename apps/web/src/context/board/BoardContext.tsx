@@ -77,6 +77,11 @@ export const BoardContextProvider: React.FC<
         //@ts-ignore
         Authorization: window.localStorage.getItem("Bearer"),
       },
+      reconnection: true,
+      reconnectionAttempts: Number.POSITIVE_INFINITY,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 8000,
+      randomizationFactor: 0.5,
     });
     socket.current = createdSocket;
 

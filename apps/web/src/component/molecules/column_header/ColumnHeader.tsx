@@ -16,7 +16,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   return (
     <div
       className={
-        "flex flex-col justify-center items-start gap-[5px] w-full bg-[white] border p-2 rounded-2xl"
+        "flex flex-col justify-center items-start gap-1 w-full bg-white border p-2 rounded-2xl"
       }
     >
       <div className={"flex gap-2 w-full justify-between"}>
@@ -33,8 +33,8 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
       </div>
 
       {description !== undefined && (
-        <div className={"break-words max-w-[274px] max-h-[140px] scrollbar"}>
-          <span>{description}</span>
+        <div className={"break-words max-w-full max-h-[140px] scrollbar"}>
+          {description}
         </div>
       )}
     </div>

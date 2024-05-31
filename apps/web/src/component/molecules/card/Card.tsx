@@ -1,7 +1,8 @@
+import { computePosition, flip } from "@floating-ui/dom";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import React, { createRef } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SaveIcon from "../../../assets/icons/save.svg";
 import { cn } from "../../../common/Util";
 import useClickOutside from "../../../context/useClickOutside";
@@ -47,19 +48,25 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
   const [isEditingText, setIsEditingText] = useState(autoFocus);
   const [editingText, setEditingText] = useState(text);
 
+  const userPickerButtonRef = createRef<HTMLDivElement>();
   const userPickerRef = createRef<HTMLDivElement>();
-  const userPickerDirection = useRef<"up" | "down">("down");
 
   useEffect(() => {
-    if (userPickerRef.current) {
-      const rect = userPickerRef.current.getBoundingClientRect();
-      if (rect.top > window.innerHeight / 2) {
-        userPickerDirection.current = "up";
-      } else {
-        userPickerDirection.current = "down";
-      }
+    if (!userPickerRef.current || !userPickerButtonRef.current) {
+      return;
     }
-  }, []);
+
+    const userPicker = userPickerRef.current;
+    const userPickerButton = userPickerButtonRef.current;
+
+    computePosition(userPickerButton, userPicker, {
+      placement: "bottom-start",
+      middleware: [flip()],
+    }).then((position) => {
+      userPicker.style.left = `${position.x}px`;
+      userPicker.style.top = `${position.y}px`;
+    });
+  }, [userPickerButtonRef, userPickerRef]);
 
   const closeUserPickerPopover = useCallback(() => {
     setUsersOpen(false);
@@ -151,40 +158,32 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
           )}
 
           {author && (
-            <div className={"flex items-center pt-1"} ref={userPickerRef}>
+            <div className={"flex items-center pt-1"}>
               <div style={{ position: "relative" }}>
                 {isUsersOpen && teamUsers.length > 1 && (
                   <div
+                    ref={userPickerRef}
                     className={cn(
                       "flex absolute w-[265px] max-h-[180px] -left-1.5",
-                      userPickerDirection.current === "up" &&
-                        "items-end bottom-6",
-                      userPickerDirection.current === "down" &&
-                        "items-start top-6",
                     )}
                   >
                     <div
                       className={
-                        "flex flex-col items-start gap-2 min-w-[250px] max-h-36 bg-white p-1 rounded-lg shadow-[0px_4px_4px_rgba(0,0,0,0.25)]"
+                        "flex flex-col items-start gap-2 min-w-[250px] max-h-36 bg-white p-1 my-3 rounded-lg shadow-[0px_4px_4px_rgba(0,0,0,0.25)]"
                       }
                     >
-                      <div
-                        className={
-                          "flex flex-col items-start overflow-auto gap-2 min-w-[250px] scrollbar"
-                        }
-                      >
-                        <TeamUserPicker
-                          authorId={author?.id || ""}
-                          teamUsers={teamUsers}
-                          onUserPicked={(userId) => onChangeUser(userId)}
-                        />
-                      </div>
+                      <TeamUserPicker
+                        authorId={author?.id || ""}
+                        teamUsers={teamUsers}
+                        onUserPicked={(userId) => onChangeUser(userId)}
+                      />
                     </div>
                   </div>
                 )}
               </div>
 
               <div
+                ref={userPickerButtonRef}
                 className={cn(
                   "flex items-center gap-2 p-0.5 rounded",
                   editableUser && "cursor-pointer hover:bg-gray-500",

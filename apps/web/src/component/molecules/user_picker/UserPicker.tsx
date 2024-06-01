@@ -43,7 +43,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
   return (
     <div
       className={
-        "flex flex-row flex-wrap items-center gap-2 min-w-[100px] min-h-[34px] bg-white p-2 rounded-lg border"
+        "flex flex-col items-center gap-2 min-w-[100px] min-h-[34px] bg-white p-2 rounded-lg border"
       }
     >
       {users.map((user) => (
@@ -58,7 +58,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
 
       <div
         className={
-          "flex items-center grow max-h-[30px] border px-2 py-0 rounded-2xl"
+          "flex items-center grow w-full max-h-[30px] border px-2 py-0 rounded-2xl"
         }
       >
         <input
@@ -99,7 +99,7 @@ const User: React.FC<UserProps> = ({ email, role, onRoleChange, onDelete }) => {
   return (
     <div
       className={
-        "flex grow items-center gap-2.5 min-h-[30px] bg-white border px-2 py-0 rounded-2xl border-solid border-black [line-break:anywhere]"
+        "flex grow items-center w-full gap-2.5 min-h-[30px] bg-white border px-2 py-0 rounded-2xl border-solid border-black [line-break:anywhere]"
       }
     >
       <span className={"grow"}>{email}</span>

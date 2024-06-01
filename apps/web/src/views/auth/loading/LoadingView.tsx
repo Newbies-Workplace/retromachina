@@ -5,7 +5,7 @@ import { Loader } from "../../../component/organisms/loader/Loader";
 import { getRedirectPath, setRedirectPath } from "../../../context/useRedirect";
 import { useUser } from "../../../context/user/UserContext.hook";
 
-const LoadingView = () => {
+export const LoadingView = () => {
   const { login } = useUser();
   const navigate = useNavigate();
 
@@ -26,5 +26,3 @@ const LoadingView = () => {
 
   return <Loader />;
 };
-
-export default LoadingView;

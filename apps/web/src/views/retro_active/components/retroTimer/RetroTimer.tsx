@@ -2,8 +2,6 @@ import { CheckIcon, LapTimerIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
-import HourglassIconSvg from "../../../../assets/icons/hourglass.svg";
-import TickIconSvg from "../../../../assets/icons/tick.svg";
 import { Button } from "../../../../component/atoms/button/Button";
 import { Timer } from "../../../../component/molecules/timer/Timer";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
@@ -62,13 +60,13 @@ export const RetroTimer: React.FC = () => {
   };
 
   return (
-    <div className={styles.timer}>
+    <div
+      className={
+        "flex flex-row items-center gap-2 h-12 bg-background-500 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
+      }
+    >
       {isAdmin && (
-        <Button
-          className={styles.quickAdd}
-          onClick={onQuickAddTime}
-          size={"icon"}
-        >
+        <Button onClick={onQuickAddTime} size={"icon"}>
           +30
         </Button>
       )}
@@ -76,11 +74,7 @@ export const RetroTimer: React.FC = () => {
       <Timer timerEnds={timerEnds} />
 
       {isAdmin && (
-        <Button
-          className={styles.quickAdd}
-          onClick={() => setDialogTimerOpen(true)}
-          size={"icon"}
-        >
+        <Button onClick={() => setDialogTimerOpen(true)} size={"icon"}>
           <LapTimerIcon className={"size-6"} />
         </Button>
       )}

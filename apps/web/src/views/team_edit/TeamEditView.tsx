@@ -20,7 +20,7 @@ import { TeamForm } from "../../component/organisms/forms/TeamForm";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useUser } from "../../context/user/UserContext.hook";
 
-const TeamEditView: React.FC = () => {
+export const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const { user, refreshUser } = useUser();
   if (!teamId || !user) {
@@ -122,5 +122,3 @@ const TeamEditView: React.FC = () => {
     </>
   );
 };
-
-export default TeamEditView;

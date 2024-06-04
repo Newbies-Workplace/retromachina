@@ -36,12 +36,32 @@ export class TeamService {
         team_id: team.id,
         default_column_id: backlogId,
         BoardColumns: {
-          create: {
-            id: backlogId,
-            name: "Backlog",
-            color: "#1dd7b2",
-            order: 0,
-          },
+          create: [
+            {
+              id: backlogId,
+              name: "To do",
+              color: "#1dd7b2",
+              order: 0,
+            },
+            {
+              id: uuid(),
+              name: "In progress",
+              color: "#f7d148",
+              order: 1,
+            },
+            {
+              id: uuid(),
+              name: "Freezed",
+              color: "#233298",
+              order: 1,
+            },
+            {
+              id: uuid(),
+              name: "Done",
+              color: "#4caf50",
+              order: 3,
+            },
+          ],
         },
       },
     });

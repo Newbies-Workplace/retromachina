@@ -13,6 +13,7 @@ import VoteIconSvg from "../../../../assets/icons/vote.svg";
 import { cn } from "../../../../common/Util";
 import { Button } from "../../../../component/atoms/button/Button";
 import { ConfirmDialog } from "../../../../component/molecules/confirm_dialog/ConfirmDialog";
+import { useConfirm } from "../../../../context/confirm/ConfirmContext.hook";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import { useCardGroups } from "../../../../context/useCardGroups";
 import useClickOutside from "../../../../context/useClickOutside";
@@ -22,6 +23,7 @@ import { useUser } from "../../../../context/user/UserContext.hook";
 import { SlotMachine } from "./SlotMachine";
 
 export const Toolbox: React.FC = () => {
+  const { showConfirm } = useConfirm();
   const {
     cards,
     discussionCardId,
@@ -60,15 +62,18 @@ export const Toolbox: React.FC = () => {
   const isVotingVisible = roomState === "vote";
 
   const [isVoteOpen, setOpenVote] = useState(false);
-  const [isFinishOpen, setOpenFinish] = useState(false);
 
   const votePopover = useRef<any>();
   const closeVote = useCallback(() => setOpenVote(false), []);
   useClickOutside(votePopover, closeVote);
 
-  const finishPopover = useRef<any>();
-  const closeFinish = useCallback(() => setOpenFinish(false), []);
-  useClickOutside(finishPopover, closeFinish);
+  const onFinishRetroPress = () => {
+    showConfirm({
+      title: "Zakończenie retrospektywy",
+      content: "Czy na pewno chcesz zakończyć retrospektywę?",
+      onConfirmed: endRetro,
+    });
+  };
 
   return (
     <>
@@ -225,24 +230,13 @@ export const Toolbox: React.FC = () => {
                 <Button
                   variant={"destructive"}
                   className={"size-full"}
-                  onClick={() => setOpenFinish(true)}
+                  onClick={onFinishRetroPress}
                 >
                   <CheckeredFlagIconSvg style={{ width: 32, height: 32 }} />
                 </Button>
               </>
             )}
           </div>
-
-          <AnimatePresence>
-            {isFinishOpen && (
-              <ConfirmDialog
-                title={"Zakończenie retrospektywy"}
-                content={"Czy na pewno chcesz zakończyć retrospektywę?"}
-                onConfirmed={endRetro}
-                onDismiss={() => setOpenFinish(false)}
-              />
-            )}
-          </AnimatePresence>
         </div>
       </div>
     </>

@@ -1,12 +1,12 @@
 import React from "react";
 import { cn } from "../../../common/Util";
-import { useDebounce } from "../../../common/useDebounce";
 import { Card } from "../../../component/molecules/card/Card";
 import { Column } from "../../../component/molecules/column/Column";
 import { ColumnCardContainer } from "../../../component/molecules/dragndrop/ColumnCardContainer";
 import { DraggableCard } from "../../../component/molecules/dragndrop/DraggableCard";
 import { GroupCardContainer } from "../../../component/molecules/dragndrop/group_card_container/GroupCardContainer";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
+import { useDebounce } from "../../../context/useDebounce";
 import { SLOT_MACHINE_ANIMATION_DURATION } from "../components/toolbox/SlotMachine";
 
 export const GroupView: React.FC = () => {

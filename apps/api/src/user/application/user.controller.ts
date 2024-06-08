@@ -15,7 +15,7 @@ import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { PrismaService } from "../../prisma/prisma.service";
-import { TeamConverter } from "../../team/application/team.converter";
+import { toTeamResponse } from "../../team/application/team.converter";
 import { toUserInTeamResponse, toUserResponse } from "./user.converter";
 
 @Controller("users")
@@ -23,7 +23,6 @@ export class UserController {
   constructor(
     private prismaService: PrismaService,
     private abilityFactory: AuthAbilityFactory,
-    private teamConverter: TeamConverter,
   ) {}
 
   @Get("@me")
@@ -43,7 +42,7 @@ export class UserController {
     });
 
     const teams = userWithTeams.TeamUsers.map(async (teamUser) => {
-      const team = await this.teamConverter.toTeamResponse(teamUser.Team);
+      const team = await toTeamResponse(teamUser.Team, teamUser.role);
       return {
         ...team,
         role: teamUser.role,

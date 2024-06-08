@@ -14,9 +14,9 @@ export const Backdrop: React.FC<BackdropProps> = ({
   return (
     <Portal>
       <motion.div
-        initial={{ backgroundColor: "#00000000" }}
-        animate={{ backgroundColor: "#00000045" }}
-        exit={{ backgroundColor: "#00000000" }}
+        initial={{ backgroundColor: "#00000000", opacity: 0 }}
+        animate={{ backgroundColor: "#00000045", opacity: 1 }}
+        exit={{ backgroundColor: "#00000000", opacity: 0 }}
         transition={{ duration: 0.15 }}
         className={
           "absolute z-10 top-0 flex justify-center items-center h-screen w-screen bg-black"

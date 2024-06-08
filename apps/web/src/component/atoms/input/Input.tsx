@@ -9,6 +9,7 @@ interface InputProps {
   placeholder?: string;
   multiline?: boolean;
   type?: React.HTMLInputTypeAttribute;
+  disabled?: boolean;
   required?: boolean;
   right?: React.ReactNode;
   onKeyDown?:
@@ -26,6 +27,7 @@ export const Input: React.FC<InputProps> = ({
   multiline = false,
   type,
   right,
+  disabled,
   required,
   maxLength,
 }) => {
@@ -36,6 +38,7 @@ export const Input: React.FC<InputProps> = ({
       className={cn(
         "flex h-9 w-full rounded-md border border-input bg-white text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
         multiline && "min-h-[120px]",
+        disabled && "border-gray-600",
       )}
     >
       <Element
@@ -47,6 +50,7 @@ export const Input: React.FC<InputProps> = ({
         )}
         value={value}
         type={type}
+        disabled={disabled}
         required={required}
         placeholder={placeholder}
         onChange={(e) => setValue(e.target.value)}

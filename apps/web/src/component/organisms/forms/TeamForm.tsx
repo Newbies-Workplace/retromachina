@@ -8,6 +8,7 @@ import type { UserRole } from "shared/model/user/user.role";
 import { Button } from "../../atoms/button/Button";
 import { Input } from "../../atoms/input/Input";
 import { UserPicker } from "../../molecules/user_picker/UserPicker";
+import { TeamInviteLinkInput } from "./TeamInviteLinkInput";
 
 interface CreateTeamFormProps {
   team: TeamRequest | null;
@@ -24,6 +25,9 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
 }) => {
   const [users, setUsers] = useState(team?.users || []);
   const [name, setName] = useState(team?.name || "");
+  const [inviteKey, setInviteKey] = useState<string | undefined>(
+    team?.invite_key || "",
+  );
 
   const onAddUser = (user: TeamUserRequest) => {
     setUsers([...users, user]);
@@ -41,19 +45,26 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
 
   const onSubmitClick = () => {
     onSubmit({
-      name: name || "",
+      name: name,
       users: users,
+      invite_key: inviteKey && inviteKey.length > 0 ? inviteKey : undefined,
     });
   };
 
   return (
     <div
       className={
-        "flex flex-col justify-between items-center gap-8 w-[600px] min-h-[700px] h-fit bg-background-500 m-8 p-[30px] rounded-2xl"
+        "flex flex-col gap-2 w-[600px] min-h-[700px] h-fit bg-background-500 m-8 rounded-lg"
       }
     >
-      <div className={"flex flex-col items-center gap-4 w-full"}>
-        <div className={"flex flex-col gap-2 w-full"}>
+      <div className={"bg-primary-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}>
+        Zarządzanie zespołem
+      </div>
+
+      <div
+        className={"flex grow flex-col justify-between gap-2 w-full h-full p-4"}
+      >
+        <div className={"flex flex-col"}>
           <h1>Team</h1>
           <Input
             value={name}
@@ -62,7 +73,16 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
           />
         </div>
 
-        <div className={"flex flex-col gap-2 w-full"}>
+        {team && (
+          <TeamInviteLinkInput
+            inviteKey={inviteKey}
+            setInviteKey={(key) => {
+              setInviteKey(key);
+            }}
+          />
+        )}
+
+        <div className={"flex flex-col"}>
           <h1>Członkowie</h1>
 
           <UserPicker
@@ -72,18 +92,18 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
             onDelete={(email) => onDeleteEmailClick(email)}
           />
         </div>
-      </div>
 
-      <div className={"flex justify-between gap-2 w-full"}>
-        {deletable ? (
-          <Button variant={"destructive"} onClick={onDelete}>
-            Usuń
-          </Button>
-        ) : (
-          <div />
-        )}
+        <div className={"flex justify-between gap-2 mt-auto w-full"}>
+          {deletable ? (
+            <Button variant={"destructive"} onClick={onDelete}>
+              Usuń
+            </Button>
+          ) : (
+            <div />
+          )}
 
-        <Button onClick={onSubmitClick}>Zapisz</Button>
+          <Button onClick={onSubmitClick}>Zapisz</Button>
+        </div>
       </div>
     </div>
   );

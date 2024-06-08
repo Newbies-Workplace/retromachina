@@ -12,6 +12,7 @@ model Team {
   id         String   @id @default(uuid())
   name       String
   owner_id   String
+  invite_key String?  @unique
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 

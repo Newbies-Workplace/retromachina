@@ -28,11 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({
   useClickOutside(popover, close);
 
   return (
-    <div
-      className={
-        "flex flex-col gap-2 py-1 w-full overflow-hidden bg-secondary-500"
-      }
-    >
+    <div className={"flex flex-col gap-2 py-1 w-full bg-secondary-500"}>
       <div className={"flex flex-row items-center w-full"}>
         <div className={"flex flex-col ml-4"}>
           <span
@@ -67,7 +63,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
-                    className={"relative"}
+                    className={"relative z-10"}
                     ref={popover}
                   >
                     <Menu />

@@ -97,7 +97,7 @@ export const RetroCreateView: React.FC = () => {
 
     createRetro(request)
       .then((retro) => {
-        const retroUrl = `${window.location.host}/retro/${retro.data.id}`;
+        const retroUrl = `${window.location.origin}/retro/${retro.data.id}`;
 
         navigator.clipboard?.writeText(retroUrl).catch(console.log);
 

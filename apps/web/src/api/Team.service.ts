@@ -10,6 +10,22 @@ export const getTeamById = async (teamId: string): Promise<TeamResponse> => {
   return axiosInstance.get(`teams/${teamId}`).then((res) => res.data);
 };
 
+export const getTeamByInviteKey = async (
+  inviteKey: string,
+): Promise<TeamResponse> => {
+  return axiosInstance
+    .get("teams", {
+      params: {
+        invite_key: inviteKey,
+      },
+    })
+    .then((res) => res.data);
+};
+
+export const acceptTeamInvite = async (inviteKey: string): Promise<void> => {
+  return axiosInstance.post(`teams/link_invite/${inviteKey}/accept`);
+};
+
 export const getInvitesByTeamId = async (
   teamId: string,
 ): Promise<InviteResponse[]> => {
@@ -32,7 +48,7 @@ export const editTeamInvitation = async (
   invitation: EditTeamInviteRequest,
 ): Promise<TeamResponse> => {
   return axiosInstance
-    .put(`teams/${teamId}/invite`, invitation)
+    .put(`teams/${teamId}/link_invite`, invitation)
     .then((res) => res.data);
 };
 

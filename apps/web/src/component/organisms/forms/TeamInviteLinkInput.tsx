@@ -45,11 +45,11 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
 
   const onCopyInviteLinkPress = () => {
     if (inviteKey) {
-      navigator.clipboard.writeText(
-        `${window.location.origin}/invitation/${inviteKey}`,
-      );
-
-      toast.success("Link skopiowano do schowka");
+      navigator.clipboard
+        .writeText(`${window.location.origin}/invitation/${inviteKey}`)
+        .then(() => {
+          toast.success("Link skopiowano do schowka");
+        });
     }
   };
 

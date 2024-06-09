@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Team } from "@prisma/client";
+import { Role, Team, User } from "@prisma/client";
 import {
   EditTeamInviteRequest,
   EditTeamRequest,
@@ -91,6 +91,17 @@ export class TeamService {
     return team;
   }
 
+  async addUserToTeam(userId: string, teamId: string, role: Role) {
+    //todo send event
+    await this.prismaService.teamUsers.create({
+      data: {
+        team_id: teamId,
+        user_id: userId,
+        role: role,
+      },
+    });
+  }
+
   async deleteTeam(team: Team) {
     await this.prismaService.team.delete({
       where: {
@@ -124,13 +135,7 @@ export class TeamService {
         continue;
       }
 
-      await this.prismaService.teamUsers.create({
-        data: {
-          team_id: teamId,
-          user_id: user.id,
-          role: requestUser.role,
-        },
-      });
+      await this.addUserToTeam(user.id, teamId, requestUser.role);
     }
   }
 

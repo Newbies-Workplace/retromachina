@@ -9,8 +9,11 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
+import { Role } from "@prisma/client";
+import { TeamGetQuery } from "shared/model/team/team.query";
 import {
   EditTeamInviteRequest,
   EditTeamRequest,
@@ -97,7 +100,7 @@ export class TeamController {
   }
 
   @UseGuards(JwtGuard)
-  @Put(":id/invite")
+  @Put(":id/link_invite")
   @HttpCode(204)
   async editTeamInvite(
     @User() user: JWTUser,
@@ -120,6 +123,47 @@ export class TeamController {
     const updatedTeam = await this.teamService.editTeamInvite(team, request);
 
     return toTeamResponse(updatedTeam, userRole);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post("link_invite/:inviteKey/accept")
+  @HttpCode(204)
+  async acceptInvite(
+    @User() user: JWTUser,
+    @Param("inviteKey") inviteKey: string,
+  ) {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        invite_key: inviteKey,
+      },
+    });
+
+    const isUserInTeam = user.teams.some((t) => t.id === team.id);
+    if (isUserInTeam) {
+      throw new BadRequestException("User is already in team");
+    }
+
+    await this.teamService.addUserToTeam(user.id, team.id, Role.USER);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get()
+  async getTeamByInviteKey(
+    @User() user: JWTUser,
+    @Query() queryParams: TeamGetQuery,
+  ): Promise<TeamResponse> {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        invite_key: queryParams.invite_key,
+      },
+    });
+
+    const isUserInTeam = user.teams.some((t) => t.id === team.id);
+    if (isUserInTeam) {
+      throw new BadRequestException("User is already in team");
+    }
+
+    return toTeamResponse(team, "USER");
   }
 
   @UseGuards(JwtGuard)

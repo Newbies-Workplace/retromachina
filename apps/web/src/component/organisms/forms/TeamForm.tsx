@@ -58,7 +58,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
       }
     >
       <div className={"bg-primary-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}>
-        Zarządzanie zespołem
+        {team ? "Zarządzanie zespołem" : "Stworz nowy zespół"}
       </div>
 
       <div
@@ -73,14 +73,12 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
           />
         </div>
 
-        {team && (
-          <TeamInviteLinkInput
-            inviteKey={inviteKey}
-            setInviteKey={(key) => {
-              setInviteKey(key);
-            }}
-          />
-        )}
+        <TeamInviteLinkInput
+          inviteKey={inviteKey}
+          setInviteKey={(key) => {
+            setInviteKey(key);
+          }}
+        />
 
         <div className={"flex flex-col"}>
           <h1>Członkowie</h1>

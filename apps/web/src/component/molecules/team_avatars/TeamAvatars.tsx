@@ -12,24 +12,25 @@ interface TeamAvatarsProps {
   }[];
 }
 
-export const TeamAvatars: React.FC<React.PropsWithChildren<TeamAvatarsProps>> =
-  ({ className, users }) => {
-    if (users.length === 0) {
-      return null;
-    }
+export const TeamAvatars: React.FC<
+  React.PropsWithChildren<TeamAvatarsProps>
+> = ({ className, users }) => {
+  if (users.length === 0) {
+    return null;
+  }
 
-    return (
-      <div className={cn("flex flex-row ml-2.5", className)}>
-        {users.map((user) => (
-          <Avatar
-            style={{ marginLeft: -10 }}
-            key={user.id}
-            variant={
-              user.isActive ? (user.isReady ? "ready" : "active") : "inactive"
-            }
-            url={user.avatar_link}
-          />
-        ))}
-      </div>
-    );
-  };
+  return (
+    <div className={cn("flex flex-row ml-2.5", className)}>
+      {users.map((user) => (
+        <Avatar
+          style={{ marginLeft: -10 }}
+          key={user.id}
+          variant={
+            user.isActive ? (user.isReady ? "ready" : "active") : "inactive"
+          }
+          url={user.avatar_link}
+        />
+      ))}
+    </div>
+  );
+};

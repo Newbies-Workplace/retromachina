@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
@@ -264,11 +264,23 @@ export const RetroContextProvider: React.FC<
   }, []);
 
   useEffect(() => {
-    if (teamId) {
-      getUsersByTeamId(teamId)
-        .then((users) => setTeamUsers(users))
-        .catch(console.log);
-    }
+    const listener = () => {
+      if (!teamId) return;
+
+      fetchTeamUsers(teamId);
+    };
+
+    socket.current?.on("event_team_users_change", listener);
+
+    return () => {
+      socket.current?.off("event_team_users_change", listener);
+    };
+  }, [teamId]);
+
+  useEffect(() => {
+    if (!teamId) return;
+
+    fetchTeamUsers(teamId);
   }, [teamId]);
 
   // common
@@ -505,6 +517,11 @@ export const RetroContextProvider: React.FC<
     };
 
     socket.current?.emit("command_delete_action_point", command);
+  };
+
+  const fetchTeamUsers = async (teamId: string) => {
+    const users = await getUsersByTeamId(teamId);
+    setTeamUsers(users);
   };
 
   return (

@@ -1,7 +1,6 @@
 import type React from "react";
 import { cn } from "../../../common/Util";
 import { Avatar } from "../../atoms/avatar/Avatar";
-import styles from "./TeamAvatars.module.scss";
 
 interface TeamAvatarsProps {
   className?: string;

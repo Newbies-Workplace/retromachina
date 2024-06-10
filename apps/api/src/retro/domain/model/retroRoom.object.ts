@@ -9,9 +9,10 @@ import {
 import { UserRole } from "shared/model/user/user.role";
 
 type RetroTask = Task & { parentCardId: string };
+type SocketId = string;
 
 export class RetroRoom {
-  users: Map<string, User> = new Map();
+  connectedUsers: Map<SocketId, User> = new Map();
 
   roomState: RoomState = "reflection";
   timerEnds?: number = null;
@@ -36,12 +37,11 @@ export class RetroRoom {
   constructor(
     public id: string,
     public teamId: string,
-    public scrumMasterId: string,
     public retroColumns: RetroColumn[],
   ) {}
 
   getRoomSyncData() {
-    const tempUsers = Array.from(this.users.values());
+    const tempUsers = Array.from(this.connectedUsers.values());
 
     const roomData: RoomSyncEvent = {
       id: this.id,
@@ -118,13 +118,39 @@ export class RetroRoom {
     this.votes = filteredVotes;
   }
 
+  onTeamUserAdded(userId: string) {
+    this.userIdsQueue.add(userId);
+  }
+
+  onTeamUserRemoved(userId: string) {
+    const connectedUsers = Array.from(this.connectedUsers.entries()).filter(
+      ([_, localUser]) => {
+        return localUser.userId === userId;
+      },
+    );
+    for (const connectedUser of connectedUsers) {
+      this.connectedUsers.delete(connectedUser[0]);
+    }
+
+    this.userIdsQueue.delete(userId);
+    this.votes = this.votes.filter((vote) => vote.voterId !== userId);
+    this.tasks = this.tasks.filter((task) => task.owner_id !== userId);
+    this.cards = this.cards.filter((card) => card.authorId !== userId);
+
+    if (this.highlightedUserId === userId) {
+      this.highlightedUserId = null;
+    }
+  }
+
   addUser(socketId: string, userId: string, role: UserRole) {
-    const result = Array.from(this.users.entries()).find(([_, localUser]) => {
-      return localUser.userId === userId;
-    });
+    const result = Array.from(this.connectedUsers.entries()).find(
+      ([_, localUser]) => {
+        return localUser.userId === userId;
+      },
+    );
 
     if (!result) {
-      this.users.set(socketId, {
+      this.connectedUsers.set(socketId, {
         userId,
         role: role,
         isReady: false,
@@ -132,18 +158,20 @@ export class RetroRoom {
         writingInColumns: new Set<string>(),
       });
     } else {
-      this.users.delete(result[0]);
-      this.users.set(socketId, result[1]);
+      this.connectedUsers.delete(result[0]);
+      this.connectedUsers.set(socketId, result[1]);
     }
   }
 
   removeUser(socketId: string, userId: string) {
-    const result = Array.from(this.users.entries()).find(([key, localUser]) => {
-      return localUser.userId === userId;
-    });
+    const result = Array.from(this.connectedUsers.entries()).find(
+      ([key, localUser]) => {
+        return localUser.userId === userId;
+      },
+    );
 
     if (result) {
-      this.users.delete(result[0]);
+      this.connectedUsers.delete(result[0]);
       this.lastDisconnectionDate = new Date();
     }
   }
@@ -247,7 +275,7 @@ export class RetroRoom {
   }
 
   private clearUsersReady() {
-    for (const [, user] of this.users) {
+    for (const [, user] of this.connectedUsers) {
       user.isReady = false;
     }
   }
@@ -278,7 +306,7 @@ export class RetroRoom {
   drawMachine() {
     if (this.userIdsQueue.size === 0) {
       this.userIdsQueue = new Set<string>(
-        Array.from(this.users.values()).map((user) => user.userId),
+        Array.from(this.connectedUsers.values()).map((user) => user.userId),
       );
     }
 

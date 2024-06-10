@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Role, Team, User } from "@prisma/client";
+import { Role, Team } from "@prisma/client";
 import {
   EditTeamInviteRequest,
   EditTeamRequest,
@@ -9,10 +9,14 @@ import {
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { PrismaService } from "src/prisma/prisma.service";
 import { v4 as uuid } from "uuid";
+import { RetroGateway } from "../retro/application/retro.gateway";
 
 @Injectable()
 export class TeamService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private retroGateway: RetroGateway,
+  ) {}
 
   async createTeam(user: JWTUser, createTeamDto: TeamRequest): Promise<Team> {
     const team = await this.prismaService.team.create({
@@ -33,7 +37,11 @@ export class TeamService {
 
     await this.createTeamBoard(team.id);
 
-    await this.addUsersToTeamUsers(createTeamDto.users, team.id, user.id);
+    await this.addUsersAndInvitesToTeamUsers(
+      createTeamDto.users,
+      team.id,
+      user.id,
+    );
 
     return team;
   }
@@ -43,7 +51,7 @@ export class TeamService {
     team: Team,
     editTeamDto: EditTeamRequest,
   ): Promise<Team> {
-    await this.prismaService.team.update({
+    const updatedTeam = await this.prismaService.team.update({
       where: {
         id: team.id,
       },
@@ -51,26 +59,51 @@ export class TeamService {
         name: editTeamDto.name,
         invite_key: editTeamDto.invite_key || null,
       },
-    });
-
-    // Reset users && leave owner untouched
-    await this.prismaService.teamUsers.deleteMany({
-      where: {
-        team_id: team.id,
-        NOT: {
-          user_id: user.id,
+      include: {
+        TeamUser: {
+          select: {
+            User: {
+              select: {
+                id: true,
+                email: true,
+              },
+            },
+          },
+        },
+        Invite: {
+          select: {
+            id: true,
+            email: true,
+          },
         },
       },
     });
 
+    // remove users that are not in the new list
+    const teamUsers = updatedTeam.TeamUser.map((tu) => tu.User);
+    const usersToRemove = teamUsers
+      .filter((tu) => !editTeamDto.users.some((u) => u.email === tu.email))
+      .filter((tu) => tu.id !== user.id);
+    for (const user of usersToRemove) {
+      await this.removeUserFromTeam(user.id, team.id);
+    }
+
+    // delete invites that are not in the new list
+    const teamInvites = updatedTeam.Invite;
+    const invitesToRemove = teamInvites.filter(
+      (i) => !editTeamDto.users.some((u) => u.email === i.email),
+    );
     await this.prismaService.invite.deleteMany({
       where: {
-        team_id: team.id,
+        id: { in: invitesToRemove.map((i) => i.id) },
       },
     });
 
-    // Add users to teamUsers
-    await this.addUsersToTeamUsers(editTeamDto.users, team.id, user.id);
+    // Add users and invites to team
+    const emailsToAdd = editTeamDto.users.filter(
+      (u) => !teamUsers.some((tu) => tu.email === u.email),
+    );
+    await this.addUsersAndInvitesToTeamUsers(emailsToAdd, team.id, user.id);
 
     return team;
   }
@@ -92,7 +125,6 @@ export class TeamService {
   }
 
   async addUserToTeam(userId: string, teamId: string, role: Role) {
-    //todo send event
     await this.prismaService.teamUsers.create({
       data: {
         team_id: teamId,
@@ -100,6 +132,21 @@ export class TeamService {
         role: role,
       },
     });
+
+    await this.retroGateway.handleTeamUserAdded(teamId, userId);
+  }
+
+  async removeUserFromTeam(userId: string, teamId: string) {
+    await this.prismaService.teamUsers.delete({
+      where: {
+        team_id_user_id: {
+          team_id: teamId,
+          user_id: userId,
+        },
+      },
+    });
+
+    await this.retroGateway.handleTeamUserRemoved(teamId, userId);
   }
 
   async deleteTeam(team: Team) {
@@ -108,9 +155,11 @@ export class TeamService {
         id: team.id,
       },
     });
+
+    await this.retroGateway.handleTeamDeleted(team.id);
   }
 
-  private async addUsersToTeamUsers(
+  private async addUsersAndInvitesToTeamUsers(
     requestUsers: TeamUserRequest[],
     teamId: string,
     adminId: string,

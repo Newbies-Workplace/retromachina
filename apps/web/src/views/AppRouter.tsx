@@ -7,7 +7,7 @@ import { LoadingView } from "./auth/loading/LoadingView";
 import { PrivacyPolicyView } from "./auth/privacy_policy/PrivacyPolicyView";
 import { SignInView } from "./auth/sign_in/SignInView";
 import { HomeView } from "./home/HomeView";
-import { InvitationView } from "./invitation/InvitationView";
+import { InviteView } from "./invitation/InviteView";
 import { RetroActiveView } from "./retro_active/RetroActiveView";
 import { RetroWrapper } from "./retro_active/RetroWrapper";
 import { RetroCreateView } from "./retro_create/RetroCreateView";
@@ -71,10 +71,10 @@ export const AppRouter: React.FC = () => {
           }
         />
         <Route
-          path="/invitation/:invitationKey"
+          path="/invitation/:inviteKey"
           element={
             <RequireAuth>
-              <InvitationView />
+              <InviteView />
             </RequireAuth>
           }
         />

@@ -33,7 +33,6 @@ export class RetroService implements OnModuleInit {
     await this.retroGateway.addRetroRoom(
       retroId,
       request.teamId,
-      userId,
       request.columns.map((column) => {
         return {
           id: uuid(),

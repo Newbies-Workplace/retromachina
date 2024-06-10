@@ -2,12 +2,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import LogoSvg from "../../../assets/images/logo.svg";
+import { cn } from "../../../common/Util";
 import useClickOutside from "../../../context/useClickOutside";
 import { useUser } from "../../../context/user/UserContext.hook";
 import { Avatar, type AvatarProps } from "../../atoms/avatar/Avatar";
 import { Menu } from "../menu/Menu";
-import styles from "./Navbar.module.scss";
 
 interface NavbarProps {
   avatarProps?: Partial<AvatarProps>;
@@ -29,19 +28,27 @@ const Navbar: React.FC<NavbarProps> = ({
   useClickOutside(popover, close);
 
   return (
-    <div className={styles.navbar}>
-      <div className={styles.topSection}>
-        <div className={styles.name}>
-          <LogoSvg
+    <div className={"flex flex-col gap-2 py-1 w-full bg-secondary-500"}>
+      <div className={"flex flex-row items-center w-full"}>
+        <div className={"flex flex-col ml-4"}>
+          <span
             onClick={() => navigate("/")}
-            style={{ cursor: "pointer" }}
-          />
+            className={
+              "font-harlow-solid-italic text-xl md:text-3xl xl:text-5xl text-background-50 cursor-pointer"
+            }
+          >
+            Retromachina
+          </span>
         </div>
 
-        <div className={styles.topContainer}>
+        <div className={"flex justify-end items-center gap-4 w-full"}>
           {topContent}
 
-          <div className={styles.profile}>
+          <div
+            className={
+              "flex justify-center items-center size-10 bg-white rounded-full mr-4"
+            }
+          >
             <div onClick={() => toggle(true)}>
               <Avatar
                 className={"cursor-pointer"}
@@ -56,7 +63,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
-                    className={styles.bubbleContainer}
+                    className={"relative z-10"}
                     ref={popover}
                   >
                     <Menu />
@@ -68,9 +75,20 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {!!children && <div className={styles.bottomSection}>{children}</div>}
+      {!!children && (
+        <div
+          className={"flex justify-center items-center overflow-hidden w-full"}
+        >
+          {children}
+        </div>
+      )}
 
-      <div className={styles.line} />
+      <div
+        className={cn("w-full h-1 bg-repeat-x")}
+        style={{
+          backgroundImage: "url(/assets/images/line.svg)",
+        }}
+      />
     </div>
   );
 };

@@ -1,24 +1,31 @@
-import type React from "react";
-import { useEffect } from "react";
+import { Share2Icon } from "@radix-ui/react-icons";
+import { AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Route, Routes } from "react-router-dom";
+import { Button } from "../../component/atoms/button/Button";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
 import { TeamAvatars } from "../../component/molecules/team_avatars/TeamAvatars";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useRetro } from "../../context/retro/RetroContext.hook";
+import { useTeamRole } from "../../context/useTeamRole";
 import { useUser } from "../../context/user/UserContext.hook";
 import { RetroTimer } from "./components/retroTimer/RetroTimer";
+import { TeamShareDialog } from "./components/teamShare/TeamShareDialog";
 import { Toolbox } from "./components/toolbox/Toolbox";
 import { DiscussView } from "./discuss/DiscussView";
 import { GroupView } from "./group/GroupView";
 import { ReflectionView } from "./reflection/ReflectionView";
 import { VoteView } from "./vote/VoteView";
 
-const RetroActiveView: React.FC = () => {
+export const RetroActiveView: React.FC = () => {
   const navigate = useNavigate();
   const { roomState, retroId, activeUsers, teamUsers } = useRetro();
   const { user } = useUser();
-  const { ready } = useRetro();
+  const { ready, teamId } = useRetro();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+
+  const { isAdmin } = useTeamRole(teamId ?? "");
 
   useEffect(() => {
     navigate(`/retro/${retroId}/${roomState}`);
@@ -32,6 +39,23 @@ const RetroActiveView: React.FC = () => {
         }}
         topContent={
           <>
+            {isAdmin && (
+              <div
+                className={
+                  "flex flex-row items-center gap-2 bg-background-500 h-12 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
+                }
+              >
+                <Button
+                  size={"icon"}
+                  onClick={() => {
+                    setShareDialogOpen(true);
+                  }}
+                >
+                  <Share2Icon className={"size-5"} />
+                </Button>
+              </div>
+            )}
+
             <RetroTimer />
 
             <TeamAvatars
@@ -74,7 +98,16 @@ const RetroActiveView: React.FC = () => {
       </div>
 
       <Toolbox />
+
+      <AnimatePresence>
+        {shareDialogOpen && (
+          <TeamShareDialog
+            onDismiss={() => {
+              setShareDialogOpen(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };
-export default RetroActiveView;

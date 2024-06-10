@@ -9,9 +9,16 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
-import { EditTeamRequest, TeamRequest } from "shared/model/team/team.request";
+import { Role } from "@prisma/client";
+import { TeamGetQuery } from "shared/model/team/team.query";
+import {
+  EditTeamInviteRequest,
+  EditTeamRequest,
+  TeamRequest,
+} from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
@@ -19,7 +26,7 @@ import { User } from "src/auth/jwt/jwtuser.decorator";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TeamService } from "../team.service";
-import { TeamConverter } from "./team.converter";
+import { toTeamResponse } from "./team.converter";
 
 @Controller("teams")
 export class TeamController {
@@ -27,7 +34,6 @@ export class TeamController {
     private teamService: TeamService,
     private prismaService: PrismaService,
     private abilityFactory: AuthAbilityFactory,
-    private teamConverter: TeamConverter,
   ) {}
 
   @UseGuards(JwtGuard)
@@ -42,7 +48,7 @@ export class TeamController {
 
     const team = await this.teamService.createTeam(user, request);
 
-    return this.teamConverter.toTeamResponse(team);
+    return toTeamResponse(team, "ADMIN");
   }
 
   @Get(":id")
@@ -60,10 +66,11 @@ export class TeamController {
       },
     });
     const ability = this.abilityFactory.create(user);
+    const userRole = user.teams.find((team) => team.id === teamId)?.role;
 
     ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
 
-    return this.teamConverter.toTeamResponse(team);
+    return toTeamResponse(team, userRole);
   }
 
   @UseGuards(JwtGuard)
@@ -80,6 +87,7 @@ export class TeamController {
       },
     });
     const ability = this.abilityFactory.create(user);
+    const userRole = user.teams.find((team) => team.id === teamId)?.role;
 
     ForbiddenError.from(ability).throwUnlessCan(
       "update",
@@ -88,7 +96,74 @@ export class TeamController {
 
     const updatedTeam = await this.teamService.editTeam(user, team, request);
 
-    return this.teamConverter.toTeamResponse(updatedTeam);
+    return toTeamResponse(updatedTeam, userRole);
+  }
+
+  @UseGuards(JwtGuard)
+  @Put(":id/link_invite")
+  @HttpCode(204)
+  async editTeamInvite(
+    @User() user: JWTUser,
+    @Body() request: EditTeamInviteRequest,
+    @Param("id") teamId: string,
+  ): Promise<TeamResponse> {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        id: teamId,
+      },
+    });
+    const ability = this.abilityFactory.create(user);
+    const userRole = user.teams.find((team) => team.id === teamId)?.role;
+
+    ForbiddenError.from(ability).throwUnlessCan(
+      "update",
+      subject("Team", team),
+    );
+
+    const updatedTeam = await this.teamService.editTeamInvite(team, request);
+
+    return toTeamResponse(updatedTeam, userRole);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post("link_invite/:inviteKey/accept")
+  @HttpCode(204)
+  async acceptInvite(
+    @User() user: JWTUser,
+    @Param("inviteKey") inviteKey: string,
+  ) {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        invite_key: inviteKey,
+      },
+    });
+
+    const isUserInTeam = user.teams.some((t) => t.id === team.id);
+    if (isUserInTeam) {
+      throw new BadRequestException("User is already in team");
+    }
+
+    await this.teamService.addUserToTeam(user.id, team.id, Role.USER);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get()
+  async getTeamByInviteKey(
+    @User() user: JWTUser,
+    @Query() queryParams: TeamGetQuery,
+  ): Promise<TeamResponse> {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        invite_key: queryParams.invite_key,
+      },
+    });
+
+    const isUserInTeam = user.teams.some((t) => t.id === team.id);
+    if (isUserInTeam) {
+      throw new BadRequestException("User is already in team");
+    }
+
+    return toTeamResponse(team, "USER");
   }
 
   @UseGuards(JwtGuard)

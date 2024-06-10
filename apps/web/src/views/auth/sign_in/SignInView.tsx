@@ -1,6 +1,5 @@
 import type React from "react";
 import GoogleButton from "react-google-button";
-import LogoSvg from "../../../assets/images/logo.svg";
 import { AnimatedBackground } from "../../../component/organisms/animated_background/AnimatedBackground";
 import styles from "./SignInView.module.scss";
 
@@ -11,9 +10,19 @@ export const SignInView: React.FC = () => {
     <AnimatedBackground className={"items-center"}>
       <div className={styles.dialog}>
         <div className={styles.text}>
-          <LogoSvg width={400} height={40} />
+          <span
+            className={
+              "font-harlow-solid-italic text-5xl text-background-50 cursor-pointer"
+            }
+          >
+            Retromachina
+          </span>
+
           <span>
-            powered by <a href="http://newbies.pl">Newbies</a>
+            powered by{" "}
+            <a href="http://newbies.pl" className={"underline"}>
+              Newbies
+            </a>
           </span>
         </div>
 
@@ -25,7 +34,9 @@ export const SignInView: React.FC = () => {
           <span className={styles.privacy}>
             Korzystając z Retromachiny akceptujesz
             <br />
-            <a href={"/privacy"}>politykę prywatności</a>
+            <a href={"/privacy"} className={"underline"}>
+              politykę prywatności
+            </a>
           </span>
         </div>
       </div>

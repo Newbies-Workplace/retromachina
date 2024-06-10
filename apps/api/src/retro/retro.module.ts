@@ -11,5 +11,6 @@ import { RetroService } from "./domain/retro.service";
   imports: [AuthModule, ScheduleModule.forRoot()],
   providers: [RetroService, RetroGateway, RetroSchedules, AuthAbilityFactory],
   controllers: [RetroController],
+  exports: [RetroGateway],
 })
 export class RetroModule {}

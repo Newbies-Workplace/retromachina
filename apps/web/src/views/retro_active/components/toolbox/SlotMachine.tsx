@@ -8,10 +8,10 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 import { UserResponse } from "shared/model/user/user.response";
-import { useDebounce } from "../../../../common/useDebounce";
 import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
+import { useDebounce } from "../../../../context/useDebounce";
 import { useUser } from "../../../../context/user/UserContext.hook";
 
 export const SLOT_MACHINE_ANIMATION_DURATION = 2400;

@@ -2,11 +2,11 @@ import type React from "react";
 import { Button } from "../../atoms/button/Button";
 import { Backdrop } from "../backdrop/Backdrop";
 
-interface ConfirmDialogProps {
+export interface ConfirmDialogProps {
   title: string;
   content: string;
   onConfirmed: () => void;
-  onDismiss: () => void;
+  onDismiss?: () => void;
 }
 
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -23,11 +23,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         }
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={"bg-red-500 p-2 rounded-t-lg font-bold text-lg"}>
+        <div className={"bg-red-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}>
           {title}
         </div>
 
-        <div className={"flex p-2"}>{content}</div>
+        <div className={"flex p-4"}>{content}</div>
 
         <div className={"flex justify-center items-center gap-4 mt-auto mb-2"}>
           <Button

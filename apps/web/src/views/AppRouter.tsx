@@ -3,11 +3,12 @@ import { Navigate } from "react-router";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { RequireAuth } from "../context/user/RequireAuth";
 import { NotFoundView } from "./404/NotFoundView";
-import Loading from "./auth/loading/LoadingView";
+import { LoadingView } from "./auth/loading/LoadingView";
 import { PrivacyPolicyView } from "./auth/privacy_policy/PrivacyPolicyView";
 import { SignInView } from "./auth/sign_in/SignInView";
-import HomeView from "./home/HomeView";
-import RetroActiveView from "./retro_active/RetroActiveView";
+import { HomeView } from "./home/HomeView";
+import { InviteView } from "./invitation/InviteView";
+import { RetroActiveView } from "./retro_active/RetroActiveView";
 import { RetroWrapper } from "./retro_active/RetroWrapper";
 import { RetroCreateView } from "./retro_create/RetroCreateView";
 import { RetroSummaryView } from "./retro_summary/RetroSummaryView";
@@ -15,14 +16,14 @@ import { TeamBoardView } from "./team_board/TeamBoardView";
 import { TeamBoardWrapper } from "./team_board/TeamBoardWrapper";
 import { TeamBoardEditView } from "./team_board_edit/TeamBoardEditView";
 import { TeamCreateView } from "./team_create/TeamCreateView";
-import TeamEditView from "./team_edit/TeamEditView";
+import { TeamEditView } from "./team_edit/TeamEditView";
 
 export const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/signin" element={<SignInView />} />
-        <Route path="/loading" element={<Loading />} />
+        <Route path="/loading" element={<LoadingView />} />
         <Route path="/privacy" element={<PrivacyPolicyView />} />
 
         <Route
@@ -66,6 +67,14 @@ export const AppRouter: React.FC = () => {
           element={
             <RequireAuth>
               <TeamBoardEditView />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/invitation/:inviteKey"
+          element={
+            <RequireAuth>
+              <InviteView />
             </RequireAuth>
           }
         />

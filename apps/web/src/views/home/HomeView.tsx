@@ -8,7 +8,7 @@ import Navbar from "../../component/organisms/navbar/Navbar";
 import { useUser } from "../../context/user/UserContext.hook";
 import styles from "./HomeView.module.scss";
 
-const HomeView: React.FC = () => {
+export const HomeView: React.FC = () => {
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -47,5 +47,3 @@ const HomeView: React.FC = () => {
     </>
   );
 };
-
-export default HomeView;

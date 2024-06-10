@@ -2,12 +2,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import lineSvg from "../../../assets/images/line.svg?url";
 import { cn } from "../../../common/Util";
 import useClickOutside from "../../../context/useClickOutside";
 import { useUser } from "../../../context/user/UserContext.hook";
 import { Avatar, type AvatarProps } from "../../atoms/avatar/Avatar";
 import { Menu } from "../menu/Menu";
-
 interface NavbarProps {
   avatarProps?: Partial<AvatarProps>;
   topContent?: React.ReactNode;
@@ -86,7 +86,7 @@ const Navbar: React.FC<NavbarProps> = ({
       <div
         className={cn("w-full h-1 bg-repeat-x")}
         style={{
-          backgroundImage: "url(/assets/images/line.svg)",
+          backgroundImage: `url(${lineSvg})`,
         }}
       />
     </div>

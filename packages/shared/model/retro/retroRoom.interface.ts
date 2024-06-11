@@ -10,6 +10,7 @@ export interface Card {
 
 export interface User {
   userId: string;
+  avatar_link: string;
   role: UserRole;
   isReady: boolean;
   isCreatingTask: boolean;

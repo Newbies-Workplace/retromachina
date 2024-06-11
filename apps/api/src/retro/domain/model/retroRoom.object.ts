@@ -1,4 +1,5 @@
 import { Task } from "@prisma/client";
+import { User as DBUser } from "@prisma/client";
 import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
 import {
   Card,
@@ -78,6 +79,7 @@ export class RetroRoom {
       users: tempUsers.map((user) => {
         return {
           userId: user.userId,
+          avatar_link: user.avatar_link,
           isReady: user.isReady,
           role: user.role,
           isCreatingTask: user.isCreatingTask,
@@ -142,16 +144,17 @@ export class RetroRoom {
     }
   }
 
-  addUser(socketId: string, userId: string, role: UserRole) {
+  addUser(socketId: string, user: DBUser, role: UserRole) {
     const result = Array.from(this.connectedUsers.entries()).find(
       ([_, localUser]) => {
-        return localUser.userId === userId;
+        return localUser.userId === user.id;
       },
     );
 
     if (!result) {
       this.connectedUsers.set(socketId, {
-        userId,
+        userId: user.id,
+        avatar_link: user.avatar_link,
         role: role,
         isReady: false,
         isCreatingTask: false,

@@ -7,7 +7,7 @@ import {
 } from "framer-motion";
 import React, { useEffect, useMemo, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
-import { UserResponse } from "shared/model/user/user.response";
+import { User } from "shared/.dist/model/retro/retroRoom.interface";
 import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
@@ -28,8 +28,8 @@ const transition = {
   duration: 2,
 };
 
-const getRandomUsers = (users: UserResponse[], amount: number) => {
-  const randomUsers: UserResponse[] = [];
+const getRandomUsers = (users: User[], amount: number) => {
+  const randomUsers: User[] = [];
 
   if (users.length === 0) return [];
 
@@ -45,6 +45,7 @@ export const SlotMachine: React.FC = () => {
   const {
     roomState,
     teamUsers,
+    activeUsers,
     drawMachine,
     highlightedUserId,
     slotMachineVisible,
@@ -139,7 +140,7 @@ export const SlotMachine: React.FC = () => {
                 className={"flex flex-col gap-12 mb-2.5"}
                 transition={transition}
               >
-                {getRandomUsers(teamUsers, 8).map((user, index) => (
+                {getRandomUsers(activeUsers, 8).map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}
@@ -159,7 +160,7 @@ export const SlotMachine: React.FC = () => {
                 className={"flex flex-col gap-12 mb-2.5"}
                 transition={transition}
               >
-                {getRandomUsers(teamUsers, 5).map((user, index) => (
+                {getRandomUsers(activeUsers, 5).map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}
@@ -179,7 +180,7 @@ export const SlotMachine: React.FC = () => {
                 className={"flex flex-col gap-12 mb-2.5"}
                 transition={transition}
               >
-                {getRandomUsers(teamUsers, 2).map((user, index) => (
+                {getRandomUsers(activeUsers, 2).map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}

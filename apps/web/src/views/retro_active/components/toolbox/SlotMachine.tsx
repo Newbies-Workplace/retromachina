@@ -7,7 +7,7 @@ import {
 } from "framer-motion";
 import React, { useEffect, useMemo, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
-import { User } from "shared/.dist/model/retro/retroRoom.interface";
+import { User } from "shared/model/retro/retroRoom.interface";
 import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";

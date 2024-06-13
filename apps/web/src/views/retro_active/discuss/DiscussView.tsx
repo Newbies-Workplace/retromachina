@@ -1,6 +1,7 @@
 import { TrashIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useMemo, useState } from "react";
+import { cn } from "../../../common/Util";
 import { Avatar } from "../../../component/atoms/avatar/Avatar";
 import { Button } from "../../../component/atoms/button/Button";
 import { Input } from "../../../component/atoms/input/Input";
@@ -78,6 +79,7 @@ export const DiscussView = () => {
           .map((group) => {
             return (
               <GroupCardContainer
+                className={cn(group.votes === 0 && "opacity-40")}
                 key={group.parentCardId}
                 parentCardId={group.parentCardId}
                 onCardDropped={() => {}}
@@ -130,7 +132,12 @@ export const DiscussView = () => {
             }
 
             return (
-              <div className={styles.discussCardWrapper}>
+              <div
+                className={cn(
+                  styles.discussCardWrapper,
+                  group.votes === 0 && "opacity-50",
+                )}
+              >
                 {group.cards.map((card) => {
                   const author = teamUsers.find((u) => u.id === card.authorId);
 

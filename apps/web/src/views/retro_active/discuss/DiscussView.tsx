@@ -135,7 +135,7 @@ export const DiscussView = () => {
               <div
                 className={cn(
                   styles.discussCardWrapper,
-                  group.votes === 0 && "opacity-50",
+                  group.votes === 0 && "opacity-40",
                 )}
               >
                 {group.cards.map((card) => {

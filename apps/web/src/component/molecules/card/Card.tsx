@@ -21,7 +21,7 @@ export interface CardProps {
   editableUser?: boolean;
   editableText?: boolean;
   autoFocus?: boolean;
-  onUpdate?: (ownerId: string, text: string) => void;
+  onUpdate?: (ownerId: string | null, text: string) => void;
   onEditDismiss?: () => void;
 }
 
@@ -91,16 +91,13 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
     }
   };
 
-  const onChangeUser = (userId: string) => {
+  const onChangeUser = (userId: string | null) => {
     onUpdate?.(userId, text);
     setUsersOpen(false);
   };
 
   const onSaveClick = () => {
-    if (!author) {
-      return;
-    }
-    onUpdate?.(author.id, editingText.trim());
+    onUpdate?.(author?.id ?? null, editingText.trim());
     setIsEditingText(false);
   };
 
@@ -167,49 +164,45 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
             </span>
           )}
 
-          {author && (
-            <div className={"flex items-center pt-1"}>
-              <div style={{ position: "relative" }}>
-                {isUsersOpen && teamUsers.length > 1 && (
-                  <div
-                    ref={userPickerRef}
-                    className={cn(
-                      "flex absolute w-[265px] max-h-[180px] -left-1.5",
+          <div className={"flex items-center pt-1"}>
+            <div style={{ position: "relative" }}>
+              {isUsersOpen && teamUsers.length > 1 && (
+                <div
+                  ref={userPickerRef}
+                  className={cn(
+                    "flex absolute w-[265px] max-h-[180px] -left-1.5",
+                  )}
+                >
+                  <TeamUserPicker
+                    teamUsers={teamUsers.filter(
+                      (user) => user.id !== author?.id,
                     )}
-                  >
-                    <div
-                      className={
-                        "flex flex-col items-start gap-2 min-w-[250px] max-h-36 bg-white p-1 my-3 rounded-lg shadow-[0px_4px_4px_rgba(0,0,0,0.25)]"
-                      }
-                    >
-                      <TeamUserPicker
-                        authorId={author?.id || ""}
-                        teamUsers={teamUsers}
-                        onUserPicked={(userId) => onChangeUser(userId)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div
-                ref={userPickerButtonRef}
-                className={cn(
-                  "flex items-center gap-2 p-0.5 rounded",
-                  editableUser && "cursor-pointer hover:bg-gray-500",
-                )}
-                onClick={() => {
-                  if (editableUser) {
-                    setUsersOpen(true);
-                  }
-                }}
-              >
-                <Avatar url={author.avatar} size={24} />
-                <span className={"text-sm"}>{author.name}</span>
-                {editableUser && <Pencil1Icon width={12} height={12} />}
-              </div>
+                    canPickUnassigned={author !== undefined}
+                    onUserPicked={(userId) => onChangeUser(userId)}
+                  />
+                </div>
+              )}
             </div>
-          )}
+
+            <div
+              ref={userPickerButtonRef}
+              className={cn(
+                "flex items-center gap-2 p-0.5 rounded",
+                editableUser && "cursor-pointer hover:bg-gray-500",
+              )}
+              onClick={() => {
+                if (editableUser) {
+                  setUsersOpen(true);
+                }
+              }}
+            >
+              <Avatar url={author?.avatar} size={24} />
+              <span className={"text-sm"}>
+                {author ? author.name : "Nieprzypisany"}
+              </span>
+              {editableUser && <Pencil1Icon width={12} height={12} />}
+            </div>
+          </div>
         </div>
 
         <div className={"flex flex-col select-none gap-2"}>

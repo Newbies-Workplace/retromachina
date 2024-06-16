@@ -108,11 +108,15 @@ export const TeamBoardView: React.FC = () => {
                       <Card
                         id={creatingTask.id}
                         text={creatingTask.text}
-                        author={{
-                          avatar: author?.avatar_link || "",
-                          name: author?.nick || "",
-                          id: creatingTask.ownerId,
-                        }}
+                        author={
+                          author && creatingTask.ownerId
+                            ? {
+                                avatar: author.avatar_link,
+                                name: author.nick,
+                                id: creatingTask.ownerId,
+                              }
+                            : undefined
+                        }
                         teamUsers={[]}
                         editableText
                         autoFocus
@@ -144,11 +148,15 @@ export const TeamBoardView: React.FC = () => {
                         <Card
                           id={task.id}
                           text={task.text}
-                          author={{
-                            avatar: author?.avatar_link || "",
-                            name: author?.nick || "",
-                            id: task.ownerId,
-                          }}
+                          author={
+                            author && task.ownerId
+                              ? {
+                                  avatar: author.avatar_link,
+                                  name: author.nick,
+                                  id: task.ownerId,
+                                }
+                              : undefined
+                          }
                           teamUsers={teamUsers.map((user) => ({
                             id: user.id,
                             name: user.nick,

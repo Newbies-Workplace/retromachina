@@ -34,7 +34,7 @@ export interface Vote {
 
 export interface RetroTask {
   id: string;
-  ownerId: string;
+  ownerId: string | null;
   description: string;
   parentCardId: string;
 }

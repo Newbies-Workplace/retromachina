@@ -58,7 +58,7 @@ const Navbar: React.FC<NavbarProps> = ({
             <div onClick={() => toggle(true)}>
               <Avatar
                 className={"cursor-pointer"}
-                url={user?.avatar_link!}
+                url={user?.avatar_link}
                 {...avatarProps}
               />
               <Portal>

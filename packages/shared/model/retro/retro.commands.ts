@@ -69,7 +69,7 @@ export interface DeleteTaskCommand {
 
 export interface UpdateTaskCommand {
   taskId: string;
-  ownerId: string;
+  ownerId: string | null;
   description: string;
 }
 

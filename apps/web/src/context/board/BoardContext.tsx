@@ -32,10 +32,10 @@ interface BoardContext {
   createTask: (
     taskId: string,
     text: string,
-    ownerId: string,
+    ownerId: string | null,
     columnId: string,
   ) => void;
-  updateTask: (taskId: string, newOwnerId: string, text: string) => void;
+  updateTask: (taskId: string, newOwnerId: string | null, text: string) => void;
   deleteTask: (taskId: string) => void;
 }
 
@@ -161,7 +161,7 @@ export const BoardContextProvider: React.FC<
   const createTask = (
     taskId: string,
     text: string,
-    ownerId: string,
+    ownerId: string | null,
     columnId: string,
   ) => {
     const command: TaskCreateCommand = {
@@ -174,7 +174,11 @@ export const BoardContextProvider: React.FC<
     socket.current?.emit("command_create_task", command);
   };
 
-  const updateTask = (taskId: string, newOwnerId: string, text: string) => {
+  const updateTask = (
+    taskId: string,
+    newOwnerId: string | null,
+    text: string,
+  ) => {
     const command: TaskUpdateCommand = {
       taskId: taskId,
       ownerId: newOwnerId,

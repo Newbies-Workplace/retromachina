@@ -62,17 +62,8 @@ export const RetroActiveView: React.FC = () => {
 
             <TeamAvatars
               users={
-                //todo fix later
-                [
-                  ...teamUsers,
-                  ...teamUsers,
-                  ...teamUsers,
-                  ...teamUsers,
-                  ...teamUsers,
-                  ...teamUsers,
-                  ...teamUsers,
-                ]
-                  // .filter((u) => u.id !== user?.id)
+                teamUsers
+                  .filter((u) => u.id !== user?.id)
                   .map((user) => {
                     const socketUser = activeUsers.find(
                       (socketUser) => socketUser.userId === user.id,

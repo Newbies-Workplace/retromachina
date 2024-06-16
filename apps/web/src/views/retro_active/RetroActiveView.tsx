@@ -39,29 +39,40 @@ export const RetroActiveView: React.FC = () => {
         }}
         topContent={
           <>
-            {isAdmin && (
-              <div
-                className={
-                  "flex flex-row items-center gap-2 bg-background-500 h-12 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
-                }
-              >
-                <Button
-                  size={"icon"}
-                  onClick={() => {
-                    setShareDialogOpen(true);
-                  }}
+            <div className={"flex flex-row gap-4"}>
+              {isAdmin && (
+                <div
+                  className={
+                    "flex flex-row items-center gap-2 bg-background-500 h-12 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
+                  }
                 >
-                  <Share2Icon className={"size-5"} />
-                </Button>
-              </div>
-            )}
+                  <Button
+                    size={"icon"}
+                    onClick={() => {
+                      setShareDialogOpen(true);
+                    }}
+                  >
+                    <Share2Icon className={"size-5"} />
+                  </Button>
+                </div>
+              )}
 
-            <RetroTimer />
+              <RetroTimer />
+            </div>
 
             <TeamAvatars
               users={
-                teamUsers
-                  .filter((u) => u.id !== user?.id)
+                //todo fix later
+                [
+                  ...teamUsers,
+                  ...teamUsers,
+                  ...teamUsers,
+                  ...teamUsers,
+                  ...teamUsers,
+                  ...teamUsers,
+                  ...teamUsers,
+                ]
+                  // .filter((u) => u.id !== user?.id)
                   .map((user) => {
                     const socketUser = activeUsers.find(
                       (socketUser) => socketUser.userId === user.id,

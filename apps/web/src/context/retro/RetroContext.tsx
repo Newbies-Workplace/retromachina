@@ -100,7 +100,11 @@ interface RetroContext {
   discussionCardId: string | null;
   setCreatingTask: (creatingTask: boolean) => void;
   createTask: (text: string, ownerId: string) => void;
-  updateTask: (actionPointId: string, userId: string, text: string) => void;
+  updateTask: (
+    actionPointId: string,
+    userId: string | null,
+    text: string,
+  ) => void;
   deleteTask: (actionPointId: string) => void;
   tasks: RetroTask[];
 }
@@ -502,7 +506,7 @@ export const RetroContextProvider: React.FC<
     setCreatingTask(false);
   };
 
-  const updateTask = (taskId: string, userId: string, text: string) => {
+  const updateTask = (taskId: string, userId: string | null, text: string) => {
     const command: UpdateTaskCommand = {
       taskId: taskId,
       ownerId: userId,

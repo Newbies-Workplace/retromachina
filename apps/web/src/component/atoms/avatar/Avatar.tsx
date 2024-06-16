@@ -2,6 +2,7 @@ import { type VariantProps, cva } from "class-variance-authority";
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import type { BaseHTMLAttributes } from "react";
+import fallbackAvatar from "../../../assets/images/fallback_avatar.svg?url";
 import { cn } from "../../../common/Util";
 
 const avatarVariants = cva(
@@ -21,7 +22,7 @@ export interface AvatarProps
   extends BaseHTMLAttributes<HTMLDivElement>,
     VariantProps<typeof avatarVariants> {
   size?: number;
-  url: string;
+  url?: string;
 }
 
 export const Avatar: React.FC<AvatarProps> = ({
@@ -35,7 +36,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     <div style={style} className={className}>
       <img
         referrerPolicy="no-referrer"
-        src={url}
+        src={url ?? fallbackAvatar}
         style={{
           width: size,
           height: size,

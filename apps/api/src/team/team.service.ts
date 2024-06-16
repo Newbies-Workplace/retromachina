@@ -145,6 +145,7 @@ export class TeamService {
         },
       },
     });
+    await this.unassignUserFromTasks(userId, teamId);
 
     await this.retroGateway.handleTeamUserRemoved(teamId, userId);
   }
@@ -223,6 +224,18 @@ export class TeamService {
             },
           ],
         },
+      },
+    });
+  }
+
+  private async unassignUserFromTasks(userId: string, teamId: string) {
+    await this.prismaService.task.updateMany({
+      where: {
+        team_id: teamId,
+        owner_id: userId,
+      },
+      data: {
+        owner_id: null,
       },
     });
   }

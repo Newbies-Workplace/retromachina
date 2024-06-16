@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
+import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
 import lineSvg from "../../../assets/images/line.svg?url";
 import { cn } from "../../../common/Util";
@@ -8,6 +9,7 @@ import useClickOutside from "../../../context/useClickOutside";
 import { useUser } from "../../../context/user/UserContext.hook";
 import { Avatar, type AvatarProps } from "../../atoms/avatar/Avatar";
 import { Menu } from "../menu/Menu";
+
 interface NavbarProps {
   avatarProps?: Partial<AvatarProps>;
   topContent?: React.ReactNode;
@@ -28,21 +30,25 @@ const Navbar: React.FC<NavbarProps> = ({
   useClickOutside(popover, close);
 
   return (
-    <div className={"flex flex-col gap-2 py-1 w-full bg-secondary-500"}>
-      <div className={"flex flex-row items-center w-full"}>
-        <div className={"flex flex-col ml-4"}>
-          <span
-            onClick={() => navigate("/")}
-            className={
-              "font-harlow-solid-italic text-xl md:text-3xl xl:text-5xl text-background-50 cursor-pointer"
-            }
-          >
-            Retromachina
-          </span>
+    <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary-500"}>
+      <div className={"flex flex-row items-center gap-4 w-full"}>
+        <div
+          onClick={() => navigate("/")}
+          className={
+            "flex grow flex-col ml-4 mt-2 font-harlow-solid-italic text-4xl text-background-50 cursor-pointer"
+          }
+        >
+          Retromachina
         </div>
 
-        <div className={"flex justify-end items-center gap-4 w-full"}>
-          {topContent}
+        <div
+          className={
+            "flex justify-end items-center gap-4 overflow-x-hidden pt-2"
+          }
+        >
+          <div className={"flex flex-row justify-end items-start gap-4"}>
+            {topContent}
+          </div>
 
           <div
             className={
@@ -55,21 +61,22 @@ const Navbar: React.FC<NavbarProps> = ({
                 url={user?.avatar_link!}
                 {...avatarProps}
               />
-
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className={"relative z-10"}
-                    ref={popover}
-                  >
-                    <Menu />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <Portal>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className={"z-20"}
+                      ref={popover}
+                    >
+                      <Menu />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Portal>
             </div>
           </div>
         </div>

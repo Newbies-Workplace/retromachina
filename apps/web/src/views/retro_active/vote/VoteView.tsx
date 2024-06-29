@@ -42,8 +42,8 @@ export const VoteView = () => {
                 return (
                   <GroupCardContainer
                     key={group.id}
+                    columnId={column.id}
                     parentCardId={group.id}
-                    onCardDropped={() => {}}
                   >
                     {groupCards.map((card, index) => {
                       const author = teamUsers.find(

@@ -42,16 +42,7 @@ export const GroupView: React.FC = () => {
               description: column.description,
             }}
           >
-            <ColumnCardContainer
-              columnId={column.id}
-              onCardDropped={(cardId) =>
-                moveCard({
-                  targetType: "column",
-                  cardId: cardId,
-                  targetId: column.id,
-                })
-              }
-            >
+            <ColumnCardContainer columnId={column.id} onCardDropped={moveCard}>
               {columnCards
                 .filter((c) => c.parentCardId === null)
                 .sort((a, b) => {
@@ -79,6 +70,7 @@ export const GroupView: React.FC = () => {
                     <GroupCardContainer
                       key={group.id}
                       parentCardId={group.id}
+                      columnId={column.id}
                       className={cn(
                         "transition-opacity",
                         slotMachineVisible &&
@@ -86,13 +78,7 @@ export const GroupView: React.FC = () => {
                           delayedHighlightedUserId !== group.authorId &&
                           "opacity-30",
                       )}
-                      onCardDropped={(cardId) =>
-                        moveCard({
-                          targetType: "card",
-                          cardId: cardId,
-                          targetId: group.id,
-                        })
-                      }
+                      onCardDropped={moveCard}
                     >
                       {groupCards.map((card, index) => {
                         const user = teamUsers.find(

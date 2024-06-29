@@ -95,7 +95,7 @@ export const TeamBoardView: React.FC = () => {
             >
               <ColumnCardContainer
                 columnId={column.id}
-                onCardDropped={(taskId) => moveTask(taskId, column.id)}
+                onCardDropped={(action) => moveTask(action.cardId, column.id)}
               >
                 {creatingTask &&
                   creatingTask?.columnId === column.id &&

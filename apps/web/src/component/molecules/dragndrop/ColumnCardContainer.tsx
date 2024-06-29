@@ -1,42 +1,80 @@
-import type React from "react";
-import { useDrop } from "react-dnd";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import React, { useEffect, useRef, useState } from "react";
+import invariant from "tiny-invariant";
 import { cn } from "../../../common/Util";
-import { type CardDragPayload, ItemTypes } from "./dragndrop";
+import { CardMoveAction } from "../../../interfaces/CardMoveAction.interface";
+import { isCard } from "./dragndrop";
 
 interface ColumnCardContainerProps {
   columnId: string;
-  onCardDropped: (cardId: string, fromColumnId: string) => void;
+  onCardDropped?: (action: CardMoveAction) => void;
+  children?: React.ReactNode;
 }
 
-export const ColumnCardContainer: React.FC<
-  React.PropsWithChildren<ColumnCardContainerProps>
-> = ({ children, columnId, onCardDropped }) => {
-  const [{ isOverCurrent, canDrop }, drop] = useDrop(
-    () => ({
-      accept: ItemTypes.CARD,
-      drop: (item: CardDragPayload, monitor) => {
-        if (!monitor.didDrop()) {
-          onCardDropped(item.cardId, item.columnId);
-        }
-      },
-      canDrop: (item: CardDragPayload) =>
-        item.parentCardId !== null || item.columnId !== columnId,
-      collect: (monitor) => ({
-        isOverCurrent: monitor.isOver({ shallow: true }),
-        canDrop: monitor.canDrop(),
+export const ColumnCardContainer: React.FC<ColumnCardContainerProps> = ({
+  children,
+  columnId,
+  onCardDropped,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false);
+
+  useEffect(() => {
+    const element = ref.current;
+
+    invariant(element);
+
+    return combine(
+      dropTargetForElements({
+        element: element,
+        canDrop: ({ source }) => {
+          const data = source.data;
+          if (!isCard(data)) {
+            return false;
+          }
+
+          const isSameColumn = data.columnId === columnId;
+          const isFromGroup = data.parentCardId !== null;
+          const isGroupParent = data.parentCardId === data.cardId;
+
+          if (isFromGroup && !isGroupParent) {
+            return true;
+          }
+
+          return !isSameColumn && !isGroupParent;
+        },
+        onDrop: ({ source, location, self }) => {
+          const data = source.data;
+          if (!isCard(data)) {
+            return;
+          }
+
+          // do nothing if nested drop target is not the container itself
+          if (location.current.dropTargets[0]?.element !== self.element) {
+            setIsDraggedOver(false);
+            return;
+          }
+
+          onCardDropped?.({
+            targetType: "column",
+            cardId: data.cardId,
+            targetId: columnId,
+          });
+          setIsDraggedOver(false);
+        },
+        onDragEnter: () => setIsDraggedOver(true),
+        onDragLeave: () => setIsDraggedOver(false),
       }),
-    }),
-    [columnId],
-  );
+    );
+  }, []);
 
   return (
     <div
-      ref={drop}
+      ref={ref}
       className={cn(
-        "flex flex-col gap-2 min-h-[500px] h-full pb-[70px] rounded-2xl",
-        isOverCurrent && canDrop
-          ? "border border-dashed"
-          : "border border-transparent",
+        "flex flex-col gap-2 pb-[70px] rounded-2xl min-h-[500px] h-full",
+        isDraggedOver && "ring-2 ring-primary-500",
       )}
     >
       {children}

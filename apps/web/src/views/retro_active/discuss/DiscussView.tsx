@@ -80,9 +80,9 @@ export const DiscussView = () => {
             return (
               <GroupCardContainer
                 className={cn(group.votes === 0 && "opacity-40")}
+                columnId={"next"}
                 key={group.parentCardId}
                 parentCardId={group.parentCardId}
-                onCardDropped={() => {}}
               >
                 {group.cards.map((card, index) => {
                   const author = teamUsers.find(

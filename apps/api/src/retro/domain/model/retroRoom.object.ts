@@ -181,6 +181,9 @@ export class RetroRoom {
 
   addCardToCard(parentCardId: string, cardId: string) {
     const card = this.pushCardToEnd(cardId);
+    if (!card) {
+      return;
+    }
     const parentCard = this.cards.find((card) => card.id === parentCardId);
     const childCards = this.cards.filter(
       (card) => card.parentCardId === cardId,
@@ -209,6 +212,9 @@ export class RetroRoom {
 
   moveCardToColumn(cardId: string, columnId: string) {
     const card = this.pushCardToEnd(cardId);
+    if (!card) {
+      return;
+    }
     card.columnId = columnId;
 
     if (!card.parentCardId) {

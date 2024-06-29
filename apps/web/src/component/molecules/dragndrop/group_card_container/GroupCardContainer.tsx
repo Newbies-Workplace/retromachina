@@ -1,49 +1,142 @@
-import type React from "react";
-import { useDrop } from "react-dnd";
+import {
+  Instruction,
+  attachInstruction,
+  extractInstruction,
+} from "@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item";
+import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import React, { useEffect, useRef, useState } from "react";
+import invariant from "tiny-invariant";
 import { cn } from "../../../../common/Util";
 import { useKeyDownListener } from "../../../../context/useKeyDownListener";
-import { type CardDragPayload, ItemTypes } from "../dragndrop";
+import { CardMoveAction } from "../../../../interfaces/CardMoveAction.interface";
+import { isCard } from "../dragndrop";
 import styles from "./GroupCardContainer.module.scss";
 
 interface GroupCardContainerProps {
   className?: string;
   parentCardId: string;
-  onCardDropped: (cardId: string, fromColumnId: string) => void;
+  columnId: string;
+  onCardDropped?: (action: CardMoveAction) => void;
+  children?: React.ReactNode;
 }
 
-export const GroupCardContainer: React.FC<
-  React.PropsWithChildren<GroupCardContainerProps>
-> = ({ className, children, parentCardId, onCardDropped }) => {
-  const [{ isOver, canDrop }, drop] = useDrop(
-    () => ({
-      accept: ItemTypes.CARD,
-      drop: (item: CardDragPayload) => {
-        onCardDropped(item.cardId, item.columnId);
-      },
-      canDrop: (item: CardDragPayload) =>
-        item.cardId !== parentCardId && item.parentCardId !== parentCardId,
-      collect: (monitor) => ({
-        isOver: monitor.isOver(),
-        canDrop: monitor.canDrop(),
+export const GroupCardContainer: React.FC<GroupCardContainerProps> = ({
+  className,
+  children,
+  parentCardId,
+  onCardDropped,
+  columnId,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [closestEdge, setClosestEdge] = useState<
+    "top" | "mid" | "bottom" | null
+  >(null);
+
+  useEffect(() => {
+    const element = ref.current;
+
+    invariant(element);
+
+    return combine(
+      dropTargetForElements({
+        element: element,
+        getData: ({ input, element }) => {
+          return attachInstruction(
+            {},
+            {
+              input,
+              element,
+              currentLevel: 0,
+              indentPerLevel: 20,
+              mode: "standard",
+            },
+          );
+        },
+        canDrop: ({ source }) => {
+          const data = source.data;
+          if (!isCard(data)) {
+            return false;
+          }
+
+          //todo disable moving group onto itself in backend
+          const isSameGroup = data.parentCardId === parentCardId;
+          const isDroppingOntoItself = data.cardId === parentCardId;
+
+          return !isSameGroup && !isDroppingOntoItself;
+        },
+        onDrag: (args) => {
+          const instruction: Instruction | null = extractInstruction(
+            args.self.data,
+          );
+          setClosestEdge(
+            instruction?.type === "reorder-above"
+              ? "top"
+              : instruction?.type === "reorder-below"
+                ? "bottom"
+                : instruction?.type === "make-child"
+                  ? "mid"
+                  : null,
+          );
+        },
+        onDragLeave: () => {
+          setClosestEdge(null);
+        },
+        onDrop: (args) => {
+          const data = args.source.data;
+          if (!isCard(data)) {
+            return;
+          }
+
+          setClosestEdge(null);
+          const instruction: Instruction | null = extractInstruction(
+            args.self.data,
+          );
+
+          if (
+            instruction?.type === "reorder-above" ||
+            instruction?.type === "reorder-below"
+          ) {
+            onCardDropped?.({
+              targetType: "column",
+              cardId: data.cardId,
+              targetId: columnId,
+            });
+          } else if (instruction?.type === "make-child") {
+            onCardDropped?.({
+              targetType: "card",
+              cardId: data.cardId,
+              targetId: parentCardId,
+            });
+          }
+        },
       }),
-    }),
-    [parentCardId],
-  );
+    );
+  }, []);
 
   const isShiftPressed = useKeyDownListener("Shift");
 
   return (
-    <div
-      ref={drop}
-      className={cn(
-        styles.group,
-        {
-          [styles.shifted]: isShiftPressed,
-        },
-        className,
-      )}
-    >
-      {children}
-    </div>
+    <>
+      <div
+        ref={ref}
+        className={cn(
+          styles.group,
+          {
+            [styles.shifted]: isShiftPressed,
+          },
+          "relative",
+          closestEdge === "mid" && "ring-2 ring-primary-500 rounded-2xl",
+          className,
+        )}
+      >
+        {children}
+
+        {closestEdge && closestEdge !== "mid" && (
+          <DropIndicator edge={closestEdge} gap={"8px"} />
+        )}
+      </div>
+    </>
   );
 };

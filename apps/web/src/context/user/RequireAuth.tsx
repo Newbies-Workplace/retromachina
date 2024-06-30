@@ -6,37 +6,27 @@ import { setRedirectPath } from "../useRedirect";
 import { useUser } from "./UserContext.hook";
 
 interface RequireAuthProps {
-  fallback?: JSX.Element;
+  children?: React.ReactNode;
+  fallback?: React.ReactNode;
 }
 
-export const RequireAuth: React.FC<
-  React.PropsWithChildren<RequireAuthProps>
-> = ({ fallback, children }) => {
-  const { user, refreshUser } = useUser();
-  const [busy, setBusy] = useState(true);
+export const RequireAuth: React.FC<RequireAuthProps> = ({
+  fallback,
+  children,
+}) => {
+  const { user, isFetchingUser } = useUser();
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    if (user) return;
-
-    const waitForUser = async () => {
-      await refreshUser();
-      setBusy(false);
-    };
-
-    waitForUser();
-  });
-
-  if (busy) {
-    return <Loader />;
-  }
 
   if (user) {
     return <>{children}</>;
   }
 
-  if (fallback) {
-    return fallback;
+  if (isFetchingUser) {
+    return <Loader />;
+  }
+
+  if (fallback !== undefined) {
+    return <>{fallback}</>;
   }
 
   setRedirectPath(pathname);

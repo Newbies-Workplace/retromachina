@@ -32,7 +32,12 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
     return combine(
       draggable({
         element: element,
-        onDragStart: () => setDragging(true),
+        onDragStart: () => {
+          // don't show opacity when dragging first card in group so that opacity is not applied twice to first card in group
+          if (parentCardId !== null) {
+            setDragging(true);
+          }
+        },
         onDrop: () => setDragging(false),
         getInitialData: () => getCard({ cardId, columnId, parentCardId }),
         onGenerateDragPreview({ source }) {

@@ -12,6 +12,7 @@
 @layer components {
     .scrollbar {
         overflow-x: auto;
+        scrollbar-gutter: stable;
     }
 
     .scrollbar::-webkit-scrollbar {

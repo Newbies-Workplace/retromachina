@@ -35,6 +35,10 @@ export const RetroSummaryView = () => {
       ),
     [users],
   );
+  const unassignedTasks = useMemo(
+    () => tasks.filter((task) => !task.ownerId),
+    [tasks],
+  );
 
   useEffect(() => {
     if (!retroId) return;
@@ -80,6 +84,7 @@ export const RetroSummaryView = () => {
                         key={task.id}
                         className={styles.card}
                         teamUsers={[]}
+                        author={null}
                         text={task.text}
                       />
                     );
@@ -88,6 +93,24 @@ export const RetroSummaryView = () => {
               </div>
             );
           })}
+
+          {unassignedTasks.length !== 0 && (
+            <div className={styles.noTasksSection}>
+              <div className={styles.authors}>Nieprzypisane zadania</div>
+              {unassignedTasks.map((task) => {
+                return (
+                  <Card
+                    id={task.id}
+                    key={task.id}
+                    className={styles.card}
+                    teamUsers={[]}
+                    author={null}
+                    text={task.text}
+                  />
+                );
+              })}
+            </div>
+          )}
 
           {userWithoutTasks.length !== 0 && (
             <div className={styles.noTasksSection}>

@@ -15,7 +15,7 @@
     "dotenv-cli": "latest",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "turbo": "latest"
+    "turbo": "^1.13.4"
   },
   "husky": {
     "hooks": {

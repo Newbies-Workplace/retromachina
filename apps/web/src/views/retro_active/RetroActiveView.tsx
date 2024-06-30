@@ -1,8 +1,10 @@
+import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import { Share2Icon } from "@radix-ui/react-icons";
 import { AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Route, Routes } from "react-router-dom";
+import invariant from "tiny-invariant";
 import { Button } from "../../component/atoms/button/Button";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
 import { TeamAvatars } from "../../component/molecules/team_avatars/TeamAvatars";
@@ -30,6 +32,17 @@ export const RetroActiveView: React.FC = () => {
   useEffect(() => {
     navigate(`/retro/${retroId}/${roomState}`);
   }, [roomState, navigate, retroId]);
+
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    invariant(element);
+
+    autoScrollForElements({
+      element: element,
+    });
+  }, []);
 
   return (
     <>
@@ -87,7 +100,7 @@ export const RetroActiveView: React.FC = () => {
         }
       />
 
-      <div className={"flex flex-col grow scrollbar"}>
+      <div className={"flex flex-col grow scrollbar"} ref={ref}>
         <div className={"flex-1 flex-row"}>
           <Routes>
             <Route path="reflection" element={<ReflectionView />} />

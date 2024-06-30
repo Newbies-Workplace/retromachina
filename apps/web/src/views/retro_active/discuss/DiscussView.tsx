@@ -6,7 +6,7 @@ import { Avatar } from "../../../component/atoms/avatar/Avatar";
 import { Button } from "../../../component/atoms/button/Button";
 import { Input } from "../../../component/atoms/input/Input";
 import { Card } from "../../../component/molecules/card/Card";
-import { GroupCardContainer } from "../../../component/molecules/dragndrop/group_card_container/GroupCardContainer";
+import { CardGroup } from "../../../component/molecules/dragndrop/CardGroup";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
 import { type Group, useCardGroups } from "../../../context/useCardGroups";
 import { usePlural } from "../../../context/usePlural";
@@ -78,11 +78,11 @@ export const DiscussView = () => {
           })
           .map((group) => {
             return (
-              <GroupCardContainer
+              <CardGroup
                 className={cn(group.votes === 0 && "opacity-40")}
+                columnId={"next"}
                 key={group.parentCardId}
                 parentCardId={group.parentCardId}
-                onCardDropped={() => {}}
               >
                 {group.cards.map((card, index) => {
                   const author = teamUsers.find(
@@ -116,7 +116,7 @@ export const DiscussView = () => {
                     </Card>
                   );
                 })}
-              </GroupCardContainer>
+              </CardGroup>
             );
           })}
       </div>

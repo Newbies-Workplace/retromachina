@@ -2,9 +2,9 @@ import React from "react";
 import { cn } from "../../../common/Util";
 import { Card } from "../../../component/molecules/card/Card";
 import { Column } from "../../../component/molecules/column/Column";
-import { ColumnCardContainer } from "../../../component/molecules/dragndrop/ColumnCardContainer";
+import { CardGroup } from "../../../component/molecules/dragndrop/CardGroup";
+import { ColumnCards } from "../../../component/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "../../../component/molecules/dragndrop/DraggableCard";
-import { GroupCardContainer } from "../../../component/molecules/dragndrop/group_card_container/GroupCardContainer";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
 import { useDebounce } from "../../../context/useDebounce";
 import { SLOT_MACHINE_ANIMATION_DURATION } from "../components/toolbox/SlotMachine";
@@ -42,16 +42,7 @@ export const GroupView: React.FC = () => {
               description: column.description,
             }}
           >
-            <ColumnCardContainer
-              columnId={column.id}
-              onCardDropped={(cardId) =>
-                moveCard({
-                  targetType: "column",
-                  cardId: cardId,
-                  targetId: column.id,
-                })
-              }
-            >
+            <ColumnCards columnId={column.id} onCardDropped={moveCard}>
               {columnCards
                 .filter((c) => c.parentCardId === null)
                 .sort((a, b) => {
@@ -76,9 +67,10 @@ export const GroupView: React.FC = () => {
                   ];
 
                   return (
-                    <GroupCardContainer
+                    <CardGroup
                       key={group.id}
                       parentCardId={group.id}
+                      columnId={column.id}
                       className={cn(
                         "transition-opacity",
                         slotMachineVisible &&
@@ -86,13 +78,7 @@ export const GroupView: React.FC = () => {
                           delayedHighlightedUserId !== group.authorId &&
                           "opacity-30",
                       )}
-                      onCardDropped={(cardId) =>
-                        moveCard({
-                          targetType: "card",
-                          cardId: cardId,
-                          targetId: group.id,
-                        })
-                      }
+                      onCardDropped={moveCard}
                     >
                       {groupCards.map((card, index) => {
                         const user = teamUsers.find(
@@ -105,7 +91,7 @@ export const GroupView: React.FC = () => {
                             parentCardId={card.parentCardId}
                             cardId={card.id}
                             columnId={column.id}
-                            style={{ marginTop: index === 0 ? 0 : -80 }}
+                            className={cn(index === 0 ? "mt-0" : "mt-[-80px]")}
                           >
                             <Card
                               id={card.id}
@@ -124,10 +110,10 @@ export const GroupView: React.FC = () => {
                           </DraggableCard>
                         );
                       })}
-                    </GroupCardContainer>
+                    </CardGroup>
                   );
                 })}
-            </ColumnCardContainer>
+            </ColumnCards>
           </Column>
         );
       })}

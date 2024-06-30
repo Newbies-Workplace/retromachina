@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Button } from "../../component/atoms/button/Button";
 import { Card } from "../../component/molecules/card/Card";
 import { Column } from "../../component/molecules/column/Column";
-import { ColumnCardContainer } from "../../component/molecules/dragndrop/ColumnCardContainer";
+import { ColumnCards } from "../../component/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "../../component/molecules/dragndrop/DraggableCard";
 import {
   Tooltip,
@@ -93,9 +93,9 @@ export const TeamBoardView: React.FC = () => {
                 </Button>
               }
             >
-              <ColumnCardContainer
+              <ColumnCards
                 columnId={column.id}
-                onCardDropped={(taskId) => moveTask(taskId, column.id)}
+                onCardDropped={(action) => moveTask(action.cardId, column.id)}
               >
                 {creatingTask &&
                   creatingTask?.columnId === column.id &&
@@ -224,7 +224,7 @@ export const TeamBoardView: React.FC = () => {
                       </DraggableCard>
                     );
                   })}
-              </ColumnCardContainer>
+              </ColumnCards>
             </Column>
           ))}
       </div>

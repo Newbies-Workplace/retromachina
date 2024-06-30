@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import type React from "react";
 import { createContext, useEffect, useState } from "react";
 import type { AuthParams } from "shared/model/auth/Auth.interface";
@@ -8,12 +9,14 @@ import { getMyUser } from "../../api/User.service";
 
 interface UserContext {
   user: UserWithTeamsResponse | null;
+  isFetchingUser: boolean;
   refreshUser: () => Promise<void>;
   login: (params: AuthParams) => Promise<void>;
 }
 
 export const UserContext = createContext<UserContext>({
   user: null,
+  isFetchingUser: false,
   refreshUser: () => {
     return Promise.reject();
   },
@@ -24,27 +27,32 @@ export const UserContext = createContext<UserContext>({
 
 export const UserContextProvider: React.FC<any> = ({ children }) => {
   const [user, setUser] = useState<UserWithTeamsResponse | null>(null);
+  const [isFetchingUser, setIsFetchingUser] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("Bearer");
 
     if (token && !user) {
       refreshUser();
+    } else {
+      setIsFetchingUser(false);
     }
   }, []);
 
-  const refreshUser = () => {
-    return getMyUser()
-      .then((response) => {
-        setUser(response);
-      })
-      .catch((error) => {
-        if (error.status === 401) {
-          setUser(null);
-        } else {
-          console.error(error);
-        }
-      });
+  const refreshUser = async () => {
+    try {
+      setIsFetchingUser(true);
+      const response = await getMyUser();
+      setUser(response);
+    } catch (error) {
+      if ((error as AxiosError)?.status === 401) {
+        setUser(null);
+      } else {
+        console.error(error);
+      }
+    } finally {
+      setIsFetchingUser(false);
+    }
   };
 
   const login = (params: AuthParams) => {
@@ -53,9 +61,14 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
         localStorage.setItem("Bearer", res.access_token);
 
         axiosInstance.defaults.headers.Authorization = `Bearer ${res.access_token}`;
-        getMyUser().then((response) => {
-          setUser(response);
-        });
+        setIsFetchingUser(true);
+        getMyUser()
+          .then((response) => {
+            setUser(response);
+          })
+          .finally(() => {
+            setIsFetchingUser(false);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -66,6 +79,7 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
     <UserContext.Provider
       value={{
         user: user,
+        isFetchingUser: isFetchingUser,
         refreshUser: refreshUser,
         login: login,
       }}

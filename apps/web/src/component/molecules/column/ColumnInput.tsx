@@ -28,6 +28,7 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
   };
 
   useEffect(() => {
+    // Skip the first render to avoid calling onStopWriting
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;

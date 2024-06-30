@@ -2,7 +2,7 @@ import React from "react";
 import { Card } from "../../../component/molecules/card/Card";
 import Counter from "../../../component/molecules/card/counter/Counter";
 import { Column } from "../../../component/molecules/column/Column";
-import { GroupCardContainer } from "../../../component/molecules/dragndrop/group_card_container/GroupCardContainer";
+import { CardGroup } from "../../../component/molecules/dragndrop/CardGroup";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
 import { useUser } from "../../../context/user/UserContext.hook";
 
@@ -40,7 +40,7 @@ export const VoteView = () => {
                   ...cards.filter((c) => c.parentCardId === group.id),
                 ];
                 return (
-                  <GroupCardContainer
+                  <CardGroup
                     key={group.id}
                     columnId={column.id}
                     parentCardId={group.id}
@@ -89,7 +89,7 @@ export const VoteView = () => {
                         </Card>
                       );
                     })}
-                  </GroupCardContainer>
+                  </CardGroup>
                 );
               })}
           </Column>

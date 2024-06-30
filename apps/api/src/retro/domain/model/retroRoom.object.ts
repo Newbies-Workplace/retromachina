@@ -180,10 +180,16 @@ export class RetroRoom {
   }
 
   addCardToCard(parentCardId: string, cardId: string) {
-    const card = this.pushCardToEnd(cardId);
+    const card = this.cards.find((it) => it.id === cardId); //this.pushCardToEnd(cardId);
     if (!card) {
       return;
     }
+
+    // disable moving group onto itself
+    if (card.parentCardId === parentCardId || card.id === parentCardId) {
+      return;
+    }
+
     const parentCard = this.cards.find((card) => card.id === parentCardId);
     const childCards = this.cards.filter(
       (card) => card.parentCardId === cardId,

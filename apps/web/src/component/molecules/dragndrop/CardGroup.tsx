@@ -8,11 +8,10 @@ import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
-import { cn } from "../../../../common/Util";
-import { useKeyDownListener } from "../../../../context/useKeyDownListener";
-import { CardMoveAction } from "../../../../interfaces/CardMoveAction.interface";
-import { isCard } from "../dragndrop";
-import styles from "./GroupCardContainer.module.scss";
+import { cn } from "../../../common/Util";
+import { useKeyDownListener } from "../../../context/useKeyDownListener";
+import { CardMoveAction } from "../../../interfaces/CardMoveAction.interface";
+import { isCard } from "./dragndrop";
 
 interface GroupCardContainerProps {
   className?: string;
@@ -22,7 +21,7 @@ interface GroupCardContainerProps {
   children?: React.ReactNode;
 }
 
-export const GroupCardContainer: React.FC<GroupCardContainerProps> = ({
+export const CardGroup: React.FC<GroupCardContainerProps> = ({
   className,
   children,
   parentCardId,
@@ -60,7 +59,6 @@ export const GroupCardContainer: React.FC<GroupCardContainerProps> = ({
             return false;
           }
 
-          //todo disable moving group onto itself in backend
           const isSameGroup = data.parentCardId === parentCardId;
           const isDroppingOntoItself = data.cardId === parentCardId;
 
@@ -122,12 +120,10 @@ export const GroupCardContainer: React.FC<GroupCardContainerProps> = ({
       <div
         ref={ref}
         className={cn(
-          styles.group,
-          {
-            [styles.shifted]: isShiftPressed,
-          },
-          "relative",
+          "relative flex flex-col min-w-[100px] ",
           closestEdge === "mid" && "ring-2 ring-primary-500 rounded-2xl",
+          isShiftPressed &&
+            "[&>:not(:last-child):hover]:mb-[90px] [&>:not(:last-child)]:transition-[margin]",
           className,
         )}
       >

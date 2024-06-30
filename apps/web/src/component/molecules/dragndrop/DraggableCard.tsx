@@ -1,5 +1,6 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { scrollJustEnoughIntoView } from "@atlaskit/pragmatic-drag-and-drop/element/scroll-just-enough-into-view";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { getCard } from "./dragndrop";
@@ -28,15 +29,21 @@ export const DraggableCard: React.FC<
         onDragStart: () => setDragging(true),
         onDrop: () => setDragging(false),
         getInitialData: () => getCard({ cardId, columnId, parentCardId }),
+        onGenerateDragPreview({ source }) {
+          scrollJustEnoughIntoView({ element: source.element });
+        },
       }),
     );
   }, []);
 
   const opacity = dragging ? 0.25 : 1;
-  const cursor = "grab"; // canDrag ? "grab" : "default";
 
   return (
-    <div ref={ref} style={{ opacity: opacity, cursor: cursor, ...style }}>
+    <div
+      ref={ref}
+      style={{ opacity: opacity, ...style }}
+      className={"cursor-grab"}
+    >
       {children}
     </div>
   );

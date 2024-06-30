@@ -1,5 +1,9 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import {
+  DragLocationHistory,
+  DropTargetRecord,
+} from "@atlaskit/pragmatic-drag-and-drop/types";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { cn } from "../../../common/Util";
@@ -12,13 +16,24 @@ interface ColumnCardContainerProps {
   children?: React.ReactNode;
 }
 
-export const ColumnCardContainer: React.FC<ColumnCardContainerProps> = ({
+export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
   children,
   columnId,
   onCardDropped,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false);
+
+  const handleDraggedOverChange = (
+    location: DragLocationHistory,
+    self: DropTargetRecord,
+  ) => {
+    if (location.current.dropTargets[0]?.element !== self.element) {
+      setIsDraggedOver(false);
+    } else {
+      setIsDraggedOver(true);
+    }
+  };
 
   useEffect(() => {
     const element = ref.current;
@@ -44,6 +59,12 @@ export const ColumnCardContainer: React.FC<ColumnCardContainerProps> = ({
 
           return !isSameColumn && !isGroupParent;
         },
+        onDropTargetChange: ({ location, self }) => {
+          handleDraggedOverChange(location, self);
+        },
+        onDragStart: ({ location, self }) => {
+          handleDraggedOverChange(location, self);
+        },
         onDrop: ({ source, location, self }) => {
           const data = source.data;
           if (!isCard(data)) {
@@ -63,8 +84,6 @@ export const ColumnCardContainer: React.FC<ColumnCardContainerProps> = ({
           });
           setIsDraggedOver(false);
         },
-        onDragEnter: () => setIsDraggedOver(true),
-        onDragLeave: () => setIsDraggedOver(false),
       }),
     );
   }, []);

@@ -91,7 +91,7 @@ export const GroupView: React.FC = () => {
                             parentCardId={card.parentCardId}
                             cardId={card.id}
                             columnId={column.id}
-                            style={{ marginTop: index === 0 ? 0 : -80 }}
+                            className={cn(index === 0 ? "mt-0" : "mt-[-80px]")}
                           >
                             <Card
                               id={card.id}

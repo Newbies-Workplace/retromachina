@@ -16,7 +16,7 @@ export interface CardProps {
   className?: string;
   id: string;
   text: string;
-  author?: CardUser;
+  author?: CardUser | null;
   teamUsers: CardUser[];
   editableUser?: boolean;
   editableText?: boolean;
@@ -184,24 +184,26 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
               )}
             </div>
 
-            <div
-              ref={userPickerButtonRef}
-              className={cn(
-                "flex items-center gap-2 p-0.5 rounded",
-                editableUser && "cursor-pointer hover:bg-gray-500",
-              )}
-              onClick={() => {
-                if (editableUser) {
-                  setUsersOpen(true);
-                }
-              }}
-            >
-              <Avatar url={author?.avatar} size={24} />
-              <span className={"text-sm"}>
-                {author ? author.name : "Nieprzypisany"}
-              </span>
-              {editableUser && <Pencil1Icon width={12} height={12} />}
-            </div>
+            {author !== null && (
+              <div
+                ref={userPickerButtonRef}
+                className={cn(
+                  "flex items-center gap-2 p-0.5 rounded",
+                  editableUser && "cursor-pointer hover:bg-gray-500",
+                )}
+                onClick={() => {
+                  if (editableUser) {
+                    setUsersOpen(true);
+                  }
+                }}
+              >
+                <Avatar url={author?.avatar} size={24} />
+                <span className={"text-sm"}>
+                  {author ? author.name : "Nieprzypisany"}
+                </span>
+                {editableUser && <Pencil1Icon width={12} height={12} />}
+              </div>
+            )}
           </div>
         </div>
 

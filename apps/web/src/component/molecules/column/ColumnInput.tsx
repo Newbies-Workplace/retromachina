@@ -17,6 +17,7 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
 }) => {
   const [value, setValue] = useState("");
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMount = useRef(true);
 
   const startWriting = () => {
     onIsWriting(true);
@@ -27,6 +28,11 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
   };
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     if (value.length > 0 && !columnData.isWriting) {
       startWriting();
     }

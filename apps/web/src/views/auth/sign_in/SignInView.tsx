@@ -1,40 +1,59 @@
 import type React from "react";
 import GoogleButton from "react-google-button";
 import { AnimatedBackground } from "../../../component/organisms/animated_background/AnimatedBackground";
-import styles from "./SignInView.module.scss";
 
 export const SignInView: React.FC = () => {
   const href = `${process.env.RETRO_WEB_API_URL}google/redirect`;
 
   return (
     <AnimatedBackground className={"items-center"}>
-      <div className={styles.dialog}>
-        <div className={styles.text}>
+      <div
+        className={
+          "flex flex-col justify-center items-center gap-[140px] max-w-[700px] max-h-[400px] px-20 py-[120px] rounded-2xl text-background-500 bg-secondary-500"
+        }
+      >
+        <div
+          className={"w-full flex flex-col justify-center items-center gap-2"}
+        >
           <span
             className={
-              "font-harlow-solid-italic text-5xl text-background-50 cursor-pointer"
+              "font-harlow-solid-italic text-5xl text-background-50 select-none"
             }
           >
             Retromachina
           </span>
 
-          <span>
+          <span className={"text-md  text-background-50"}>
             powered by{" "}
-            <a href="http://newbies.pl" className={"underline"}>
+            <a
+              href="https://newbies.pl"
+              className={"underline text-md text-background-500"}
+            >
               Newbies
             </a>
           </span>
         </div>
 
-        <div className={styles.bottom}>
+        <div
+          className={
+            "flex flex-col justify-center items-center gap-5 text-center"
+          }
+        >
           <a href={href}>
-            <GoogleButton className={styles.googleBtn} />
+            <GoogleButton
+              className={
+                "!text-black !rounded-full !bg-white *:!rounded-full *:!font-[Roboto,arial,sans-serif]"
+              }
+            />
           </a>
 
-          <span className={styles.privacy}>
+          <span className={"text-sm text-background-50"}>
             Korzystając z Retromachiny akceptujesz
             <br />
-            <a href={"/privacy"} className={"underline"}>
+            <a
+              href={"/privacy"}
+              className={"underline text-sm text-background-500"}
+            >
               politykę prywatności
             </a>
           </span>

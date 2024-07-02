@@ -7,11 +7,13 @@ import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { cn } from "../../../common/Util";
 
-const Card: React.FC<{ className?: string; id: string; columnId: string }> = ({
-  className,
-  id,
-  columnId,
-}) => {
+type ColumnId = "todo" | "wip" | "done";
+
+const Card: React.FC<{
+  className?: string;
+  id: string;
+  columnId: ColumnId;
+}> = ({ className, id, columnId }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ const Card: React.FC<{ className?: string; id: string; columnId: string }> = ({
 
 const Column: React.FC<{
   children: React.ReactNode;
-  columnId: string;
+  columnId: ColumnId;
   title: string;
   onCardDrop: (cardId: string) => void;
 }> = ({ children, columnId, title, onCardDrop }) => {
@@ -84,13 +86,15 @@ const Column: React.FC<{
   );
 };
 
-const initialCards: { id: string; column: "todo" | "wip" | "done" }[] = [
+const initialCards: { id: string; column: ColumnId }[] = [
   { id: "1", column: "todo" },
   { id: "2", column: "wip" },
   { id: "3", column: "wip" },
   { id: "4", column: "done" },
   { id: "5", column: "done" },
   { id: "6", column: "done" },
+  { id: "7", column: "done" },
+  { id: "8", column: "done" },
 ];
 
 export const KanbanBoard: React.FC = () => {
@@ -98,18 +102,34 @@ export const KanbanBoard: React.FC = () => {
 
   const [cards, setCards] = useState<typeof initialCards>(initialCards);
 
-  const onCardDrop = (cardId: string, column: "todo" | "wip" | "done") => {
+  const onCardDrop = (cardId: string, column: ColumnId) => {
     setCards((cards) => [
       ...cards.filter((card) => card.id !== cardId),
       { id: cardId, column },
     ]);
   };
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const card = cards[Math.floor(Math.random() * cards.length)];
+      const randomOtherColumn: ColumnId = ["todo", "wip", "done"].filter(
+        (id) => id !== card.column,
+      )[Math.floor(Math.random() * 2)] as ColumnId;
+
+      setCards((cards) => [
+        ...cards.filter((c) => c.id !== card.id),
+        { id: card.id, column: randomOtherColumn },
+      ]);
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [cards]);
+
   return (
     <AnimatePresence>
       <div
         className={
-          "w-full h-[400px] flex flex-row bg-secondary-500 rounded-2xl p-4 gap-4"
+          "w-full h-[500px] flex xl:flex-1 flex-row bg-secondary-500 rounded-2xl p-2 gap-4"
         }
       >
         <Column

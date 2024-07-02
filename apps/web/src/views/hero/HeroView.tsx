@@ -13,81 +13,125 @@ export const HeroView: React.FC = () => {
   };
 
   return (
-    <div className={"flex flex-col w-full scrollbar"}>
-      <div className={"flex flex-col px-8 py-4 bg-secondary-500"}>
-        <span
+    <div className={"flex flex-col w-full bg-secondary-500 scrollbar"}>
+      <div className={"flex flex-row items-center w-full px-8 py-4"}>
+        <div className={"flex flex-col w-full"}>
+          <span
+            className={
+              "font-harlow-solid-italic text-5xl text-background-50 select-none"
+            }
+          >
+            Retromachina
+          </span>
+          <span className={"text-background-50"}>
+            Twoje nowe narzędzie do przeprowadzania retrospektyw
+          </span>
+        </div>
+        <Button onClick={onJoinClick}>Dołącz</Button>
+      </div>
+
+      <div
+        className={
+          "flex flex-col gap-12 p-8 w-full bg-background-50 rounded-t-2xl"
+        }
+      >
+        {/* first section */}
+        <div
           className={
-            "font-harlow-solid-italic text-5xl text-background-50 select-none"
+            "flex flex-1 flex-col xl:flex-row justify-center items-center gap-4 xl:gap-8 w-full"
           }
         >
-          Retromachina
-        </span>
-        <span className={"text-background-50"}>
-          Twoje nowe narzędzie do przeprowadzania retrospektyw
-        </span>
-      </div>
-
-      <div className={"bg-secondary-500 min-h-8 h-8 w-full"}>
-        <div className={"bg-background-50 min-h-8 h-4 w-full rounded-t-2xl"} />
-      </div>
-
-      <div className={"flex flex-col gap-12 p-8 w-full"}>
-        <div className={"flex w-full"}>
           <div
             className={
-              "flex flex-1 flex-col justify-center items-center gap-2 max-w-[1000px]"
+              "flex xl:flex-1 w-full h-[500px] bg-secondary-500 rounded-2xl p-2"
             }
           >
-            <div
-              className={"w-full h-[400px] bg-secondary-500 rounded-2xl p-2"}
-            >
-              <img
-                src={RetroImage}
-                alt="Retrospektywa przeprawadzana na retromachinie"
-                className={
-                  "w-full h-full rounded-xl object-cover object-left-top"
-                }
-              />
-            </div>
-            <span>Przeprowadzaj retrospektywy</span>
+            <img
+              src={RetroImage}
+              alt="Retrospektywa przeprawadzana na retromachinie"
+              className={
+                "w-full h-full rounded-xl object-cover object-left-top"
+              }
+            />
           </div>
-          <div className={"mx-auto"} />
-        </div>
-
-        <div className={"flex w-full"}>
-          <div className={"mx-auto"} />
 
           <div
             className={
-              "flex flex-1 flex-col justify-center items-center gap-2 max-w-[1000px]"
+              "flex xl:flex-1 flex-col gap-2 justify-center items-center"
             }
           >
-            <KanbanBoard />
-            <span>Śledź zadania zespołu</span>
+            <b className={"text-lg block"}>
+              Wyciśnij z retrospektyw tyle, ile się da!
+            </b>
+            <p>
+              Czujesz oddech agile-manifesto na swojej szyi? Retromachina pomoże
+              Ci w przeprowadzaniu retrospektyw w sposób zorganizowany i
+              efektywny. Wszystko po to, abyś mógł skupić się na doskonaleniu
+              swojego zespołu i sposobu pracy.
+            </p>
           </div>
         </div>
 
-        <div className={"flex w-full"}>
+        {/* second section */}
+        <div
+          className={
+            "flex flex-1 flex-col-reverse xl:flex-row justify-center items-center gap-4 xl:gap-8 w-full"
+          }
+        >
           <div
             className={
-              "flex flex-1 grow flex-col justify-center items-center gap-2 max-w-[1000px] self-start"
+              "flex xl:flex-1 flex-col gap-2 justify-center items-center"
             }
           >
-            <div
-              className={"w-full h-[400px] bg-secondary-500 rounded-2xl p-2"}
-            >
-              <img
-                src={TeamsImage}
-                alt="Lista zespołów wraz z informacjami o przeprowadzonych retrospektywach"
-                className={
-                  "w-full h-full rounded-xl object-cover object-left-top"
-                }
-              />
-            </div>
-            <span>Zarządzaj wieloma zespołami jednocześnie!</span>
+            <b className={"text-lg block"}>Śledź zadania zespołu</b>
+            <p>
+              Action Pointy, które zostały ustalone podczas retrospektywy nie
+              przepadają w czeluściach slacka. Dzięki Retromachinie możesz
+              śledzić postęp w ich realizacji.
+            </p>
           </div>
-          <div className={"mx-auto"} />
+
+          <KanbanBoard />
         </div>
+
+        {/* third section */}
+        <div
+          className={
+            "flex flex-1 flex-col xl:flex-row justify-center items-center gap-4 xl:gap-8 w-full"
+          }
+        >
+          <div
+            className={
+              "flex xl:flex-1 w-full h-[500px] bg-secondary-500 rounded-2xl p-2"
+            }
+          >
+            <img
+              src={TeamsImage}
+              alt="Lista zespołów wraz z informacjami o przeprowadzonych retrospektywach"
+              className={
+                "w-full h-full rounded-xl object-cover object-left-top"
+              }
+            />
+          </div>
+
+          <div
+            className={
+              "flex xl:flex-1 flex-col gap-2 justify-center items-center"
+            }
+          >
+            <b className={"text-lg block"}>
+              Zarządzaj wieloma zespołami jednocześnie!
+            </b>
+            <p>
+              Niezależnie od tego czy pracujesz w jednym zespole czy zarządzasz{" "}
+              <b className={"text-lg"}>w i e l k ą</b> organizacją, Retromachina
+              pozwoli Ci na zarządzanie retrospektywami w prosty i przejrzysty
+              sposób.
+            </p>
+          </div>
+        </div>
+
+        {/* footer */}
         <div className={"flex flex-col items-center w-full gap-2"}>
           <Button size={"xl"} className={"w-full"} onClick={onJoinClick}>
             Dołącz za darmo

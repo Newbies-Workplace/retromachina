@@ -123,10 +123,10 @@ export const HeroView: React.FC = () => {
               Zarządzaj wieloma zespołami jednocześnie!
             </b>
             <p>
-              Niezależnie od tego czy pracujesz w jednym zespole czy zarządzasz{" "}
-              <b className={"text-lg"}>w i e l k ą</b> organizacją, Retromachina
-              pozwoli Ci na zarządzanie retrospektywami w prosty i przejrzysty
-              sposób.
+              Niezależnie od tego czy pracujesz w jednym zespole czy w{" "}
+              <b className={"text-lg tracking-widest"}>wielkiej</b> organizacji,
+              Retromachina pozwoli Ci na zarządzanie zespołami w prosty i
+              przejrzysty sposób.
             </p>
           </div>
         </div>

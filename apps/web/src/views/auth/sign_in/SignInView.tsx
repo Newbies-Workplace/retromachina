@@ -1,9 +1,16 @@
 import type React from "react";
 import GoogleButton from "react-google-button";
+import { Navigate } from "react-router";
 import { AnimatedBackground } from "../../../component/organisms/animated_background/AnimatedBackground";
+import { useUser } from "../../../context/user/UserContext.hook";
 
 export const SignInView: React.FC = () => {
   const href = `${process.env.RETRO_WEB_API_URL}google/redirect`;
+  const { user } = useUser();
+
+  if (user) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <AnimatedBackground className={"items-center"}>

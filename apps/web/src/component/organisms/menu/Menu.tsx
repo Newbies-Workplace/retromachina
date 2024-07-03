@@ -12,10 +12,11 @@ import styles from "./Menu.module.scss";
 
 export const Menu = () => {
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, logout } = useUser();
 
-  const onLogoutClick = () => {
-    window.localStorage.clear();
+  const onLogoutClick = async () => {
+    await logout();
+
     navigate("/signin");
   };
 

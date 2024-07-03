@@ -1,3 +1,4 @@
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 import React from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -47,6 +48,10 @@ export const Menu = () => {
 
         <Link className={styles.option} to={"http://newbies.pl"}>
           <AuthorsIcon width={24} height={24} />O autorach
+        </Link>
+
+        <Link className={styles.option} to={"/hero"}>
+          <InfoCircledIcon width={24} height={24} />O aplikacji
         </Link>
 
         <Link

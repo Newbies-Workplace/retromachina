@@ -6,6 +6,7 @@ import { NotFoundView } from "./404/NotFoundView";
 import { LoadingView } from "./auth/loading/LoadingView";
 import { PrivacyPolicyView } from "./auth/privacy_policy/PrivacyPolicyView";
 import { SignInView } from "./auth/sign_in/SignInView";
+import { HeroView } from "./hero/HeroView";
 import { HomeView } from "./home/HomeView";
 import { InviteView } from "./invitation/InviteView";
 import { RetroActiveView } from "./retro_active/RetroActiveView";
@@ -22,6 +23,8 @@ export const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/hero" element={<HeroView />} />
+
         <Route path="/signin" element={<SignInView />} />
         <Route path="/loading" element={<LoadingView />} />
         <Route path="/privacy" element={<PrivacyPolicyView />} />
@@ -29,7 +32,7 @@ export const AppRouter: React.FC = () => {
         <Route
           path="/"
           element={
-            <RequireAuth>
+            <RequireAuth fallback={<Navigate to={"/hero"} />}>
               <HomeView />
             </RequireAuth>
           }

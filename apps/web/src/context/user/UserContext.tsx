@@ -12,6 +12,7 @@ interface UserContext {
   isFetchingUser: boolean;
   refreshUser: () => Promise<void>;
   login: (params: AuthParams) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const UserContext = createContext<UserContext>({
@@ -21,6 +22,9 @@ export const UserContext = createContext<UserContext>({
     return Promise.reject();
   },
   login: () => {
+    return Promise.reject();
+  },
+  logout: () => {
     return Promise.reject();
   },
 });
@@ -75,6 +79,11 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
       });
   };
 
+  const logout = async () => {
+    window.localStorage.clear();
+    setUser(null);
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -82,6 +91,7 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
         isFetchingUser: isFetchingUser,
         refreshUser: refreshUser,
         login: login,
+        logout: logout,
       }}
     >
       {children}

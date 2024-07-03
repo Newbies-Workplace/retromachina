@@ -14,8 +14,12 @@ export const HeroView: React.FC = () => {
 
   return (
     <div className={"flex flex-col w-full bg-secondary-500 scrollbar"}>
-      <div className={"flex flex-row items-center w-full px-8 py-4"}>
-        <div className={"flex flex-col w-full"}>
+      <div
+        className={
+          "flex flex-row flex-wrap gap-2 items-center w-full px-8 py-4"
+        }
+      >
+        <div className={"flex flex-col"}>
           <span
             className={
               "font-harlow-solid-italic text-5xl text-background-50 select-none"
@@ -27,7 +31,9 @@ export const HeroView: React.FC = () => {
             Twoje nowe narzędzie do przeprowadzania retrospektyw
           </span>
         </div>
-        <Button onClick={onJoinClick}>Dołącz</Button>
+        <Button className={"ml-auto"} onClick={onJoinClick}>
+          Dołącz
+        </Button>
       </div>
 
       <div

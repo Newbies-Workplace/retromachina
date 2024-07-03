@@ -79,7 +79,29 @@ export class TeamService {
       },
     });
 
-    // remove users that are not in the new list
+    // Update roles
+    for (const teamUser of updatedTeam.TeamUser) {
+      const requestUser = editTeamDto.users.find(
+        (u) => u.email === teamUser.User.email,
+      );
+      if (!requestUser) {
+        continue;
+      }
+
+      await this.prismaService.teamUsers.update({
+        where: {
+          team_id_user_id: {
+            team_id: team.id,
+            user_id: teamUser.User.id,
+          },
+        },
+        data: {
+          role: requestUser.role,
+        },
+      });
+    }
+
+    // Remove users that are not in the new list
     const teamUsers = updatedTeam.TeamUser.map((tu) => tu.User);
     const usersToRemove = teamUsers
       .filter((tu) => !editTeamDto.users.some((u) => u.email === tu.email))
@@ -88,7 +110,7 @@ export class TeamService {
       await this.removeUserFromTeam(user.id, team.id);
     }
 
-    // delete invites that are not in the new list
+    // Delete invites that are not in the new list
     const teamInvites = updatedTeam.Invite;
     const invitesToRemove = teamInvites.filter(
       (i) => !editTeamDto.users.some((u) => u.email === i.email),

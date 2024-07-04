@@ -5,6 +5,7 @@
     "dev": "dotenvx run -- turbo dev",
     "build": "dotenvx run -- turbo build",
     "start": "dotenvx run -- turbo start",
+    "test": "dotenvx run -- turbo test",
     "format": "npx @biomejs/biome check --apply ./",
     "prepare": "husky install"
   },

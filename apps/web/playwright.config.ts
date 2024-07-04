@@ -1,3 +1,4 @@
+import * as process from "node:process";
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
@@ -27,5 +28,6 @@ export default defineConfig({
       : "cd ../.. && npm run dev",
     port: 8080,
     reuseExistingServer: !process.env.CI,
+    stdout: process.env.CI ? "pipe" : "ignore",
   },
 });

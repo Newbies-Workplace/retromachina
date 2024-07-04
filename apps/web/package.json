@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "start": "vite preview --port 8080",
+    "start": "dotenvx run -f ../../.env -- vite preview --port 8080",
     "test": "npx playwright test",
     "test:ui": "npm run test -- --ui",
     "test:codegen": "dotenvx run -f ../../.env -- npx playwright codegen http://localhost:8080 --load-storage=./playwright/.auth/first-user.json",

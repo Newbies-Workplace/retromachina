@@ -8,7 +8,7 @@
     "migrate": "dotenvx run -f ../../.env -- prisma migrate dev",
     "studio": "dotenvx run -f ../../.env -- npx prisma studio",
     "build": "npm run generate && nest build",
-    "start": "dotenvx run -f ../../.env -- prisma migrate deploy && node dist/main",
+    "start": "prisma migrate deploy && node dist/main",
     "start:prod": "node dist/main",
     "start:migrate:prod": "prisma migrate deploy && npm run start:prod"
   },

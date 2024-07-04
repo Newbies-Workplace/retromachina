@@ -8,6 +8,9 @@
     "dev": "vite --host",
     "preview": "vite preview",
     "build": "vite build",
+    "test": "dotenv -e ../../.env -- npx playwright test",
+    "test:ui": "npm run test -- --ui",
+    "test:codegen": "dotenv -e ../../.env -- npx playwright codegen http://localhost:8080 --load-storage=./playwright/.auth/first-user.json",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -50,6 +53,7 @@
     "vite-plugin-svgr-component": "^1.0.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.45.1",
     "@storybook/addon-essentials": "^7.0.2",
     "@storybook/addon-interactions": "^7.0.2",
     "@storybook/addon-links": "^7.0.2",
@@ -57,6 +61,7 @@
     "@storybook/react": "^7.0.2",
     "@storybook/react-vite": "^7.0.2",
     "@types/js-cookie": "^3.0.2",
+    "@types/node": "^20.14.9",
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
     "@types/react-portal": "^4.0.4",

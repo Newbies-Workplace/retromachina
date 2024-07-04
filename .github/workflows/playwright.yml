@@ -1,0 +1,42 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:10.7
+        env:
+          MYSQL_ROOT_PASSWORD: retro
+          MYSQL_DATABASE: retro
+        ports:
+          - 3307:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Prepare .env file
+      run: touch .env && echo ${{ secrets.DOTENV }} > .env
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: cd apps/web && npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: cd apps/web && npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: apps/web/playwright-report/
+        retention-days: 7

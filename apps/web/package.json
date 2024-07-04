@@ -6,10 +6,10 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
+    "build": "dotenvx run -f ../../.env -- vite build",
     "start": "vite preview --port 8080",
-    "test": "npx playwright test",
-    "test:ui": "npm run test -- --ui",
+    "test": "dotenvx run -f ../../.env -- npx playwright test",
+    "test:ui": "dotenvx run -f ../../.env -- npm run test -- --ui",
     "test:codegen": "dotenvx run -f ../../.env -- npx playwright codegen http://localhost:8080 --load-storage=./playwright/.auth/first-user.json",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

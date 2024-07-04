@@ -15,11 +15,16 @@ jobs:
       mariadb:
         image: mariadb:10.7
         env:
+          MARIADB_AUTO_UPGRADE: 1
           MYSQL_ROOT_PASSWORD: retro
           MYSQL_DATABASE: retro
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=30s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
     - uses: actions/checkout@v4

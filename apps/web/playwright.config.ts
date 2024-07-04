@@ -22,7 +22,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "cd ../.. && npm run dev",
+    command: !process.env.CI
+      ? "cd ../.. && npm run build && npm run start"
+      : "cd ../.. && npm run dev",
     port: 8080,
     reuseExistingServer: !process.env.CI,
   },

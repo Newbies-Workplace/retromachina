@@ -8,6 +8,7 @@
     "migrate": "dotenv -e ../../.env -- prisma migrate dev",
     "studio": "dotenv -e ../../.env -- npx prisma studio",
     "build": "npm run generate && nest build",
+    "start": "node npm run start:migrate:prod",
     "start:prod": "node dist/main",
     "start:migrate:prod": "prisma migrate deploy && npm run start:prod"
   },

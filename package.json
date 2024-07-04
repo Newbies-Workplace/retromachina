@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "dotenv -- turbo dev",
     "build": "dotenv -- turbo build",
+    "start": "dotenv -- turbo start",
     "format": "npx @biomejs/biome check --apply ./",
     "prepare": "husky install"
   },

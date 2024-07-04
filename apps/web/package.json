@@ -6,8 +6,8 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "vite --host",
-    "preview": "vite preview",
     "build": "vite build",
+    "start": "vite preview --port 8080",
     "test": "dotenv -e ../../.env -- npx playwright test",
     "test:ui": "npm run test -- --ui",
     "test:codegen": "dotenv -e ../../.env -- npx playwright codegen http://localhost:8080 --load-storage=./playwright/.auth/first-user.json",

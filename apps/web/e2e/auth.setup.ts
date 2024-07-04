@@ -6,9 +6,6 @@ import {
 } from "../playwright/fixtures";
 
 import * as fs from "node:fs";
-import { config } from "@dotenvx/dotenvx";
-
-config();
 
 setup("authenticate as first user", async ({ page }) => {
   if (fs.existsSync(firstAuthFile)) {

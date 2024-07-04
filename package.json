@@ -2,6 +2,7 @@
   "name": "retromachina",
   "private": true,
   "scripts": {
+    "dotenvx": "dotenvx",
     "dev": "dotenvx run -- turbo dev",
     "build": "dotenvx run -- turbo build",
     "start": "dotenvx run -- turbo start",
@@ -16,7 +17,7 @@
     "@biomejs/biome": "1.8.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "turbo": "^1.13.4"
+    "turbo": "^2.0.6"
   },
   "husky": {
     "hooks": {
@@ -34,5 +35,6 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "packageManager": "npm@10.1.0"
 }

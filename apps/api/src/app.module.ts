@@ -1,4 +1,3 @@
-import { config } from "@dotenvx/dotenvx";
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt/dist";
 import { AuthModule } from "./auth/auth.module";
@@ -9,8 +8,6 @@ import { RetroModule } from "./retro/retro.module";
 import { TaskModule } from "./task/task.module";
 import { TeamModule } from "./team/team.module";
 import { UserModule } from "./user/user.module";
-
-config();
 
 @Module({
   imports: [

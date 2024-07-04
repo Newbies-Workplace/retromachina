@@ -11,6 +11,9 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: 'mysql://root:retro@localhost:3306/retro'
+
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4

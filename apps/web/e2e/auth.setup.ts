@@ -6,7 +6,7 @@ import {
 } from "../playwright/fixtures";
 
 import * as fs from "node:fs";
-import { config } from "dotenv";
+import { config } from "@dotenvx/dotenvx";
 
 config();
 

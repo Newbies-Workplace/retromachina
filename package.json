@@ -2,18 +2,17 @@
   "name": "retromachina",
   "private": true,
   "scripts": {
-    "dev": "dotenv -- turbo dev",
-    "build": "dotenv -- turbo build",
-    "start": "dotenv -- turbo start",
+    "dev": "dotenvx run -- turbo dev",
+    "build": "dotenvx run -- turbo build",
+    "start": "dotenvx run -- turbo start",
     "format": "npx @biomejs/biome check --apply ./",
     "prepare": "husky install"
   },
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "@dotenvx/dotenvx": "^1.5.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.0",
-    "dotenv-cli": "latest",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "turbo": "^1.13.4"

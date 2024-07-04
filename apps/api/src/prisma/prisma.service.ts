@@ -1,6 +1,6 @@
+import { config } from "@dotenvx/dotenvx";
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { config } from "dotenv";
 
 config();
 

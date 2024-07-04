@@ -1,6 +1,6 @@
+import { config } from "@dotenvx/dotenvx";
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt/dist";
-import { config } from "dotenv";
 import { AuthModule } from "./auth/auth.module";
 import { BoardModule } from "./board/board.module";
 import { InvitesModule } from "./invites/invites.module";

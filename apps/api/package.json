@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "nest start --watch",
     "generate": "prisma generate && prisma format",
-    "migrate": "dotenv -e ../../.env -- prisma migrate dev",
-    "studio": "dotenv -e ../../.env -- npx prisma studio",
+    "migrate": "dotenvx run -f ../../.env -- prisma migrate dev",
+    "studio": "dotenvx run -f ../../.env -- npx prisma studio",
     "build": "npm run generate && nest build",
-    "start": "dotenv -e ../../.env -- prisma migrate deploy && dotenv -e ../../.env -- node dist/main",
+    "start": "dotenvx run -f ../../.env -- prisma migrate deploy && dotenvx run -f ../../.env -- node dist/main",
     "start:prod": "node dist/main",
     "start:migrate:prod": "prisma migrate deploy && npm run start:prod"
   },
@@ -29,7 +29,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.7",
-    "dotenv": "^16.0.3",
+    "@dotenvx/dotenvx": "^1.5.0",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",

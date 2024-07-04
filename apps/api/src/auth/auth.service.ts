@@ -1,6 +1,6 @@
+import { config } from "@dotenvx/dotenvx";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { config } from "dotenv";
 import { PrismaService } from "src/prisma/prisma.service";
 import { GoogleUser } from "./google/GoogleUser";
 

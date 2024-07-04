@@ -11,21 +11,6 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
-    services:
-      mariadb:
-        image: mariadb:10.7
-        env:
-          MARIADB_AUTO_UPGRADE: 1
-          MYSQL_ROOT_PASSWORD: retro
-          MYSQL_DATABASE: retro
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -39,6 +24,13 @@ jobs:
       run: cd apps/web && npx playwright install --with-deps
     - name: Build the app
       run: npm run build
+    - uses: getong/mariadb-action@v1.11
+      with:
+        host port: 3306
+        container port: 3306
+        mariadb version: '10.7'
+        mysql database: 'retro'
+        mysql root password: 'retro'
     - name: Run Playwright tests
       run: cd apps/web && npx playwright test
     - uses: actions/upload-artifact@v4

@@ -3,10 +3,10 @@
   "private": true,
   "scripts": {
     "dotenvx": "dotenvx",
-    "dev": "dotenvx run -- turbo dev",
-    "build": "dotenvx run -- turbo build",
-    "start": "dotenvx run -- turbo start",
-    "test": "dotenvx run -- turbo test",
+    "dev": "dotenvx run -- turbo dev --env-mode=loose",
+    "build": "dotenvx run -- turbo build --env-mode=loose",
+    "start": "dotenvx run -- turbo start --env-mode=loose",
+    "test": "dotenvx run -- turbo test --env-mode=loose",
     "format": "npx @biomejs/biome check --apply ./",
     "prepare": "husky install"
   },

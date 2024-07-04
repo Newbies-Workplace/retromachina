@@ -31,7 +31,7 @@ jobs:
         mysql root password: 'retro'
     - run: curl -sfS https://dotenvx.sh/install.sh | sh
     - name: Prepare .env file
-      run: touch .env && echo ${{ secrets.DOTENV }} > .env
+      run: echo "${{ secrets.DOTENV }}" > .env
     - name: Run Playwright tests
       run: npm run test
     - uses: actions/upload-artifact@v4

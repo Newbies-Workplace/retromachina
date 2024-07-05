@@ -59,6 +59,8 @@ const authenticateWithCredentials = async (
   });
   await page.click("#passwordNext");
 
+  await page.getByLabel("Enter code").waitFor({ state: "visible" });
+
   const otpCode = generateOTP(otpSecret);
   await page.getByLabel("Enter code").fill(otpCode);
   await page.getByRole("button", { name: "Next" }).click();

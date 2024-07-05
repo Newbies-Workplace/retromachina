@@ -1,3 +1,6 @@
+import * as fs from "node:fs";
+import * as process from "node:process";
+import * as OTPAuth from "otpauth";
 import {
   Page,
   firstAuthFile,
@@ -5,11 +8,8 @@ import {
   test as setup,
 } from "../playwright/fixtures";
 
-import * as fs from "node:fs";
-
 setup("authenticate as first user", async ({ page }) => {
   if (fs.existsSync(firstAuthFile)) {
-    // await page.context().storageState({ path: firstAuthFile });
     return;
   }
 
@@ -17,6 +17,7 @@ setup("authenticate as first user", async ({ page }) => {
     page,
     process.env.E2E_FIRST_LOGIN,
     process.env.E2E_FIRST_PASSWORD,
+    process.env.E2E_FIRST_OTP_SECRET,
   );
 
   await page.context().storageState({ path: firstAuthFile });
@@ -32,6 +33,7 @@ setup("authenticate as second user", async ({ page }) => {
     page,
     process.env.E2E_SECOND_LOGIN,
     process.env.E2E_SECOND_PASSWORD,
+    process.env.E2E_SECOND_OTP_SECRET,
   );
 
   await page.context().storageState({ path: secondAuthFile });
@@ -41,6 +43,7 @@ const authenticateWithCredentials = async (
   page: Page,
   login: string,
   password: string,
+  otpSecret: string,
 ) => {
   await page.goto("/signin");
   await page.getByRole("button", { name: "Sign in with Google" }).click();
@@ -55,7 +58,22 @@ const authenticateWithCredentials = async (
     state: "visible",
   });
   await page.click("#passwordNext");
+
+  const otpCode = generateOTP(otpSecret);
+  await page.getByLabel("Enter code").fill(otpCode);
+  await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Allow" }).click();
 
   await page.waitForURL("/");
 };
+
+function generateOTP(secret: string) {
+  const totp = new OTPAuth.TOTP({
+    secret: secret,
+    digits: 6,
+    algorithm: "sha1",
+    period: 30,
+  });
+
+  return totp.generate();
+}

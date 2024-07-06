@@ -62,6 +62,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
         }
       >
         <input
+          data-testid={"new-user-email"}
           className={"grow bg-transparent px-0 py-2 border-[none] outline-none"}
           value={email}
           placeholder="Podaj adres email..."
@@ -76,6 +77,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
 
         {email.length > 0 && (
           <Cross1Icon
+            data-testid={"remove-user"}
             className={"min-w-4 min-h-4 cursor-pointer"}
             onClick={() => {
               setEmail("");
@@ -107,6 +109,7 @@ const User: React.FC<UserProps> = ({ email, role, onRoleChange, onDelete }) => {
       <div className={"h-5 min-w-0.5 bg-black"} />
 
       <select
+        data-testid={"role-select"}
         value={role}
         onChange={(e) => onRoleChange(e.target.value as UserRole)}
         className={"cursor-pointer border-transparent outline-none"}
@@ -118,6 +121,7 @@ const User: React.FC<UserProps> = ({ email, role, onRoleChange, onDelete }) => {
       <div className={"h-5 min-w-0.5 bg-black"} />
 
       <Cross1Icon
+        data-testid={"remove-user"}
         className={"min-w-4 min-h-4 cursor-pointer"}
         onClick={onDelete}
       />

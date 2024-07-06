@@ -16,6 +16,7 @@ interface InputProps {
     | KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>
     | undefined;
   maxLength?: number;
+  "data-testid"?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -30,6 +31,7 @@ export const Input: React.FC<InputProps> = ({
   disabled,
   required,
   maxLength,
+  "data-testid": dataTestId,
 }) => {
   const Element = multiline ? "textarea" : "input";
 
@@ -42,6 +44,7 @@ export const Input: React.FC<InputProps> = ({
       )}
     >
       <Element
+        data-testid={dataTestId}
         maxLength={maxLength}
         className={cn(
           "p-1 w-full h-full rounded-md border-none outline-none resize-none",

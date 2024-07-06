@@ -67,6 +67,7 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
         <div className={"flex flex-col"}>
           <h1>Team</h1>
           <Input
+            data-testid={"team-name"}
             value={name}
             setValue={setName}
             placeholder={"Nazwa zespołu"}
@@ -93,14 +94,20 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
 
         <div className={"flex justify-between gap-2 mt-auto w-full"}>
           {deletable ? (
-            <Button variant={"destructive"} onClick={onDelete}>
+            <Button
+              data-testid={"remove-team"}
+              variant={"destructive"}
+              onClick={onDelete}
+            >
               Usuń
             </Button>
           ) : (
             <div />
           )}
 
-          <Button onClick={onSubmitClick}>Zapisz</Button>
+          <Button data-testid={"save-team"} onClick={onSubmitClick}>
+            Zapisz
+          </Button>
         </div>
       </div>
     </div>

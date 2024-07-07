@@ -29,7 +29,7 @@ jobs:
         mysql root password: 'retro'
     - run: curl -sfS https://dotenvx.sh/install.sh | sh
     - name: Prepare test variables
-      run: >
+      run: |
         echo "${{ secrets.DOTENV }}" > .env
         touch apps/web/playwright/.auth/first-user.json
         touch apps/web/playwright/.auth/second-user.json

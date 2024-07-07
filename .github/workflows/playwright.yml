@@ -28,8 +28,15 @@ jobs:
         mysql database: 'retro'
         mysql root password: 'retro'
     - run: curl -sfS https://dotenvx.sh/install.sh | sh
-    - name: Prepare .env file
-      run: echo "${{ secrets.DOTENV }}" > .env
+    - name: Prepare test variables
+      run: >
+        echo "${{ secrets.DOTENV }}" > .env
+        if [ -n "${{ secrets.E2E_FIRST_AUTH }}" ]; then
+          echo "${{ secrets.E2E_FIRST_AUTH }}" > apps/web/playwright/.auth/first-user.json
+        fi
+        if [ -n "${{ secrets.E2E_SECOND_AUTH }}" ]; then
+          echo "${{ secrets.E2E_SECOND_AUTH }}" > apps/web/playwright/.auth/second-user.json
+        fi
     - name: Build the app
       run: npm run build
     - name: Run Playwright tests

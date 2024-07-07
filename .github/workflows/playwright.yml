@@ -26,12 +26,16 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+
     - name: Install dependencies
       run: npm ci
+
     - name: Install Playwright Browsers
       run: cd apps/web && npx playwright install --with-deps chromium
+
     - name: Install dotenvx
       run: curl -sfS https://dotenvx.sh/install.sh | sh
+
     - name: Prepare test variables
       run: |
         echo "$DOTENV" > .env
@@ -45,10 +49,13 @@ jobs:
         DOTENV: ${{ secrets.DOTENV }}
         E2E_FIRST_AUTH: ${{ secrets.E2E_FIRST_AUTH }}
         E2E_SECOND_AUTH: ${{ secrets.E2E_SECOND_AUTH }}
+
     - name: Build the app
       run: npm run build
+
     - name: Run Playwright tests
       run: npm run test
+
     - uses: actions/upload-artifact@v4
       if: always()
       with:

@@ -54,7 +54,7 @@ jobs:
       run: |
         touch insert.sql
         echo "$E2E_INSERT_SQL" > insert.sql
-        mysql -h localhost -u root -p retro retro < insert.sql
+        mysql -u root -p retro retro < insert.sql
       env:
         E2E_INSERT_SQL: ${{ secrets.E2E_INSERT_SQL }}
 

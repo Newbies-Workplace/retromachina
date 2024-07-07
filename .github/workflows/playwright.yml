@@ -30,9 +30,10 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: cd apps/web && npx playwright install --with-deps chromium
+    - name: Install dotenvx
+      run: curl -sfS https://dotenvx.sh/install.sh | sh
     - name: Prepare test variables
       run: |
-        curl -sfS https://dotenvx.sh/install.sh | sh
         echo ${{ secrets.DOTENV }} > .env
         mkdir apps/web/playwright/.auth
         touch apps/web/playwright/.auth/first-user.json

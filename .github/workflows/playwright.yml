@@ -54,7 +54,7 @@ jobs:
       run: npm run build
 
     - name: Run migrations
-      run: npx prisma migrate deploy
+      run: cd apps/api && npm run migrate
 
     - name: Insert test users manually
       run: |

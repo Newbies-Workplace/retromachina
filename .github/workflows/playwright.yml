@@ -34,12 +34,12 @@ jobs:
       run: curl -sfS https://dotenvx.sh/install.sh | sh
     - name: Prepare test variables
       run: |
-        echo $DOTENV > .env
+        echo "$DOTENV" > .env
         mkdir apps/web/playwright/.auth
         touch apps/web/playwright/.auth/first-user.json
         touch apps/web/playwright/.auth/second-user.json
-        echo $E2E_FIRST_AUTH > apps/web/playwright/.auth/first-user.json
-        echo $E2E_SECOND_AUTH > apps/web/playwright/.auth/second-user.json
+        echo "$E2E_FIRST_AUTH" > apps/web/playwright/.auth/first-user.json
+        echo "$E2E_SECOND_AUTH" > apps/web/playwright/.auth/second-user.json
       shell: bash
       env:
         DOTENV: ${{ secrets.DOTENV }}

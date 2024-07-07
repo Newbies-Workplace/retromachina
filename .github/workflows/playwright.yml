@@ -31,6 +31,8 @@ jobs:
     - name: Prepare test variables
       run: |
         echo "${{ secrets.DOTENV }}" > .env
+        touch apps/web/playwright/.auth/first-user.json
+        touch apps/web/playwright/.auth/second-user.json
         echo "${{ secrets.E2E_FIRST_AUTH }}" > apps/web/playwright/.auth/first-user.json
         echo "${{ secrets.E2E_SECOND_AUTH }}" > apps/web/playwright/.auth/second-user.json
     - name: Build the app

@@ -50,6 +50,12 @@ jobs:
         E2E_FIRST_AUTH: ${{ secrets.E2E_FIRST_AUTH }}
         E2E_SECOND_AUTH: ${{ secrets.E2E_SECOND_AUTH }}
 
+    - name: Build the app
+      run: npm run build
+
+    - name: Run migrations
+      run: npx prisma migrate deploy
+
     - name: Insert test users manually
       run: |
         touch insert.sql
@@ -57,9 +63,6 @@ jobs:
         mysql --host="127.0.0.1" --port=3306 --user="root" --database="retro" --password="retro" < insert.sql
       env:
         E2E_INSERT_SQL: ${{ secrets.E2E_INSERT_SQL }}
-
-    - name: Build the app
-      run: npm run build
 
     - name: Run Playwright tests
       run: npm run test

@@ -54,7 +54,7 @@ jobs:
       run: |
         touch insert.sql
         echo "$E2E_INSERT_SQL" > insert.sql
-        mysql --user="root" --database="retro" --password="retro" < insert.sql
+        mysql --host="localhost" --port=3306 --user="root" --database="retro" --password="retro" < insert.sql
       env:
         E2E_INSERT_SQL: ${{ secrets.E2E_INSERT_SQL }}
 

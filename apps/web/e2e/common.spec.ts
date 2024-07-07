@@ -5,3 +5,9 @@ test("has title", async ({ firstUser }) => {
 
   await expect(firstUser.page).toHaveTitle(/Retromachina/);
 });
+
+test("contains privacy policy", async ({ page }) => {
+  await page.goto("/privacy");
+
+  await page.getByRole("heading", { name: "Polityka Prywatności" }).isVisible();
+});

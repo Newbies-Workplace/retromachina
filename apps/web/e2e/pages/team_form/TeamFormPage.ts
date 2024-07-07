@@ -1,7 +1,7 @@
 import { Locator } from "@playwright/test";
 import { Page } from "playwright-core";
 
-export class TeamForm {
+export class TeamFormPage {
   readonly page: Page;
 
   readonly teamNameLocator: Locator;
@@ -59,10 +59,22 @@ export class TeamForm {
     await this.page.getByRole("button", { name: "Wygeneruj" }).click();
   }
 
+  async regenerateInvitationLink() {
+    await this.regenerateInvitationLinkLocator.click();
+
+    await this.page.getByRole("button", { name: "Tak" }).click();
+  }
+
   async copyInvitationLink(): Promise<string> {
     await this.page.getByRole("button", { name: "Skopiuj" }).click();
 
     return this.page.evaluate("navigator.clipboard.readText()");
+  }
+
+  async removeInvitationLink() {
+    await this.removeInvitationLinkLocator.click();
+
+    await this.page.getByRole("button", { name: "Tak" }).click();
   }
 
   async saveTeam() {

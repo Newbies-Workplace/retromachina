@@ -23,7 +23,7 @@ test("can create a team", async ({ firstUser }) => {
   await expect(firstUser.page.getByText(teamName)).toBeVisible();
 });
 
-test("can edit a team", async ({ firstUser }) => {
+test("can edit a team name", async ({ firstUser }) => {
   const updatedTeamName = uuid();
 
   const homePage = new HomePage(firstUser.page);

@@ -25,7 +25,6 @@ setup("authenticate as first user", async ({ page }) => {
 
 setup("authenticate as second user", async ({ page }) => {
   if (fs.existsSync(secondAuthFile)) {
-    // await page.context().storageState({ path: secondAuthFile });
     return;
   }
 

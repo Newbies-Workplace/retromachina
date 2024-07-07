@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
-import { TeamForm } from "./TeamForm";
+import { TeamFormPage } from "./TeamFormPage";
 
-export class TeamEditPage extends TeamForm {
+export class TeamEditPage extends TeamFormPage {
   readonly removeTeamLocator: Locator;
 
   constructor(page: Page) {

@@ -34,12 +34,17 @@ jobs:
       run: curl -sfS https://dotenvx.sh/install.sh | sh
     - name: Prepare test variables
       run: |
-        echo ${{ secrets.DOTENV }} > .env
+        echo $DOTENV > .env
         mkdir apps/web/playwright/.auth
         touch apps/web/playwright/.auth/first-user.json
         touch apps/web/playwright/.auth/second-user.json
-        echo ${{ secrets.E2E_FIRST_AUTH }} > apps/web/playwright/.auth/first-user.json
-        echo ${{ secrets.E2E_SECOND_AUTH }} > apps/web/playwright/.auth/second-user.json
+        echo $E2E_FIRST_AUTH > apps/web/playwright/.auth/first-user.json
+        echo $E2E_SECOND_AUTH > apps/web/playwright/.auth/second-user.json
+      shell: bash
+      env:
+        DOTENV: ${{ secrets.DOTENV }}
+        E2E_FIRST_AUTH: ${{ secrets.E2E_FIRST_AUTH }}
+        E2E_SECOND_AUTH: ${{ secrets.E2E_SECOND_AUTH }}
     - name: Build the app
       run: npm run build
     - name: Run Playwright tests

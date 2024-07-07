@@ -11,6 +11,16 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:10.7
+        env:
+          MYSQL_ROOT_PASSWORD: retro
+          MYSQL_DATABASE: retro
+        ports:
+          - 3306:3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -20,22 +30,15 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: cd apps/web && npx playwright install --with-deps chromium
-    - uses: getong/mariadb-action@v1.11
-      with:
-        host port: 3306
-        container port: 3306
-        mariadb version: '10.7'
-        mysql database: 'retro'
-        mysql root password: 'retro'
-    - run: curl -sfS https://dotenvx.sh/install.sh | sh
     - name: Prepare test variables
       run: |
-        echo "${{ secrets.DOTENV }}" > .env
+        curl -sfS https://dotenvx.sh/install.sh | sh
+        echo ${{ secrets.DOTENV }} > .env
         mkdir apps/web/playwright/.auth
         touch apps/web/playwright/.auth/first-user.json
         touch apps/web/playwright/.auth/second-user.json
-        echo "${{ secrets.E2E_FIRST_AUTH }}" > apps/web/playwright/.auth/first-user.json
-        echo "${{ secrets.E2E_SECOND_AUTH }}" > apps/web/playwright/.auth/second-user.json
+        echo ${{ secrets.E2E_FIRST_AUTH }} > apps/web/playwright/.auth/first-user.json
+        echo ${{ secrets.E2E_SECOND_AUTH }} > apps/web/playwright/.auth/second-user.json
     - name: Build the app
       run: npm run build
     - name: Run Playwright tests

@@ -135,7 +135,11 @@ export const RetroCreateView: React.FC = () => {
     <>
       <Navbar
         topContent={
-          <Button size={"sm"} onClick={() => randomizeTemplate()}>
+          <Button
+            data-testid={"randomize-template"}
+            size={"sm"}
+            onClick={() => randomizeTemplate()}
+          >
             Losuj szablon
           </Button>
         }
@@ -171,6 +175,7 @@ export const RetroCreateView: React.FC = () => {
 
         <div className={styles.actionWrapper}>
           <Button
+            data-testid={"create-retro"}
             size={"xl"}
             className={"min-w-[600px]"}
             onClick={onCreateRetroClick}

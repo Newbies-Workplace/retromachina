@@ -27,6 +27,7 @@ export const ColumnCreate: React.FC<ColumnCreateProps> = ({
 }) => {
   return (
     <div
+      data-testid={"column-create"}
       className={
         "flex flex-col gap-2 min-w-[300px] max-w-[300px] border bg-background-500 p-2 rounded-2xl"
       }
@@ -44,6 +45,7 @@ export const ColumnCreate: React.FC<ColumnCreateProps> = ({
         />
 
         <Input
+          data-testid={"column-name"}
           maxLength={35}
           value={name}
           setValue={(name) => {
@@ -56,13 +58,19 @@ export const ColumnCreate: React.FC<ColumnCreateProps> = ({
           placeholder="Nazwa Kolumny"
         />
 
-        <Button size={"icon"} variant={"destructive"} onClick={onDelete}>
+        <Button
+          data-testid={"remove-column"}
+          size={"icon"}
+          variant={"destructive"}
+          onClick={onDelete}
+        >
           <TrashIcon className={"size-6"} />
         </Button>
       </div>
 
       {withDescription && (
         <Input
+          data-testid={"column-description"}
           multiline
           value={desc}
           setValue={(desc) =>

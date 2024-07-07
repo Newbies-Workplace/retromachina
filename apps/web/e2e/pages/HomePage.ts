@@ -13,32 +13,28 @@ export class HomePage {
 
   async gotoEditTeam(teamName: string) {
     await this.page
-      .locator("div")
-      .filter({ hasText: new RegExp(`^${teamName}$`) })
+      .getByTestId(`team-${teamName}`)
       .getByTestId("edit-team")
       .click();
   }
 
   async gotoTaskList(teamName: string) {
     await this.page
-      .locator("div")
-      .filter({ hasText: new RegExp(`^${teamName}$`) })
+      .getByTestId(`team-${teamName}`)
       .getByTestId("task-list")
       .click();
   }
 
-  async createRetro(teamName: string) {
+  async gotoCreateRetro(teamName: string) {
     await this.page
-      .locator("div")
-      .filter({ hasText: new RegExp(`^${teamName}$`) })
+      .getByTestId(`team-${teamName}`)
       .getByTestId("create-retro")
       .click();
   }
 
-  async joinRetro(teamName: string) {
+  async gotoCurrentRetro(teamName: string) {
     await this.page
-      .locator("div")
-      .filter({ hasText: new RegExp(`^${teamName}$`) })
+      .getByTestId(`team-${teamName}`)
       .getByTestId("current-retro")
       .click();
   }

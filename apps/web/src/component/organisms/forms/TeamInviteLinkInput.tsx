@@ -59,6 +59,7 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
 
       <div className={"flex flex-row gap-2 items-center"}>
         <Input
+          data-testid="invitation-link"
           disabled
           value={
             inviteKey ? `${window.location.origin}/invitation/${inviteKey}` : ""
@@ -67,8 +68,14 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
         />
         {inviteKey ? (
           <>
-            <Button onClick={onCopyInviteLinkPress}>Skopiuj</Button>
             <Button
+              data-testid="copy-invitation-link"
+              onClick={onCopyInviteLinkPress}
+            >
+              Skopiuj
+            </Button>
+            <Button
+              data-testid="regenerate-invitation-link"
               size={"icon"}
               variant={"destructive"}
               onClick={onRegenerateInviteLinkPress}
@@ -76,6 +83,7 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
               <ReloadIcon className={"size-6"} />
             </Button>
             <Button
+              data-testid="remove-invitation-link"
               size={"icon"}
               variant={"destructive"}
               onClick={onDeleteInviteLinkPress}
@@ -84,7 +92,12 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
             </Button>
           </>
         ) : (
-          <Button onClick={onGenerateInviteLinkPress}>Wygeneruj</Button>
+          <Button
+            data-testid="generate-invitation-link"
+            onClick={onGenerateInviteLinkPress}
+          >
+            Wygeneruj
+          </Button>
         )}
       </div>
     </div>

@@ -7,7 +7,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import { AnimatePresence } from "framer-motion";
 import React from "react";
 import { useCallback, useRef, useState } from "react";
-import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag-svgrepo-com.svg";
+import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag.svg";
 import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
 import VoteIconSvg from "../../../../assets/icons/vote.svg";
 import { cn } from "../../../../common/Util";

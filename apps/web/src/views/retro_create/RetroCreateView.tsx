@@ -13,7 +13,6 @@ import { Button } from "../../component/atoms/button/Button";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
 import { ColumnCreate } from "../../component/molecules/column_create/ColumnCreate";
 import Navbar from "../../component/organisms/navbar/Navbar";
-import styles from "./RetroCreateView.module.scss";
 
 export interface Column {
   id: string;
@@ -145,8 +144,8 @@ export const RetroCreateView: React.FC = () => {
         }
       />
 
-      <div className={styles.container}>
-        <div className={styles.columns}>
+      <div className={"flex grow scrollbar"}>
+        <div className={"flex items-start gap-4 mt-4 ml-3"}>
           {columns.map((column) => (
             <ColumnCreate
               key={column.id}
@@ -161,7 +160,7 @@ export const RetroCreateView: React.FC = () => {
             />
           ))}
 
-          <div className={styles.columnButton}>
+          <div className={"pr-4"}>
             <Button
               disabled={columns.length >= MAX_COLUMNS}
               size="xl"
@@ -173,15 +172,15 @@ export const RetroCreateView: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.actionWrapper}>
+        <div className={"fixed bottom-5 flex justify-center w-full"}>
           <Button
             data-testid={"create-retro"}
             size={"xl"}
             className={"min-w-[600px]"}
             onClick={onCreateRetroClick}
           >
-            <div className={styles.buttonSection}>
-              <span>Akcja!</span>
+            <div className={"flex flex-col items-start gap-1 w-full"}>
+              <span className={"font-bold"}>Akcja!</span>
               (Zacznij & skopiuj link)
             </div>
             {clicked ? (

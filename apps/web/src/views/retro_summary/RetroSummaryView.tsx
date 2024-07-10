@@ -12,7 +12,6 @@ import { Button } from "../../component/atoms/button/Button";
 import { Card } from "../../component/molecules/card/Card";
 import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
 import Navbar from "../../component/organisms/navbar/Navbar";
-import styles from "./RetroSummaryView.module.scss";
 
 export const RetroSummaryView = () => {
   const { retroId } = useParams<{ retroId: string }>();
@@ -61,28 +60,77 @@ export const RetroSummaryView = () => {
       <Navbar />
 
       <AnimatedBackground>
-        <div className={styles.wrapper}>
-          <div className={"flex justify-center font-bold text-2xl w-full"}>
+        <div
+          className={
+            "flex flex-col gap-2 min-w-[500px] max-w-[1200px] min-h-[700px] h-fit bg-background-500 m-8 rounded-lg"
+          }
+        >
+          <div
+            className={"bg-primary-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}
+          >
             Retro {dayjs(retro?.date).format("YYYY-MM-DD")}
           </div>
 
-          {userWithTasks.map((user) => {
-            const userTasks = tasks.filter((task) => task.ownerId === user.id);
+          <div
+            className={
+              "flex grow flex-col justify-between gap-2 w-full h-full p-4"
+            }
+          >
+            {userWithTasks.map((user) => {
+              const userTasks = tasks.filter(
+                (task) => task.ownerId === user.id,
+              );
 
-            return (
-              <div key={user.id} className={styles.authorAndCardSection}>
-                <div className={styles.authorSection}>
-                  <Avatar url={user.avatar_link} />
-                  {user.nick}
+              return (
+                <div key={user.id} className={"flex flex-col gap-4 w-full"}>
+                  <div
+                    className={
+                      "flex flex-row justify-center items-center gap-4"
+                    }
+                  >
+                    <Avatar url={user.avatar_link} />
+                    {user.nick}
+                  </div>
+
+                  <div
+                    className={
+                      "flex items-center justify-center gap-4 flex-wrap w-full"
+                    }
+                  >
+                    {userTasks.map((task) => {
+                      return (
+                        <Card
+                          id={task.id}
+                          key={task.id}
+                          className={"w-[350px]"}
+                          teamUsers={[]}
+                          author={null}
+                          text={task.text}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+
+            {unassignedTasks.length !== 0 && (
+              <div className={"flex flex-col gap-4 w-full pt-4"}>
+                <div className={"flex flex-row justify-center flex-wrap gap-4"}>
+                  Nieprzypisane zadania
                 </div>
 
-                <div className={styles.cardSection}>
-                  {userTasks.map((task) => {
+                <div
+                  className={
+                    "flex items-center justify-center gap-4 flex-wrap w-full"
+                  }
+                >
+                  {unassignedTasks.map((task) => {
                     return (
                       <Card
                         id={task.id}
                         key={task.id}
-                        className={styles.card}
+                        className={"w-[350px]"}
                         teamUsers={[]}
                         author={null}
                         text={task.text}
@@ -91,52 +139,40 @@ export const RetroSummaryView = () => {
                   })}
                 </div>
               </div>
-            );
-          })}
+            )}
 
-          {unassignedTasks.length !== 0 && (
-            <div className={styles.noTasksSection}>
-              <div className={styles.authors}>Nieprzypisane zadania</div>
-              {unassignedTasks.map((task) => {
-                return (
-                  <Card
-                    id={task.id}
-                    key={task.id}
-                    className={styles.card}
-                    teamUsers={[]}
-                    author={null}
-                    text={task.text}
-                  />
-                );
-              })}
-            </div>
-          )}
+            {userWithoutTasks.length !== 0 && (
+              <div className={"flex flex-col gap-4 w-full pt-4"}>
+                <div className={"flex flex-row justify-center flex-wrap gap-4"}>
+                  {userWithoutTasks.map((user) => {
+                    return (
+                      <div
+                        className={
+                          "flex flex-row justify-center items-center gap-4"
+                        }
+                        key={user.id}
+                      >
+                        <Avatar url={user.avatar_link} />
+                        {user.nick}
+                      </div>
+                    );
+                  })}
+                </div>
 
-          {userWithoutTasks.length !== 0 && (
-            <div className={styles.noTasksSection}>
-              <div className={styles.authors}>
-                {userWithoutTasks.map((user) => {
-                  return (
-                    <div className={styles.authorSection} key={user.id}>
-                      <Avatar url={user.avatar_link} />
-                      {user.nick}
-                    </div>
-                  );
-                })}
+                <div className={"self-center"}>Brak zadań</div>
               </div>
-              Brak zadań
-            </div>
-          )}
+            )}
 
-          <Button
-            className={"mt-4 mx-auto"}
-            size={"lg"}
-            onClick={() => {
-              navigate(`/team/${retro?.team_id}/board`);
-            }}
-          >
-            Powrót do listy zadań
-          </Button>
+            <Button
+              className={"mt-4 self-end"}
+              size={"lg"}
+              onClick={() => {
+                navigate(`/team/${retro?.team_id}/board`);
+              }}
+            >
+              Powrót do listy zadań
+            </Button>
+          </div>
         </div>
       </AnimatedBackground>
     </>

@@ -40,3 +40,14 @@ test("can create a retro", async ({ firstUser }) => {
     await firstUser.page.getByText(column.name).isVisible();
   }
 });
+
+test("current retro button is visible", async ({ firstUser }) => {
+  const createRetroPage = new RetroCreatePage(firstUser.page);
+  await createRetroPage.createRetro();
+
+  const homePage = new HomePage(firstUser.page);
+  await homePage.goto();
+
+  await homePage.gotoCurrentRetro(teamName);
+  await expect(firstUser.page).toHaveURL(/\/retro\/.+\/reflection/);
+});

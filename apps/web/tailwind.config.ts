@@ -21,6 +21,7 @@ const config: Config = {
       },
       background: {
         50: "#F4F2E6",
+        100: "#f8e2c3",
         500: "#EBD3A8",
       },
       secondary: {

@@ -58,11 +58,14 @@ export const InviteView: React.FC = () => {
   };
 
   return (
-    <div className={"flex flex-col grow"}>
+    <>
       <Navbar />
-      <AnimatedBackground className={"flex flex-col items-center"}>
+
+      <AnimatedBackground>
         <div
-          className={"flex flex-col bg-background-500 rounded-xl min-w-[500px]"}
+          className={
+            "flex flex-col bg-background-500 rounded-lg min-w-[500px] m-8"
+          }
           onClick={(e) => e.stopPropagation()}
         >
           <div
@@ -83,6 +86,6 @@ export const InviteView: React.FC = () => {
           </div>
         </div>
       </AnimatedBackground>
-    </div>
+    </>
   );
 };

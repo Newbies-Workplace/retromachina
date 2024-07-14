@@ -45,31 +45,33 @@ export const RetroTimer: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-row items-center gap-2 h-12 bg-background-500 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
+        "flex flex-col items-center h-12 bg-background-500 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
       }
     >
-      {isAdmin && (
-        <Button onClick={onQuickAddTime} size={"icon"}>
-          +30
-        </Button>
-      )}
+      <div className={"flex flex-row gap-2"}>
+        {isAdmin && (
+          <Button onClick={onQuickAddTime} size={"icon"}>
+            +30
+          </Button>
+        )}
 
-      <Timer
-        timerEnds={timerEnds}
-        onClick={isAdmin ? () => setDialogTimerOpen(true) : undefined}
-      />
+        <Timer
+          timerEnds={timerEnds}
+          onClick={isAdmin ? () => setDialogTimerOpen(true) : undefined}
+        />
 
-      {isAdmin && (
-        <Button
-          onClick={() => {
-            onSetTimer(null);
-          }}
-          size={"icon"}
-          variant={"destructive"}
-        >
-          <TrashIcon className={"size-6"} />
-        </Button>
-      )}
+        {isAdmin && (
+          <Button
+            onClick={() => {
+              onSetTimer(null);
+            }}
+            size={"icon"}
+            variant={"destructive"}
+          >
+            <TrashIcon className={"size-6"} />
+          </Button>
+        )}
+      </div>
 
       {isTimerDialogOpen && (
         <TimerSetModal onDismiss={closeTimer} onTimeSet={onSetTimer} />
@@ -149,49 +151,69 @@ const TimerSetModal: React.FC<{
           "flex items-center w-28 h-12 rounded-lg bg-white border-2 text-3xl"
         }
       >
-        <input
-          ref={minInputRef}
-          maxLength={2}
-          className={"flex w-11 h-full rounded-lg focus:outline-none text-end"}
-          value={minutes.toString()}
-          placeholder={"0"}
-          onChange={(e) => onChange(e, "min")}
-          onKeyDown={(e) => {
-            if (
-              e.key === "Enter" ||
-              (e.key === "ArrowRight" &&
-                minInputRef.current?.selectionStart ===
-                  minInputRef.current?.value.length)
-            ) {
-              e.preventDefault();
-              focusInput("sec");
+        <div className={"flex w-11 text-3xl items-center"}>
+          <span
+            className={
+              "w-11 absolute text-3xl text-end text-gray-600 select-none pointer-events-none"
             }
-          }}
-        />
+          >
+            {"0".repeat(2 - minutes.length)}
+            {"\u00A0".repeat(minutes.length)}
+          </span>
+          <input
+            ref={minInputRef}
+            maxLength={2}
+            className={
+              "flex w-11 h-full rounded-lg focus:outline-none text-end"
+            }
+            value={minutes.toString()}
+            placeholder={"0"}
+            onChange={(e) => onChange(e, "min")}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" ||
+                (e.key === "ArrowRight" &&
+                  minInputRef.current?.selectionStart ===
+                    minInputRef.current?.value.length)
+              ) {
+                e.preventDefault();
+                focusInput("sec");
+              }
+            }}
+          />
+        </div>
         :
-        <input
-          ref={secInputRef}
-          maxLength={2}
-          className={
-            "flex w-11 h-full rounded-lg focus:outline-none text-start"
-          }
-          value={seconds.toString()}
-          placeholder={"00"}
-          onChange={(e) => onChange(e, "sec")}
-          onKeyDown={(e) => {
-            if (
-              e.key === "ArrowLeft" &&
-              secInputRef.current?.selectionEnd === 0
-            ) {
-              e.preventDefault();
-              focusInput("min");
+        <div className={"flex w-11 text-3xl items-center"}>
+          <span
+            className={
+              "w-9 absolute text-3xl text-end text-gray-600 select-none pointer-events-none "
             }
+          >
+            {"0".repeat(2 - seconds.length)}
+            {"\u00A0".repeat(seconds.length)}
+          </span>
+          <input
+            ref={secInputRef}
+            maxLength={2}
+            className={"flex w-9 h-full rounded-lg focus:outline-none text-end"}
+            value={seconds.toString()}
+            placeholder={"00"}
+            onChange={(e) => onChange(e, "sec")}
+            onKeyDown={(e) => {
+              if (
+                e.key === "ArrowLeft" &&
+                secInputRef.current?.selectionEnd === 0
+              ) {
+                e.preventDefault();
+                focusInput("min");
+              }
 
-            if (e.key === "Enter") {
-              onSaveTimerClick();
-            }
-          }}
-        />
+              if (e.key === "Enter") {
+                onSaveTimerClick();
+              }
+            }}
+          />
+        </div>
       </div>
 
       <Button size="sm" onClick={onSaveTimerClick} className={"w-full"}>

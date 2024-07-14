@@ -4,6 +4,8 @@ import { Button } from "../../../component/atoms/button/Button";
 import { Card } from "../../../component/molecules/card/Card";
 import { Column } from "../../../component/molecules/column/Column";
 import { ColumnInput } from "../../../component/molecules/column/ColumnInput";
+import { ColumnCards } from "../../../component/molecules/dragndrop/ColumnCards";
+import { DraggableCard } from "../../../component/molecules/dragndrop/DraggableCard";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
 import { useUser } from "../../../context/user/UserContext.hook";
 
@@ -13,6 +15,7 @@ export const ReflectionView: React.FC = () => {
     teamUsers,
     columns,
     cards,
+    moveCard,
     setWriting,
     createCard,
     updateCard,
@@ -47,41 +50,50 @@ export const ReflectionView: React.FC = () => {
               }}
             />
 
-            {columnCards
-              ?.filter((card) => card.authorId === user?.id)
-              .map((card) => {
-                const user = teamUsers.find(
-                  (user) => user.id === card.authorId,
-                );
+            <ColumnCards columnId={column.id} onCardDropped={moveCard}>
+              {columnCards
+                ?.filter((card) => card.authorId === user?.id)
+                .map((card) => {
+                  const user = teamUsers.find(
+                    (user) => user.id === card.authorId,
+                  );
 
-                return (
-                  <Card
-                    id={card.id}
-                    key={card.id}
-                    text={card.text}
-                    editableText
-                    author={{
-                      avatar: user?.avatar_link || "",
-                      name: user?.nick || "",
-                      id: card.authorId,
-                    }}
-                    teamUsers={teamUsers.map((user) => ({
-                      id: user.id,
-                      name: user.nick,
-                      avatar: user.avatar_link,
-                    }))}
-                    onUpdate={(_, text) => updateCard(card.id, text)}
-                  >
-                    <Button
-                      size={"icon"}
-                      variant={"destructive"}
-                      onClick={() => deleteCard(card.id)}
+                  return (
+                    <DraggableCard
+                      key={card.id}
+                      parentCardId={card.parentCardId}
+                      cardId={card.id}
+                      columnId={column.id}
                     >
-                      <TrashIcon className={"size-6"} />
-                    </Button>
-                  </Card>
-                );
-              })}
+                      <Card
+                        id={card.id}
+                        key={card.id}
+                        text={card.text}
+                        editableText
+                        author={{
+                          avatar: user?.avatar_link || "",
+                          name: user?.nick || "",
+                          id: card.authorId,
+                        }}
+                        teamUsers={teamUsers.map((user) => ({
+                          id: user.id,
+                          name: user.nick,
+                          avatar: user.avatar_link,
+                        }))}
+                        onUpdate={(_, text) => updateCard(card.id, text)}
+                      >
+                        <Button
+                          size={"icon"}
+                          variant={"destructive"}
+                          onClick={() => deleteCard(card.id)}
+                        >
+                          <TrashIcon className={"size-6"} />
+                        </Button>
+                      </Card>
+                    </DraggableCard>
+                  );
+                })}
+            </ColumnCards>
           </Column>
         );
       })}

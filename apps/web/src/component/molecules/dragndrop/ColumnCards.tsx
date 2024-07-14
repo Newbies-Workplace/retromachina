@@ -92,7 +92,7 @@ export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
     <div
       ref={ref}
       className={cn(
-        "flex flex-col gap-2 pb-[70px] rounded-2xl min-h-[500px] h-full",
+        "flex flex-col gap-2 pb-[70px] rounded-2xl min-h-[300px] h-full",
         isDraggedOver && "ring-2 ring-primary-500",
       )}
     >

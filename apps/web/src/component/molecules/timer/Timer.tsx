@@ -1,16 +1,16 @@
-import cs from "classnames";
 import dayjs from "dayjs";
 import type React from "react";
 import { useEffect, useState } from "react";
-import styles from "./Timer.module.scss";
+import { cn } from "../../../common/Util";
 
-interface PropsTimer {
+interface TimerProps {
+  onClick?: () => void;
   timerEnds: number | null;
 }
 
 type TimerVariant = "default" | "expires" | "end";
 
-export const Timer: React.FC<PropsTimer> = ({ timerEnds }) => {
+export const Timer: React.FC<TimerProps> = ({ onClick, timerEnds }) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   let variant: TimerVariant = "default";
   let timeText = timerEnds
@@ -44,5 +44,19 @@ export const Timer: React.FC<PropsTimer> = ({ timerEnds }) => {
     };
   }, [timerEnds]);
 
-  return <div className={cs(styles.timer, styles[variant])}>{timeText}</div>;
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-center h-9 w-[100px] rounded-lg border-2 border-black bg-white text-xl font-bold select-none",
+        variant === "expires" &&
+          "text-red-500 border-red-500 animate-timer-blink",
+        variant === "end" &&
+          "bg-red-500 text-background-50 border-background-50",
+        onClick && "cursor-pointer hover:opacity-70",
+      )}
+      onClick={onClick}
+    >
+      {timeText}
+    </div>
+  );
 };

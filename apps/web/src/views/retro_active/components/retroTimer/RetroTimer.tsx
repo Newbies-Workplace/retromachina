@@ -1,26 +1,22 @@
-import { CheckIcon, LapTimerIcon, TrashIcon } from "@radix-ui/react-icons";
+import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
-import type React from "react";
-import { useCallback, useRef, useState } from "react";
+import React, { createRef, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "../../../../component/atoms/button/Button";
 import { Timer } from "../../../../component/molecules/timer/Timer";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import useClickOutside from "../../../../context/useClickOutside";
 import { useTeamRole } from "../../../../context/useTeamRole";
-import styles from "./RetroTimer.module.scss";
+
+const SERVER_TIMER_DELAY_SECONDS = 1;
 
 export const RetroTimer: React.FC = () => {
   const [isTimerDialogOpen, setDialogTimerOpen] = useState(false);
 
-  const timePopover = useRef<any>();
   const closeTimer = useCallback(() => setDialogTimerOpen(false), []);
-  useClickOutside(timePopover, closeTimer);
 
   const { timerEnds, teamId, setTimer } = useRetro();
   const { isAdmin } = useTeamRole(teamId!);
-
-  const [time, setTime] = useState(300);
-  const timeText = dayjs(0).add(time, "s").format("m:ss");
 
   const onQuickAddTime = () => {
     const currentOrEndTime = timerEnds ? dayjs(timerEnds) : dayjs();
@@ -28,84 +24,201 @@ export const RetroTimer: React.FC = () => {
     const targetTime = (
       currentOrEndTime.isBefore(dayjs()) ? dayjs() : currentOrEndTime
     )
-      .add(31, "s")
+      .add(30, "s")
+      .add(SERVER_TIMER_DELAY_SECONDS, "s")
       .valueOf();
 
     setTimer(targetTime);
   };
 
-  const onClearTimer = () => {
-    setTimer(null);
+  const onSetTimer = (time: number | null) => {
+    if (time !== null) {
+      setTimer(
+        dayjs().add(time, "s").add(SERVER_TIMER_DELAY_SECONDS, "s").valueOf(),
+      );
+    } else {
+      setTimer(null);
+    }
     closeTimer();
-    setTime(300);
-  };
-
-  const onZeroTimer = () => {
-    setTime(0);
-  };
-
-  const onIncreaseTimer = (seconds: number) => {
-    setTime((old) => old + seconds);
-  };
-
-  const onStartTimer = () => {
-    const targetTime = dayjs()
-      .add(time, "s")
-      .add(1, "s") // client <-> server pseudo delay
-      .valueOf();
-
-    setTimer(targetTime);
-    closeTimer();
-    setTime(300);
   };
 
   return (
     <div
       className={
-        "flex flex-row items-center gap-2 h-12 bg-background-500 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
+        "flex flex-col items-center h-12 bg-background-500 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
       }
     >
-      {isAdmin && (
-        <Button onClick={onQuickAddTime} size={"icon"}>
-          +30
-        </Button>
-      )}
+      <div className={"flex flex-row gap-2"}>
+        {isAdmin && (
+          <Button onClick={onQuickAddTime} size={"icon"}>
+            +30
+          </Button>
+        )}
 
-      <Timer timerEnds={timerEnds} />
+        <Timer
+          timerEnds={timerEnds}
+          onClick={isAdmin ? () => setDialogTimerOpen(true) : undefined}
+        />
 
-      {isAdmin && (
-        <Button onClick={() => setDialogTimerOpen(true)} size={"icon"}>
-          <LapTimerIcon className={"size-6"} />
-        </Button>
-      )}
+        {isAdmin && (
+          <Button
+            onClick={() => {
+              onSetTimer(null);
+            }}
+            size={"icon"}
+            variant={"destructive"}
+          >
+            <TrashIcon className={"size-6"} />
+          </Button>
+        )}
+      </div>
 
       {isTimerDialogOpen && (
-        <div className={styles.timeBubbleWrapper} ref={timePopover}>
-          <div className={styles.timerTop}>
-            <Button size="sm" variant={"destructive"} onClick={onClearTimer}>
-              <TrashIcon className={"size-6"} />
-            </Button>
-
-            <div className={styles.timerText}>{timeText}</div>
-
-            <Button size="sm" onClick={() => onStartTimer()}>
-              <CheckIcon className={"size-6"} />
-            </Button>
-          </div>
-
-          <div className={styles.buttonWrapper}>
-            <Button size="sm" onClick={() => onZeroTimer()}>
-              00
-            </Button>
-            <Button size="sm" onClick={() => onIncreaseTimer(30)}>
-              +30s
-            </Button>
-            <Button size="sm" onClick={() => onIncreaseTimer(60)}>
-              +1m
-            </Button>
-          </div>
-        </div>
+        <TimerSetModal onDismiss={closeTimer} onTimeSet={onSetTimer} />
       )}
+    </div>
+  );
+};
+
+type TimerInputType = "min" | "sec";
+
+const TimerSetModal: React.FC<{
+  onDismiss: () => void;
+  onTimeSet: (time: number | null) => void;
+}> = ({ onDismiss, onTimeSet }) => {
+  const minInputRef = createRef<HTMLInputElement>();
+  const secInputRef = createRef<HTMLInputElement>();
+
+  const [minutes, setMinutes] = useState("5");
+  const [seconds, setSeconds] = useState("00");
+
+  const timePopover = createRef<HTMLDivElement>();
+  useClickOutside(timePopover, onDismiss);
+
+  useEffect(() => {
+    focusInput("min");
+  }, []);
+
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    input: TimerInputType,
+  ) => {
+    const value = e.target.value;
+
+    // skip if value is not built with numbers
+    if (!/^\d+$/.test(value) && value.length !== 0) {
+      return;
+    }
+
+    if (input === "min") {
+      setMinutes(value);
+
+      if (value.length === 2) {
+        focusInput("sec");
+      }
+    } else {
+      setSeconds(value);
+    }
+  };
+
+  const onSaveTimerClick = () => {
+    const minutesNum = Number.parseInt(minutes || "0");
+    const secondsNum = Number.parseInt(seconds || "0");
+
+    const time = minutesNum * 60 + secondsNum;
+
+    onTimeSet(time);
+    onDismiss();
+  };
+
+  const focusInput = (type: TimerInputType) => {
+    if (type === "min") {
+      minInputRef.current?.select();
+    } else {
+      secInputRef.current?.select();
+    }
+  };
+
+  return (
+    <div
+      className={
+        "flex flex-col absolute top-16 bg-background-500 rounded-xl p-2 shadow-lg gap-2"
+      }
+      ref={timePopover}
+    >
+      <div
+        className={
+          "flex items-center w-28 h-12 rounded-lg bg-white border-2 text-3xl"
+        }
+      >
+        <div className={"flex w-11 text-3xl items-center"}>
+          <span
+            className={
+              "w-11 absolute text-3xl text-end text-gray-600 select-none pointer-events-none"
+            }
+          >
+            {"0".repeat(2 - minutes.length)}
+            {"\u00A0".repeat(minutes.length)}
+          </span>
+          <input
+            ref={minInputRef}
+            maxLength={2}
+            className={
+              "flex w-11 h-full rounded-lg focus:outline-none text-end"
+            }
+            value={minutes.toString()}
+            placeholder={"0"}
+            onChange={(e) => onChange(e, "min")}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" ||
+                (e.key === "ArrowRight" &&
+                  minInputRef.current?.selectionStart ===
+                    minInputRef.current?.value.length)
+              ) {
+                e.preventDefault();
+                focusInput("sec");
+              }
+            }}
+          />
+        </div>
+        :
+        <div className={"flex w-11 text-3xl items-center"}>
+          <span
+            className={
+              "w-9 absolute text-3xl text-end text-gray-600 select-none pointer-events-none "
+            }
+          >
+            {"0".repeat(2 - seconds.length)}
+            {"\u00A0".repeat(seconds.length)}
+          </span>
+          <input
+            ref={secInputRef}
+            maxLength={2}
+            className={"flex w-9 h-full rounded-lg focus:outline-none text-end"}
+            value={seconds.toString()}
+            placeholder={"00"}
+            onChange={(e) => onChange(e, "sec")}
+            onKeyDown={(e) => {
+              if (
+                e.key === "ArrowLeft" &&
+                secInputRef.current?.selectionEnd === 0
+              ) {
+                e.preventDefault();
+                focusInput("min");
+              }
+
+              if (e.key === "Enter") {
+                onSaveTimerClick();
+              }
+            }}
+          />
+        </div>
+      </div>
+
+      <Button size="sm" onClick={onSaveTimerClick} className={"w-full"}>
+        <CheckIcon className={"size-6"} />
+      </Button>
     </div>
   );
 };

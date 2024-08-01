@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { Portal } from "react-portal";
@@ -52,7 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           <div
             className={
-              "flex justify-center items-center size-10 bg-white rounded-full mr-4"
+              "flex justify-center items-center size-10 bg-white rounded-full mr-4 z-20"
             }
           >
             <div onClick={() => toggle(true)}>
@@ -62,20 +61,11 @@ const Navbar: React.FC<NavbarProps> = ({
                 {...avatarProps}
               />
               <Portal>
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className={"z-20"}
-                      ref={popover}
-                    >
-                      <Menu />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {isOpen && (
+                  <div ref={popover}>
+                    <Menu />
+                  </div>
+                )}
               </Portal>
             </div>
           </div>

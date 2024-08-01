@@ -12,7 +12,7 @@ interface TeamRetroListProps {
   teamId: string;
 }
 
-export const TeamRetroList: React.FC<TeamRetroListProps> = ({
+export const TeamCard: React.FC<TeamRetroListProps> = ({
   teamName,
   teamId,
 }) => {
@@ -27,18 +27,21 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
         setRetros(retros);
       })
       .catch(console.log);
-  }, []);
+  }, [teamId]);
 
   return (
     <div
       data-testid={`team-${teamName}`}
-      className={"flex flex-col gap-2 w-full bg-background-500 p-2 rounded-md"}
+      className={"flex flex-col w-full bg-background-500 rounded-lg"}
     >
-      <div className={"flex flex-row justify-between gap-2"}>
-        <span className={"text-xl font-bold"}>{teamName}</span>
+      <div
+        className={"flex justify-between  p-4 rounded-t-lg font-bold text-2xl"}
+      >
+        {teamName}
 
         {isAdmin && (
           <Button
+            variant={"destructive"}
             data-testid="edit-team"
             onClick={() => navigate(`/team/${teamId}/edit`)}
             size="icon"
@@ -48,7 +51,7 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
         )}
       </div>
 
-      <div className={"flex gap-2 pb-2 scrollbar"}>
+      <div className={"flex gap-2 p-4 scrollbar"}>
         <Button
           data-testid="task-list"
           size={"xl"}
@@ -56,6 +59,18 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
           Lista zadań
+          <ClipboardIcon className={"size-6"} />
+        </Button>
+
+        <Button
+          data-testid="task-list"
+          size={"xl"}
+          className={"min-w-[256px] min-h-[126px] flex-col scrollbar bg-white"}
+          onClick={() => navigate(`/team/${teamId}/archive`)}
+        >
+          Archiwum
+          <br />
+          Retrospekcji
           <ClipboardIcon className={"size-6"} />
         </Button>
 
@@ -72,7 +87,7 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
           </Button>
         )}
 
-        {retros.map((retro, index) => {
+        {retros.map((retro) => {
           if (retro.is_running) {
             return (
               <Button
@@ -84,22 +99,10 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >
-                Retro w trakcie
+                Retro <br />w trakcie
               </Button>
             );
           }
-
-          return (
-            <Button
-              key={retro.id}
-              size={"xl"}
-              className={"min-w-[256px] min-h-[126px] flex-col bg-white"}
-              onClick={() => navigate(`/retro/${retro.id}/summary`)}
-            >
-              <div>{`Retro #${retros.length - index}`}</div>
-              <div>{new Date(retro.date).toLocaleDateString("pl-Pl")}</div>
-            </Button>
-          );
         })}
       </div>
     </div>

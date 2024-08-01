@@ -68,7 +68,7 @@ export const RetroSummaryView = () => {
           <div
             className={"bg-primary-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}
           >
-            Retro {dayjs(retro?.date).format("YYYY-MM-DD")}
+            Retro {dayjs(retro?.date).format("DD.MM.YYYY")}
           </div>
 
           <div

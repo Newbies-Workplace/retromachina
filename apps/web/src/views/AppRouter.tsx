@@ -11,6 +11,7 @@ import { HomeView } from "./home/HomeView";
 import { InviteView } from "./invitation/InviteView";
 import { RetroActiveView } from "./retro_active/RetroActiveView";
 import { RetroWrapper } from "./retro_active/RetroWrapper";
+import { RetroArchiveView } from "./retro_archive/RetroArchiveView";
 import { RetroCreateView } from "./retro_create/RetroCreateView";
 import { RetroSummaryView } from "./retro_summary/RetroSummaryView";
 import { TeamBoardView } from "./team_board/TeamBoardView";
@@ -55,6 +56,14 @@ export const AppRouter: React.FC = () => {
           }
         />
 
+        <Route
+          path="/team/:teamId/archive"
+          element={
+            <RequireAuth>
+              <RetroArchiveView />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/team/:teamId/board"
           element={
@@ -110,7 +119,7 @@ export const AppRouter: React.FC = () => {
           }
         />
 
-        <Route path="*" element={<Navigate to={"/404"} />} />
+        <Route path="*" element={<NotFoundView />} />
         <Route path="/404" element={<NotFoundView />} />
       </Routes>
     </Router>

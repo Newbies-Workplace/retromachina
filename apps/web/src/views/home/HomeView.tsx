@@ -3,7 +3,8 @@ import { useNavigate } from "react-router";
 import CreateTeamSvg from "../../assets/icons/create-team.svg";
 import NotFoundSvg from "../../assets/images/not-found.svg";
 import { Button } from "../../component/atoms/button/Button";
-import { TeamRetroList } from "../../component/molecules/team_retro_list/TeamRetroList";
+import { TeamCard } from "../../component/molecules/team_retro_list/TeamCard";
+import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useUser } from "../../context/user/UserContext.hook";
 
@@ -14,11 +15,11 @@ export const HomeView: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className={"flex flex-col grow p-4 scrollbar"}>
+      <AnimatedBackground>
         {user?.teams?.length === 0 && (
           <div
             className={
-              "flex flex-col grow items-center justify-center gap-4 p-4"
+              "flex flex-col grow items-center justify-center gap-4 m-8"
             }
           >
             <NotFoundSvg />
@@ -40,16 +41,12 @@ export const HomeView: React.FC = () => {
           </div>
         )}
 
-        <div className={"flex flex-col gap-4"}>
+        <div className={"flex flex-col gap-6 m-8"}>
           {user?.teams?.map((team) => (
-            <TeamRetroList
-              key={team.id}
-              teamId={team.id}
-              teamName={team.name}
-            />
+            <TeamCard key={team.id} teamId={team.id} teamName={team.name} />
           ))}
         </div>
-      </div>
+      </AnimatedBackground>
     </>
   );
 };

@@ -30,7 +30,7 @@ export const SignInView: React.FC = () => {
             Retromachina
           </span>
 
-          <span className={"text-md  text-background-50"}>
+          <span className={"text-md text-background-50"}>
             powered by{" "}
             <a
               href="https://newbies.pl"

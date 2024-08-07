@@ -4,7 +4,6 @@ import {
   ThickArrowRightIcon,
 } from "@radix-ui/react-icons";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { AnimatePresence } from "framer-motion";
 import React from "react";
 import { useCallback, useRef, useState } from "react";
 import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag.svg";
@@ -12,7 +11,6 @@ import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
 import VoteIconSvg from "../../../../assets/icons/vote.svg";
 import { cn } from "../../../../common/Util";
 import { Button } from "../../../../component/atoms/button/Button";
-import { ConfirmDialog } from "../../../../component/molecules/confirm_dialog/ConfirmDialog";
 import { useConfirm } from "../../../../context/confirm/ConfirmContext.hook";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import { useCardGroups } from "../../../../context/useCardGroups";
@@ -20,6 +18,7 @@ import useClickOutside from "../../../../context/useClickOutside";
 import { usePlural } from "../../../../context/usePlural";
 import { useTeamRole } from "../../../../context/useTeamRole";
 import { useUser } from "../../../../context/user/UserContext.hook";
+import { ReflectionCardsShelf } from "./ReflectionCardsShelf";
 import { SlotMachine } from "./SlotMachine";
 
 export const Toolbox: React.FC = () => {
@@ -86,8 +85,11 @@ export const Toolbox: React.FC = () => {
           }
         >
           {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}
+          {isAdmin && roomState !== "reflection" && roomState !== "group" && (
+            <div className={"flex justify-center gap-2 w-24 h-16"} />
+          )}
 
-          {isAdmin && roomState === "group" ? (
+          {isAdmin && roomState === "group" && (
             <div className={"flex justify-center gap-2 w-24 h-16"}>
               <Button
                 className={"w-full h-full"}
@@ -97,9 +99,9 @@ export const Toolbox: React.FC = () => {
                 <SlotMachineIcon className={"size-7"} />
               </Button>
             </div>
-          ) : (
-            <div className={"flex justify-center gap-2 w-24 h-16"} />
           )}
+
+          {roomState === "reflection" && <ReflectionCardsShelf />}
 
           <div className={"flex justify-center gap-2 w-24 h-16"}>
             {isVotingVisible && isAdmin && (
@@ -199,6 +201,10 @@ export const Toolbox: React.FC = () => {
               </div>
             )}
           </div>
+
+          {!isAdmin && roomState === "reflection" && (
+            <div className={"flex justify-center gap-2 w-24 h-16"} />
+          )}
 
           {isAdmin && (
             <div

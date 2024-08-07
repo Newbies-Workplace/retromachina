@@ -50,7 +50,11 @@ export const ReflectionView: React.FC = () => {
               }}
             />
 
-            <ColumnCards columnId={column.id} onCardDropped={moveCard}>
+            <ColumnCards
+              columnId={column.id}
+              onReflectionCardDropped={() => {}}
+              onCardDropped={moveCard}
+            >
               {columnCards
                 ?.filter((card) => card.authorId === user?.id)
                 .map((card) => {
@@ -64,6 +68,7 @@ export const ReflectionView: React.FC = () => {
                       parentCardId={card.parentCardId}
                       cardId={card.id}
                       columnId={column.id}
+                      changeOpacityOnDrag
                     >
                       <Card
                         id={card.id}

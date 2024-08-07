@@ -1,4 +1,9 @@
-import { ClipboardIcon, Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  ClipboardIcon,
+  FilePlusIcon,
+  Pencil1Icon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,26 +37,35 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
   return (
     <div
       data-testid={`team-${teamName}`}
-      className={"flex flex-col w-full bg-background-500 rounded-lg"}
+      className={"flex flex-col w-full p-4 gap-4 bg-background-500 rounded-lg"}
     >
-      <div
-        className={"flex justify-between  p-4 rounded-t-lg font-bold text-2xl"}
-      >
+      <div className={"flex justify-between rounded-t-lg font-bold text-2xl"}>
         {teamName}
 
-        {isAdmin && (
+        <div className={"flex gap-2"}>
+          {isAdmin && (
+            <Button
+              data-testid="edit-team"
+              onClick={() => navigate(`/team/${teamId}/edit`)}
+              size="sm"
+            >
+              Edytuj
+              <Pencil1Icon className={"size-4"} />
+            </Button>
+          )}
+
           <Button
-            variant={"destructive"}
             data-testid="edit-team"
             onClick={() => navigate(`/team/${teamId}/edit`)}
-            size="icon"
+            size="sm"
           >
-            <Pencil1Icon className={"size-4"} />
+            Wrzutki
+            <FilePlusIcon className={"size-4"} />
           </Button>
-        )}
+        </div>
       </div>
 
-      <div className={"flex gap-2 p-4 scrollbar"}>
+      <div className={"flex gap-2"}>
         <Button
           data-testid="task-list"
           size={"xl"}

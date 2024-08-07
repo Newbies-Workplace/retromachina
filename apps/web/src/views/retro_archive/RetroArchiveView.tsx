@@ -43,7 +43,11 @@ export const RetroArchiveView = () => {
             Archiwum
           </div>
 
-          <div className={"flex-col gap-4 p-4 scrollbar"}>
+          <div
+            className={
+              "grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 p-4 h-full scrollbar"
+            }
+          >
             {retros.map((retro) => {
               if (retro.is_running) {
                 return (

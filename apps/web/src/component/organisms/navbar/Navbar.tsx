@@ -31,14 +31,14 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary-500"}>
       <div className={"flex flex-row items-center gap-4 w-full"}>
-        <div
+        <span
           onClick={() => navigate("/")}
           className={
-            "flex grow flex-col ml-4 mt-2 font-harlow-solid-italic text-4xl text-background-50 cursor-pointer"
+            "font-harlow-solid-italic text-4xl text-background-50 cursor-pointer ml-4 mt-2 mr-auto"
           }
         >
           Retromachina
-        </div>
+        </span>
 
         <div
           className={

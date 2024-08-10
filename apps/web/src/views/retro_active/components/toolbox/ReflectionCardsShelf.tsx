@@ -3,6 +3,7 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { TrashIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { createRef, useEffect, useState } from "react";
 import invariant from "tiny-invariant";
@@ -22,7 +23,7 @@ export const ReflectionCardsShelf: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [cards, setCards] = useState([
-    "testowa kartka na potem1",
+    "testowa kartka na potem1 testowa kartka na potem1 testowa kartka na potem1 testowa kartka na potem1 testowa kartka na potem1 testowa kartka na potem1 testowa kartka na potem1",
     "testowa kartka na potem2",
   ]);
 
@@ -102,7 +103,14 @@ export const ReflectionCardsShelf: React.FC = () => {
                 )}
               >
                 {cards.map((card) => {
-                  return <ReflectionCard key={card} id={card} text={card} />;
+                  return (
+                    <ReflectionCard
+                      key={card}
+                      id={card}
+                      text={card}
+                      onDeleteClick={() => {}}
+                    />
+                  );
                 })}
               </div>
             </motion.div>
@@ -123,10 +131,11 @@ export const ReflectionCardsShelf: React.FC = () => {
   );
 };
 
-const ReflectionCard: React.FC<{ id: string; text: string }> = ({
-  id,
-  text,
-}) => {
+const ReflectionCard: React.FC<{
+  id: string;
+  text: string;
+  onDeleteClick: () => void;
+}> = ({ id, text, onDeleteClick }) => {
   const cardRef = createRef<HTMLDivElement>();
 
   const [isDragging, setIsDragging] = useState(false);
@@ -149,11 +158,17 @@ const ReflectionCard: React.FC<{ id: string; text: string }> = ({
     <div
       ref={cardRef}
       className={cn(
-        "flex justify-center items-start h-full w-52 min-w-52 p-2 bg-white cursor-grab rounded-md border border-black scrollbar",
+        "flex justify-center items-start gap-1 h-full w-52 min-w-52 p-2 bg-white cursor-grab rounded-md border border-black",
         isDragging ? "opacity-25" : "opacity-100",
       )}
     >
-      {text}
+      <span className={"h-full scrollbar"}>{text}</span>
+
+      <div>
+        <Button onClick={() => {}} size={"icon"} variant={"destructive"}>
+          <TrashIcon className={"size-6"} />
+        </Button>
+      </div>
     </div>
   );
 };

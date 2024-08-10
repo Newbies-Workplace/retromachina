@@ -18,11 +18,12 @@ model Team {
 
   Owner User? @relation(fields: [owner_id], references: [id])
 
-  TeamUser      TeamUsers[]
-  Task          Task[]
-  Retrospective Retrospective[]
-  Invite        Invite[]
-  Board         Board?
+  TeamUser       TeamUsers[]
+  Task           Task[]
+  Retrospective  Retrospective[]
+  Invite         Invite[]
+  Board          Board?
+  ReflectionCard ReflectionCard[]
 }
 
 model TeamUsers {
@@ -66,10 +67,11 @@ model User {
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
 
-  TeamUsers TeamUsers[]
-  Team      Team[]
-  Task      Task[]
-  Invite    Invite[]
+  TeamUsers      TeamUsers[]
+  Team           Team[]
+  Task           Task[]
+  Invite         Invite[]
+  ReflectionCard ReflectionCard[]
 }
 
 model Task {
@@ -87,6 +89,16 @@ model Task {
   Team          Team?          @relation(fields: [team_id], references: [id], onDelete: Cascade)
   Column        BoardColumn?   @relation(fields: [column_id], references: [id])
   Retrospective Retrospective? @relation(fields: [retro_id], references: [id])
+}
+
+model ReflectionCard {
+  id      String @id @default(uuid())
+  user_id String
+  team_id String
+  text    String @db.Text
+
+  User User @relation(fields: [user_id], references: [id])
+  Team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
 }
 
 model Retrospective {

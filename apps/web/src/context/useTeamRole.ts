@@ -1,4 +1,4 @@
-import { TeamResponse } from "shared/.dist/model/team/team.response";
+import { TeamResponse } from "shared/model/team/team.response";
 import type { UserRole } from "shared/model/user/user.role";
 import { useUser } from "./user/UserContext.hook";
 

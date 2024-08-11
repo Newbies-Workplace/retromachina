@@ -33,11 +33,6 @@ export const Toolbox: React.FC = () => {
     readyPercentage,
     nextRoomState,
     prevRoomState,
-  } = useRetro();
-
-  const { isAdmin } = useTeamRole(teamId!);
-
-  const {
     maxVotes,
     setMaxVotesAmount,
     votes,
@@ -46,6 +41,9 @@ export const Toolbox: React.FC = () => {
     slotMachineVisible,
     setSlotMachineVisible,
   } = useRetro();
+
+  const { isAdmin } = useTeamRole(teamId!);
+
   const { user } = useUser();
   const userVotes =
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
@@ -74,6 +72,10 @@ export const Toolbox: React.FC = () => {
     });
   };
 
+  if (!teamId) {
+    return null;
+  }
+
   return (
     <>
       <div className={"flex flex-row gap-2 mx-2"}>
@@ -101,7 +103,7 @@ export const Toolbox: React.FC = () => {
             </div>
           )}
 
-          {roomState === "reflection" && <ReflectionCardsShelf />}
+          {roomState === "reflection" && <ReflectionCardsShelf teamId={teamId} />}
 
           <div className={"flex justify-center gap-2 w-24 h-16"}>
             {isVotingVisible && isAdmin && (

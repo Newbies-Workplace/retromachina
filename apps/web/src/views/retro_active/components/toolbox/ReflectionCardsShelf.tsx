@@ -1,43 +1,64 @@
-import {combine} from "@atlaskit/pragmatic-drag-and-drop/combine";
-import {draggable, dropTargetForElements,} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import {TrashIcon} from "@radix-ui/react-icons";
-import {AnimatePresence, motion} from "framer-motion";
-import React, {createRef, useEffect, useState} from "react";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import {
+  draggable,
+  dropTargetForElements,
+} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { FilePlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { createRef, useEffect, useState } from "react";
 import invariant from "tiny-invariant";
-import {cn} from "../../../../common/Util";
-import {Button} from "../../../../component/atoms/button/Button";
-import {getReflectionCard, isCard,} from "../../../../component/molecules/dragndrop/dragndrop";
+import SaveIcon from "../../../../assets/icons/save.svg";
+import { cn } from "../../../../common/Util";
+import { Button } from "../../../../component/atoms/button/Button";
+import {
+  getReflectionCard,
+  isCard,
+} from "../../../../component/molecules/dragndrop/dragndrop";
 import useClickOutside from "../../../../context/useClickOutside";
-import {useReflectionCardStore} from "../../../../store/ReflectionCardStore";
-import {useRetro} from "../../../../context/retro/RetroContext.hook";
+import { useReflectionCardStore } from "../../../../store/ReflectionCardStore";
 
-export const ReflectionCardsShelf: React.FC<{teamId: string}> = ({teamId}) => {
+export const ReflectionCardsShelf: React.FC<{
+  teamId: string;
+  onCardDrop?: (cardId: string) => void;
+}> = ({ teamId, onCardDrop }) => {
   const ref = createRef<HTMLButtonElement>();
   const drawerRef = createRef<HTMLDivElement>();
-  const {cards, deleteCard} = useRetro()
+  const newCardInputRef = createRef<HTMLTextAreaElement>();
+
+  const [isCreatingNewReflectionCard, setIsCreatingNewReflectionCard] =
+    useState(false);
+  const [newReflectionCardText, setNewReflectionCardText] = useState("");
+
   const [isOverDropDiv, setIsOverDropDiv] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const reflectionCardStore = useReflectionCardStore();
+  const {
+    clear,
+    deleteReflectionCard,
+    fetchReflectionCards,
+    addReflectionCard,
+    reflectionCards,
+  } = useReflectionCardStore();
 
   useEffect(() => {
-    reflectionCardStore.fetchReflectionCards(teamId).then();
+    fetchReflectionCards(teamId).then();
 
     return () => {
-      reflectionCardStore.clear()
-    }
+      clear();
+    };
   }, [teamId]);
 
   useEffect(() => {
     const buttonElement = ref.current;
     const drawerElement = drawerRef.current;
+
     invariant(buttonElement);
     invariant(drawerElement);
 
     return combine(
       dropTargetForElements({
         element: buttonElement,
-        canDrop: ({source}) => isCard(source.data),
+        canDrop: ({ source }) => isCard(source.data),
         onDrag: () => {
           setIsOverDropDiv(true);
           setIsOpen(true);
@@ -45,34 +66,28 @@ export const ReflectionCardsShelf: React.FC<{teamId: string}> = ({teamId}) => {
       }),
       dropTargetForElements({
         element: drawerElement,
-        canDrop: ({source}) => isCard(source.data),
-        onDrop: ({source}) => {
+        canDrop: ({ source }) => isCard(source.data),
+        onDrop: ({ source }) => {
           if (isCard(source.data)) {
-            onCardDrop(source.data.cardId)
+            setIsOverDropDiv(false);
+            onCardDrop?.(source.data.cardId);
           }
         },
         onDrag: () => setIsOverDropDiv(true),
         onDragLeave: () => closeDrawer(),
       }),
     );
-  }, [cards]);
+  }, [onCardDrop]);
 
   useClickOutside(drawerRef, () => {
     closeDrawer();
   });
 
-  const onCardDrop = async (cardId: string) => {
-    const card = cards.find((card) => card.id === cardId);
-
-    if (!card) {
-      return;
+  useEffect(() => {
+    if (isCreatingNewReflectionCard) {
+      newCardInputRef.current?.focus();
     }
-
-    setIsOverDropDiv(false)
-    reflectionCardStore.addReflectionCard(teamId, card.text).then(() => {
-      deleteCard(cardId)
-    })
-  }
+  }, [isCreatingNewReflectionCard]);
 
   const closeDrawer = () => {
     setIsOpen(false);
@@ -84,8 +99,30 @@ export const ReflectionCardsShelf: React.FC<{teamId: string}> = ({teamId}) => {
   };
 
   const onReflectionCardDeleteClick = (reflectionCardId: string) => {
-    reflectionCardStore.deleteReflectionCard(teamId, reflectionCardId).then()
-  }
+    deleteReflectionCard(teamId, reflectionCardId).then();
+  };
+
+  const onNewReflectionCardClick = () => {
+    setIsCreatingNewReflectionCard(true);
+  };
+
+  const onSaveNewReflectionCardClick = () => {
+    const trimmedText = newReflectionCardText.trim();
+
+    if (trimmedText === "") {
+      return;
+    }
+
+    addReflectionCard(teamId, trimmedText).then(() => {
+      setIsCreatingNewReflectionCard(false);
+      setNewReflectionCardText("");
+    });
+  };
+
+  const onDeleteNewReflectionCardClick = () => {
+    setIsCreatingNewReflectionCard(false);
+    setNewReflectionCardText("");
+  };
 
   return (
     <>
@@ -99,9 +136,9 @@ export const ReflectionCardsShelf: React.FC<{teamId: string}> = ({teamId}) => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{bottom: -150}}
-              animate={{bottom: 0}}
-              exit={{bottom: -150}}
+              initial={{ bottom: -150 }}
+              animate={{ bottom: 0 }}
+              exit={{ bottom: -150 }}
               className={cn(
                 "absolute bottom-0 h-full w-full p-2 bg-secondary-500 rounded-t-lg flex flex-col gap-2",
                 isOverDropDiv
@@ -114,24 +151,67 @@ export const ReflectionCardsShelf: React.FC<{teamId: string}> = ({teamId}) => {
                   Wrzutki
                 </span>
 
-                <span>Przeciągnij tematy aby zachować je na później!</span>
+                <Button onClick={onNewReflectionCardClick} size={"sm"}>
+                  Nowa wrzutka
+                  <FilePlusIcon className={"size-4"} />
+                </Button>
               </div>
 
               <div
                 className={cn(
                   "flex flex-row gap-2 h-full w-full scrollbar rounded",
-                  reflectionCardStore.reflectionCards.length === 0 &&
-                  "border-2 border-dashed border-background-50",
+                  reflectionCards.length === 0 &&
+                    "border-2 border-dashed border-background-50",
                 )}
               >
-                {reflectionCardStore.reflectionCards.map((card) => {
+                {isCreatingNewReflectionCard && (
+                  <div
+                    className={
+                      "flex flex-row gap-2 min-w-52 w-52 h-full p-2 bg-gray-500 rounded-md border border-black"
+                    }
+                  >
+                    <textarea
+                      ref={newCardInputRef}
+                      className={
+                        "w-full h-full bg-gray-500 scrollbar active:outline-none focus:outline-none"
+                      }
+                      value={newReflectionCardText}
+                      onChange={(e) => setNewReflectionCardText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          onSaveNewReflectionCardClick();
+                        }
+                      }}
+                    />
+
+                    <div className={"flex flex-col gap-2"}>
+                      <Button
+                        onClick={onSaveNewReflectionCardClick}
+                        size={"icon"}
+                      >
+                        <SaveIcon width={18} height={18} />
+                      </Button>
+
+                      <Button
+                        onClick={onDeleteNewReflectionCardClick}
+                        size={"icon"}
+                        variant={"destructive"}
+                      >
+                        <TrashIcon className={"size-6"} />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {reflectionCards.map((card) => {
                   return (
                     <ReflectionCard
                       key={card.id}
                       id={card.id}
                       text={card.text}
                       onDeleteClick={() => {
-                        onReflectionCardDeleteClick(card.id)
+                        onReflectionCardDeleteClick(card.id);
                       }}
                     />
                   );
@@ -159,7 +239,7 @@ const ReflectionCard: React.FC<{
   id: string;
   text: string;
   onDeleteClick: () => void;
-}> = ({id, text, onDeleteClick}) => {
+}> = ({ id, text, onDeleteClick }) => {
   const cardRef = createRef<HTMLDivElement>();
 
   const [isDragging, setIsDragging] = useState(false);
@@ -171,7 +251,7 @@ const ReflectionCard: React.FC<{
     return combine(
       draggable({
         element: element,
-        getInitialData: () => getReflectionCard({reflectionCardId: id, text}),
+        getInitialData: () => getReflectionCard({ reflectionCardId: id, text }),
         onDragStart: () => setIsDragging(true),
         onDrop: () => setIsDragging(false),
       }),
@@ -186,11 +266,15 @@ const ReflectionCard: React.FC<{
         isDragging ? "opacity-25" : "opacity-100",
       )}
     >
-      <span className={"w-full h-full scrollbar"}>{text}</span>
+      <span
+        className={"word-break whitespace-pre-line w-full h-full scrollbar"}
+      >
+        {text}
+      </span>
 
       <div>
         <Button onClick={onDeleteClick} size={"icon"} variant={"destructive"}>
-          <TrashIcon className={"size-6"}/>
+          <TrashIcon className={"size-6"} />
         </Button>
       </div>
     </div>

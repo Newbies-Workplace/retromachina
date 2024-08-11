@@ -8,7 +8,7 @@ import { ColumnCards } from "../../../component/molecules/dragndrop/ColumnCards"
 import { DraggableCard } from "../../../component/molecules/dragndrop/DraggableCard";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
 import { useUser } from "../../../context/user/UserContext.hook";
-import {useReflectionCardStore} from "../../../store/ReflectionCardStore";
+import { useReflectionCardStore } from "../../../store/ReflectionCardStore";
 
 export const ReflectionView: React.FC = () => {
   const { user } = useUser();
@@ -23,17 +23,20 @@ export const ReflectionView: React.FC = () => {
     updateCard,
     deleteCard,
   } = useRetro();
-  const {deleteReflectionCard} = useReflectionCardStore();
+  const { deleteReflectionCard } = useReflectionCardStore();
 
-  const onReflectionCardDrop = (reflectionCardId: string, text: string, columnId: string) => {
+  const onReflectionCardDrop = (
+    reflectionCardId: string,
+    text: string,
+    columnId: string,
+  ) => {
     if (!teamId) {
       return;
     }
 
     deleteReflectionCard(teamId, reflectionCardId).then(() => {
-      console.log(`Reflection card dropped, text: ${text}, columnId: ${columnId}`)
-      createCard(text, columnId)
-    })
+      createCard(text, columnId);
+    });
   };
 
   return (
@@ -66,7 +69,7 @@ export const ReflectionView: React.FC = () => {
 
             <ColumnCards
               columnId={column.id}
-              onReflectionCardDropped={({id, text}) => {
+              onReflectionCardDropped={({ id, text }) => {
                 onReflectionCardDrop(id, text, column.id);
               }}
               onCardDropped={moveCard}

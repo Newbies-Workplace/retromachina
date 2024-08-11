@@ -18,6 +18,7 @@ import useClickOutside from "../../../../context/useClickOutside";
 import { usePlural } from "../../../../context/usePlural";
 import { useTeamRole } from "../../../../context/useTeamRole";
 import { useUser } from "../../../../context/user/UserContext.hook";
+import { useReflectionCardStore } from "../../../../store/ReflectionCardStore";
 import { ReflectionCardsShelf } from "./ReflectionCardsShelf";
 import { SlotMachine } from "./SlotMachine";
 
@@ -40,9 +41,11 @@ export const Toolbox: React.FC = () => {
     endRetro,
     slotMachineVisible,
     setSlotMachineVisible,
+    deleteCard,
   } = useRetro();
 
   const { isAdmin } = useTeamRole(teamId!);
+  const { addReflectionCard } = useReflectionCardStore();
 
   const { user } = useUser();
   const userVotes =
@@ -64,6 +67,10 @@ export const Toolbox: React.FC = () => {
   const closeVote = useCallback(() => setOpenVote(false), []);
   useClickOutside(votePopover, closeVote);
 
+  if (!teamId) {
+    return null;
+  }
+
   const onFinishRetroPress = () => {
     showConfirm({
       title: "Zakończenie retrospektywy",
@@ -72,9 +79,17 @@ export const Toolbox: React.FC = () => {
     });
   };
 
-  if (!teamId) {
-    return null;
-  }
+  const onCardDrop = async (cardId: string) => {
+    const card = cards.find((card) => card.id === cardId);
+
+    if (!card) {
+      return;
+    }
+
+    addReflectionCard(teamId, card.text).then(() => {
+      deleteCard(cardId);
+    });
+  };
 
   return (
     <>
@@ -103,7 +118,9 @@ export const Toolbox: React.FC = () => {
             </div>
           )}
 
-          {roomState === "reflection" && <ReflectionCardsShelf teamId={teamId} />}
+          {roomState === "reflection" && (
+            <ReflectionCardsShelf teamId={teamId} onCardDrop={onCardDrop} />
+          )}
 
           <div className={"flex justify-center gap-2 w-24 h-16"}>
             {isVotingVisible && isAdmin && (

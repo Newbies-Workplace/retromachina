@@ -13,6 +13,8 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { Role } from "@prisma/client";
+import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
+import { ReflectionCardResponse } from "shared/model/team/reflectionCard.response";
 import { TeamGetQuery } from "shared/model/team/team.query";
 import {
   EditTeamInviteRequest,
@@ -26,6 +28,7 @@ import { User } from "src/auth/jwt/jwtuser.decorator";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TeamService } from "../team.service";
+import { toReflectionCardResponse } from "./reflectionCard.converter";
 import { toTeamResponse } from "./team.converter";
 
 @Controller("teams")
@@ -181,6 +184,75 @@ export class TeamController {
       subject("Team", team),
     );
 
-    await this.teamService.deleteTeam(team);
+    await this.teamService.deleteTeam(team.id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(":id/reflection_cards")
+  async getReflectionCards(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+  ): Promise<ReflectionCardResponse[]> {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        id: teamId,
+      },
+    });
+    const ability = this.abilityFactory.create(user);
+
+    ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
+
+    const reflectionCards = await this.prismaService.reflectionCard.findMany({
+      where: {
+        team_id: teamId,
+        user_id: user.id,
+      },
+    });
+
+    return reflectionCards.map(toReflectionCardResponse);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(":id/reflection_cards")
+  async addReflectionCard(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Body() request: ReflectionCardRequest,
+  ) {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        id: teamId,
+      },
+    });
+    const ability = this.abilityFactory.create(user);
+
+    ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
+
+    const card = await this.teamService.createReflectionCard(
+      teamId,
+      user.id,
+      request,
+    );
+
+    return toReflectionCardResponse(card);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(":id/reflection_cards/:reflectionCardId")
+  async removeReflectionCard(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Param("reflectionCardId") reflectionCardId: string,
+  ) {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        id: teamId,
+      },
+    });
+    const ability = this.abilityFactory.create(user);
+
+    ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
+
+    await this.teamService.deleteReflectionCard(reflectionCardId);
   }
 }

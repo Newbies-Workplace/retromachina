@@ -1,4 +1,9 @@
-import { ClipboardIcon, Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  ClipboardIcon,
+  FilePlusIcon,
+  Pencil1Icon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +15,13 @@ import { Button } from "../../atoms/button/Button";
 interface TeamRetroListProps {
   teamName: string;
   teamId: string;
+  openReflectionCardsShelfClick: () => void;
 }
 
-export const TeamRetroList: React.FC<TeamRetroListProps> = ({
+export const TeamCard: React.FC<TeamRetroListProps> = ({
   teamName,
   teamId,
+  openReflectionCardsShelfClick,
 }) => {
   const navigate = useNavigate();
   const { isAdmin } = useTeamRole(teamId);
@@ -27,28 +34,40 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
         setRetros(retros);
       })
       .catch(console.log);
-  }, []);
+  }, [teamId]);
 
   return (
     <div
       data-testid={`team-${teamName}`}
-      className={"flex flex-col gap-2 w-full bg-background-500 p-2 rounded-md"}
+      className={"flex flex-col w-full p-4 gap-4 bg-background-500 rounded-lg"}
     >
-      <div className={"flex flex-row justify-between gap-2"}>
-        <span className={"text-xl font-bold"}>{teamName}</span>
+      <div className={"flex justify-between rounded-t-lg font-bold text-2xl"}>
+        {teamName}
 
-        {isAdmin && (
+        <div className={"flex gap-2"}>
+          {isAdmin && (
+            <Button
+              data-testid="edit-team"
+              onClick={() => navigate(`/team/${teamId}/edit`)}
+              size="sm"
+            >
+              Edytuj
+              <Pencil1Icon className={"size-4"} />
+            </Button>
+          )}
+
           <Button
-            data-testid="edit-team"
-            onClick={() => navigate(`/team/${teamId}/edit`)}
-            size="icon"
+            data-testid="open-reflection-cards-shelf"
+            onClick={() => openReflectionCardsShelfClick()}
+            size="sm"
           >
-            <Pencil1Icon className={"size-4"} />
+            Wrzutki
+            <FilePlusIcon className={"size-4"} />
           </Button>
-        )}
+        </div>
       </div>
 
-      <div className={"flex gap-2 pb-2 scrollbar"}>
+      <div className={"flex gap-2"}>
         <Button
           data-testid="task-list"
           size={"xl"}
@@ -56,6 +75,18 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
           Lista zadań
+          <ClipboardIcon className={"size-6"} />
+        </Button>
+
+        <Button
+          data-testid="task-list"
+          size={"xl"}
+          className={"min-w-[256px] min-h-[126px] flex-col scrollbar bg-white"}
+          onClick={() => navigate(`/team/${teamId}/archive`)}
+        >
+          Archiwum
+          <br />
+          Retrospekcji
           <ClipboardIcon className={"size-6"} />
         </Button>
 
@@ -72,7 +103,7 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
           </Button>
         )}
 
-        {retros.map((retro, index) => {
+        {retros.map((retro) => {
           if (retro.is_running) {
             return (
               <Button
@@ -84,22 +115,10 @@ export const TeamRetroList: React.FC<TeamRetroListProps> = ({
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >
-                Retro w trakcie
+                Retro <br />w trakcie
               </Button>
             );
           }
-
-          return (
-            <Button
-              key={retro.id}
-              size={"xl"}
-              className={"min-w-[256px] min-h-[126px] flex-col bg-white"}
-              onClick={() => navigate(`/retro/${retro.id}/summary`)}
-            >
-              <div>{`Retro #${retros.length - index}`}</div>
-              <div>{new Date(retro.date).toLocaleDateString("pl-Pl")}</div>
-            </Button>
-          );
         })}
       </div>
     </div>

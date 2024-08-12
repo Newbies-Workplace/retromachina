@@ -8,10 +8,11 @@ import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { cn } from "../../../common/Util";
 import { CardMoveAction } from "../../../interfaces/CardMoveAction.interface";
-import { isCard } from "./dragndrop";
+import { isCard, isReflectionCard } from "./dragndrop";
 
 interface ColumnCardContainerProps {
   columnId: string;
+  onReflectionCardDropped?: (action: { id: string; text: string }) => void;
   onCardDropped?: (action: CardMoveAction) => void;
   children?: React.ReactNode;
 }
@@ -19,6 +20,7 @@ interface ColumnCardContainerProps {
 export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
   children,
   columnId,
+  onReflectionCardDropped,
   onCardDropped,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -45,6 +47,10 @@ export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
         element: element,
         canDrop: ({ source }) => {
           const data = source.data;
+          if (onReflectionCardDropped && isReflectionCard(data)) {
+            return true;
+          }
+
           if (!isCard(data)) {
             return false;
           }
@@ -67,6 +73,14 @@ export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
         },
         onDrop: ({ source, location, self }) => {
           const data = source.data;
+          if (isReflectionCard(data)) {
+            onReflectionCardDropped?.({
+              id: data.reflectionCardId,
+              text: data.text,
+            });
+            setIsDraggedOver(false);
+          }
+
           if (!isCard(data)) {
             return;
           }
@@ -92,7 +106,7 @@ export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
     <div
       ref={ref}
       className={cn(
-        "flex flex-col gap-2 pb-[70px] rounded-2xl min-h-[500px] h-full",
+        "flex flex-col gap-2 pb-[70px] rounded-2xl min-h-[300px] h-full",
         isDraggedOver && "ring-2 ring-primary-500",
       )}
     >

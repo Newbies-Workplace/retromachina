@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Role, Team } from "@prisma/client";
+import { ReflectionCard, Role, Team } from "@prisma/client";
+import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
 import {
   EditTeamInviteRequest,
   EditTeamRequest,
@@ -172,14 +173,36 @@ export class TeamService {
     await this.retroGateway.handleTeamUserRemoved(teamId, userId);
   }
 
-  async deleteTeam(team: Team) {
+  async deleteTeam(teamId: string) {
     await this.prismaService.team.delete({
       where: {
-        id: team.id,
+        id: teamId,
       },
     });
 
-    await this.retroGateway.handleTeamDeleted(team.id);
+    await this.retroGateway.handleTeamDeleted(teamId);
+  }
+
+  async createReflectionCard(
+    teamId: string,
+    userId: string,
+    request: ReflectionCardRequest,
+  ): Promise<ReflectionCard> {
+    return this.prismaService.reflectionCard.create({
+      data: {
+        team_id: teamId,
+        user_id: userId,
+        text: request.text,
+      },
+    });
+  }
+
+  async deleteReflectionCard(reflectionCardId: string) {
+    await this.prismaService.reflectionCard.delete({
+      where: {
+        id: reflectionCardId,
+      },
+    });
   }
 
   private async addUsersAndInvitesToTeamUsers(

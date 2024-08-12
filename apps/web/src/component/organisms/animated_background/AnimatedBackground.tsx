@@ -8,6 +8,7 @@ import { cn, debounced, randomInteger } from "../../../common/Util";
 interface AnimatedBackgroundProps {
   children: React.ReactNode;
   className?: string;
+  contentClassName?: string;
 }
 
 const iconSize = 128 + 16;
@@ -15,6 +16,7 @@ const iconSize = 128 + 16;
 export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   children,
   className,
+  contentClassName,
 }) => {
   const [columns, setColumns] = useState(0);
   const [rows, setRows] = useState(0);
@@ -45,6 +47,8 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
     <div
       className={cn("relative flex justify-center grow scrollbar", className)}
     >
+      <div className={cn("absolute z-10", contentClassName)}>{children}</div>
+
       <div
         className={
           "fixed w-full h-full flex overflow-hidden justify-center items-center bg-background-50"
@@ -73,8 +77,6 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
           );
         })}
       </div>
-
-      <div className={"absolute z-10"}>{children}</div>
     </div>
   );
 };

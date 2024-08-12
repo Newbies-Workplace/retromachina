@@ -12,6 +12,7 @@ export class HomePage {
   }
 
   async gotoEditTeam(teamName: string) {
+    await this.page.getByTestId(`team-${teamName}`).scrollIntoViewIfNeeded();
     await this.page
       .getByTestId(`team-${teamName}`)
       .getByTestId("edit-team")
@@ -19,6 +20,7 @@ export class HomePage {
   }
 
   async gotoTaskList(teamName: string) {
+    await this.page.getByTestId(`team-${teamName}`).scrollIntoViewIfNeeded();
     await this.page
       .getByTestId(`team-${teamName}`)
       .getByTestId("task-list")
@@ -26,6 +28,7 @@ export class HomePage {
   }
 
   async gotoCreateRetro(teamName: string) {
+    await this.page.getByTestId(`team-${teamName}`).scrollIntoViewIfNeeded();
     await this.page
       .getByTestId(`team-${teamName}`)
       .getByTestId("create-retro")
@@ -33,6 +36,7 @@ export class HomePage {
   }
 
   async gotoCurrentRetro(teamName: string) {
+    await this.page.getByTestId(`team-${teamName}`).scrollIntoViewIfNeeded();
     await this.page
       .getByTestId(`team-${teamName}`)
       .getByTestId("current-retro")

@@ -1,19 +1,40 @@
-const privateKey = Symbol("Card");
+const cardPrivateKey = Symbol("Card");
+const reflectionCardPrivateKey = Symbol("ReflectionCard");
 
 type Card = {
-  [privateKey]: true;
+  [cardPrivateKey]: true;
   cardId: string;
   columnId: string;
   parentCardId: string | null;
 };
 
-export function getCard(data: Omit<Card, typeof privateKey>) {
+type ReflectionCard = {
+  reflectionCardId: string;
+  text: string;
+};
+
+export function getCard(data: Omit<Card, typeof cardPrivateKey>) {
   return {
-    [privateKey]: true,
+    [cardPrivateKey]: true,
     ...data,
   };
 }
 
 export function isCard(data: Record<string | symbol, unknown>): data is Card {
-  return Boolean(data[privateKey]);
+  return Boolean(data[cardPrivateKey]);
+}
+
+export function getReflectionCard(
+  data: Omit<ReflectionCard, typeof reflectionCardPrivateKey>,
+) {
+  return {
+    [reflectionCardPrivateKey]: true,
+    ...data,
+  };
+}
+
+export function isReflectionCard(
+  data: Record<string | symbol, unknown>,
+): data is ReflectionCard {
+  return Boolean(data[reflectionCardPrivateKey]);
 }

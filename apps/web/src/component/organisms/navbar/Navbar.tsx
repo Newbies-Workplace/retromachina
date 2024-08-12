@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { Portal } from "react-portal";
@@ -32,14 +31,14 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary-500"}>
       <div className={"flex flex-row items-center gap-4 w-full"}>
-        <div
+        <span
           onClick={() => navigate("/")}
           className={
-            "flex grow flex-col ml-4 mt-2 font-harlow-solid-italic text-4xl text-background-50 cursor-pointer"
+            "font-harlow-solid-italic text-4xl text-background-50 cursor-pointer ml-4 mt-2 mr-auto"
           }
         >
           Retromachina
-        </div>
+        </span>
 
         <div
           className={
@@ -52,7 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           <div
             className={
-              "flex justify-center items-center size-10 bg-white rounded-full mr-4"
+              "flex justify-center items-center size-10 bg-white rounded-full mr-4 z-20"
             }
           >
             <div onClick={() => toggle(true)}>
@@ -62,20 +61,11 @@ const Navbar: React.FC<NavbarProps> = ({
                 {...avatarProps}
               />
               <Portal>
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className={"z-20"}
-                      ref={popover}
-                    >
-                      <Menu />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {isOpen && (
+                  <div ref={popover}>
+                    <Menu />
+                  </div>
+                )}
               </Portal>
             </div>
           </div>

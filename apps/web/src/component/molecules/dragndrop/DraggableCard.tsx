@@ -12,6 +12,7 @@ interface DraggableCardProps {
   cardId: string;
   columnId: string;
   children?: React.ReactNode;
+  changeOpacityOnDrag?: boolean;
 }
 
 export const DraggableCard: React.FC<DraggableCardProps> = ({
@@ -20,6 +21,7 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
   cardId,
   columnId,
   className,
+  changeOpacityOnDrag = false,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
@@ -32,12 +34,7 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
     return combine(
       draggable({
         element: element,
-        onDragStart: () => {
-          // don't show opacity when dragging first card in group so that opacity is not applied twice to first card in group
-          if (parentCardId !== null) {
-            setDragging(true);
-          }
-        },
+        onDragStart: () => setDragging(true),
         onDrop: () => setDragging(false),
         getInitialData: () => getCard({ cardId, columnId, parentCardId }),
         onGenerateDragPreview({ source }) {
@@ -52,7 +49,10 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
       ref={ref}
       className={cn(
         "cursor-grab",
-        dragging ? "opacity-25" : "opacity-100",
+        // don't show opacity when dragging first card in group so that opacity is not applied twice to first card in group
+        dragging && (changeOpacityOnDrag || parentCardId !== null)
+          ? "opacity-25"
+          : "opacity-100",
         className,
       )}
     >

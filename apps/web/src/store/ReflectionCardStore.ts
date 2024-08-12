@@ -27,13 +27,16 @@ export const useReflectionCardStore = create<ReflectionCardState>((set) => ({
     }));
   },
   deleteReflectionCard: async (teamId, reflectionCardId) => {
-    await ReflectionCardService.deleteReflectionCard(teamId, reflectionCardId);
-
-    set((state) => ({
-      reflectionCards: state.reflectionCards.filter(
-        (card) => card.id !== reflectionCardId,
-      ),
-    }));
+    await ReflectionCardService.deleteReflectionCard(
+      teamId,
+      reflectionCardId,
+    ).then(() => {
+      set((state) => ({
+        reflectionCards: state.reflectionCards.filter(
+          (card) => card.id !== reflectionCardId,
+        ),
+      }));
+    });
   },
   clear: () => {
     set({ reflectionCards: [] });

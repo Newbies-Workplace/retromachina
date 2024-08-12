@@ -4,7 +4,7 @@ import {
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { FilePlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import React, { createRef, useEffect, useState } from "react";
 import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
@@ -117,103 +117,98 @@ export const ReflectionCardsShelf: React.FC<{
         ref={drawerRef}
         className={cn("absolute bottom-0 h-48 w-full z-10 overflow-hidden")}
       >
-        <AnimatePresence>
-          <motion.div
-            initial={{ bottom: -150 }}
-            animate={{ bottom: 0 }}
-            exit={{ bottom: -150 }}
-            className={cn(
-              "absolute bottom-0 h-full w-full p-2 bg-secondary-500 rounded-t-lg flex flex-col gap-2",
-              isOverDropDiv
-                ? "border-2 border-b-0 border-primary-500"
-                : "border-2 border-transparent",
-            )}
-          >
-            <div className={"flex justify-between text-background-50"}>
-              <span className={"font-harlow-solid-italic text-3xl"}>
-                Wrzutki
-              </span>
+        <motion.div
+          initial={{ bottom: -150 }}
+          animate={{ bottom: 0 }}
+          className={cn(
+            "absolute bottom-0 h-full w-full p-2 bg-secondary-500 rounded-t-lg flex flex-col gap-2",
+            isOverDropDiv
+              ? "border-2 border-b-0 border-primary-500"
+              : "border-2 border-transparent",
+          )}
+        >
+          <div className={"flex justify-between text-background-50"}>
+            <span className={"font-harlow-solid-italic text-3xl"}>Wrzutki</span>
 
-              <Button onClick={onNewReflectionCardClick} size={"sm"}>
-                Nowa wrzutka
-                <FilePlusIcon className={"size-4"} />
-              </Button>
+            <Button onClick={onNewReflectionCardClick} size={"sm"}>
+              Nowa wrzutka
+              <FilePlusIcon className={"size-4"} />
+            </Button>
+          </div>
+
+          {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
+            <div
+              className={
+                "flex justify-center items-center h-full border-2 border-dashed border-background-50 text-background-50 text-center"
+              }
+            >
+              Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
+              zapisać ją na później!
             </div>
+          )}
 
-            {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
-              <div
-                className={
-                  "flex justify-center items-center h-full border-2 border-dashed border-background-50 text-background-50 text-center"
-                }
-              >
-                Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
-                zapisać ją na później!
-              </div>
-            )}
-
-            {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
-              <div
-                className={cn(
-                  "flex flex-row gap-2 h-full w-full scrollbar rounded",
-                )}
-              >
-                {isCreatingNewReflectionCard && (
-                  <div
+          {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
+            <div
+              className={cn(
+                "flex flex-row gap-2 h-full w-full scrollbar rounded",
+              )}
+            >
+              {isCreatingNewReflectionCard && (
+                <div
+                  className={
+                    "flex flex-row gap-2 min-w-52 w-52 h-full p-2 bg-gray-500 rounded-md border border-black"
+                  }
+                >
+                  <textarea
+                    ref={newCardInputRef}
                     className={
-                      "flex flex-row gap-2 min-w-52 w-52 h-full p-2 bg-gray-500 rounded-md border border-black"
+                      "w-full h-full bg-gray-500 scrollbar active:outline-none focus:outline-none"
                     }
-                  >
-                    <textarea
-                      ref={newCardInputRef}
-                      className={
-                        "w-full h-full bg-gray-500 scrollbar active:outline-none focus:outline-none"
+                    value={newReflectionCardText}
+                    onChange={(e) => setNewReflectionCardText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        onSaveNewReflectionCardClick();
                       }
-                      value={newReflectionCardText}
-                      onChange={(e) => setNewReflectionCardText(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          onSaveNewReflectionCardClick();
-                        }
-                      }}
-                    />
+                    }}
+                  />
 
-                    <div className={"flex flex-col gap-2"}>
-                      <Button
-                        onClick={onSaveNewReflectionCardClick}
-                        size={"icon"}
-                      >
-                        <SaveIcon width={18} height={18} />
-                      </Button>
+                  <div className={"flex flex-col gap-2"}>
+                    <Button
+                      onClick={onSaveNewReflectionCardClick}
+                      size={"icon"}
+                    >
+                      <SaveIcon width={18} height={18} />
+                    </Button>
 
-                      <Button
-                        onClick={onDeleteNewReflectionCardClick}
-                        size={"icon"}
-                        variant={"destructive"}
-                      >
-                        <TrashIcon className={"size-6"} />
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={onDeleteNewReflectionCardClick}
+                      size={"icon"}
+                      variant={"destructive"}
+                    >
+                      <TrashIcon className={"size-6"} />
+                    </Button>
                   </div>
-                )}
+                </div>
+              )}
 
-                {reflectionCards.map((card) => {
-                  return (
-                    <ReflectionCard
-                      key={card.id}
-                      id={card.id}
-                      text={card.text}
-                      enableDrag={enableDrag}
-                      onDeleteClick={() => {
-                        onReflectionCardDeleteClick(card.id);
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+              {reflectionCards.map((card) => {
+                return (
+                  <ReflectionCard
+                    key={card.id}
+                    id={card.id}
+                    text={card.text}
+                    enableDrag={enableDrag}
+                    onDeleteClick={() => {
+                      onReflectionCardDeleteClick(card.id);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </motion.div>
       </div>
     </Portal>
   );

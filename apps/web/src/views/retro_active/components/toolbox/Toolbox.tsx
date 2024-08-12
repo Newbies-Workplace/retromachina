@@ -93,7 +93,7 @@ export const Toolbox: React.FC = () => {
         },
       }),
     );
-  }, [roomState]);
+  }, [teamId, roomState]);
 
   if (!teamId) {
     return null;
@@ -122,6 +122,7 @@ export const Toolbox: React.FC = () => {
   return (
     <div className={"flex flex-row gap-2 mx-2"}>
       <SlotMachine />
+
       {isReflectionCardsShelfOpen && (
         <ReflectionCardsShelf
           teamId={teamId}

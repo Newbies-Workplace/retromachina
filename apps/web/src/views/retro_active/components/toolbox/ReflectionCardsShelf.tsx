@@ -100,8 +100,8 @@ export const ReflectionCardsShelf: React.FC<{
       return;
     }
 
+    setIsCreatingNewReflectionCard(false);
     addReflectionCard(teamId, trimmedText).then(() => {
-      setIsCreatingNewReflectionCard(false);
       setNewReflectionCardText("");
     });
   };
@@ -243,7 +243,9 @@ const ReflectionCard: React.FC<{
   }, []);
 
   return (
-    <div
+    <motion.div
+      layout
+      layoutId={id}
       ref={cardRef}
       className={cn(
         "flex justify-center items-start gap-1 h-full w-52 min-w-52 p-2 bg-white rounded-md border border-black",
@@ -262,6 +264,6 @@ const ReflectionCard: React.FC<{
           <TrashIcon className={"size-6"} />
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 };

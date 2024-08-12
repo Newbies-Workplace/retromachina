@@ -57,7 +57,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           )}
 
           <Button
-            data-testid="edit-team"
+            data-testid="open-reflection-cards-shelf"
             onClick={() => openReflectionCardsShelfClick()}
             size="sm"
           >

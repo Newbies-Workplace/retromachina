@@ -3,7 +3,6 @@ import { create } from "zustand";
 import { ReflectionCardService } from "../api/ReflectionCard.service";
 
 interface ReflectionCardState {
-  state: "idle" | "loading" | "success" | "error";
   reflectionCards: ReflectionCardResponse[];
   fetchReflectionCards: (teamId: string) => Promise<void>;
   addReflectionCard: (teamId: string, text: string) => Promise<void>;
@@ -15,17 +14,10 @@ interface ReflectionCardState {
 }
 
 export const useReflectionCardStore = create<ReflectionCardState>((set) => ({
-  state: "idle",
   reflectionCards: [],
   fetchReflectionCards: async (teamId) => {
-    set({ state: "loading" });
-
-    try {
-      const cards = await ReflectionCardService.getReflectionCards(teamId);
-      set({ reflectionCards: cards, state: "success" });
-    } catch (error) {
-      set({ state: "error" });
-    }
+    const cards = await ReflectionCardService.getReflectionCards(teamId);
+    set({ reflectionCards: cards });
   },
   addReflectionCard: async (teamId, text) => {
     const card = await ReflectionCardService.addReflectionCard(teamId, text);
@@ -44,6 +36,6 @@ export const useReflectionCardStore = create<ReflectionCardState>((set) => ({
     }));
   },
   clear: () => {
-    set({ state: "idle", reflectionCards: [] });
+    set({ reflectionCards: [] });
   },
 }));

@@ -15,11 +15,13 @@ import { Button } from "../../atoms/button/Button";
 interface TeamRetroListProps {
   teamName: string;
   teamId: string;
+  openReflectionCardsShelfClick: () => void;
 }
 
 export const TeamCard: React.FC<TeamRetroListProps> = ({
   teamName,
   teamId,
+  openReflectionCardsShelfClick,
 }) => {
   const navigate = useNavigate();
   const { isAdmin } = useTeamRole(teamId);
@@ -56,7 +58,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
 
           <Button
             data-testid="edit-team"
-            onClick={() => navigate(`/team/${teamId}/edit`)}
+            onClick={() => openReflectionCardsShelfClick()}
             size="sm"
           >
             Wrzutki

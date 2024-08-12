@@ -22,7 +22,7 @@ export const HomeView: React.FC = () => {
         {user?.teams?.length === 0 && (
           <div
             className={
-              "flex flex-col grow items-center justify-center gap-4 m-8"
+              "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-background-500 rounded-2xl"
             }
           >
             <NotFoundSvg />

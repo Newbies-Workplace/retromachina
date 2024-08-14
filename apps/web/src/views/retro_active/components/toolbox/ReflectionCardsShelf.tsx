@@ -33,21 +33,8 @@ export const ReflectionCardsShelf: React.FC<{
 
   const [isOverDropDiv, setIsOverDropDiv] = useState(false);
 
-  const {
-    clear,
-    deleteReflectionCard,
-    fetchReflectionCards,
-    addReflectionCard,
-    reflectionCards,
-  } = useReflectionCardStore();
-
-  useEffect(() => {
-    fetchReflectionCards(teamId).then();
-
-    return () => {
-      clear();
-    };
-  }, [teamId]);
+  const { deleteReflectionCard, addReflectionCard, reflectionCards } =
+    useReflectionCardStore();
 
   useEffect(() => {
     const drawerElement = drawerRef.current;

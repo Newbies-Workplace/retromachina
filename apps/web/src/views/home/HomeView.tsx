@@ -7,13 +7,20 @@ import { TeamCard } from "../../component/molecules/team_retro_list/TeamCard";
 import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useUser } from "../../context/user/UserContext.hook";
+import { useReflectionCardStore } from "../../store/ReflectionCardStore";
 import { ReflectionCardsShelf } from "../retro_active/components/toolbox/ReflectionCardsShelf";
 
 export const HomeView: React.FC = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { fetchReflectionCards } = useReflectionCardStore();
   const [reflectionCardsShelfTeamId, setReflectionCardsShelfTeamId] =
     useState<string>();
+
+  const onOpenReflectionCardsShelf = (teamId: string) => {
+    fetchReflectionCards(teamId);
+    setReflectionCardsShelfTeamId(teamId);
+  };
 
   return (
     <>
@@ -51,7 +58,7 @@ export const HomeView: React.FC = () => {
               teamId={team.id}
               teamName={team.name}
               openReflectionCardsShelfClick={() => {
-                setReflectionCardsShelfTeamId(team.id);
+                onOpenReflectionCardsShelf(team.id);
               }}
             />
           ))}

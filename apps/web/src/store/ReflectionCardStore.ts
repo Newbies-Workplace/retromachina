@@ -10,7 +10,6 @@ interface ReflectionCardState {
     teamId: string,
     reflectionCardId: string,
   ) => Promise<void>;
-  clear: () => void;
 }
 
 export const useReflectionCardStore = create<ReflectionCardState>((set) => ({
@@ -37,8 +36,5 @@ export const useReflectionCardStore = create<ReflectionCardState>((set) => ({
         ),
       }));
     });
-  },
-  clear: () => {
-    set({ reflectionCards: [] });
   },
 }));

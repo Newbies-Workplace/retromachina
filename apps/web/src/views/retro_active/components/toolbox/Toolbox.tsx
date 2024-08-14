@@ -49,7 +49,10 @@ export const Toolbox: React.FC = () => {
   } = useRetro();
 
   const { isAdmin } = useTeamRole(teamId!);
-  const { addReflectionCard } = useReflectionCardStore();
+  const { addReflectionCard, fetchReflectionCards } = useReflectionCardStore();
+  const hasReflectionCards = useReflectionCardStore(
+    (state) => state.reflectionCards.length > 0,
+  );
 
   const { user } = useUser();
   const userVotes =
@@ -94,6 +97,14 @@ export const Toolbox: React.FC = () => {
       }),
     );
   }, [teamId, roomState]);
+
+  useEffect(() => {
+    if (!teamId) {
+      return;
+    }
+
+    fetchReflectionCards(teamId).then();
+  }, [fetchReflectionCards, teamId]);
 
   if (!teamId) {
     return null;
@@ -155,15 +166,26 @@ export const Toolbox: React.FC = () => {
         )}
 
         {roomState === "reflection" && (
-          <Button
-            ref={reflectionCardsShelfButtonRef}
-            className={cn(
-              "flex flex-col justify-center items-center gap-4 w-24 h-16 bg-white border-2 border-primary-500 border-dashed",
-            )}
-            onClick={() => setIsReflectionCardsShelfOpen(true)}
-          >
-            Wrzutki
-          </Button>
+          <div className={"relative w-24 h-16 group"}>
+            <Button
+              ref={reflectionCardsShelfButtonRef}
+              className={cn(
+                "relative flex flex-col justify-center items-center gap-4 size-full bg-white border-2 border-primary-500 border-dashed",
+              )}
+              onClick={() => {
+                setIsReflectionCardsShelfOpen(true);
+              }}
+            >
+              Wrzutki
+              {hasReflectionCards && (
+                <div
+                  className={
+                    "absolute size-4 rounded-full bg-red-500 w-20 h-2 bottom-1 animate-pulse "
+                  }
+                />
+              )}
+            </Button>
+          </div>
         )}
 
         <div className={"flex justify-center gap-2 w-24 h-16"}>

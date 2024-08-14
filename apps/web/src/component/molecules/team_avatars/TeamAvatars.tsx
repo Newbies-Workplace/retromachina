@@ -4,6 +4,7 @@ import { Avatar } from "../../atoms/avatar/Avatar";
 
 interface TeamAvatarsProps {
   className?: string;
+  size?: number;
   users: {
     id: string;
     isActive: boolean;
@@ -14,7 +15,7 @@ interface TeamAvatarsProps {
 
 export const TeamAvatars: React.FC<
   React.PropsWithChildren<TeamAvatarsProps>
-> = ({ className, users }) => {
+> = ({ className, users, size }) => {
   if (users.length === 0) {
     return null;
   }
@@ -29,6 +30,7 @@ export const TeamAvatars: React.FC<
             user.isActive ? (user.isReady ? "ready" : "active") : "inactive"
           }
           url={user.avatar_link}
+          size={size}
         />
       ))}
     </div>

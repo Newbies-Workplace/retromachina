@@ -7,10 +7,13 @@ import {
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserInTeamResponse } from "shared/.dist/model/user/user.response";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import { getRetrosByTeamId } from "../../../api/Retro.service";
+import { getUsersByTeamId } from "../../../api/User.service";
 import { useTeamRole } from "../../../context/useTeamRole";
 import { Button } from "../../atoms/button/Button";
+import { TeamAvatars } from "../team_avatars/TeamAvatars";
 
 interface TeamRetroListProps {
   teamName: string;
@@ -26,6 +29,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
   const navigate = useNavigate();
   const { isAdmin } = useTeamRole(teamId);
   const [retros, setRetros] = useState<RetroResponse[]>([]);
+  const [teamUsers, setTeamUsers] = useState<UserInTeamResponse[]>();
   const isAnyRetroRunning = retros.findIndex((a) => a.is_running) !== -1;
 
   useEffect(() => {
@@ -33,7 +37,13 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
       .then((retros) => {
         setRetros(retros);
       })
-      .catch(console.log);
+      .catch(console.error);
+
+    getUsersByTeamId(teamId)
+      .then((users) => {
+        setTeamUsers(users);
+      })
+      .catch(console.error);
   }, [teamId]);
 
   return (
@@ -41,8 +51,18 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
       data-testid={`team-${teamName}`}
       className={"flex flex-col w-full p-4 gap-4 bg-background-500 rounded-lg"}
     >
-      <div className={"flex justify-between rounded-t-lg font-bold text-2xl"}>
-        {teamName}
+      <div className={"flex justify-between rounded-t-lg"}>
+        <div className={"flex flex-row gap-2 font-bold text-2xl items-center"}>
+          {teamName}
+
+          {teamUsers && (
+            <TeamAvatars
+              users={teamUsers.map((user) => {
+                return { ...user, isActive: true, isReady: false };
+              })}
+            />
+          )}
+        </div>
 
         <div className={"flex gap-2"}>
           {isAdmin && (

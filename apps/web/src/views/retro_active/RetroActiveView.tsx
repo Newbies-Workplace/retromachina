@@ -88,6 +88,7 @@ export const RetroActiveView: React.FC = () => {
 
                     return {
                       id: user.id,
+                      nick: user.nick,
                       avatar_link: user.avatar_link,
                       isReady: socketUser?.isReady ?? false,
                       isActive: true,

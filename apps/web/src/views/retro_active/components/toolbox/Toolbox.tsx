@@ -110,10 +110,6 @@ export const Toolbox: React.FC = () => {
     return null;
   }
 
-  const onOpenReflectionCardsShelf = () => {
-    setIsReflectionCardsShelfOpen(true);
-  };
-
   const onFinishRetroPress = () => {
     showConfirm({
       title: "Zakończenie retrospektywy",
@@ -176,7 +172,9 @@ export const Toolbox: React.FC = () => {
               className={cn(
                 "relative flex flex-col justify-center items-center gap-4 size-full bg-white border-2 border-primary-500 border-dashed",
               )}
-              onClick={onOpenReflectionCardsShelf}
+              onClick={() => {
+                setIsReflectionCardsShelfOpen(true);
+              }}
             >
               Wrzutki
               {hasReflectionCards && (

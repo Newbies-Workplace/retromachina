@@ -166,8 +166,8 @@ export const RetroCreateView: React.FC = () => {
               size="xl"
               onClick={onAddColumn}
             >
-              <PlusIcon className={"size-6"} />
               Nowa kolumna
+              <PlusIcon className={"size-6"} />
             </Button>
           </div>
         </div>

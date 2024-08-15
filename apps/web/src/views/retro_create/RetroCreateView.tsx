@@ -175,7 +175,7 @@ export const RetroCreateView: React.FC = () => {
         <div className={"fixed bottom-5 flex justify-center w-full"}>
           <Button
             data-testid={"create-retro"}
-            size={"xl"}
+            size={"2xl"}
             className={"min-w-[600px]"}
             onClick={onCreateRetroClick}
           >

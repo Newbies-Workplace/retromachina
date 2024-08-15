@@ -51,8 +51,12 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
       data-testid={`team-${teamName}`}
       className={"flex flex-col w-full p-4 gap-4 bg-background-500 rounded-lg"}
     >
-      <div className={"flex justify-between rounded-t-lg"}>
-        <div className={"flex flex-row gap-2 font-bold text-2xl items-center"}>
+      <div className={"flex gap-2 justify-between rounded-t-lg"}>
+        <div
+          className={
+            "flex flex-row flex-wrap gap-2 font-bold text-2xl items-center"
+          }
+        >
           {teamName}
 
           {teamUsers && (
@@ -87,27 +91,29 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         </div>
       </div>
 
-      <div className={"flex gap-2"}>
+      <div className={"flex flex-col sm:flex-row gap-2"}>
         <Button
           data-testid="task-list"
           size={"xl"}
-          className={"min-w-[256px] min-h-[126px] flex-col scrollbar"}
+          className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar"}
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
           Lista zadań
-          <ClipboardIcon className={"size-6"} />
+          <ClipboardIcon className={"min-size-6 size-6"} />
         </Button>
 
         <Button
           data-testid="task-list"
           size={"xl"}
-          className={"min-w-[256px] min-h-[126px] flex-col scrollbar bg-white"}
+          className={
+            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-white"
+          }
           onClick={() => navigate(`/team/${teamId}/archive`)}
         >
           Archiwum
           <br />
           Retrospekcji
-          <ClipboardIcon className={"size-6"} />
+          <ClipboardIcon className={"min-size-6 size-6"} />
         </Button>
 
         {isAdmin && !isAnyRetroRunning && (
@@ -115,11 +121,11 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
             data-testid="create-retro"
             size={"xl"}
             variant={"destructive"}
-            className={"min-w-[256px] min-h-[126px] flex-col"}
+            className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24"}
             onClick={() => navigate(`/retro/create?teamId=${teamId}`)}
           >
             Nowe Retro
-            <PlusIcon className={"size-6"} />
+            <PlusIcon className={"min-size-6 size-6"} />
           </Button>
         )}
 
@@ -131,7 +137,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
                 key={retro.id}
                 size={"xl"}
                 className={
-                  "min-w-[256px] min-h-[126px] flex-col bg-white border-4 border-red-500"
+                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-white border-4 border-red-500"
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >

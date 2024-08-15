@@ -139,7 +139,7 @@ export const HeroView: React.FC = () => {
 
         {/* footer */}
         <div className={"flex flex-col items-center w-full gap-2"}>
-          <Button size={"xl"} className={"w-full"} onClick={onJoinClick}>
+          <Button size={"2xl"} className={"w-full"} onClick={onJoinClick}>
             Dołącz za darmo
           </Button>
           <span>(uczciwa cena)</span>

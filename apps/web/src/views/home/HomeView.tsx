@@ -12,7 +12,6 @@ import { ReflectionCardsShelf } from "../retro_active/components/toolbox/Reflect
 
 export const HomeView: React.FC = () => {
   const { user } = useUser();
-  const navigate = useNavigate();
   const { fetchReflectionCards } = useReflectionCardStore();
   const [reflectionCardsShelfTeamId, setReflectionCardsShelfTeamId] =
     useState<string>();
@@ -25,33 +24,12 @@ export const HomeView: React.FC = () => {
   return (
     <>
       <Navbar />
-      <AnimatedBackground>
-        {user?.teams?.length === 0 && (
-          <div
-            className={
-              "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-background-500 rounded-2xl"
-            }
-          >
-            <NotFoundSvg />
+      <AnimatedBackground
+        contentClassName={"flex w-full max-w-4xl justify-center"}
+      >
+        {user?.teams?.length === 0 && <EmptyState />}
 
-            <div className={"flex flex-col justify-center items-center gap-4"}>
-              <span className={"text-xl font-bold"}>
-                Nie jesteś członkiem żadnego Zespołu!
-              </span>
-              <span>
-                Stwórz nowy zespół lub poczekaj na zaproszenie od innego członka
-                retromachiny!
-              </span>
-
-              <Button onClick={() => navigate("/team/create")}>
-                <CreateTeamSvg />
-                Stwórz Zespół
-              </Button>
-            </div>
-          </div>
-        )}
-
-        <div className={"flex flex-col gap-6 m-8"}>
+        <div className={"flex w-full container flex-col gap-6 m-4"}>
           {user?.teams?.map((team) => (
             <TeamCard
               key={team.id}
@@ -72,5 +50,34 @@ export const HomeView: React.FC = () => {
         />
       )}
     </>
+  );
+};
+
+const EmptyState: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      className={
+        "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-background-500 rounded-2xl pointer-events-auto"
+      }
+    >
+      <NotFoundSvg />
+
+      <div className={"flex flex-col justify-center items-center gap-4"}>
+        <span className={"text-xl font-bold"}>
+          Nie jesteś członkiem żadnego Zespołu!
+        </span>
+        <span>
+          Stwórz nowy zespół lub poczekaj na zaproszenie od innego członka
+          retromachiny!
+        </span>
+
+        <Button onClick={() => navigate("/team/create")}>
+          <CreateTeamSvg />
+          Stwórz Zespół
+        </Button>
+      </div>
+    </div>
   );
 };

@@ -170,8 +170,8 @@ export const TeamBoardEditView: React.FC = () => {
             disabled={board.columns.length >= MAX_COLUMNS}
             onClick={onAddColumn}
           >
-            <PlusIcon className={"size-6"} />
             Nowa Kolumna
+            <PlusIcon className={"size-6"} />
           </Button>
         </div>
       </div>

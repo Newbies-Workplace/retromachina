@@ -166,8 +166,8 @@ export const RetroCreateView: React.FC = () => {
               size="xl"
               onClick={onAddColumn}
             >
-              <PlusIcon className={"size-6"} />
               Nowa kolumna
+              <PlusIcon className={"size-6"} />
             </Button>
           </div>
         </div>
@@ -175,7 +175,7 @@ export const RetroCreateView: React.FC = () => {
         <div className={"fixed bottom-5 flex justify-center w-full"}>
           <Button
             data-testid={"create-retro"}
-            size={"xl"}
+            size={"2xl"}
             className={"min-w-[600px]"}
             onClick={onCreateRetroClick}
           >

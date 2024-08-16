@@ -31,7 +31,7 @@ const transition = {
 const getRandomUsers = (users: User[], amount: number) => {
   const randomUsers: User[] = [];
 
-  if (users.length === 0) return [];
+  if (users.length <= 1) return [];
 
   for (let i = 0; i < amount; i++) {
     const randomIndex = Math.floor(Math.random() * users.length);
@@ -59,6 +59,14 @@ export const SlotMachine: React.FC = () => {
     [highlightedUserId, teamUsers],
   );
   const delayedHighlightedUser = useDebounce(highlightedUser, 1000);
+  const randomUsers: User[][] = useMemo(
+    () => [
+      getRandomUsers(activeUsers, 8),
+      getRandomUsers(activeUsers, 5),
+      getRandomUsers(activeUsers, 2),
+    ],
+    [activeUsers],
+  );
   const [hasConfetti, setHasConfetti] = useState(false);
 
   const [leverRef, animate] = useAnimate();
@@ -69,8 +77,9 @@ export const SlotMachine: React.FC = () => {
       await animate(".lever", { y: [0, 35, 50, 50, 0] }, { duration: 0.4 });
     }
 
-    await controls.start("idle", { duration: 0 });
+    await controls.start("idle", { duration: 0.1 });
     await controls.start("drawing");
+
     setHasConfetti(true);
     delay(() => {
       setHasConfetti(false);
@@ -89,6 +98,7 @@ export const SlotMachine: React.FC = () => {
     };
   }, []);
 
+  // Initial draw
   useEffect(() => {
     if (
       slotMachineVisible &&
@@ -140,7 +150,7 @@ export const SlotMachine: React.FC = () => {
                 className={"flex flex-col gap-12 mb-2.5"}
                 transition={transition}
               >
-                {getRandomUsers(activeUsers, 8).map((user, index) => (
+                {randomUsers[0].map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}
@@ -160,7 +170,7 @@ export const SlotMachine: React.FC = () => {
                 className={"flex flex-col gap-12 mb-2.5"}
                 transition={transition}
               >
-                {getRandomUsers(activeUsers, 5).map((user, index) => (
+                {randomUsers[1].map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}
@@ -180,7 +190,7 @@ export const SlotMachine: React.FC = () => {
                 className={"flex flex-col gap-12 mb-2.5"}
                 transition={transition}
               >
-                {getRandomUsers(activeUsers, 2).map((user, index) => (
+                {randomUsers[2].map((user, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
                   <Avatar size={60} key={index} url={user.avatar_link} />
                 ))}

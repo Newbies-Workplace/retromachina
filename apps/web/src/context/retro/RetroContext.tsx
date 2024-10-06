@@ -443,6 +443,13 @@ export const RetroContextProvider: React.FC<
       parentCardId: parentCardId,
     };
     socket.current?.emit("command_vote_on_card", command);
+
+    const allUserVotes = votes.filter((v) => v.voterId === user?.id);
+    const isLastAvailableVote = allUserVotes.length === maxVotes - 1;
+
+    if (isLastAvailableVote) {
+      setReady(true);
+    }
   };
 
   const removeVote = (parentCardId: string) => {

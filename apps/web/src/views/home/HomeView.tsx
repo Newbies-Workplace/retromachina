@@ -7,7 +7,7 @@ import { TeamCard } from "../../component/molecules/team_retro_list/TeamCard";
 import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useUser } from "../../context/user/UserContext.hook";
-import { useReflectionCardStore } from "../../store/ReflectionCardStore";
+import { useReflectionCardStore } from "../../store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "../retro_active/components/toolbox/ReflectionCardsShelf";
 
 export const HomeView: React.FC = () => {

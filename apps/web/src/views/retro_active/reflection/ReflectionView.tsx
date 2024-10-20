@@ -8,7 +8,7 @@ import { ColumnCards } from "../../../component/molecules/dragndrop/ColumnCards"
 import { DraggableCard } from "../../../component/molecules/dragndrop/DraggableCard";
 import { useRetro } from "../../../context/retro/RetroContext.hook";
 import { useUser } from "../../../context/user/UserContext.hook";
-import { useReflectionCardStore } from "../../../store/ReflectionCardStore";
+import { useReflectionCardStore } from "../../../store/useReflectionCardStore";
 
 export const ReflectionView: React.FC = () => {
   const { user } = useUser();

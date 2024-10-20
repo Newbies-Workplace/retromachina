@@ -16,7 +16,7 @@ import {
   isCard,
 } from "../../../../component/molecules/dragndrop/dragndrop";
 import useClickOutside from "../../../../context/useClickOutside";
-import { useReflectionCardStore } from "../../../../store/ReflectionCardStore";
+import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
 
 export const ReflectionCardsShelf: React.FC<{
   teamId: string;

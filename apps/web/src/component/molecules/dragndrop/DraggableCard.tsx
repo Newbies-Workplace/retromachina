@@ -7,6 +7,7 @@ import dropCardAudio from "../../../assets/sounds/card-drop.wav";
 import pickCardAudio from "../../../assets/sounds/card-pick.wav";
 import { cn } from "../../../common/Util";
 import { getCard } from "./dragndrop";
+import {useAudio} from "../../../context/useAudio";
 
 interface DraggableCardProps {
   className?: string;
@@ -27,8 +28,8 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
-  const pickAudio = new Audio(pickCardAudio);
-  const dropAudio = new Audio(dropCardAudio);
+
+  const { play: playAudio } = useAudio();
 
   useEffect(() => {
     const element = ref.current;
@@ -40,11 +41,11 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
         element: element,
         onDragStart: () => {
           setDragging(true);
-          pickAudio.play();
+          playAudio(pickCardAudio);
         },
         onDrop: () => {
           setDragging(false);
-          dropAudio.play();
+          playAudio(dropCardAudio);
         },
         getInitialData: () => getCard({ cardId, columnId, parentCardId }),
         onGenerateDragPreview({ source }) {

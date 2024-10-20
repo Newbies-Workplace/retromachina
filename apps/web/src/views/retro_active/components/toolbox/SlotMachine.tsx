@@ -13,6 +13,9 @@ import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import { useDebounce } from "../../../../context/useDebounce";
 import { useUser } from "../../../../context/user/UserContext.hook";
+import slotMachineOpenSound from "../../../../assets/sounds/slot-machine-open.wav";
+import slotMachineSound from "../../../../assets/sounds/slot-machine.wav";
+import {useAudio} from "../../../../context/useAudio";
 
 export const SLOT_MACHINE_ANIMATION_DURATION = 2400;
 const rowAnimation = {
@@ -53,6 +56,7 @@ export const SlotMachine: React.FC = () => {
     removeDrawSlotMachineListener,
   } = useRetro();
   const { user } = useUser();
+  const {play: playAudio} = useAudio();
 
   const highlightedUser = useMemo(
     () => teamUsers.find((u) => u.id === highlightedUserId),
@@ -78,6 +82,7 @@ export const SlotMachine: React.FC = () => {
     }
 
     await controls.start("idle", { duration: 0.1 });
+    playAudio(slotMachineSound);
     await controls.start("drawing");
 
     setHasConfetti(true);
@@ -109,6 +114,12 @@ export const SlotMachine: React.FC = () => {
     }
   }, [teamUsers, slotMachineVisible]);
 
+  useEffect(() => {
+    if (roomState === "group" && slotMachineVisible) {
+      playAudio(slotMachineOpenSound)
+    }
+  }, [roomState, slotMachineVisible]);
+
   return (
     <AnimatePresence>
       {roomState === "group" && slotMachineVisible && (
@@ -116,6 +127,7 @@ export const SlotMachine: React.FC = () => {
           ref={leverRef}
           initial={{ opacity: 0, bottom: 0 }}
           animate={{ opacity: 1, bottom: 92 }}
+
           exit={{ opacity: 0, bottom: 0 }}
           transition={{ duration: 0.2 }}
           className={

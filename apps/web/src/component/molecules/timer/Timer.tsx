@@ -1,36 +1,47 @@
 import dayjs from "dayjs";
-import type React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "../../../common/Util";
 
 interface TimerProps {
   onClick?: () => void;
+  onTimerEnd?: () => void;
   timerEnds: number | null;
 }
 
 type TimerVariant = "default" | "expires" | "end";
 
-export const Timer: React.FC<TimerProps> = ({ onClick, timerEnds }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(0);
+export const Timer: React.FC<TimerProps> = ({
+  onClick,
+  onTimerEnd,
+  timerEnds,
+}) => {
+  const [secondsLeft, setSecondsLeft] = useState<number>(0);
   let variant: TimerVariant = "default";
+
   let timeText = timerEnds
-    ? dayjs.duration(timeLeft, "s").format("m:ss")
+    ? dayjs.duration(secondsLeft, "s").format("m:ss")
     : "--:--";
 
   if (timerEnds === null) {
     variant = "default";
     timeText = "--:--";
-  } else if (timeLeft <= 0) {
+  } else if (secondsLeft <= 0) {
     variant = "end";
     timeText = "0:00";
-  } else if (timeLeft <= 30) {
+  } else if (secondsLeft <= 10) {
     variant = "expires";
   }
 
   useEffect(() => {
     const setTimer = () => {
       if (timerEnds !== null) {
-        setTimeLeft((timerEnds - dayjs().valueOf()) / 1000);
+        const secondsLeft = Math.floor((timerEnds - dayjs().valueOf()) / 1000);
+
+        if (secondsLeft === 0) {
+          onTimerEnd?.();
+        }
+
+        setSecondsLeft(secondsLeft);
       }
     };
 
@@ -42,7 +53,7 @@ export const Timer: React.FC<TimerProps> = ({ onClick, timerEnds }) => {
     return () => {
       clearInterval(counter);
     };
-  }, [timerEnds]);
+  }, [timerEnds, onTimerEnd]);
 
   return (
     <div

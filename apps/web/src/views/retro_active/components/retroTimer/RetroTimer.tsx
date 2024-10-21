@@ -2,9 +2,11 @@ import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
 import React, { createRef, useEffect } from "react";
 import { useCallback, useState } from "react";
+import timerEndSound from "../../../../assets/sounds/timer-end.wav";
 import { Button } from "../../../../component/atoms/button/Button";
 import { Timer } from "../../../../component/molecules/timer/Timer";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
+import { useAudio } from "../../../../context/useAudio";
 import useClickOutside from "../../../../context/useClickOutside";
 import { useTeamRole } from "../../../../context/useTeamRole";
 
@@ -17,6 +19,7 @@ export const RetroTimer: React.FC = () => {
 
   const { timerEnds, teamId, setTimer } = useRetro();
   const { isAdmin } = useTeamRole(teamId!);
+  const { play: playAudio } = useAudio();
 
   const onQuickAddTime = () => {
     const currentOrEndTime = timerEnds ? dayjs(timerEnds) : dayjs();
@@ -42,6 +45,14 @@ export const RetroTimer: React.FC = () => {
     closeTimer();
   };
 
+  const onTimerEnd = useCallback(() => {
+    playAudio(timerEndSound)
+      .then(() => new Promise((resolve) => setTimeout(resolve, 150)))
+      .then(() => playAudio(timerEndSound))
+      .then(() => new Promise((resolve) => setTimeout(resolve, 150)))
+      .then(() => playAudio(timerEndSound));
+  }, [playAudio]);
+
   return (
     <div
       className={
@@ -58,6 +69,7 @@ export const RetroTimer: React.FC = () => {
         <Timer
           timerEnds={timerEnds}
           onClick={isAdmin ? () => setDialogTimerOpen(true) : undefined}
+          onTimerEnd={onTimerEnd}
         />
 
         {isAdmin && (

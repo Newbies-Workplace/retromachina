@@ -9,6 +9,8 @@
       <excludeFolder url="file://$MODULE_DIR$/apps/api/.turbo" />
       <excludeFolder url="file://$MODULE_DIR$/apps/api/dist" />
       <excludeFolder url="file://$MODULE_DIR$/packages/shared/.dist" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/web/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/web/test-results" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -5,17 +5,17 @@ import {
   useAnimate,
   useAnimation,
 } from "framer-motion";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 import { User } from "shared/model/retro/retroRoom.interface";
+import slotMachineOpenSound from "../../../../assets/sounds/slot-machine-open.wav";
+import slotMachineSound from "../../../../assets/sounds/slot-machine.wav";
 import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
+import { useAudio } from "../../../../context/useAudio";
 import { useDebounce } from "../../../../context/useDebounce";
 import { useUser } from "../../../../context/user/UserContext.hook";
-import slotMachineOpenSound from "../../../../assets/sounds/slot-machine-open.wav";
-import slotMachineSound from "../../../../assets/sounds/slot-machine.wav";
-import {useAudio} from "../../../../context/useAudio";
 
 export const SLOT_MACHINE_ANIMATION_DURATION = 2400;
 const rowAnimation = {
@@ -56,7 +56,7 @@ export const SlotMachine: React.FC = () => {
     removeDrawSlotMachineListener,
   } = useRetro();
   const { user } = useUser();
-  const {play: playAudio} = useAudio();
+  const { play: playAudio } = useAudio();
 
   const highlightedUser = useMemo(
     () => teamUsers.find((u) => u.id === highlightedUserId),
@@ -72,7 +72,6 @@ export const SlotMachine: React.FC = () => {
     [activeUsers],
   );
   const [hasConfetti, setHasConfetti] = useState(false);
-
   const [leverRef, animate] = useAnimate();
   const controls = useAnimation();
 
@@ -114,9 +113,15 @@ export const SlotMachine: React.FC = () => {
     }
   }, [teamUsers, slotMachineVisible]);
 
+  const isFirstRender = useRef(true);
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     if (roomState === "group" && slotMachineVisible) {
-      playAudio(slotMachineOpenSound)
+      playAudio(slotMachineOpenSound);
     }
   }, [roomState, slotMachineVisible]);
 
@@ -127,7 +132,6 @@ export const SlotMachine: React.FC = () => {
           ref={leverRef}
           initial={{ opacity: 0, bottom: 0 }}
           animate={{ opacity: 1, bottom: 92 }}
-
           exit={{ opacity: 0, bottom: 0 }}
           transition={{ duration: 0.2 }}
           className={

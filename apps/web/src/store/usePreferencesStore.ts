@@ -1,19 +1,19 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type SettingsStore = {
+type PreferencesStore = {
   volumeLevel: number;
   setVolumeLevel: (volumeLevel: number) => void;
 };
 
-export const useSettingsStore = create<SettingsStore>()(
+export const usePreferencesStore = create<PreferencesStore>()(
   persist(
     (set) => ({
       volumeLevel: 0.5,
       setVolumeLevel: (volumeLevel) => set({ volumeLevel }),
     }),
     {
-      name: "settings-store",
-    }
-  )
+      name: "preferences-store",
+    },
+  ),
 );

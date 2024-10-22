@@ -1,23 +1,23 @@
-import {useSettingsStore} from "../store/useSettingsStore";
+import { usePreferencesStore } from "../store/usePreferencesStore";
 
 interface UseAudio {
-  play: (audio: string) => Promise<void>;
+  play: (audio: string, options?: UseAudioOptions) => Promise<void>;
+}
+
+interface UseAudioOptions {
+  volumeLevel?: number;
 }
 
 export const useAudio = (): UseAudio => {
-  const {volumeLevel} = useSettingsStore();
+  const { volumeLevel } = usePreferencesStore();
 
-  const play = async (audio: string) => {
-    if (volumeLevel === 0) {
-      return;
-    }
-
+  const play = async (audio: string, options?: UseAudioOptions) => {
     const audioElement = new Audio(audio);
-    audioElement.volume = volumeLevel
+    audioElement.volume = options?.volumeLevel ?? volumeLevel;
     await audioElement.play();
   };
 
   return {
     play,
   };
-}
+};

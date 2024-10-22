@@ -1,4 +1,5 @@
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { GearIcon } from "@radix-ui/react-icons";
 import React from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -42,6 +43,11 @@ export const Menu = () => {
       </div>
 
       <div className={styles.options}>
+        <Link to={"/preferences"} className={styles.option}>
+          <GearIcon width={24} height={24} />
+          Ustawienia
+        </Link>
+
         <Link className={styles.option} to={"/team/create"}>
           <CreateTeamSvg />
           Stwórz Zespół

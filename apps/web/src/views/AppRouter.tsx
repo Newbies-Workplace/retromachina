@@ -9,6 +9,7 @@ import { SignInView } from "./auth/sign_in/SignInView";
 import { HeroView } from "./hero/HeroView";
 import { HomeView } from "./home/HomeView";
 import { InviteView } from "./invitation/InviteView";
+import { PreferencesView } from "./preferences/PreferencesView";
 import { RetroActiveView } from "./retro_active/RetroActiveView";
 import { RetroWrapper } from "./retro_active/RetroWrapper";
 import { RetroArchiveView } from "./retro_archive/RetroArchiveView";
@@ -35,6 +36,14 @@ export const AppRouter: React.FC = () => {
           element={
             <RequireAuth fallback={<Navigate to={"/hero"} />}>
               <HomeView />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/preferences"
+          element={
+            <RequireAuth>
+              <PreferencesView />
             </RequireAuth>
           }
         />

@@ -305,7 +305,10 @@ export const RetroContextProvider: React.FC<
   };
 
   const handleTimerChanged = (time: number | null, serverOffset: number) => {
-    setTimerEnds(time ? time - serverOffset : null);
+    const timerEnds = time ? time - serverOffset : null;
+    const roundedTime = timerEnds ? Math.round(timerEnds / 100) * 100 : null;
+
+    setTimerEnds(roundedTime);
   };
 
   const nextRoomState = () => {

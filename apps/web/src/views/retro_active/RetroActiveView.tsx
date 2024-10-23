@@ -1,15 +1,17 @@
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import { Share2Icon } from "@radix-ui/react-icons";
 import { AnimatePresence } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Route, Routes } from "react-router-dom";
 import invariant from "tiny-invariant";
+import readySingleSound from "../../assets/sounds/ready-single.wav";
 import { Button } from "../../component/atoms/button/Button";
 import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
 import { TeamAvatars } from "../../component/molecules/team_avatars/TeamAvatars";
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useRetro } from "../../context/retro/RetroContext.hook";
+import { useAudio } from "../../context/useAudio";
 import { useTeamRole } from "../../context/useTeamRole";
 import { useUser } from "../../context/user/UserContext.hook";
 import { RetroTimer } from "./components/retroTimer/RetroTimer";
@@ -26,8 +28,13 @@ export const RetroActiveView: React.FC = () => {
   const { user } = useUser();
   const { ready, teamId } = useRetro();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-
+  const { play: playAudio } = useAudio();
   const { isAdmin } = useTeamRole(teamId ?? "");
+
+  const readyUsersCount = activeUsers.filter((user) => user.isReady).length;
+  const allUsersCount = activeUsers.length;
+  const prevReadyUsersCount = useRef(readyUsersCount);
+  const prevAllUsersCount = useRef(allUsersCount);
 
   useEffect(() => {
     navigate(`/retro/${retroId}/${roomState}`);
@@ -43,6 +50,26 @@ export const RetroActiveView: React.FC = () => {
       element: element,
     });
   }, []);
+
+  useEffect(() => {
+    if (prevAllUsersCount.current === allUsersCount) {
+      if (
+        readyUsersCount === allUsersCount &&
+        readyUsersCount > prevReadyUsersCount.current
+      ) {
+        playAudio(readySingleSound)
+          .then(() => new Promise((resolve) => setTimeout(resolve, 100)))
+          .then(async () => await playAudio(readySingleSound))
+          .then(() => new Promise((resolve) => setTimeout(resolve, 100)))
+          .then(async () => await playAudio(readySingleSound));
+      } else if (readyUsersCount > prevReadyUsersCount.current) {
+        playAudio(readySingleSound);
+      }
+    }
+
+    prevReadyUsersCount.current = readyUsersCount;
+    prevAllUsersCount.current = allUsersCount;
+  }, [readyUsersCount, prevAllUsersCount, playAudio]);
 
   return (
     <>

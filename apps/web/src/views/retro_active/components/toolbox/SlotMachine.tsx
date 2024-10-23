@@ -5,12 +5,15 @@ import {
   useAnimate,
   useAnimation,
 } from "framer-motion";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 import { User } from "shared/model/retro/retroRoom.interface";
+import slotMachineOpenSound from "../../../../assets/sounds/slot-machine-open.wav";
+import slotMachineSound from "../../../../assets/sounds/slot-machine.wav";
 import { Avatar } from "../../../../component/atoms/avatar/Avatar";
 import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
 import { useRetro } from "../../../../context/retro/RetroContext.hook";
+import { useAudio } from "../../../../context/useAudio";
 import { useDebounce } from "../../../../context/useDebounce";
 import { useUser } from "../../../../context/user/UserContext.hook";
 
@@ -53,6 +56,7 @@ export const SlotMachine: React.FC = () => {
     removeDrawSlotMachineListener,
   } = useRetro();
   const { user } = useUser();
+  const { play: playAudio } = useAudio();
 
   const highlightedUser = useMemo(
     () => teamUsers.find((u) => u.id === highlightedUserId),
@@ -68,7 +72,6 @@ export const SlotMachine: React.FC = () => {
     [activeUsers],
   );
   const [hasConfetti, setHasConfetti] = useState(false);
-
   const [leverRef, animate] = useAnimate();
   const controls = useAnimation();
 
@@ -78,6 +81,7 @@ export const SlotMachine: React.FC = () => {
     }
 
     await controls.start("idle", { duration: 0.1 });
+    playAudio(slotMachineSound);
     await controls.start("drawing");
 
     setHasConfetti(true);
@@ -108,6 +112,18 @@ export const SlotMachine: React.FC = () => {
       controls.start("drawing", { duration: 0 });
     }
   }, [teamUsers, slotMachineVisible]);
+
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (roomState === "group" && slotMachineVisible) {
+      playAudio(slotMachineOpenSound);
+    }
+  }, [roomState, slotMachineVisible]);
 
   return (
     <AnimatePresence>

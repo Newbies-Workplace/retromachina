@@ -9,14 +9,17 @@ import React, { createRef, useEffect, useState } from "react";
 import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
 import SaveIcon from "../../../../assets/icons/save.svg";
+import cardDropSound from "../../../../assets/sounds/card-drop.wav";
+import cardPickSound from "../../../../assets/sounds/card-pick.wav";
 import { cn } from "../../../../common/Util";
 import { Button } from "../../../../component/atoms/button/Button";
 import {
   getReflectionCard,
   isCard,
 } from "../../../../component/molecules/dragndrop/dragndrop";
+import { useAudio } from "../../../../context/useAudio";
 import useClickOutside from "../../../../context/useClickOutside";
-import { useReflectionCardStore } from "../../../../store/ReflectionCardStore";
+import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
 
 export const ReflectionCardsShelf: React.FC<{
   teamId: string;
@@ -208,6 +211,7 @@ const ReflectionCard: React.FC<{
   enableDrag?: boolean;
 }> = ({ id, text, onDeleteClick, enableDrag = false }) => {
   const cardRef = createRef<HTMLDivElement>();
+  const { play: playSound } = useAudio();
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -223,8 +227,14 @@ const ReflectionCard: React.FC<{
       draggable({
         element: element,
         getInitialData: () => getReflectionCard({ reflectionCardId: id, text }),
-        onDragStart: () => setIsDragging(true),
-        onDrop: () => setIsDragging(false),
+        onDragStart: () => {
+          playSound(cardPickSound);
+          setIsDragging(true);
+        },
+        onDrop: () => {
+          playSound(cardDropSound);
+          setIsDragging(false);
+        },
       }),
     );
   }, []);

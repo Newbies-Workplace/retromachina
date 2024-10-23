@@ -3,7 +3,10 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { scrollJustEnoughIntoView } from "@atlaskit/pragmatic-drag-and-drop/element/scroll-just-enough-into-view";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
+import dropCardAudio from "../../../assets/sounds/card-drop.wav";
+import pickCardAudio from "../../../assets/sounds/card-pick.wav";
 import { cn } from "../../../common/Util";
+import { useAudio } from "../../../context/useAudio";
 import { getCard } from "./dragndrop";
 
 interface DraggableCardProps {
@@ -26,6 +29,8 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
 
+  const { play: playAudio } = useAudio();
+
   useEffect(() => {
     const element = ref.current;
 
@@ -34,8 +39,14 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
     return combine(
       draggable({
         element: element,
-        onDragStart: () => setDragging(true),
-        onDrop: () => setDragging(false),
+        onDragStart: () => {
+          setDragging(true);
+          playAudio(pickCardAudio);
+        },
+        onDrop: () => {
+          setDragging(false);
+          playAudio(dropCardAudio);
+        },
         getInitialData: () => getCard({ cardId, columnId, parentCardId }),
         onGenerateDragPreview({ source }) {
           scrollJustEnoughIntoView({ element: source.element });

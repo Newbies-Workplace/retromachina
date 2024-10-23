@@ -22,7 +22,7 @@ import useClickOutside from "../../../../context/useClickOutside";
 import { usePlural } from "../../../../context/usePlural";
 import { useTeamRole } from "../../../../context/useTeamRole";
 import { useUser } from "../../../../context/user/UserContext.hook";
-import { useReflectionCardStore } from "../../../../store/ReflectionCardStore";
+import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "./ReflectionCardsShelf";
 import { SlotMachine } from "./SlotMachine";
 

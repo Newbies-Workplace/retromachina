@@ -1,53 +1,84 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;500;700&display=swap');*/
 
-@layer base {
-    @font-face {
-        font-family: "Harlow Solid Italic";
-        src: url("assets/fonts/Harlow_Solid_Italic.TTF");
-    }
+@import "tailwindcss";
+
+@theme {
+    --font-jetbrains-mono: "JetBrains Mono", monospace;
+    --font-harlow-solid-italic: "Harlow Solid Italic", cursive;
+
+    --color-gray-400: #EAEAEA;
+    --color-gray-500: #D9D9D9;
+    --color-gray-600: #bdbdbd;
+    --color-red-500: #DC6E47;
+    --color-red-600: #b75939;
+    --color-primary-500: #73BDA8;
+    --color-primary-600: #5e9b8a;
+    --color-secondary-400: #9c7556;
+    --color-secondary-500: #946847;
+    --color-background-50: #F4F2E6;
+    --color-background-100: #f8e2c3;
+    --color-background-500: #EBD3A8;
 }
 
-@layer components {
-    .scrollbar {
-        overflow-x: auto;
-        scrollbar-gutter: stable;
-    }
+/*@font-face {*/
+/*    font-family: "Harlow Solid Italic";*/
+/*    src: url("assets/fonts/Harlow_Solid_Italic.TTF") format("truetype");*/
+/*}*/
 
-    .scrollbar::-webkit-scrollbar {
+@font-face {
+    font-family: 'JetBrains Mono', monospace;
+    src: url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;500;700&display=swap');
+}
+
+@utility animate-timer-blink {
+    animation: timer-blink 1s infinite;
+}
+
+@utility scrollbar {
+    overflow-x: auto;
+    scrollbar-gutter: stable;
+
+    &::-webkit-scrollbar {
         width: 4px;
         height: 8px;
     }
 
-    .scrollbar::-webkit-scrollbar-track {
+    &::-webkit-scrollbar-track {
         border-radius: 2px;
         border: solid 10px transparent;
     }
 
-    .scrollbar::-webkit-scrollbar-thumb {
+    &::-webkit-scrollbar-thumb {
         background: rgb(97, 96, 96);
         border-radius: 10px;
     }
 
-    .scrollbar::-webkit-scrollbar-thumb:hover {
+    &::-webkit-scrollbar-thumb:hover {
         background: #a7a3a3;
     }
+}
 
-    .word-break {
-        word-break: break-word;
+@utility word-break {
+    word-break: break-word;
+}
+
+@keyframes timer-blink{
+    0%, 100% {
+        border-color: var(--color-red-500);
+        background-color: var(--color-background-50);
+        color: var(--color-red-500);
+    }
+    50% {
+        border-color: var(--color-background-50);
+        background-color: var(--color-red-500);
+        color: var(--color-background-50);
     }
 }
 
 body, main {
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #F4F2E6;
+    @apply min-h-full bg-background-50 font-jetbrains-mono;
 }
 
 #root {
-    display: flex;
-    flex-flow: column;
-    height: 100vh;
+    @apply flex flex-col min-h-screen;
 }

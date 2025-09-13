@@ -2,7 +2,6 @@ import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
-import lineSvg from "../../../assets/images/line.svg?url";
 import { cn } from "../../../common/Util";
 import useClickOutside from "../../../context/useClickOutside";
 import { useUser } from "../../../context/user/UserContext.hook";
@@ -34,7 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <span
           onClick={() => navigate("/")}
           className={
-            "font-harlow-solid-italic text-4xl text-background-50 cursor-pointer ml-4 mt-2 mr-auto"
+            "font-harlow-solid-italic text-3xl text-background-50 cursor-pointer ml-4 mt-2 mr-auto"
           }
         >
           Retromachina
@@ -83,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({
       <div
         className={cn("w-full h-1 bg-repeat-x")}
         style={{
-          backgroundImage: `url(${lineSvg})`,
+          backgroundImage: `url(/images/line.svg)`,
         }}
       />
     </div>

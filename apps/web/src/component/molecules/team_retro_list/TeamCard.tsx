@@ -54,7 +54,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
       <div className={"flex gap-2 justify-between rounded-t-lg"}>
         <div
           className={
-            "flex flex-row flex-wrap gap-2 font-bold text-2xl items-center"
+            "flex flex-row flex-wrap gap-2 font-bold text-xl items-center"
           }
         >
           {teamName}

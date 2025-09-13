@@ -1,15 +1,17 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
+import tailwindcss from "@tailwindcss/vite";
 import EnvironmentPlugin from "vite-plugin-environment";
-import { svgrComponent } from "vite-plugin-svgr-component";
+import {svgrComponent} from "vite-plugin-svgr-component";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({mode}) => {
   return {
     plugins: [
+      tailwindcss(),
       svgrComponent(),
       react(),
-      EnvironmentPlugin("all", { prefix: "RETRO_WEB" }),
+      EnvironmentPlugin("all", {prefix: "RETRO_WEB"}),
     ],
     envDir: "../",
     root: "src",

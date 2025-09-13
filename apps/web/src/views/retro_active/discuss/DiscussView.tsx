@@ -11,7 +11,6 @@ import { useRetro } from "../../../context/retro/RetroContext.hook";
 import { type Group, useCardGroups } from "../../../context/useCardGroups";
 import { usePlural } from "../../../context/usePlural";
 import { useUser } from "../../../context/user/UserContext.hook";
-import styles from "./DiscussView.module.scss";
 
 export const DiscussView = () => {
   const {
@@ -65,9 +64,17 @@ export const DiscussView = () => {
   }, [activeUsers, teamUsers]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.upNextSection}>
-        <span className={styles.header}>Już za chwilę...</span>
+    <div
+      className={
+        "flex justify-between flex-row h-full max-h-[calc(100vh-64px-76px)]"
+      }
+    >
+      <div
+        className={
+          "hidden lg:flex flex-col gap-4 min-w-[250px] max-w-[w50px] px-4 py-2 scrollbar"
+        }
+      >
+        <span className={"ml-2 text-3xl"}>Już za chwilę...</span>
         {groups
           .sort((a, b) => b.votes - a.votes)
           .filter((group, groupIndex) => {
@@ -107,10 +114,8 @@ export const DiscussView = () => {
                       }))}
                     >
                       {group.cards.length === index + 1 && (
-                        <div className={styles.votes}>
-                          <span className={styles.voteNumber}>
-                            {group.votes}
-                          </span>
+                        <div className={"flex justify-center grow w-8"}>
+                          <span className={"self-center"}>{group.votes}</span>
                         </div>
                       )}
                     </Card>
@@ -122,7 +127,7 @@ export const DiscussView = () => {
       </div>
 
       {discussionCardId && (
-        <div className={styles.currentCardSection}>
+        <div className={"grow justify-center pt-4"}>
           {(() => {
             const group = groups.find(
               (g) => g.parentCardId === discussionCardId,
@@ -134,7 +139,7 @@ export const DiscussView = () => {
             return (
               <div
                 className={cn(
-                  styles.discussCardWrapper,
+                  "flex flex-col mx-4 bg-white p-2.5 border rounded-2xl break-words whitespace-pre-line",
                   group.votes === 0 && "opacity-40",
                 )}
               >
@@ -142,7 +147,7 @@ export const DiscussView = () => {
                   const author = teamUsers.find((u) => u.id === card.authorId);
 
                   return (
-                    <div key={card.id} className={styles.card}>
+                    <div key={card.id} className={"flex gap-2 mb-4"}>
                       <Avatar url={author?.avatar_link ?? ""} size={24} />
 
                       {card.text}
@@ -150,7 +155,11 @@ export const DiscussView = () => {
                   );
                 })}
 
-                <span className={styles.groupVotes}>
+                <span
+                  className={
+                    "flex justify-end items-end mt-auto text-sm text-gray-600"
+                  }
+                >
                   {group.votes}{" "}
                   {usePlural(group.votes, {
                     one: "głos",
@@ -163,8 +172,12 @@ export const DiscussView = () => {
           })()}
         </div>
       )}
-      <div className={styles.actionPointsSection}>
-        <div className={styles.actionPointList}>
+      <div
+        className={
+          "flex flex-col grow p-2 min-w-[300px] max-w-[400px] my-4 rounded-l-2xl bg-background-500"
+        }
+      >
+        <div className={"flex flex-col gap-2 mb-auto pb-7 scrollbar"}>
           {tasks
             ?.filter(
               (actionPoint) => actionPoint.parentCardId === discussionCardId,
@@ -211,7 +224,7 @@ export const DiscussView = () => {
             })}
         </div>
 
-        <div className={styles.actionPointInput}>
+        <div className={"mt-4"}>
           <div className={"flex w-full -mb-7 px-1"}>
             <AnimatePresence>
               {usersWritingTasks.slice(0, 8).map((user) => (

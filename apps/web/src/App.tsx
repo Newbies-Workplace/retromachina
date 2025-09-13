@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import { UserContextProvider } from "./context/user/UserContext";
 import { AppRouter } from "./views/AppRouter";
 import "react-toastify/dist/ReactToastify.css";
-import "./App.module.scss";
+import "./App.css";
 import { TooltipProvider } from "./component/molecules/tooltip/Tooltip";
 import { ConfirmProvider } from "./context/confirm/ConfirmContext";
 

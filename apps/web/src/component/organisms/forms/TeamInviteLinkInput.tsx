@@ -2,9 +2,9 @@ import { RefreshCwIcon, TrashIcon } from "lucide-react";
 import type React from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
-import { useConfirm } from "../../../context/confirm/ConfirmContext.hook";
-import { Button } from "../../atoms/button/Button";
-import { Input } from "../../atoms/input/Input";
+import { Button } from "@/component/atoms/button/Button";
+import { Input } from "@/component/atoms/input/Input";
+import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 
 type TeamInviteLinkInputProps = {
   inviteKey: string | undefined;

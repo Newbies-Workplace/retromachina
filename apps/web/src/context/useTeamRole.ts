@@ -1,6 +1,6 @@
 import { TeamResponse } from "shared/model/team/team.response";
 import type { UserRole } from "shared/model/user/user.role";
-import { useUser } from "./user/UserContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
 
 interface TeamRoleResult {
   role: UserRole | null;

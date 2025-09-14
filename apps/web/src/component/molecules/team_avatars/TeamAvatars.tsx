@@ -1,6 +1,6 @@
 import type React from "react";
-import { cn } from "../../../common/Util";
-import { Avatar } from "../../atoms/avatar/Avatar";
+import { cn } from "@/common/Util";
+import { Avatar } from "@/component/atoms/avatar/Avatar";
 
 interface TeamAvatarsProps {
   className?: string;

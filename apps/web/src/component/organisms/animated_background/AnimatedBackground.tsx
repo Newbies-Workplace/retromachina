@@ -1,7 +1,7 @@
 import { ClipboardCheckIcon, SaveIcon, TrendingUpIcon } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useEffect, useState } from "react";
-import { cn, debounced, randomInteger } from "../../../common/Util";
+import { cn, debounced, randomInteger } from "@/common/Util";
 
 interface AnimatedBackgroundProps {
   children: React.ReactNode;

@@ -5,19 +5,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "../../component/atoms/button/Button";
-import { Card } from "../../component/molecules/card/Card";
-import { Column } from "../../component/molecules/column/Column";
-import { ColumnCards } from "../../component/molecules/dragndrop/ColumnCards";
-import { DraggableCard } from "../../component/molecules/dragndrop/DraggableCard";
+import { Button } from "@/component/atoms/button/Button";
+import { Card } from "@/component/molecules/card/Card";
+import { Column } from "@/component/molecules/column/Column";
+import { ColumnCards } from "@/component/molecules/dragndrop/ColumnCards";
+import { DraggableCard } from "@/component/molecules/dragndrop/DraggableCard";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "../../component/molecules/tooltip/Tooltip";
-import Navbar from "../../component/organisms/navbar/Navbar";
-import { useBoard } from "../../context/board/BoardContext.hook";
-import { useUser } from "../../context/user/UserContext.hook";
+} from "@/component/molecules/tooltip/Tooltip";
+import Navbar from "@/component/organisms/navbar/Navbar";
+import { useBoard } from "@/context/board/BoardContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const TeamBoardView: React.FC = () => {
   const {

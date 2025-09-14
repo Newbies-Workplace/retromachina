@@ -1,8 +1,8 @@
 import type React from "react";
 import GoogleButton from "react-google-button";
 import { Navigate } from "react-router";
-import { AnimatedBackground } from "../../../component/organisms/animated_background/AnimatedBackground";
-import { useUser } from "../../../context/user/UserContext.hook";
+import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const SignInView: React.FC = () => {
   const href = `${process.env.RETRO_WEB_API_URL}google/redirect`;
@@ -47,9 +47,7 @@ export const SignInView: React.FC = () => {
           }
         >
           <a href={href} className={"rounded-full overflow-hidden shadow-lg"}>
-            <GoogleButton
-              type={'light'}
-            />
+            <GoogleButton type={"light"} />
           </a>
 
           <span className={"text-sm text-background-50"}>

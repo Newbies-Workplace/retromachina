@@ -2,12 +2,12 @@ import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
-import lineSvg from "../../../assets/images/line.svg?inline";
-import { cn } from "../../../common/Util";
-import useClickOutside from "../../../context/useClickOutside";
-import { useUser } from "../../../context/user/UserContext.hook";
-import { Avatar, type AvatarProps } from "../../atoms/avatar/Avatar";
-import { Menu } from "../menu/Menu";
+import lineSvg from "@/assets/images/line.svg?inline";
+import { cn } from "@/common/Util";
+import { Avatar, type AvatarProps } from "@/component/atoms/avatar/Avatar";
+import { Menu } from "@/component/organisms/menu/Menu";
+import useClickOutside from "@/context/useClickOutside";
+import { useUser } from "@/context/user/UserContext.hook";
 
 interface NavbarProps {
   avatarProps?: Partial<AvatarProps>;

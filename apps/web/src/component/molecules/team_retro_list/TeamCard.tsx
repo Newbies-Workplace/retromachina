@@ -10,11 +10,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
-import { getRetrosByTeamId } from "../../../api/Retro.service";
-import { getUsersByTeamId } from "../../../api/User.service";
-import { useTeamRole } from "../../../context/useTeamRole";
-import { Button } from "../../atoms/button/Button";
-import { TeamAvatars } from "../team_avatars/TeamAvatars";
+import { getRetrosByTeamId } from "@/api/Retro.service";
+import { getUsersByTeamId } from "@/api/User.service";
+import { Button } from "@/component/atoms/button/Button";
+import { TeamAvatars } from "@/component/molecules/team_avatars/TeamAvatars";
+import { useTeamRole } from "@/context/useTeamRole";
 
 interface TeamRetroListProps {
   teamName: string;

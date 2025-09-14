@@ -1,6 +1,6 @@
 import type React from "react";
-import { Button } from "../../atoms/button/Button";
-import { Backdrop } from "../backdrop/Backdrop";
+import { Button } from "@/component/atoms/button/Button";
+import { Backdrop } from "@/component/molecules/backdrop/Backdrop";
 
 export interface ConfirmDialogProps {
   title: string;

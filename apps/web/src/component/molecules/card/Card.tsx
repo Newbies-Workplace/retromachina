@@ -2,12 +2,12 @@ import { computePosition, flip } from "@floating-ui/dom";
 import { PencilIcon, SaveIcon } from "lucide-react";
 import { motion } from "motion/react";
 import React, { createRef, useCallback, useEffect, useState } from "react";
-import { cn } from "../../../common/Util";
-import useClickOutside from "../../../context/useClickOutside";
-import { Avatar } from "../../atoms/avatar/Avatar";
-import { Button } from "../../atoms/button/Button";
-import { PositioningBackdrop } from "../backdrop/PositioningBackdrop";
-import { TeamUserPicker } from "./user_picker/TeamUserPicker";
+import { cn } from "@/common/Util";
+import { Avatar } from "@/component/atoms/avatar/Avatar";
+import { Button } from "@/component/atoms/button/Button";
+import { PositioningBackdrop } from "@/component/molecules/backdrop/PositioningBackdrop";
+import { TeamUserPicker } from "@/component/molecules/card/user_picker/TeamUserPicker";
+import useClickOutside from "@/context/useClickOutside";
 
 export interface CardProps {
   style?: React.CSSProperties;

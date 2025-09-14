@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import type { TeamRequest } from "shared/model/team/team.request";
-import { deleteTeam, editTeam } from "../../api/Team.service";
-import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
-import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
-import { TeamForm } from "../../component/organisms/forms/TeamForm";
-import Navbar from "../../component/organisms/navbar/Navbar";
-import { useConfirm } from "../../context/confirm/ConfirmContext.hook";
-import { useTeamData } from "../../context/useTeamData";
-import { useUser } from "../../context/user/UserContext.hook";
+import { deleteTeam, editTeam } from "@/api/Team.service";
+import { ProgressBar } from "@/component/atoms/progress_bar/ProgressBar";
+import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
+import { TeamForm } from "@/component/organisms/forms/TeamForm";
+import Navbar from "@/component/organisms/navbar/Navbar";
+import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
+import { useTeamData } from "@/context/useTeamData";
 
 export const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();

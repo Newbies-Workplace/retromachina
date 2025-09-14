@@ -4,7 +4,7 @@ import {
   TeamRequest,
 } from "shared/model/team/team.request";
 import type { TeamResponse } from "shared/model/team/team.response";
-import { axiosInstance } from "./AxiosInstance";
+import { axiosInstance } from "@/api/AxiosInstance";
 
 export const getTeamById = async (teamId: string): Promise<TeamResponse> => {
   return axiosInstance.get(`teams/${teamId}`).then((res) => res.data);

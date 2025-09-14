@@ -1,6 +1,6 @@
 import { ReflectionCardResponse } from "shared/model/team/reflectionCard.response";
 import { create } from "zustand";
-import { ReflectionCardService } from "../api/ReflectionCard.service";
+import { ReflectionCardService } from "@/api/ReflectionCard.service";
 
 interface ReflectionCardState {
   reflectionCards: ReflectionCardResponse[];

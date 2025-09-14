@@ -1,7 +1,7 @@
 import { PencilIcon } from "lucide-react";
 import React, { createRef, useCallback, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import useClickOutside from "../../../context/useClickOutside";
+import useClickOutside from "@/context/useClickOutside";
 
 interface PopoverPickerProps {
   color: string;

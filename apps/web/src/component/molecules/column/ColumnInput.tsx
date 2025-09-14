@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { RetroColumn } from "shared/model/retro/retroRoom.interface";
-import { CardCount } from "../../atoms/card_indicator/CardIndicator";
-import { Input } from "../../atoms/input/Input";
+import { CardCount } from "@/component/atoms/card_indicator/CardIndicator";
+import { Input } from "@/component/atoms/input/Input";
 
 interface ColumnInputProps {
   columnData: RetroColumn;

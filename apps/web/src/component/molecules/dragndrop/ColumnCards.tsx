@@ -6,9 +6,12 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/types";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
-import { cn } from "../../../common/Util";
-import { CardMoveAction } from "../../../interfaces/CardMoveAction.interface";
-import { isCard, isReflectionCard } from "./dragndrop";
+import { cn } from "@/common/Util";
+import {
+  isCard,
+  isReflectionCard,
+} from "@/component/molecules/dragndrop/dragndrop";
+import { CardMoveAction } from "@/interfaces/CardMoveAction.interface";
 
 interface ColumnCardContainerProps {
   columnId: string;

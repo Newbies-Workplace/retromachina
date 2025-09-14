@@ -1,14 +1,14 @@
 import { HandshakeIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import NotFoundSvg from "../../assets/images/not-found.svg";
-import { Button } from "../../component/atoms/button/Button";
-import { TeamCard } from "../../component/molecules/team_retro_list/TeamCard";
-import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
-import Navbar from "../../component/organisms/navbar/Navbar";
-import { useUser } from "../../context/user/UserContext.hook";
-import { useReflectionCardStore } from "../../store/useReflectionCardStore";
-import { ReflectionCardsShelf } from "../retro_active/components/toolbox/ReflectionCardsShelf";
+import NotFoundSvg from "@/assets/images/not-found.svg";
+import { Button } from "@/component/atoms/button/Button";
+import { TeamCard } from "@/component/molecules/team_retro_list/TeamCard";
+import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
+import Navbar from "@/component/organisms/navbar/Navbar";
+import { useUser } from "@/context/user/UserContext.hook";
+import { useReflectionCardStore } from "@/store/useReflectionCardStore";
+import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
 
 export const HomeView: React.FC = () => {
   const { user } = useUser();

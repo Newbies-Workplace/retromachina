@@ -1,16 +1,16 @@
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useMemo, useState } from "react";
-import { cn } from "../../../common/Util";
-import { Avatar } from "../../../component/atoms/avatar/Avatar";
-import { Button } from "../../../component/atoms/button/Button";
-import { Input } from "../../../component/atoms/input/Input";
-import { Card } from "../../../component/molecules/card/Card";
-import { CardGroup } from "../../../component/molecules/dragndrop/CardGroup";
-import { useRetro } from "../../../context/retro/RetroContext.hook";
-import { type Group, useCardGroups } from "../../../context/useCardGroups";
-import { usePlural } from "../../../context/usePlural";
-import { useUser } from "../../../context/user/UserContext.hook";
+import { cn } from "@/common/Util";
+import { Avatar } from "@/component/atoms/avatar/Avatar";
+import { Button } from "@/component/atoms/button/Button";
+import { Input } from "@/component/atoms/input/Input";
+import { Card } from "@/component/molecules/card/Card";
+import { CardGroup } from "@/component/molecules/dragndrop/CardGroup";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { type Group, useCardGroups } from "@/context/useCardGroups";
+import { usePlural } from "@/context/usePlural";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const DiscussView = () => {
   const {

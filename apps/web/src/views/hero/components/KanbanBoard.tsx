@@ -5,7 +5,7 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
-import { cn } from "../../../common/Util";
+import { cn } from "@/common/Util";
 
 type ColumnId = "todo" | "wip" | "done";
 

@@ -1,14 +1,14 @@
 import { TrashIcon } from "lucide-react";
 import type React from "react";
-import { Button } from "../../../component/atoms/button/Button";
-import { Card } from "../../../component/molecules/card/Card";
-import { Column } from "../../../component/molecules/column/Column";
-import { ColumnInput } from "../../../component/molecules/column/ColumnInput";
-import { ColumnCards } from "../../../component/molecules/dragndrop/ColumnCards";
-import { DraggableCard } from "../../../component/molecules/dragndrop/DraggableCard";
-import { useRetro } from "../../../context/retro/RetroContext.hook";
-import { useUser } from "../../../context/user/UserContext.hook";
-import { useReflectionCardStore } from "../../../store/useReflectionCardStore";
+import { Button } from "@/component/atoms/button/Button";
+import { Card } from "@/component/molecules/card/Card";
+import { Column } from "@/component/molecules/column/Column";
+import { ColumnInput } from "@/component/molecules/column/ColumnInput";
+import { ColumnCards } from "@/component/molecules/dragndrop/ColumnCards";
+import { DraggableCard } from "@/component/molecules/dragndrop/DraggableCard";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
+import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 
 export const ReflectionView: React.FC = () => {
   const { user } = useUser();

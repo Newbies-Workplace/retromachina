@@ -8,17 +8,17 @@ import { motion } from "motion/react";
 import React, { createRef, useEffect, useState } from "react";
 import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
-import cardDropSound from "../../../../assets/sounds/card-drop.wav";
-import cardPickSound from "../../../../assets/sounds/card-pick.wav";
-import { cn } from "../../../../common/Util";
-import { Button } from "../../../../component/atoms/button/Button";
+import cardDropSound from "@/assets/sounds/card-drop.wav";
+import cardPickSound from "@/assets/sounds/card-pick.wav";
+import { cn } from "@/common/Util";
+import { Button } from "@/component/atoms/button/Button";
 import {
   getReflectionCard,
   isCard,
-} from "../../../../component/molecules/dragndrop/dragndrop";
-import { useAudio } from "../../../../context/useAudio";
-import useClickOutside from "../../../../context/useClickOutside";
-import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
+} from "@/component/molecules/dragndrop/dragndrop";
+import { useAudio } from "@/context/useAudio";
+import useClickOutside from "@/context/useClickOutside";
+import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 
 export const ReflectionCardsShelf: React.FC<{
   teamId: string;

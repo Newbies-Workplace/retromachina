@@ -5,10 +5,10 @@ import type {
   TeamUserRequest,
 } from "shared/model/team/team.request";
 import type { UserRole } from "shared/model/user/user.role";
-import { Button } from "../../atoms/button/Button";
-import { Input } from "../../atoms/input/Input";
-import { UserPicker } from "../../molecules/user_picker/UserPicker";
-import { TeamInviteLinkInput } from "./TeamInviteLinkInput";
+import { Button } from "@/component/atoms/button/Button";
+import { Input } from "@/component/atoms/input/Input";
+import { UserPicker } from "@/component/molecules/user_picker/UserPicker";
+import { TeamInviteLinkInput } from "@/component/organisms/forms/TeamInviteLinkInput";
 
 interface CreateTeamFormProps {
   team: TeamRequest | null;

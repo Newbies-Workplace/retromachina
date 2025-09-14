@@ -1,9 +1,8 @@
 import type React from "react";
-import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router";
-import { Loader } from "../../component/organisms/loader/Loader";
-import { setRedirectPath } from "../useRedirect";
-import { useUser } from "./UserContext.hook";
+import { Loader } from "@/component/organisms/loader/Loader";
+import { setRedirectPath } from "@/context/useRedirect";
+import { useUser } from "@/context/user/UserContext.hook";
 
 interface RequireAuthProps {
   children?: React.ReactNode;

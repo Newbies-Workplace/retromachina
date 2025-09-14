@@ -16,20 +16,20 @@ import React, {
   useState,
 } from "react";
 import invariant from "tiny-invariant";
-import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
-import { cn } from "../../../../common/Util";
-import { Button } from "../../../../component/atoms/button/Button";
-import { isCard } from "../../../../component/molecules/dragndrop/dragndrop";
-import { useConfirm } from "../../../../context/confirm/ConfirmContext.hook";
-import { useRetro } from "../../../../context/retro/RetroContext.hook";
-import { useCardGroups } from "../../../../context/useCardGroups";
-import useClickOutside from "../../../../context/useClickOutside";
-import { usePlural } from "../../../../context/usePlural";
-import { useUser } from "../../../../context/user/UserContext.hook";
-import { useTeamRole } from "../../../../context/useTeamRole";
-import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
-import { ReflectionCardsShelf } from "./ReflectionCardsShelf";
-import { SlotMachine } from "./SlotMachine";
+import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
+import { cn } from "@/common/Util";
+import { Button } from "@/component/atoms/button/Button";
+import { isCard } from "@/component/molecules/dragndrop/dragndrop";
+import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useCardGroups } from "@/context/useCardGroups";
+import useClickOutside from "@/context/useClickOutside";
+import { usePlural } from "@/context/usePlural";
+import { useUser } from "@/context/user/UserContext.hook";
+import { useTeamRole } from "@/context/useTeamRole";
+import { useReflectionCardStore } from "@/store/useReflectionCardStore";
+import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
+import { SlotMachine } from "@/views/retro_active/components/toolbox/SlotMachine";
 
 export const Toolbox: React.FC = () => {
   const { showConfirm } = useConfirm();

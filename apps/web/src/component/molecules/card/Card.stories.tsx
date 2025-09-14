@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card } from "./Card";
-import Counter from "./counter/Counter";
+import { Card } from "@/component/molecules/card/Card";
+import Counter from "@/counter/Counter";
 
 const meta = {
   title: "molecules/Card",

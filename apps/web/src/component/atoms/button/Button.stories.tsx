@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button } from "./Button";
-import {SaveIcon} from "lucide-react";
+import { SaveIcon } from "lucide-react";
+import { Button } from "@/component/atoms/button/Button";
 
 const meta = {
   title: "atoms/Button",

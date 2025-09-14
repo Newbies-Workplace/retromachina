@@ -8,14 +8,14 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 import { User } from "shared/model/retro/retroRoom.interface";
-import slotMachineSound from "../../../../assets/sounds/slot-machine.wav";
-import slotMachineOpenSound from "../../../../assets/sounds/slot-machine-open.wav";
-import { Avatar } from "../../../../component/atoms/avatar/Avatar";
-import { SlotMachineDrawnListener } from "../../../../context/retro/RetroContext";
-import { useRetro } from "../../../../context/retro/RetroContext.hook";
-import { useAudio } from "../../../../context/useAudio";
-import { useDebounce } from "../../../../context/useDebounce";
-import { useUser } from "../../../../context/user/UserContext.hook";
+import slotMachineSound from "@/assets/sounds/slot-machine.wav";
+import slotMachineOpenSound from "@/assets/sounds/slot-machine-open.wav";
+import { Avatar } from "@/component/atoms/avatar/Avatar";
+import { SlotMachineDrawnListener } from "@/context/retro/RetroContext";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useAudio } from "@/context/useAudio";
+import { useDebounce } from "@/context/useDebounce";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const SLOT_MACHINE_ANIMATION_DURATION = 2400;
 const rowAnimation = {

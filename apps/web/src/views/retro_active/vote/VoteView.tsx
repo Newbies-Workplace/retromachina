@@ -1,10 +1,10 @@
 import React from "react";
-import { Card } from "../../../component/molecules/card/Card";
-import Counter from "../../../component/molecules/card/counter/Counter";
-import { Column } from "../../../component/molecules/column/Column";
-import { CardGroup } from "../../../component/molecules/dragndrop/CardGroup";
-import { useRetro } from "../../../context/retro/RetroContext.hook";
-import { useUser } from "../../../context/user/UserContext.hook";
+import { Card } from "@/component/molecules/card/Card";
+import Counter from "@/component/molecules/card/counter/Counter";
+import { Column } from "@/component/molecules/column/Column";
+import { CardGroup } from "@/component/molecules/dragndrop/CardGroup";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const VoteView = () => {
   const { columns, cards, teamUsers, votes, maxVotes, addVote, removeVote } =

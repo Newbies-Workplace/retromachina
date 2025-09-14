@@ -3,11 +3,11 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { scrollJustEnoughIntoView } from "@atlaskit/pragmatic-drag-and-drop/element/scroll-just-enough-into-view";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
-import dropCardAudio from "../../../assets/sounds/card-drop.wav";
-import pickCardAudio from "../../../assets/sounds/card-pick.wav";
-import { cn } from "../../../common/Util";
-import { useAudio } from "../../../context/useAudio";
-import { getCard } from "./dragndrop";
+import dropCardAudio from "@/assets/sounds/card-drop.wav";
+import pickCardAudio from "@/assets/sounds/card-pick.wav";
+import { cn } from "@/common/Util";
+import { getCard } from "@/component/molecules/dragndrop/dragndrop";
+import { useAudio } from "@/context/useAudio";
 
 interface DraggableCardProps {
   className?: string;

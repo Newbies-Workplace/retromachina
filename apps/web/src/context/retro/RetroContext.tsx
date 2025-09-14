@@ -1,5 +1,4 @@
-import React from "react";
-import { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import type {
@@ -39,10 +38,10 @@ import type {
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import { getUsersByTeamId } from "../../api/User.service";
-import type { CardMoveAction } from "../../interfaces/CardMoveAction.interface";
-import { useCardGroups } from "../useCardGroups";
-import { useUser } from "../user/UserContext.hook";
+import { getUsersByTeamId } from "@/api/User.service";
+import { useCardGroups } from "@/context/useCardGroups";
+import { useUser } from "@/context/user/UserContext.hook";
+import type { CardMoveAction } from "@/interfaces/CardMoveAction.interface";
 
 interface RetroContextParams {
   retroId: string;
@@ -200,7 +199,7 @@ export const RetroContextProvider: React.FC<
         retro_id: retroId,
       },
       extraHeaders: {
-        //@ts-ignore
+        //@ts-expect-error
         Authorization: window.localStorage.getItem("Bearer"),
       },
       forceNew: true,

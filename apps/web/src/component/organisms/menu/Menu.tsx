@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 import React from "react";
 import { Link, useNavigate } from "react-router";
-import { useUser } from "../../../context/user/UserContext.hook";
-import { Avatar } from "../../atoms/avatar/Avatar";
-import { Button } from "../../atoms/button/Button";
+import { Avatar } from "@/component/atoms/avatar/Avatar";
+import { Button } from "@/component/atoms/button/Button";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const Menu = () => {
   const navigate = useNavigate();

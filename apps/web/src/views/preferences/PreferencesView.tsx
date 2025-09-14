@@ -1,11 +1,11 @@
 import { Volume1Icon } from "lucide-react";
 import React, { useState } from "react";
-import readySingleSound from "../../assets/sounds/ready-single.wav";
-import { Slider } from "../../component/atoms/slider/slider";
-import { AnimatedBackground } from "../../component/organisms/animated_background/AnimatedBackground";
-import Navbar from "../../component/organisms/navbar/Navbar";
-import { useAudio } from "../../context/useAudio";
-import { usePreferencesStore } from "../../store/usePreferencesStore";
+import readySingleSound from "@/assets/sounds/ready-single.wav";
+import { Slider } from "@/component/atoms/slider/slider";
+import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
+import Navbar from "@/component/organisms/navbar/Navbar";
+import { useAudio } from "@/context/useAudio";
+import { usePreferencesStore } from "@/store/usePreferencesStore";
 export const PreferencesView: React.FC = () => {
   const { volumeLevel, setVolumeLevel } = usePreferencesStore();
   const { play } = useAudio();

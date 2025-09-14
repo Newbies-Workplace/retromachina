@@ -1,6 +1,6 @@
 import type React from "react";
 import { Navigate, useParams } from "react-router";
-import { BoardContextProvider } from "../../context/board/BoardContext";
+import { BoardContextProvider } from "@/context/board/BoardContext";
 
 export const TeamBoardWrapper: React.FC<React.PropsWithChildren> = ({
   children,

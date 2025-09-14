@@ -2,7 +2,7 @@ import { AnimatePresence } from "motion/react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Portal } from "react-portal";
-import { Backdrop } from "./Backdrop";
+import { Backdrop } from "@/component/molecules/backdrop/Backdrop";
 
 interface PositioningBackdropProps {
   onDismiss?: () => void;

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import type { TeamRequest } from "shared/model/team/team.request";
-import { editTeam, editTeamInvitation } from "../../../../api/Team.service";
-import { Backdrop } from "../../../../component/molecules/backdrop/Backdrop";
-import { UserPicker } from "../../../../component/molecules/user_picker/UserPicker";
-import { TeamInviteLinkInput } from "../../../../component/organisms/forms/TeamInviteLinkInput";
-import { useRetro } from "../../../../context/retro/RetroContext.hook";
-import { useTeamData } from "../../../../context/useTeamData";
+import { editTeam, editTeamInvitation } from "@/api/Team.service";
+import { Backdrop } from "@/component/molecules/backdrop/Backdrop";
+import { UserPicker } from "@/component/molecules/user_picker/UserPicker";
+import { TeamInviteLinkInput } from "@/component/organisms/forms/TeamInviteLinkInput";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useTeamData } from "@/context/useTeamData";
 
 interface ShareDialogProps {
   onDismiss: () => void;

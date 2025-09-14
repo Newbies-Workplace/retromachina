@@ -37,6 +37,7 @@
         "noStaticOnlyClass": "warn"
       },
       "correctness": {
+        "useHookAtTopLevel": "warn",
         "useExhaustiveDependencies": "warn"
       }
     }

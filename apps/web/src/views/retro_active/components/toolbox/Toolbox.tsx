@@ -1,17 +1,22 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import {
-  CheckIcon,
-  ThickArrowLeftIcon,
-  ThickArrowRightIcon,
-} from "@radix-ui/react-icons";
 import ProgressBar from "@ramonak/react-progress-bar";
-import React, { createRef, useEffect } from "react";
-import { useCallback, useRef, useState } from "react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  FlagIcon,
+  ThumbsUpIcon,
+} from "lucide-react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import invariant from "tiny-invariant";
-import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag.svg";
 import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
-import VoteIconSvg from "../../../../assets/icons/vote.svg";
 import { cn } from "../../../../common/Util";
 import { Button } from "../../../../component/atoms/button/Button";
 import { isCard } from "../../../../component/molecules/dragndrop/dragndrop";
@@ -20,8 +25,8 @@ import { useRetro } from "../../../../context/retro/RetroContext.hook";
 import { useCardGroups } from "../../../../context/useCardGroups";
 import useClickOutside from "../../../../context/useClickOutside";
 import { usePlural } from "../../../../context/usePlural";
-import { useTeamRole } from "../../../../context/useTeamRole";
 import { useUser } from "../../../../context/user/UserContext.hook";
+import { useTeamRole } from "../../../../context/useTeamRole";
 import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "./ReflectionCardsShelf";
 import { SlotMachine } from "./SlotMachine";
@@ -192,7 +197,7 @@ export const Toolbox: React.FC = () => {
           {isVotingVisible && isAdmin && (
             <>
               <Button className={"size-full"} onClick={() => setOpenVote(true)}>
-                <VoteIconSvg />
+                <ThumbsUpIcon />
               </Button>
 
               {isVoteOpen && (
@@ -251,7 +256,7 @@ export const Toolbox: React.FC = () => {
             className={cn("h-full w-full")}
             onClick={() => setReady(!ready)}
           >
-            <CheckIcon className={"size-8"} />
+            <CheckIcon className={"size-6"} />
           </Button>
 
           <ProgressBar
@@ -297,7 +302,7 @@ export const Toolbox: React.FC = () => {
               disabled={prevDisabled}
               onClick={prevRoomState}
             >
-              <ThickArrowLeftIcon className={"size-6"} />
+              <ArrowLeftIcon className={"size-6"} />
             </Button>
 
             <Button
@@ -305,7 +310,7 @@ export const Toolbox: React.FC = () => {
               disabled={nextDisabled}
               onClick={nextRoomState}
             >
-              <ThickArrowRightIcon className={"size-6"} />
+              <ArrowRightIcon className={"size-6"} />
             </Button>
           </div>
         )}
@@ -318,7 +323,7 @@ export const Toolbox: React.FC = () => {
                 className={"size-full"}
                 onClick={onFinishRetroPress}
               >
-                <CheckeredFlagIconSvg style={{ width: 32, height: 32 }} />
+                <FlagIcon className={"size-6"} />
               </Button>
             </>
           )}

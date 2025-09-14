@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Portal } from "react-portal";

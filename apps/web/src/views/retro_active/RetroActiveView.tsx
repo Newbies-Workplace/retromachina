@@ -1,9 +1,8 @@
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
-import { Share2Icon } from "@radix-ui/react-icons";
-import { AnimatePresence } from "framer-motion";
+import { Share2Icon } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router";
 import invariant from "tiny-invariant";
 import readySingleSound from "../../assets/sounds/ready-single.wav";
 import { Button } from "../../component/atoms/button/Button";
@@ -12,8 +11,8 @@ import { TeamAvatars } from "../../component/molecules/team_avatars/TeamAvatars"
 import Navbar from "../../component/organisms/navbar/Navbar";
 import { useRetro } from "../../context/retro/RetroContext.hook";
 import { useAudio } from "../../context/useAudio";
-import { useTeamRole } from "../../context/useTeamRole";
 import { useUser } from "../../context/user/UserContext.hook";
+import { useTeamRole } from "../../context/useTeamRole";
 import { RetroTimer } from "./components/retroTimer/RetroTimer";
 import { TeamShareDialog } from "./components/teamShare/TeamShareDialog";
 import { Toolbox } from "./components/toolbox/Toolbox";

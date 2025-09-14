@@ -1,5 +1,5 @@
-import { type VariantProps, cva } from "class-variance-authority";
-import { AnimatePresence, motion } from "framer-motion";
+import { cva, type VariantProps } from "class-variance-authority";
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import type { BaseHTMLAttributes } from "react";
 import fallbackAvatar from "../../../assets/images/fallback_avatar.svg?url";

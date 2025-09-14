@@ -3,7 +3,7 @@ declare module "*.svg" {
   const content: React.FC<React.SVGProps<SVGSVGElement>>;
   export default content;
 }
-declare module "*.svg?url" {
+declare module "*.svg?inline" {
   const content: string;
   export default content;
 }

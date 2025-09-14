@@ -1,11 +1,12 @@
-import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { GearIcon } from "@radix-ui/react-icons";
+import {
+  BugIcon,
+  HandshakeIcon,
+  InfoIcon,
+  RocketIcon,
+  SettingsIcon,
+} from "lucide-react";
 import React from "react";
-import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
-import AuthorsIcon from "../../../assets/icons/authors.svg";
-import BugIcon from "../../../assets/icons/bug-icon.svg";
-import CreateTeamSvg from "../../../assets/icons/create-team.svg";
+import { Link, useNavigate } from "react-router";
 import { useUser } from "../../../context/user/UserContext.hook";
 import { Avatar } from "../../atoms/avatar/Avatar";
 import { Button } from "../../atoms/button/Button";
@@ -69,7 +70,7 @@ export const Menu = () => {
           }
           to={"/preferences"}
         >
-          <GearIcon width={24} height={24} />
+          <SettingsIcon className={"size-4"} />
           Ustawienia
         </Link>
 
@@ -79,7 +80,7 @@ export const Menu = () => {
           }
           to={"/team/create"}
         >
-          <CreateTeamSvg />
+          <HandshakeIcon className={"size-4"} />
           Stwórz Zespół
         </Link>
 
@@ -89,7 +90,7 @@ export const Menu = () => {
           }
           to={"http://newbies.pl"}
         >
-          <AuthorsIcon width={24} height={24} />O autorach
+          <RocketIcon className={"size-4"} />O autorach
         </Link>
 
         <Link
@@ -98,7 +99,7 @@ export const Menu = () => {
           }
           to={"/hero"}
         >
-          <InfoCircledIcon width={24} height={24} />O aplikacji
+          <InfoIcon className={"size-4"} />O aplikacji
         </Link>
 
         <Link
@@ -109,7 +110,7 @@ export const Menu = () => {
             "mailto:newbies@rst.com.pl?subject=Bug retromachina&body=Opis błędu:"
           }
         >
-          <BugIcon width={24} height={24} />
+          <BugIcon className={"size-4"} />
           Zgłoś błąd
         </Link>
       </div>

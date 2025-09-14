@@ -1,4 +1,4 @@
-import { TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "lucide-react";
 import type React from "react";
 import { Button } from "../../atoms/button/Button";
 import { Input } from "../../atoms/input/Input";

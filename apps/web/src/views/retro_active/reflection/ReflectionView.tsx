@@ -1,4 +1,4 @@
-import { TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "lucide-react";
 import type React from "react";
 import { Button } from "../../../component/atoms/button/Button";
 import { Card } from "../../../component/molecules/card/Card";
@@ -111,7 +111,7 @@ export const ReflectionView: React.FC = () => {
                           variant={"destructive"}
                           onClick={() => deleteCard(card.id)}
                         >
-                          <TrashIcon className={"size-6"} />
+                          <TrashIcon className={"size-4"} />
                         </Button>
                       </Card>
                     </DraggableCard>

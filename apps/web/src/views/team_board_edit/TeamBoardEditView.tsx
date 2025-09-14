@@ -1,8 +1,4 @@
-import {
-  PlusIcon,
-  TrackNextIcon,
-  TrackPreviousIcon,
-} from "@radix-ui/react-icons";
+import { PlusIcon, SkipBackIcon, SkipForwardIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -139,7 +135,7 @@ export const TeamBoardEditView: React.FC = () => {
                       size={"icon"}
                       onClick={() => onChangeOrder(index, "prev")}
                     >
-                      <TrackPreviousIcon className={"size-4"} />
+                      <SkipBackIcon className={"size-4"} />
                     </Button>
                   )}
 
@@ -148,7 +144,7 @@ export const TeamBoardEditView: React.FC = () => {
                       size={"icon"}
                       onClick={() => onChangeOrder(index, "next")}
                     >
-                      <TrackNextIcon className={"size-4"} />
+                      <SkipForwardIcon className={"size-4"} />
                     </Button>
                   )}
 

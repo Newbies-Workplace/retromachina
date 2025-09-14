@@ -1,4 +1,4 @@
-import { SpeakerLoudIcon } from "@radix-ui/react-icons";
+import { Volume1Icon } from "lucide-react";
 import React, { useState } from "react";
 import readySingleSound from "../../assets/sounds/ready-single.wav";
 import { Slider } from "../../component/atoms/slider/slider";
@@ -33,7 +33,7 @@ export const PreferencesView: React.FC = () => {
           >
             <div className={"flex flex-col gap-4"}>
               <div className={"flex flex-row gap-2 items-center"}>
-                <SpeakerLoudIcon className={"size-6"} />
+                <Volume1Icon className={"size-6"} />
                 Wszystkie dźwięki
               </div>
 

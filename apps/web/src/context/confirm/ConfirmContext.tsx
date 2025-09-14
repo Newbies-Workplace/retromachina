@@ -1,5 +1,5 @@
-import { AnimatePresence } from "framer-motion";
-import React, { FC, ReactNode, createContext, useState } from "react";
+import { AnimatePresence } from "motion/react";
+import React, { createContext, FC, ReactNode, useState } from "react";
 import {
   ConfirmDialog,
   ConfirmDialogProps,

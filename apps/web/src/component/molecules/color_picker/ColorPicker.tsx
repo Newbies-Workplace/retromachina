@@ -1,6 +1,5 @@
-import { Pencil1Icon } from "@radix-ui/react-icons";
-import React, { createRef } from "react";
-import { useCallback, useState } from "react";
+import { PencilIcon } from "lucide-react";
+import React, { createRef, useCallback, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import useClickOutside from "../../../context/useClickOutside";
 
@@ -35,7 +34,7 @@ export const ColorPicker: React.FC<PopoverPickerProps> = ({
         style={{ backgroundColor: color }}
         onClick={() => toggle(true)}
       >
-        <Pencil1Icon className={"size-4 opacity-50"} />
+        <PencilIcon className={"size-4 opacity-50"} />
       </div>
 
       {isOpen && (

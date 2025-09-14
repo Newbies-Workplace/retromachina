@@ -1,4 +1,4 @@
-import { ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
+import { RefreshCwIcon, TrashIcon } from "lucide-react";
 import type React from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
@@ -80,7 +80,7 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
               variant={"destructive"}
               onClick={onRegenerateInviteLinkPress}
             >
-              <ReloadIcon className={"size-6"} />
+              <RefreshCwIcon className={"size-4"} />
             </Button>
             <Button
               data-testid="remove-invitation-link"
@@ -88,7 +88,7 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
               variant={"destructive"}
               onClick={onDeleteInviteLinkPress}
             >
-              <TrashIcon className={"size-6"} />
+              <TrashIcon className={"size-4"} />
             </Button>
           </>
         ) : (

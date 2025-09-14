@@ -1,5 +1,5 @@
-import { InfoCircledIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
+import { InfoIcon, PlusIcon, TrashIcon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -179,7 +179,7 @@ export const TeamBoardView: React.FC = () => {
                           <div className={"mt-auto self-end h-6"}>
                             <Tooltip>
                               <TooltipTrigger>
-                                <InfoCircledIcon
+                                <InfoIcon
                                   className={
                                     "size-6 p-1 rounded-full hover:bg-gray-500"
                                   }

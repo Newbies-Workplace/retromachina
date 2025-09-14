@@ -1,7 +1,6 @@
-import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
-import React, { createRef, useEffect } from "react";
-import { useCallback, useState } from "react";
+import { CheckIcon, XIcon } from "lucide-react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 import timerEndSound from "../../../../assets/sounds/timer-end.wav";
 import { Button } from "../../../../component/atoms/button/Button";
 import { Timer } from "../../../../component/molecules/timer/Timer";
@@ -80,7 +79,7 @@ export const RetroTimer: React.FC = () => {
             size={"icon"}
             variant={"destructive"}
           >
-            <TrashIcon className={"size-6"} />
+            <XIcon className={"size-4"} />
           </Button>
         )}
       </div>

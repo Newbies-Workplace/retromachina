@@ -1,14 +1,15 @@
 import {
+  ArchiveIcon,
   ClipboardIcon,
   FilePlusIcon,
-  Pencil1Icon,
+  PencilIcon,
   PlusIcon,
-} from "@radix-ui/react-icons";
+} from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserInTeamResponse } from "shared/.dist/model/user/user.response";
+import { useNavigate } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
+import { UserInTeamResponse } from "shared/model/user/user.response";
 import { getRetrosByTeamId } from "../../../api/Retro.service";
 import { getUsersByTeamId } from "../../../api/User.service";
 import { useTeamRole } from "../../../context/useTeamRole";
@@ -76,7 +77,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
               size="sm"
             >
               Edytuj
-              <Pencil1Icon className={"size-4"} />
+              <PencilIcon className={"size-4"} />
             </Button>
           )}
 
@@ -113,7 +114,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           Archiwum
           <br />
           Retrospekcji
-          <ClipboardIcon className={"min-size-6 size-6"} />
+          <ArchiveIcon className={"min-size-6 size-6"} />
         </Button>
 
         {isAdmin && !isAnyRetroRunning && (

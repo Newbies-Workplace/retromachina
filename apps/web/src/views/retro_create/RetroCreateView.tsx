@@ -1,4 +1,4 @@
-import { PlusIcon, Share1Icon } from "@radix-ui/react-icons";
+import { PlusIcon, Share2Icon } from "lucide-react";
 import * as qs from "query-string";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -60,7 +60,7 @@ export const RetroCreateView: React.FC = () => {
     const columnIndex = columns.findIndex((column) => column.id === id);
     if (columnIndex === -1) return;
 
-    const columnsTemp = Array<Column>();
+    const columnsTemp: Column[] = [];
 
     columns.forEach((_column, index) => {
       if (index !== columnIndex) {
@@ -186,7 +186,7 @@ export const RetroCreateView: React.FC = () => {
             {clicked ? (
               <ProgressBar color="black" />
             ) : (
-              <Share1Icon className={"size-8"} />
+              <Share2Icon className={"size-8"} />
             )}
           </Button>
         </div>

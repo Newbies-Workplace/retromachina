@@ -46,11 +46,9 @@ export const SignInView: React.FC = () => {
             "flex flex-col justify-center items-center gap-5 text-center"
           }
         >
-          <a href={href}>
+          <a href={href} className={"rounded-full overflow-hidden shadow-lg"}>
             <GoogleButton
-              className={
-                "!text-black !rounded-full !bg-white *:!rounded-full *:!font-[Roboto,arial,sans-serif]"
-              }
+              type={'light'}
             />
           </a>
 

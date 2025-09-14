@@ -1,5 +1,5 @@
-import { TrashIcon } from "@radix-ui/react-icons";
-import { AnimatePresence, motion } from "framer-motion";
+import { TrashIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { cn } from "../../../common/Util";
 import { Avatar } from "../../../component/atoms/avatar/Avatar";
@@ -217,7 +217,7 @@ export const DiscussView = () => {
                     variant={"destructive"}
                     onClick={() => deleteTask(actionPoint.id)}
                   >
-                    <TrashIcon className={"size-6"} />
+                    <TrashIcon className={"size-4"} />
                   </Button>
                 </Card>
               );

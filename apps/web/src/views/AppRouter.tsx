@@ -1,6 +1,5 @@
 import type React from "react";
-import { Navigate } from "react-router";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router";
 import { RequireAuth } from "../context/user/RequireAuth";
 import { NotFoundView } from "./404/NotFoundView";
 import { LoadingView } from "./auth/loading/LoadingView";

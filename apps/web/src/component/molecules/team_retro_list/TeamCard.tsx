@@ -145,6 +145,8 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
                 Retro <br />w trakcie
               </Button>
             );
+          } else {
+            return null;
           }
         })}
       </div>

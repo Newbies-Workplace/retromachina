@@ -9,9 +9,6 @@ export const RetroWrapper: React.FC<React.PropsWithChildren> = ({
 }) => {
   const navigate = useNavigate();
   const { retroId } = useParams<{ retroId: string }>();
-  if (!retroId) {
-    return <Navigate to={"/"} />;
-  }
 
   useEffect(() => {
     if (retroId) {
@@ -21,7 +18,11 @@ export const RetroWrapper: React.FC<React.PropsWithChildren> = ({
         }
       });
     }
-  }, [retroId]);
+  }, [retroId, navigate]);
+
+  if (!retroId) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <RetroContextProvider retroId={retroId}>{children}</RetroContextProvider>

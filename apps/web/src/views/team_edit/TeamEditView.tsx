@@ -10,7 +10,7 @@ import { TeamForm } from "@/component/organisms/forms/TeamForm";
 import Navbar from "@/component/organisms/navbar/Navbar";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
-import { useTeamData } from "@/context/useTeamData";
+import { useTeamData } from "@/hooks/useTeamData";
 
 export const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();

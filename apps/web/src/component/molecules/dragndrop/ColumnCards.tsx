@@ -8,10 +8,10 @@ import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { cn } from "@/common/Util";
 import {
+  CardMoveAction,
   isCard,
   isReflectionCard,
 } from "@/component/molecules/dragndrop/dragndrop";
-import { CardMoveAction } from "@/interfaces/CardMoveAction.interface";
 
 interface ColumnCardContainerProps {
   columnId: string;

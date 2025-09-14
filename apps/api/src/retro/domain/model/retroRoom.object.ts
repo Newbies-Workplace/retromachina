@@ -1,5 +1,4 @@
-import { Task } from "@prisma/client";
-import { User as DBUser } from "@prisma/client";
+import { User as DBUser, Task } from "@prisma/client";
 import { RoomState, RoomSyncEvent } from "shared/model/retro/retro.events";
 import {
   Card,

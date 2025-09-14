@@ -5,9 +5,9 @@ import timerEndSound from "@/assets/sounds/timer-end.wav";
 import { Button } from "@/component/atoms/button/Button";
 import { Timer } from "@/component/molecules/timer/Timer";
 import { useRetro } from "@/context/retro/RetroContext.hook";
-import { useAudio } from "@/context/useAudio";
-import useClickOutside from "@/context/useClickOutside";
-import { useTeamRole } from "@/context/useTeamRole";
+import { useAudio } from "@/hooks/useAudio";
+import useClickOutside from "@/hooks/useClickOutside";
+import { useTeamRole } from "@/hooks/useTeamRole";
 
 const SERVER_TIMER_DELAY_SECONDS = 1;
 

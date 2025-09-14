@@ -14,7 +14,7 @@ import { getRetrosByTeamId } from "@/api/Retro.service";
 import { getUsersByTeamId } from "@/api/User.service";
 import { Button } from "@/component/atoms/button/Button";
 import { TeamAvatars } from "@/component/molecules/team_avatars/TeamAvatars";
-import { useTeamRole } from "@/context/useTeamRole";
+import { useTeamRole } from "@/hooks/useTeamRole";
 
 interface TeamRetroListProps {
   teamName: string;

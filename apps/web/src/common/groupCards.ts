@@ -1,6 +1,6 @@
 import type { Card, Vote } from "shared/model/retro/retroRoom.interface";
 
-export const useCardGroups = (cards: Card[], votes: Vote[]): Group[] => {
+export const groupCards = (cards: Card[], votes: Vote[]): Group[] => {
   return cards
     .filter((c) => c.parentCardId === null)
     .map((parent) => {

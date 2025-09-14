@@ -1,3 +1,9 @@
+export interface CardMoveAction {
+  cardId: string;
+  targetId: string;
+  targetType: "card" | "column";
+}
+
 const cardPrivateKey = Symbol("Card");
 const reflectionCardPrivateKey = Symbol("ReflectionCard");
 

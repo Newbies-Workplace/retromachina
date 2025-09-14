@@ -16,8 +16,8 @@ import {
   getReflectionCard,
   isCard,
 } from "@/component/molecules/dragndrop/dragndrop";
-import { useAudio } from "@/context/useAudio";
-import useClickOutside from "@/context/useClickOutside";
+import { useAudio } from "@/hooks/useAudio";
+import useClickOutside from "@/hooks/useClickOutside";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 
 export const ReflectionCardsShelf: React.FC<{

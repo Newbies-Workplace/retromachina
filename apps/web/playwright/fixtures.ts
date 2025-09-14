@@ -1,4 +1,4 @@
-import { type Page, test as base } from "@playwright/test";
+import { test as base, type Page } from "@playwright/test";
 
 export const firstAuthFile = "playwright/.auth/first-user.json";
 export const secondAuthFile = "playwright/.auth/second-user.json";

@@ -1,13 +1,12 @@
-import type React from "react";
-import { useCallback, useRef, useState } from "react";
+import React, { createRef, useCallback, useState } from "react";
 import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
 import lineSvg from "@/assets/images/line.svg?inline";
 import { cn } from "@/common/Util";
 import { Avatar, type AvatarProps } from "@/component/atoms/avatar/Avatar";
 import { Menu } from "@/component/organisms/menu/Menu";
-import useClickOutside from "@/context/useClickOutside";
 import { useUser } from "@/context/user/UserContext.hook";
+import useClickOutside from "@/hooks/useClickOutside";
 
 interface NavbarProps {
   avatarProps?: Partial<AvatarProps>;
@@ -22,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const popover = useRef<any>();
+  const popover = createRef<HTMLDivElement>();
   const [isOpen, toggle] = useState(false);
   const close = useCallback(() => toggle(false), []);
 

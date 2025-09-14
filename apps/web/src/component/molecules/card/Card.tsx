@@ -7,7 +7,7 @@ import { Avatar } from "@/component/atoms/avatar/Avatar";
 import { Button } from "@/component/atoms/button/Button";
 import { PositioningBackdrop } from "@/component/molecules/backdrop/PositioningBackdrop";
 import { TeamUserPicker } from "@/component/molecules/card/user_picker/TeamUserPicker";
-import useClickOutside from "@/context/useClickOutside";
+import useClickOutside from "@/hooks/useClickOutside";
 
 export interface CardProps {
   style?: React.CSSProperties;

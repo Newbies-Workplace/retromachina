@@ -6,7 +6,7 @@ import { CardGroup } from "@/component/molecules/dragndrop/CardGroup";
 import { ColumnCards } from "@/component/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/component/molecules/dragndrop/DraggableCard";
 import { useRetro } from "@/context/retro/RetroContext.hook";
-import { useDebounce } from "@/context/useDebounce";
+import { useDebounce } from "@/hooks/useDebounce";
 import { SLOT_MACHINE_ANIMATION_DURATION } from "@/views/retro_active/components/toolbox/SlotMachine";
 
 export const GroupView: React.FC = () => {

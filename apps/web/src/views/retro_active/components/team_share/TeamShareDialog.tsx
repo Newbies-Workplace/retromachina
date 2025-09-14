@@ -6,7 +6,7 @@ import { Backdrop } from "@/component/molecules/backdrop/Backdrop";
 import { UserPicker } from "@/component/molecules/user_picker/UserPicker";
 import { TeamInviteLinkInput } from "@/component/organisms/forms/TeamInviteLinkInput";
 import { useRetro } from "@/context/retro/RetroContext.hook";
-import { useTeamData } from "@/context/useTeamData";
+import { useTeamData } from "@/hooks/useTeamData";
 
 interface ShareDialogProps {
   onDismiss: () => void;

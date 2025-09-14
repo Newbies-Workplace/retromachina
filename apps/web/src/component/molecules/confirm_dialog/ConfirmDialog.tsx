@@ -30,16 +30,16 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div className={"flex p-4"}>{content}</div>
 
         <div className={"flex justify-center items-center gap-4 mt-auto mb-2"}>
+          <Button size={"sm"} className={"px-8"} onClick={onDismiss}>
+            Nie
+          </Button>
+
           <Button
             size={"sm"}
             className={"px-8"}
             variant={"destructive"}
-            onClick={onDismiss}
+            onClick={onConfirmed}
           >
-            Nie
-          </Button>
-
-          <Button size={"sm"} className={"px-8"} onClick={onConfirmed}>
             Tak
           </Button>
         </div>

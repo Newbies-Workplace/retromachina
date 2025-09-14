@@ -12,9 +12,11 @@ import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indi
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { cn } from "@/common/Util";
-import { isCard } from "@/component/molecules/dragndrop/dragndrop";
-import { useKeyDownListener } from "@/context/useKeyDownListener";
-import { CardMoveAction } from "@/interfaces/CardMoveAction.interface";
+import {
+  CardMoveAction,
+  isCard,
+} from "@/component/molecules/dragndrop/dragndrop";
+import { useKeyDownListener } from "@/hooks/useKeyDownListener";
 
 interface GroupCardContainerProps {
   className?: string;

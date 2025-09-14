@@ -53,7 +53,7 @@ export const BoardContext = createContext<BoardContext>({
 export const BoardContextProvider: React.FC<
   React.PropsWithChildren<BoardContextParams>
 > = ({ children, teamId }) => {
-  const socket = useRef<Socket>();
+  const socket = useRef<Socket>(undefined);
   const [board, setBoard] = useState<BoardResponse | null>(null);
   const [team, setTeam] = useState<TeamResponse | null>(null);
   const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);

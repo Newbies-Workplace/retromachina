@@ -1,6 +1,6 @@
 import React from "react";
+import { pluralText } from "@/common/pluralText";
 import { cn } from "@/common/Util";
-import { usePlural } from "@/context/usePlural";
 
 interface PropsCardCount {
   count: number;
@@ -18,7 +18,7 @@ export const CardCount: React.FC<PropsCardCount> = ({ count, isWriting }) => {
         )}
       />
       {count}{" "}
-      {usePlural(count, { one: "kartka", few: "kartki", other: "kartek" })}{" "}
+      {pluralText(count, { one: "kartka", few: "kartki", other: "kartek" })}{" "}
       zespołu
     </div>
   );

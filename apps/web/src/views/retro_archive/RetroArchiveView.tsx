@@ -6,7 +6,7 @@ import { getRetrosByTeamId } from "@/api/Retro.service";
 import { Button } from "@/component/atoms/button/Button";
 import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/component/organisms/navbar/Navbar";
-import { useTeam } from "@/context/useTeamRole";
+import { useTeam } from "@/hooks/useTeamRole";
 
 export const RetroArchiveView = () => {
   const navigate = useNavigate();

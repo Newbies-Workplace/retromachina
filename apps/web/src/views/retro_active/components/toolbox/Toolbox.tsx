@@ -8,25 +8,19 @@ import {
   FlagIcon,
   ThumbsUpIcon,
 } from "lucide-react";
-import React, {
-  createRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
+import { groupCards } from "@/common/groupCards";
+import { pluralText } from "@/common/pluralText";
 import { cn } from "@/common/Util";
 import { Button } from "@/component/atoms/button/Button";
 import { isCard } from "@/component/molecules/dragndrop/dragndrop";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useRetro } from "@/context/retro/RetroContext.hook";
-import { useCardGroups } from "@/context/useCardGroups";
-import useClickOutside from "@/context/useClickOutside";
-import { usePlural } from "@/context/usePlural";
 import { useUser } from "@/context/user/UserContext.hook";
-import { useTeamRole } from "@/context/useTeamRole";
+import useClickOutside from "@/hooks/useClickOutside";
+import { useTeamRole } from "@/hooks/useTeamRole";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
 import { SlotMachine } from "@/views/retro_active/components/toolbox/SlotMachine";
@@ -62,7 +56,7 @@ export const Toolbox: React.FC = () => {
   const { user } = useUser();
   const userVotes =
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
-  const groups = useCardGroups(cards, votes).sort((a, b) => b.votes - a.votes);
+  const groups = groupCards(cards, votes).sort((a, b) => b.votes - a.votes);
   const currentIndex = groups.findIndex(
     (g) => g.parentCardId === discussionCardId,
   );
@@ -75,7 +69,7 @@ export const Toolbox: React.FC = () => {
 
   const [isVoteOpen, setOpenVote] = useState(false);
 
-  const votePopover = useRef<any>();
+  const votePopover = createRef<HTMLDivElement>();
   const closeVote = useCallback(() => setOpenVote(false), []);
   useClickOutside(votePopover, closeVote);
 
@@ -208,7 +202,7 @@ export const Toolbox: React.FC = () => {
                   ref={votePopover}
                 >
                   <div className={"text-sm text-center"}>
-                    {usePlural(maxVotes, {
+                    {pluralText(maxVotes, {
                       one: "głos",
                       few: "głosy",
                       other: "głosów",
@@ -280,7 +274,7 @@ export const Toolbox: React.FC = () => {
             >
               {`${userVotes}/${maxVotes}`}
               <br />
-              {usePlural(maxVotes, {
+              {pluralText(maxVotes, {
                 one: "głos",
                 few: "głosy",
                 other: "głosów",

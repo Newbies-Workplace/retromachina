@@ -8,9 +8,9 @@ import { Input } from "@/component/atoms/input/Input";
 import { Card } from "@/component/molecules/card/Card";
 import { CardGroup } from "@/component/molecules/dragndrop/CardGroup";
 import { useRetro } from "@/context/retro/RetroContext.hook";
-import { type Group, useCardGroups } from "@/context/useCardGroups";
-import { usePlural } from "@/context/usePlural";
 import { useUser } from "@/context/user/UserContext.hook";
+import { type Group, groupCards } from "@/common/groupCards";
+import { pluralText } from "@/common/pluralText";
 
 export const DiscussView = () => {
   const {
@@ -50,7 +50,7 @@ export const DiscussView = () => {
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
-    setGroups(useCardGroups(cards, votes));
+    setGroups(groupCards(cards, votes));
   }, [cards, votes]);
 
   const usersWritingTasks = useMemo(() => {
@@ -161,7 +161,7 @@ export const DiscussView = () => {
                   }
                 >
                   {group.votes}{" "}
-                  {usePlural(group.votes, {
+                  {pluralText(group.votes, {
                     one: "głos",
                     few: "głosy",
                     other: "głosów",

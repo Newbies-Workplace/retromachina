@@ -64,7 +64,7 @@ export const ColumnCreate: React.FC<ColumnCreateProps> = ({
           variant={"destructive"}
           onClick={onDelete}
         >
-          <TrashIcon className={"size-6"} />
+          <TrashIcon className={"size-4"} />
         </Button>
       </div>
 

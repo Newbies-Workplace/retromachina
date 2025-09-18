@@ -127,16 +127,14 @@ export const RetroActiveView: React.FC = () => {
         }
       />
 
-      <div className={"flex flex-col grow scrollbar"} ref={ref}>
-        <div className={"flex-1 flex-row"}>
-          <Routes>
-            <Route path="reflection" element={<ReflectionView />} />
-            <Route path="group" element={<GroupView />} />
-            <Route path="vote" element={<VoteView />} />
-            <Route path="discuss" element={<DiscussView />} />
-            <Route path="*" element={<ProgressBar />} />
-          </Routes>
-        </div>
+      <div className={"flex flex-col grow"} ref={ref}>
+        <Routes>
+          <Route path="reflection" element={<ReflectionView />} />
+          <Route path="group" element={<GroupView />} />
+          <Route path="vote" element={<VoteView />} />
+          <Route path="discuss" element={<DiscussView />} />
+          <Route path="*" element={<ProgressBar />} />
+        </Routes>
       </div>
 
       <Toolbox />

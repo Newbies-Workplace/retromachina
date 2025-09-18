@@ -74,9 +74,9 @@
 }
 
 body, main {
-    @apply min-h-full bg-background-50 font-jetbrains-mono;
+    @apply min-h-full p-0 m-0 bg-background-50 font-jetbrains-mono;
 }
 
 #root {
-    @apply flex flex-col min-h-screen;
+    @apply flex flex-col h-dvh;
 }

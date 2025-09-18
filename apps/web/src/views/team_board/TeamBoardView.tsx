@@ -89,7 +89,7 @@ export const TeamBoardView: React.FC = () => {
                   size={"icon"}
                   onClick={() => onCreateCardClick(column.id)}
                 >
-                  <PlusIcon className={"size-6"} />
+                  <PlusIcon className={"size-4"} />
                 </Button>
               }
             >
@@ -173,7 +173,7 @@ export const TeamBoardView: React.FC = () => {
                             variant={"destructive"}
                             onClick={() => deleteTask(task.id)}
                           >
-                            <TrashIcon className={"size-6"} />
+                            <TrashIcon className={"size-4"} />
                           </Button>
 
                           <div className={"mt-auto self-end h-6"}>

@@ -1,9 +1,9 @@
-import { type VariantProps, cva } from "class-variance-authority";
-import { AnimatePresence, motion } from "framer-motion";
+import { cva, type VariantProps } from "class-variance-authority";
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import type { BaseHTMLAttributes } from "react";
-import fallbackAvatar from "../../../assets/images/fallback_avatar.svg?url";
-import { cn } from "../../../common/Util";
+import fallbackAvatar from "@/assets/images/fallback_avatar.svg?inline";
+import { cn } from "@/common/Util";
 
 const avatarVariants = cva(
   "rounded-full border-2 border-white transition-all overflow-hidden",

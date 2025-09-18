@@ -1,15 +1,13 @@
 import { computePosition, flip } from "@floating-ui/dom";
-import { Pencil1Icon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
-import React, { createRef } from "react";
-import { useCallback, useEffect, useState } from "react";
-import SaveIcon from "../../../assets/icons/save.svg";
-import { cn } from "../../../common/Util";
-import useClickOutside from "../../../context/useClickOutside";
-import { Avatar } from "../../atoms/avatar/Avatar";
-import { Button } from "../../atoms/button/Button";
-import { PositioningBackdrop } from "../backdrop/PositioningBackdrop";
-import { TeamUserPicker } from "./user_picker/TeamUserPicker";
+import { PencilIcon, SaveIcon } from "lucide-react";
+import { motion } from "motion/react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
+import { cn } from "@/common/Util";
+import { Avatar } from "@/component/atoms/avatar/Avatar";
+import { Button } from "@/component/atoms/button/Button";
+import { PositioningBackdrop } from "@/component/molecules/backdrop/PositioningBackdrop";
+import { TeamUserPicker } from "@/component/molecules/card/user_picker/TeamUserPicker";
+import useClickOutside from "@/hooks/useClickOutside";
 
 export interface CardProps {
   style?: React.CSSProperties;
@@ -201,7 +199,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
                 <span className={"text-sm"}>
                   {author ? author.name : "Nieprzypisany"}
                 </span>
-                {editableUser && <Pencil1Icon width={12} height={12} />}
+                {editableUser && <PencilIcon className={"size-3"} />}
               </div>
             )}
           </div>
@@ -210,7 +208,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
         <div className={"flex flex-col select-none gap-2"}>
           {isEditingText ? (
             <Button size={"icon"} onClick={onSaveClick}>
-              <SaveIcon width={18} height={18} />
+              <SaveIcon className={"size-4"} />
             </Button>
           ) : (
             children

@@ -1,13 +1,12 @@
-import type React from "react";
-import { useCallback, useRef, useState } from "react";
+import React, { createRef, useCallback, useState } from "react";
 import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
-import lineSvg from "../../../assets/images/line.svg?url";
-import { cn } from "../../../common/Util";
-import useClickOutside from "../../../context/useClickOutside";
-import { useUser } from "../../../context/user/UserContext.hook";
-import { Avatar, type AvatarProps } from "../../atoms/avatar/Avatar";
-import { Menu } from "../menu/Menu";
+import lineSvg from "@/assets/images/line.svg?inline";
+import { cn } from "@/common/Util";
+import { Avatar, type AvatarProps } from "@/component/atoms/avatar/Avatar";
+import { Menu } from "@/component/organisms/menu/Menu";
+import { useUser } from "@/context/user/UserContext.hook";
+import useClickOutside from "@/hooks/useClickOutside";
 
 interface NavbarProps {
   avatarProps?: Partial<AvatarProps>;
@@ -22,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const popover = useRef<any>();
+  const popover = createRef<HTMLDivElement>();
   const [isOpen, toggle] = useState(false);
   const close = useCallback(() => toggle(false), []);
 
@@ -34,7 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <span
           onClick={() => navigate("/")}
           className={
-            "font-harlow-solid-italic text-4xl text-background-50 cursor-pointer ml-4 mt-2 mr-auto"
+            "font-harlow-solid-italic text-3xl text-background-50 cursor-pointer ml-4 mt-1 mr-auto"
           }
         >
           Retromachina
@@ -51,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           <div
             className={
-              "flex justify-center items-center size-10 bg-white rounded-full mr-4 z-20"
+              "flex justify-center items-center size-8 bg-white rounded-full mr-4 z-20"
             }
           >
             <div onClick={() => toggle(true)}>
@@ -83,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({
       <div
         className={cn("w-full h-1 bg-repeat-x")}
         style={{
-          backgroundImage: `url(${lineSvg})`,
+          backgroundImage: `url("${lineSvg}")`,
         }}
       />
     </div>

@@ -1,4 +1,4 @@
-export const usePlural = (
+export const pluralText = (
   count: number,
   forms: {
     one: string;

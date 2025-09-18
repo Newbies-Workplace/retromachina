@@ -1,6 +1,6 @@
 import React from "react";
-import { ProgressBar } from "../../atoms/progress_bar/ProgressBar";
-import { AnimatedBackground } from "../animated_background/AnimatedBackground";
+import { ProgressBar } from "@/component/atoms/progress_bar/ProgressBar";
+import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
 
 export const Loader = () => {
   return (

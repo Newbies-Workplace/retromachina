@@ -1,9 +1,7 @@
-import { motion } from "framer-motion";
+import { ClipboardCheckIcon, SaveIcon, TrendingUpIcon } from "lucide-react";
+import { motion } from "motion/react";
 import React, { useEffect, useState } from "react";
-import FinishFlagIcon from "../../../assets/icons/finish-flag.svg";
-import SaveIcon from "../../../assets/icons/save.svg";
-import TaskListIcon from "../../../assets/icons/task-list.svg";
-import { cn, debounced, randomInteger } from "../../../common/Util";
+import { cn, debounced, randomInteger } from "@/common/Util";
 
 interface AnimatedBackgroundProps {
   children: React.ReactNode;
@@ -130,11 +128,11 @@ const AnimatedIcon: React.FC = () => {
       )}
     >
       {icon === 0 && (
-        <TaskListIcon className={"text-secondary-500/60 size-8"} />
+        <ClipboardCheckIcon className={"text-secondary-500/60 size-8"} />
       )}
       {icon === 1 && <SaveIcon className={"text-secondary-500/60 size-8"} />}
       {icon === 2 && (
-        <FinishFlagIcon className={"text-secondary-500/60 size-8"} />
+        <TrendingUpIcon className={"text-secondary-500/60 size-8"} />
       )}
     </motion.div>
   );

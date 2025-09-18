@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import type { InviteResponse } from "shared/model/invite/Invite.response";
 import type { TeamRequest } from "shared/model/team/team.request";
 import type { UserInTeamResponse } from "shared/model/user/user.response";
-import { getInvitesByTeamId, getTeamById } from "../api/Team.service";
-import { getUsersByTeamId } from "../api/User.service";
-import { useUser } from "./user/UserContext.hook";
+import { getInvitesByTeamId, getTeamById } from "@/api/Team.service";
+import { getUsersByTeamId } from "@/api/User.service";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const useTeamData = (teamId: string | null) => {
   const { user } = useUser();

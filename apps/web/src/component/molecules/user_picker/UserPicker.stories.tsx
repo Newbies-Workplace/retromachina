@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import type { TeamUserRequest } from "shared/model/team/team.request";
-import { UserPicker } from "./UserPicker";
+import { UserPicker } from "@/component/molecules/user_picker/UserPicker";
 
 const meta = {
   title: "molecules/UserPicker",

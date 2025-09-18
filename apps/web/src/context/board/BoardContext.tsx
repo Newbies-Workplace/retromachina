@@ -15,9 +15,9 @@ import type { BoardResponse } from "shared/model/board/board.response";
 import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
-import { getBoard } from "../../api/Board.service";
-import { getTeamById } from "../../api/Team.service";
-import { getUsersByTeamId } from "../../api/User.service";
+import { getBoard } from "@/api/Board.service";
+import { getTeamById } from "@/api/Team.service";
+import { getUsersByTeamId } from "@/api/User.service";
 
 interface BoardContextParams {
   teamId: string;
@@ -53,7 +53,7 @@ export const BoardContext = createContext<BoardContext>({
 export const BoardContextProvider: React.FC<
   React.PropsWithChildren<BoardContextParams>
 > = ({ children, teamId }) => {
-  const socket = useRef<Socket>();
+  const socket = useRef<Socket>(undefined);
   const [board, setBoard] = useState<BoardResponse | null>(null);
   const [team, setTeam] = useState<TeamResponse | null>(null);
   const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
@@ -74,7 +74,7 @@ export const BoardContextProvider: React.FC<
         team_id: teamId,
       },
       extraHeaders: {
-        //@ts-ignore
+        //@ts-expect-error
         Authorization: window.localStorage.getItem("Bearer"),
       },
       reconnection: true,

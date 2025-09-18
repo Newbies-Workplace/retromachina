@@ -1,3 +1,4 @@
+/** biome-ignore-all lint: ignore everything on privacy policy */
 import React from "react";
 
 export const PrivacyPolicyView = () => {

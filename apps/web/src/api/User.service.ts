@@ -2,7 +2,7 @@ import type {
   UserInTeamResponse,
   UserWithTeamsResponse,
 } from "shared/model/user/user.response";
-import { axiosInstance } from "./AxiosInstance";
+import { axiosInstance } from "@/api/AxiosInstance";
 
 export const getMyUser = (): Promise<UserWithTeamsResponse> => {
   return axiosInstance

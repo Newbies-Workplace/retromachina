@@ -1,5 +1,5 @@
 import type { TaskResponse } from "shared/model/task/task.response";
-import { axiosInstance } from "./AxiosInstance";
+import { axiosInstance } from "@/api/AxiosInstance";
 
 export const getTasksByRetroId = async (
   retroId: string,

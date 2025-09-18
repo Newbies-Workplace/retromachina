@@ -1,4 +1,4 @@
-import { usePreferencesStore } from "../store/usePreferencesStore";
+import { usePreferencesStore } from "@/store/usePreferencesStore";
 
 interface UseAudio {
   play: (audio: string, options?: UseAudioOptions) => Promise<void>;

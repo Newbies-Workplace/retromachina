@@ -1,9 +1,9 @@
-import { AnimatePresence } from "framer-motion";
-import React, { FC, ReactNode, createContext, useState } from "react";
+import { AnimatePresence } from "motion/react";
+import React, { createContext, FC, ReactNode, useState } from "react";
 import {
   ConfirmDialog,
   ConfirmDialogProps,
-} from "../../component/molecules/confirm_dialog/ConfirmDialog";
+} from "@/component/molecules/confirm_dialog/ConfirmDialog";
 
 interface ConfirmContext {
   showConfirm: (props: ConfirmDialogProps) => void;

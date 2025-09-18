@@ -1,30 +1,29 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import {
-  CheckIcon,
-  ThickArrowLeftIcon,
-  ThickArrowRightIcon,
-} from "@radix-ui/react-icons";
 import ProgressBar from "@ramonak/react-progress-bar";
-import React, { createRef, useEffect } from "react";
-import { useCallback, useRef, useState } from "react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  FlagIcon,
+  ThumbsUpIcon,
+} from "lucide-react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 import invariant from "tiny-invariant";
-import CheckeredFlagIconSvg from "../../../../assets/icons/finish-flag.svg";
-import SlotMachineIcon from "../../../../assets/icons/slot-machine-icon.svg";
-import VoteIconSvg from "../../../../assets/icons/vote.svg";
-import { cn } from "../../../../common/Util";
-import { Button } from "../../../../component/atoms/button/Button";
-import { isCard } from "../../../../component/molecules/dragndrop/dragndrop";
-import { useConfirm } from "../../../../context/confirm/ConfirmContext.hook";
-import { useRetro } from "../../../../context/retro/RetroContext.hook";
-import { useCardGroups } from "../../../../context/useCardGroups";
-import useClickOutside from "../../../../context/useClickOutside";
-import { usePlural } from "../../../../context/usePlural";
-import { useTeamRole } from "../../../../context/useTeamRole";
-import { useUser } from "../../../../context/user/UserContext.hook";
-import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
-import { ReflectionCardsShelf } from "./ReflectionCardsShelf";
-import { SlotMachine } from "./SlotMachine";
+import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
+import { groupCards } from "@/common/groupCards";
+import { pluralText } from "@/common/pluralText";
+import { cn } from "@/common/Util";
+import { Button } from "@/component/atoms/button/Button";
+import { isCard } from "@/component/molecules/dragndrop/dragndrop";
+import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
+import useClickOutside from "@/hooks/useClickOutside";
+import { useTeamRole } from "@/hooks/useTeamRole";
+import { useReflectionCardStore } from "@/store/useReflectionCardStore";
+import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
+import { SlotMachine } from "@/views/retro_active/components/toolbox/SlotMachine";
 
 export const Toolbox: React.FC = () => {
   const { showConfirm } = useConfirm();
@@ -57,7 +56,7 @@ export const Toolbox: React.FC = () => {
   const { user } = useUser();
   const userVotes =
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
-  const groups = useCardGroups(cards, votes).sort((a, b) => b.votes - a.votes);
+  const groups = groupCards(cards, votes).sort((a, b) => b.votes - a.votes);
   const currentIndex = groups.findIndex(
     (g) => g.parentCardId === discussionCardId,
   );
@@ -70,7 +69,7 @@ export const Toolbox: React.FC = () => {
 
   const [isVoteOpen, setOpenVote] = useState(false);
 
-  const votePopover = useRef<any>();
+  const votePopover = createRef<HTMLDivElement>();
   const closeVote = useCallback(() => setOpenVote(false), []);
   useClickOutside(votePopover, closeVote);
 
@@ -192,7 +191,7 @@ export const Toolbox: React.FC = () => {
           {isVotingVisible && isAdmin && (
             <>
               <Button className={"size-full"} onClick={() => setOpenVote(true)}>
-                <VoteIconSvg />
+                <ThumbsUpIcon />
               </Button>
 
               {isVoteOpen && (
@@ -203,7 +202,7 @@ export const Toolbox: React.FC = () => {
                   ref={votePopover}
                 >
                   <div className={"text-sm text-center"}>
-                    {usePlural(maxVotes, {
+                    {pluralText(maxVotes, {
                       one: "głos",
                       few: "głosy",
                       other: "głosów",
@@ -251,7 +250,7 @@ export const Toolbox: React.FC = () => {
             className={cn("h-full w-full")}
             onClick={() => setReady(!ready)}
           >
-            <CheckIcon className={"size-8"} />
+            <CheckIcon className={"size-6"} />
           </Button>
 
           <ProgressBar
@@ -275,7 +274,7 @@ export const Toolbox: React.FC = () => {
             >
               {`${userVotes}/${maxVotes}`}
               <br />
-              {usePlural(maxVotes, {
+              {pluralText(maxVotes, {
                 one: "głos",
                 few: "głosy",
                 other: "głosów",
@@ -297,7 +296,7 @@ export const Toolbox: React.FC = () => {
               disabled={prevDisabled}
               onClick={prevRoomState}
             >
-              <ThickArrowLeftIcon className={"size-6"} />
+              <ArrowLeftIcon className={"size-6"} />
             </Button>
 
             <Button
@@ -305,7 +304,7 @@ export const Toolbox: React.FC = () => {
               disabled={nextDisabled}
               onClick={nextRoomState}
             >
-              <ThickArrowRightIcon className={"size-6"} />
+              <ArrowRightIcon className={"size-6"} />
             </Button>
           </div>
         )}
@@ -318,7 +317,7 @@ export const Toolbox: React.FC = () => {
                 className={"size-full"}
                 onClick={onFinishRetroPress}
               >
-                <CheckeredFlagIconSvg style={{ width: 32, height: 32 }} />
+                <FlagIcon className={"size-6"} />
               </Button>
             </>
           )}

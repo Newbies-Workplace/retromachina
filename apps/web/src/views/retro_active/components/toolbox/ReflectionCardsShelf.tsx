@@ -3,23 +3,22 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { FilePlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
+import { FilePlusIcon, SaveIcon, TrashIcon } from "lucide-react";
+import { motion } from "motion/react";
 import React, { createRef, useEffect, useState } from "react";
 import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
-import SaveIcon from "../../../../assets/icons/save.svg";
-import cardDropSound from "../../../../assets/sounds/card-drop.wav";
-import cardPickSound from "../../../../assets/sounds/card-pick.wav";
-import { cn } from "../../../../common/Util";
-import { Button } from "../../../../component/atoms/button/Button";
+import cardDropSound from "@/assets/sounds/card-drop.wav";
+import cardPickSound from "@/assets/sounds/card-pick.wav";
+import { cn } from "@/common/Util";
+import { Button } from "@/component/atoms/button/Button";
 import {
   getReflectionCard,
   isCard,
-} from "../../../../component/molecules/dragndrop/dragndrop";
-import { useAudio } from "../../../../context/useAudio";
-import useClickOutside from "../../../../context/useClickOutside";
-import { useReflectionCardStore } from "../../../../store/useReflectionCardStore";
+} from "@/component/molecules/dragndrop/dragndrop";
+import { useAudio } from "@/hooks/useAudio";
+import useClickOutside from "@/hooks/useClickOutside";
+import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 
 export const ReflectionCardsShelf: React.FC<{
   teamId: string;
@@ -169,7 +168,7 @@ export const ReflectionCardsShelf: React.FC<{
                       onClick={onSaveNewReflectionCardClick}
                       size={"icon"}
                     >
-                      <SaveIcon width={18} height={18} />
+                      <SaveIcon className={"size-4"} />
                     </Button>
 
                     <Button
@@ -177,7 +176,7 @@ export const ReflectionCardsShelf: React.FC<{
                       size={"icon"}
                       variant={"destructive"}
                     >
-                      <TrashIcon className={"size-6"} />
+                      <TrashIcon className={"size-4"} />
                     </Button>
                   </div>
                 </div>
@@ -258,7 +257,7 @@ const ReflectionCard: React.FC<{
 
       <div>
         <Button onClick={onDeleteClick} size={"icon"} variant={"destructive"}>
-          <TrashIcon className={"size-6"} />
+          <TrashIcon className={"size-4"} />
         </Button>
       </div>
     </motion.div>

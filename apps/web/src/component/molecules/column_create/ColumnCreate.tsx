@@ -1,8 +1,8 @@
-import { TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "lucide-react";
 import type React from "react";
-import { Button } from "../../atoms/button/Button";
-import { Input } from "../../atoms/input/Input";
-import { ColorPicker } from "../color_picker/ColorPicker";
+import { Button } from "@/component/atoms/button/Button";
+import { Input } from "@/component/atoms/input/Input";
+import { ColorPicker } from "@/component/molecules/color_picker/ColorPicker";
 
 export interface ColumnCreateProps {
   color: string;
@@ -64,7 +64,7 @@ export const ColumnCreate: React.FC<ColumnCreateProps> = ({
           variant={"destructive"}
           onClick={onDelete}
         >
-          <TrashIcon className={"size-6"} />
+          <TrashIcon className={"size-4"} />
         </Button>
       </div>
 

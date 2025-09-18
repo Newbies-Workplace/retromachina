@@ -1,4 +1,4 @@
-import { Cross1Icon } from "@radix-ui/react-icons";
+import { XIcon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -76,7 +76,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({
         />
 
         {email.length > 0 && (
-          <Cross1Icon
+          <XIcon
             data-testid={"remove-user"}
             className={"min-w-4 min-h-4 cursor-pointer"}
             onClick={() => {
@@ -120,7 +120,7 @@ const User: React.FC<UserProps> = ({ email, role, onRoleChange, onDelete }) => {
 
       <div className={"h-5 min-w-0.5 bg-black"} />
 
-      <Cross1Icon
+      <XIcon
         data-testid={"remove-user"}
         className={"min-w-4 min-h-4 cursor-pointer"}
         onClick={onDelete}

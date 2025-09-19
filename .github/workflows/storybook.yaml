@@ -15,8 +15,23 @@ jobs:
       url: ${{ steps.build-publish.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - id: build-publish
-        uses: bitovi/github-actions-react-to-github-pages@v1.2.2
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          path: apps/web/storybook-static
-          build_command: cd apps/web && npm run build-storybook
+          node-version: lts/*
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: cd apps/web && npm run build-storybook
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './apps/web/storybook-static'
+      - name: Deploy to GitHub Pages
+        id: storybook
+        uses: actions/deploy-pages@v4

@@ -7,14 +7,14 @@
     "build": "dotenvx run -- turbo build --env-mode=loose",
     "start": "dotenvx run -- turbo start --env-mode=loose",
     "test": "dotenvx run -- turbo test --env-mode=loose",
-    "format": "npx @biomejs/biome check --apply ./",
+    "format": "npx @biomejs/biome check --write ./",
     "prepare": "husky install"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.5.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.0",
+    "@biomejs/biome": "2.2.4",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "turbo": "^2.0.6"

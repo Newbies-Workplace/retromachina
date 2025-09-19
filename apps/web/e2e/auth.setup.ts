@@ -2,8 +2,8 @@ import * as fs from "node:fs";
 import * as process from "node:process";
 import * as OTPAuth from "otpauth";
 import {
-  Page,
   firstAuthFile,
+  Page,
   secondAuthFile,
   test as setup,
 } from "../playwright/fixtures";

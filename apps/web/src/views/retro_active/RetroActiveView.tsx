@@ -1,26 +1,25 @@
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
-import { Share2Icon } from "@radix-ui/react-icons";
-import { AnimatePresence } from "framer-motion";
+import { Share2Icon } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router";
 import invariant from "tiny-invariant";
-import readySingleSound from "../../assets/sounds/ready-single.wav";
-import { Button } from "../../component/atoms/button/Button";
-import { ProgressBar } from "../../component/atoms/progress_bar/ProgressBar";
-import { TeamAvatars } from "../../component/molecules/team_avatars/TeamAvatars";
-import Navbar from "../../component/organisms/navbar/Navbar";
-import { useRetro } from "../../context/retro/RetroContext.hook";
-import { useAudio } from "../../context/useAudio";
-import { useTeamRole } from "../../context/useTeamRole";
-import { useUser } from "../../context/user/UserContext.hook";
-import { RetroTimer } from "./components/retroTimer/RetroTimer";
-import { TeamShareDialog } from "./components/teamShare/TeamShareDialog";
-import { Toolbox } from "./components/toolbox/Toolbox";
-import { DiscussView } from "./discuss/DiscussView";
-import { GroupView } from "./group/GroupView";
-import { ReflectionView } from "./reflection/ReflectionView";
-import { VoteView } from "./vote/VoteView";
+import readySingleSound from "@/assets/sounds/ready-single.wav";
+import { Button } from "@/component/atoms/button/Button";
+import { ProgressBar } from "@/component/atoms/progress_bar/ProgressBar";
+import { TeamAvatars } from "@/component/molecules/team_avatars/TeamAvatars";
+import Navbar from "@/component/organisms/navbar/Navbar";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
+import { useAudio } from "@/hooks/useAudio";
+import { useTeamRole } from "@/hooks/useTeamRole";
+import { RetroTimer } from "@/views/retro_active/components/retro_timer/RetroTimer";
+import { TeamShareDialog } from "@/views/retro_active/components/team_share/TeamShareDialog";
+import { Toolbox } from "@/views/retro_active/components/toolbox/Toolbox";
+import { DiscussView } from "@/views/retro_active/discuss/DiscussView";
+import { GroupView } from "@/views/retro_active/group/GroupView";
+import { ReflectionView } from "@/views/retro_active/reflection/ReflectionView";
+import { VoteView } from "@/views/retro_active/vote/VoteView";
 
 export const RetroActiveView: React.FC = () => {
   const navigate = useNavigate();
@@ -128,16 +127,14 @@ export const RetroActiveView: React.FC = () => {
         }
       />
 
-      <div className={"flex flex-col grow scrollbar"} ref={ref}>
-        <div className={"flex-1 flex-row"}>
-          <Routes>
-            <Route path="reflection" element={<ReflectionView />} />
-            <Route path="group" element={<GroupView />} />
-            <Route path="vote" element={<VoteView />} />
-            <Route path="discuss" element={<DiscussView />} />
-            <Route path="*" element={<ProgressBar />} />
-          </Routes>
-        </div>
+      <div className={"flex flex-col grow"} ref={ref}>
+        <Routes>
+          <Route path="reflection" element={<ReflectionView />} />
+          <Route path="group" element={<GroupView />} />
+          <Route path="vote" element={<VoteView />} />
+          <Route path="discuss" element={<DiscussView />} />
+          <Route path="*" element={<ProgressBar />} />
+        </Routes>
       </div>
 
       <Toolbox />

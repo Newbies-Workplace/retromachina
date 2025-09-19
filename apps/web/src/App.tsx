@@ -2,12 +2,12 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import type React from "react";
 import { ToastContainer } from "react-toastify";
-import { UserContextProvider } from "./context/user/UserContext";
-import { AppRouter } from "./views/AppRouter";
+import { UserContextProvider } from "@/context/user/UserContext";
+import { AppRouter } from "@/views/AppRouter";
 import "react-toastify/dist/ReactToastify.css";
-import "./App.module.scss";
-import { TooltipProvider } from "./component/molecules/tooltip/Tooltip";
-import { ConfirmProvider } from "./context/confirm/ConfirmContext";
+import "@/App.css";
+import { TooltipProvider } from "@/component/molecules/tooltip/Tooltip";
+import { ConfirmProvider } from "@/context/confirm/ConfirmContext";
 
 export const App: React.FC = () => {
   dayjs.extend(duration);

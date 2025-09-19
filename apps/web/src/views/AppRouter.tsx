@@ -1,25 +1,24 @@
 import type React from "react";
-import { Navigate } from "react-router";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { RequireAuth } from "../context/user/RequireAuth";
-import { NotFoundView } from "./404/NotFoundView";
-import { LoadingView } from "./auth/loading/LoadingView";
-import { PrivacyPolicyView } from "./auth/privacy_policy/PrivacyPolicyView";
-import { SignInView } from "./auth/sign_in/SignInView";
-import { HeroView } from "./hero/HeroView";
-import { HomeView } from "./home/HomeView";
-import { InviteView } from "./invitation/InviteView";
-import { PreferencesView } from "./preferences/PreferencesView";
-import { RetroActiveView } from "./retro_active/RetroActiveView";
-import { RetroWrapper } from "./retro_active/RetroWrapper";
-import { RetroArchiveView } from "./retro_archive/RetroArchiveView";
-import { RetroCreateView } from "./retro_create/RetroCreateView";
-import { RetroSummaryView } from "./retro_summary/RetroSummaryView";
-import { TeamBoardView } from "./team_board/TeamBoardView";
-import { TeamBoardWrapper } from "./team_board/TeamBoardWrapper";
-import { TeamBoardEditView } from "./team_board_edit/TeamBoardEditView";
-import { TeamCreateView } from "./team_create/TeamCreateView";
-import { TeamEditView } from "./team_edit/TeamEditView";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router";
+import { RequireAuth } from "@/context/user/RequireAuth";
+import { NotFoundView } from "@/views/404/NotFoundView";
+import { LoadingView } from "@/views/auth/loading/LoadingView";
+import { PrivacyPolicyView } from "@/views/auth/privacy_policy/PrivacyPolicyView";
+import { SignInView } from "@/views/auth/sign_in/SignInView";
+import { HeroView } from "@/views/hero/HeroView";
+import { HomeView } from "@/views/home/HomeView";
+import { InviteView } from "@/views/invitation/InviteView";
+import { PreferencesView } from "@/views/preferences/PreferencesView";
+import { RetroActiveView } from "@/views/retro_active/RetroActiveView";
+import { RetroWrapper } from "@/views/retro_active/RetroWrapper";
+import { RetroArchiveView } from "@/views/retro_archive/RetroArchiveView";
+import { RetroCreateView } from "@/views/retro_create/RetroCreateView";
+import { RetroSummaryView } from "@/views/retro_summary/RetroSummaryView";
+import { TeamBoardView } from "@/views/team_board/TeamBoardView";
+import { TeamBoardWrapper } from "@/views/team_board/TeamBoardWrapper";
+import { TeamBoardEditView } from "@/views/team_board_edit/TeamBoardEditView";
+import { TeamCreateView } from "@/views/team_create/TeamCreateView";
+import { TeamEditView } from "@/views/team_edit/TeamEditView";
 
 export const AppRouter: React.FC = () => {
   return (

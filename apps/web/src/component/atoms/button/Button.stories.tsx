@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import ActionIcon from "../../../assets/icons/action-icon.svg";
-import { Button } from "./Button";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { SaveIcon } from "lucide-react";
+import { Button } from "@/component/atoms/button/Button";
 
 const meta = {
   title: "atoms/Button",
@@ -48,6 +48,6 @@ export const Disabled: Story = {
 export const Icon: Story = {
   args: {
     size: "icon",
-    children: <ActionIcon className={"size-6"} />,
+    children: <SaveIcon className={"size-6"} />,
   },
 };

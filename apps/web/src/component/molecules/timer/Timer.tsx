@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import { cn } from "../../../common/Util";
+import { cn } from "@/common/Util";
 
 interface TimerProps {
   onClick?: () => void;

@@ -1,12 +1,17 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.6.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "files": {
-    "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-    "ignore": ["**/node_modules/**", "**/.dist/**", "**/dist/**"]
+    "includes": [
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.ts",
+      "**/*.tsx",
+      "!**/node_modules",
+      "!**/.dist",
+      "!**/dist"
+    ]
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2
@@ -16,6 +21,7 @@
     "rules": {
       "recommended": true,
       "a11y": {
+        "noStaticElementInteractions": "off",
         "useKeyWithClickEvents": "off",
         "useButtonType": "off"
       },
@@ -31,6 +37,7 @@
         "noStaticOnlyClass": "warn"
       },
       "correctness": {
+        "useHookAtTopLevel": "warn",
         "useExhaustiveDependencies": "warn"
       }
     }

@@ -1,23 +1,23 @@
-import { InfoCircledIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
+import { InfoIcon, PlusIcon, TrashIcon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "../../component/atoms/button/Button";
-import { Card } from "../../component/molecules/card/Card";
-import { Column } from "../../component/molecules/column/Column";
-import { ColumnCards } from "../../component/molecules/dragndrop/ColumnCards";
-import { DraggableCard } from "../../component/molecules/dragndrop/DraggableCard";
+import { Button } from "@/component/atoms/button/Button";
+import { Card } from "@/component/molecules/card/Card";
+import { Column } from "@/component/molecules/column/Column";
+import { ColumnCards } from "@/component/molecules/dragndrop/ColumnCards";
+import { DraggableCard } from "@/component/molecules/dragndrop/DraggableCard";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "../../component/molecules/tooltip/Tooltip";
-import Navbar from "../../component/organisms/navbar/Navbar";
-import { useBoard } from "../../context/board/BoardContext.hook";
-import { useUser } from "../../context/user/UserContext.hook";
+} from "@/component/molecules/tooltip/Tooltip";
+import Navbar from "@/component/organisms/navbar/Navbar";
+import { useBoard } from "@/context/board/BoardContext.hook";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export const TeamBoardView: React.FC = () => {
   const {
@@ -89,7 +89,7 @@ export const TeamBoardView: React.FC = () => {
                   size={"icon"}
                   onClick={() => onCreateCardClick(column.id)}
                 >
-                  <PlusIcon className={"size-6"} />
+                  <PlusIcon className={"size-4"} />
                 </Button>
               }
             >
@@ -173,13 +173,13 @@ export const TeamBoardView: React.FC = () => {
                             variant={"destructive"}
                             onClick={() => deleteTask(task.id)}
                           >
-                            <TrashIcon className={"size-6"} />
+                            <TrashIcon className={"size-4"} />
                           </Button>
 
                           <div className={"mt-auto self-end h-6"}>
                             <Tooltip>
                               <TooltipTrigger>
-                                <InfoCircledIcon
+                                <InfoIcon
                                   className={
                                     "size-6 p-1 rounded-full hover:bg-gray-500"
                                   }

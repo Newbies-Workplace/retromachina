@@ -1,8 +1,4 @@
-import {
-  PlusIcon,
-  TrackNextIcon,
-  TrackPreviousIcon,
-} from "@radix-ui/react-icons";
+import { PlusIcon, SkipBackIcon, SkipForwardIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -10,11 +6,11 @@ import { toast } from "react-toastify";
 import type { BoardResponse } from "shared/model/board/board.response";
 import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
 import { v4 as uuidv4 } from "uuid";
-import { editBoard, getBoard } from "../../api/Board.service";
-import { getRandomColor } from "../../common/Util";
-import { Button } from "../../component/atoms/button/Button";
-import { ColumnCreate } from "../../component/molecules/column_create/ColumnCreate";
-import Navbar from "../../component/organisms/navbar/Navbar";
+import { editBoard, getBoard } from "@/api/Board.service";
+import { getRandomColor } from "@/common/Util";
+import { Button } from "@/component/atoms/button/Button";
+import { ColumnCreate } from "@/component/molecules/column_create/ColumnCreate";
+import Navbar from "@/component/organisms/navbar/Navbar";
 
 const MAX_COLUMNS = 6;
 
@@ -139,7 +135,7 @@ export const TeamBoardEditView: React.FC = () => {
                       size={"icon"}
                       onClick={() => onChangeOrder(index, "prev")}
                     >
-                      <TrackPreviousIcon className={"size-4"} />
+                      <SkipBackIcon className={"size-4"} />
                     </Button>
                   )}
 
@@ -148,7 +144,7 @@ export const TeamBoardEditView: React.FC = () => {
                       size={"icon"}
                       onClick={() => onChangeOrder(index, "next")}
                     >
-                      <TrackNextIcon className={"size-4"} />
+                      <SkipForwardIcon className={"size-4"} />
                     </Button>
                   )}
 

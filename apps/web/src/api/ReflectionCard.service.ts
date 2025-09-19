@@ -1,6 +1,6 @@
 import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
 import { ReflectionCardResponse } from "shared/model/team/reflectionCard.response";
-import { axiosInstance } from "./AxiosInstance";
+import { axiosInstance } from "@/api/AxiosInstance";
 
 const getReflectionCards = async (teamId: string) => {
   return axiosInstance

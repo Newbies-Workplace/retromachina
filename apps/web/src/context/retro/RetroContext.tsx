@@ -1,5 +1,4 @@
-import React from "react";
-import { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import type {
@@ -39,10 +38,10 @@ import type {
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import { getUsersByTeamId } from "../../api/User.service";
-import type { CardMoveAction } from "../../interfaces/CardMoveAction.interface";
-import { useCardGroups } from "../useCardGroups";
-import { useUser } from "../user/UserContext.hook";
+import { getUsersByTeamId } from "@/api/User.service";
+import { groupCards } from "@/common/groupCards";
+import { CardMoveAction } from "@/component/molecules/dragndrop/dragndrop";
+import { useUser } from "@/context/user/UserContext.hook";
 
 interface RetroContextParams {
   retroId: string;
@@ -167,8 +166,8 @@ export const RetroContextProvider: React.FC<
   const { user } = useUser();
   const navigate = useNavigate();
 
-  const timeOffset = useRef<number>();
-  const socket = useRef<Socket>();
+  const timeOffset = useRef<number>(0);
+  const socket = useRef<Socket>(undefined);
   const [teamId, setTeamId] = useState<string | null>(null);
   const [columns, setColumns] = useState<RetroColumn[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
@@ -200,7 +199,7 @@ export const RetroContextProvider: React.FC<
         retro_id: retroId,
       },
       extraHeaders: {
-        //@ts-ignore
+        //@ts-expect-error
         Authorization: window.localStorage.getItem("Bearer"),
       },
       forceNew: true,
@@ -471,9 +470,7 @@ export const RetroContextProvider: React.FC<
 
   // discuss
   const changeDiscussCard = (to: "next" | "prev") => {
-    const groups = useCardGroups(cards, votes).sort(
-      (a, b) => b.votes - a.votes,
-    );
+    const groups = groupCards(cards, votes).sort((a, b) => b.votes - a.votes);
 
     if (!discussionCardId) {
       return false;

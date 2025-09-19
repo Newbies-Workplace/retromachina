@@ -118,6 +118,15 @@ const templates: RetroTemplateResponse[] = [
       { color: "#330d69", name: "Słabości", desc: null },
     ],
   },
+  {
+    id: 8,
+    name: "Thumbs up thumbs down",
+    desc: null,
+    columns: [
+      { color: "#2bc13d", name: "👍 Thumbs Up", desc: null },
+      { color: "#ff2b5c", name: "👎 Thumbs Down", desc: null },
+    ],
+  },
 ];
 
 export const getRandomTemplate = (

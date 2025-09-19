@@ -1,14 +1,13 @@
-import { CheckIcon, TrashIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
-import React, { createRef, useEffect } from "react";
-import { useCallback, useState } from "react";
-import timerEndSound from "../../../../assets/sounds/timer-end.wav";
-import { Button } from "../../../../component/atoms/button/Button";
-import { Timer } from "../../../../component/molecules/timer/Timer";
-import { useRetro } from "../../../../context/retro/RetroContext.hook";
-import { useAudio } from "../../../../context/useAudio";
-import useClickOutside from "../../../../context/useClickOutside";
-import { useTeamRole } from "../../../../context/useTeamRole";
+import { CheckIcon, XIcon } from "lucide-react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
+import timerEndSound from "@/assets/sounds/timer-end.wav";
+import { Button } from "@/component/atoms/button/Button";
+import { Timer } from "@/component/molecules/timer/Timer";
+import { useRetro } from "@/context/retro/RetroContext.hook";
+import { useAudio } from "@/hooks/useAudio";
+import useClickOutside from "@/hooks/useClickOutside";
+import { useTeamRole } from "@/hooks/useTeamRole";
 
 const SERVER_TIMER_DELAY_SECONDS = 1;
 
@@ -80,7 +79,7 @@ export const RetroTimer: React.FC = () => {
             size={"icon"}
             variant={"destructive"}
           >
-            <TrashIcon className={"size-6"} />
+            <XIcon className={"size-4"} />
           </Button>
         )}
       </div>

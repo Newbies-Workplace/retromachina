@@ -1,18 +1,22 @@
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import {
-  Instruction,
+  dropTargetForElements,
+  monitorForElements,
+} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import {
   attachInstruction,
   extractInstruction,
+  Instruction,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item";
 import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box";
-import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
-import { cn } from "../../../common/Util";
-import { useKeyDownListener } from "../../../context/useKeyDownListener";
-import { CardMoveAction } from "../../../interfaces/CardMoveAction.interface";
-import { isCard } from "./dragndrop";
+import { cn } from "@/common/Util";
+import {
+  CardMoveAction,
+  isCard,
+} from "@/component/molecules/dragndrop/dragndrop";
+import { useKeyDownListener } from "@/hooks/useKeyDownListener";
 
 interface GroupCardContainerProps {
   className?: string;

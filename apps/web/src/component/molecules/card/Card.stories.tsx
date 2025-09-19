@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "./Card";
-import Counter from "./counter/Counter";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Card } from "@/component/molecules/card/Card";
+import Counter from "@/component/molecules/card/counter/Counter";
 
 const meta = {
   title: "molecules/Card",
@@ -12,6 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    id: "1",
     text: "Test",
     author: {
       id: "aaa",

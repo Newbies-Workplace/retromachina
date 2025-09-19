@@ -1,6 +1,6 @@
 import React from "react";
-import { Avatar } from "../../../atoms/avatar/Avatar";
-import { CardUser } from "../Card";
+import { Avatar } from "@/component/atoms/avatar/Avatar";
+import { CardUser } from "@/component/molecules/card/Card";
 
 interface TeamUserPickerProps {
   teamUsers: CardUser[];

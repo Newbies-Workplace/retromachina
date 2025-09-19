@@ -1,6 +1,6 @@
-import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import { MinusIcon, PlusIcon } from "lucide-react";
 import type React from "react";
-import { cn } from "../../../../common/Util";
+import { cn } from "@/common/Util";
 
 interface CounterProps {
   className?: string;

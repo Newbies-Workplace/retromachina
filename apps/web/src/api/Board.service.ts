@@ -1,5 +1,5 @@
 import type { BoardResponse } from "shared/model/board/board.response";
-import { axiosInstance } from "./AxiosInstance";
+import { axiosInstance } from "@/api/AxiosInstance";
 
 export const editBoard = async (teamId: string, board: BoardResponse) => {
   return axiosInstance.put(`teams/${teamId}/board`, board);

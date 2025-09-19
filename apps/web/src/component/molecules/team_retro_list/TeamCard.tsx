@@ -1,19 +1,20 @@
 import {
+  ArchiveIcon,
   ClipboardIcon,
   FilePlusIcon,
-  Pencil1Icon,
+  PencilIcon,
   PlusIcon,
-} from "@radix-ui/react-icons";
+} from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserInTeamResponse } from "shared/.dist/model/user/user.response";
+import { useNavigate } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
-import { getRetrosByTeamId } from "../../../api/Retro.service";
-import { getUsersByTeamId } from "../../../api/User.service";
-import { useTeamRole } from "../../../context/useTeamRole";
-import { Button } from "../../atoms/button/Button";
-import { TeamAvatars } from "../team_avatars/TeamAvatars";
+import { UserInTeamResponse } from "shared/model/user/user.response";
+import { getRetrosByTeamId } from "@/api/Retro.service";
+import { getUsersByTeamId } from "@/api/User.service";
+import { Button } from "@/component/atoms/button/Button";
+import { TeamAvatars } from "@/component/molecules/team_avatars/TeamAvatars";
+import { useTeamRole } from "@/hooks/useTeamRole";
 
 interface TeamRetroListProps {
   teamName: string;
@@ -54,7 +55,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
       <div className={"flex gap-2 justify-between rounded-t-lg"}>
         <div
           className={
-            "flex flex-row flex-wrap gap-2 font-bold text-2xl items-center"
+            "flex flex-row flex-wrap gap-2 font-bold text-xl items-center"
           }
         >
           {teamName}
@@ -76,7 +77,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
               size="sm"
             >
               Edytuj
-              <Pencil1Icon className={"size-4"} />
+              <PencilIcon className={"size-4"} />
             </Button>
           )}
 
@@ -113,7 +114,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           Archiwum
           <br />
           Retrospekcji
-          <ClipboardIcon className={"min-size-6 size-6"} />
+          <ArchiveIcon className={"min-size-6 size-6"} />
         </Button>
 
         {isAdmin && !isAnyRetroRunning && (
@@ -144,6 +145,8 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
                 Retro <br />w trakcie
               </Button>
             );
+          } else {
+            return null;
           }
         })}
       </div>

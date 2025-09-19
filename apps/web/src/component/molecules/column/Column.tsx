@@ -1,6 +1,6 @@
 import React from "react";
-import { cn } from "../../../common/Util";
-import { ColumnHeader } from "../column_header/ColumnHeader";
+import { cn } from "@/common/Util";
+import { ColumnHeader } from "@/component/molecules/column_header/ColumnHeader";
 
 interface ColumnProps {
   headerStyle?: string;

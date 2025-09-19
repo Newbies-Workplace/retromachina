@@ -3,9 +3,9 @@ import type React from "react";
 import { createContext, useEffect, useState } from "react";
 import type { AuthParams } from "shared/model/auth/Auth.interface";
 import type { UserWithTeamsResponse } from "shared/model/user/user.response";
-import { loginGoogle } from "../../api/Auth.service";
-import { axiosInstance } from "../../api/AxiosInstance";
-import { getMyUser } from "../../api/User.service";
+import { loginGoogle } from "@/api/Auth.service";
+import { axiosInstance } from "@/api/AxiosInstance";
+import { getMyUser } from "@/api/User.service";
 
 interface UserContext {
   user: UserWithTeamsResponse | null;

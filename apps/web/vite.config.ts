@@ -1,3 +1,5 @@
+import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import EnvironmentPlugin from "vite-plugin-environment";
@@ -7,10 +9,16 @@ import { svgrComponent } from "vite-plugin-svgr-component";
 export default defineConfig(({ mode }) => {
   return {
     plugins: [
-      svgrComponent(),
       react(),
+      tailwindcss(),
+      svgrComponent(),
       EnvironmentPlugin("all", { prefix: "RETRO_WEB" }),
     ],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "src"),
+      },
+    },
     envDir: "../",
     root: "src",
     build: {

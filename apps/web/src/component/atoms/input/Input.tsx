@@ -1,6 +1,6 @@
 import type React from "react";
 import type { KeyboardEventHandler } from "react";
-import { cn } from "../../../common/Util";
+import { cn } from "@/common/Util";
 
 interface InputProps {
   className?: string;

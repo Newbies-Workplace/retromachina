@@ -55,7 +55,7 @@ export const RetroTimer: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-col items-center h-12 bg-background-500 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
+        "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 pt-3 pb-2 px-2 rounded-b-lg"
       }
     >
       <div className={"flex flex-row gap-2"}>

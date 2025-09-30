@@ -40,9 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </span>
 
         <div
-          className={
-            "flex justify-end items-center gap-4 overflow-x-hidden pt-2"
-          }
+          className={"flex justify-end items-center gap-4 overflow-hidden pt-1"}
         >
           <div className={"flex flex-row justify-end items-start gap-4"}>
             {topContent}

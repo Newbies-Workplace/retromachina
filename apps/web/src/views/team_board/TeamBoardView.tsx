@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/component/atoms/button/Button";
+import { Switch } from "@/component/atoms/switch/Switch";
 import { Card } from "@/component/molecules/card/Card";
 import { Column } from "@/component/molecules/column/Column";
 import { ColumnCards } from "@/component/molecules/dragndrop/ColumnCards";
@@ -28,6 +29,8 @@ export const TeamBoardView: React.FC = () => {
     createTask,
     updateTask,
     deleteTask,
+    filters,
+    setFilters,
   } = useBoard();
   const [creatingTask, setCreatingTask] = useState<TaskResponse>();
   const { user } = useUser();
@@ -61,11 +64,31 @@ export const TeamBoardView: React.FC = () => {
     <>
       <Navbar
         topContent={
-          team?.owner_id === user?.id && (
-            <Button size={"sm"} onClick={onEditClick}>
-              Edytuj
-            </Button>
-          )
+          <div className={"flex flex-row items-center gap-4"}>
+            <div
+              className={
+                "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 pt-2 pb-2 px-2 rounded-b-lg"
+              }
+            >
+              <span className={"text-sm"}>Tylko moje</span>
+
+              <Switch
+                checked={filters.showOnlyMyTasks}
+                onCheckedChange={() => {
+                  setFilters({
+                    ...filters,
+                    showOnlyMyTasks: !filters.showOnlyMyTasks,
+                  });
+                }}
+              />
+            </div>
+
+            {team?.owner_id === user?.id && (
+              <Button size={"xs"} onClick={onEditClick}>
+                Edytuj
+              </Button>
+            )}
+          </div>
         }
       />
 
@@ -133,6 +156,21 @@ export const TeamBoardView: React.FC = () => {
 
                 {board.tasks
                   .filter((task) => task.columnId === column.id)
+                  .sort((a, b) => {
+                    if (!filters.showOnlyMyTasks || a.ownerId === b.ownerId) {
+                      return 0;
+                    }
+
+                    if (a.ownerId === user.id) {
+                      return -1;
+                    }
+
+                    if (b.ownerId === user.id) {
+                      return 1;
+                    }
+
+                    return 0;
+                  })
                   .map((task) => {
                     const author = teamUsers.find(
                       (user) => user.id === task.ownerId,
@@ -144,6 +182,11 @@ export const TeamBoardView: React.FC = () => {
                         parentCardId={null}
                         cardId={task.id}
                         columnId={column.id}
+                        className={
+                          filters.showOnlyMyTasks && task.ownerId !== user.id
+                            ? "opacity-30"
+                            : ""
+                        }
                       >
                         <Card
                           id={task.id}

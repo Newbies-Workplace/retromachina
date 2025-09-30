@@ -136,7 +136,7 @@ export const RetroCreateView: React.FC = () => {
         topContent={
           <Button
             data-testid={"randomize-template"}
-            size={"sm"}
+            size={"xs"}
             onClick={() => randomizeTemplate()}
           >
             Losuj szablon

@@ -102,7 +102,7 @@ export const TeamBoardEditView: React.FC = () => {
     <>
       <Navbar
         topContent={
-          <Button size={"sm"} onClick={saveBoard}>
+          <Button size={"xs"} onClick={saveBoard}>
             Zapisz
           </Button>
         }

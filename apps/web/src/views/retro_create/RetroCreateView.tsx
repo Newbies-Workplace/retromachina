@@ -146,7 +146,7 @@ export const RetroCreateView: React.FC = () => {
       .catch(console.log);
   };
 
-  const clearColumns = () => {
+  const clearTemplate = () => {
     setColumns([]);
     setTemplateId(null);
   };
@@ -180,8 +180,8 @@ export const RetroCreateView: React.FC = () => {
 
             <Button
               className={"grow-0"}
-              data-testid={"randomize-template"}
-              onClick={() => clearColumns()}
+              data-testid={"clear-template"}
+              onClick={() => clearTemplate()}
               variant={"destructive"}
             >
               <EraserIcon />

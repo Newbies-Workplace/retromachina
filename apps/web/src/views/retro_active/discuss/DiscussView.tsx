@@ -64,11 +64,7 @@ export const DiscussView = () => {
   }, [activeUsers, teamUsers]);
 
   return (
-    <div
-      className={
-        "flex justify-between flex-row h-full max-h-[calc(100vh-64px-76px)]"
-      }
-    >
+    <div className={"flex justify-between flex-row h-full"}>
       <div
         className={
           "hidden lg:flex flex-col gap-4 min-w-[250px] max-w-[50px] px-4 py-2 scrollbar"
@@ -177,7 +173,7 @@ export const DiscussView = () => {
           "flex flex-col grow p-2 min-w-[300px] max-w-[400px] my-4 rounded-l-2xl bg-background-500"
         }
       >
-        <div className={"flex flex-col gap-2 mb-auto pb-7 scrollbar"}>
+        <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>
           {tasks
             ?.filter(
               (actionPoint) => actionPoint.parentCardId === discussionCardId,

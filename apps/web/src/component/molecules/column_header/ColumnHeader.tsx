@@ -1,14 +1,12 @@
 import type React from "react";
 
 interface ColumnHeaderProps {
-  color: string;
   description?: string;
   header: string;
   right?: React.ReactNode;
 }
 
 export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
-  color,
   description,
   header,
   right,
@@ -16,16 +14,11 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   return (
     <div
       className={
-        "flex flex-col justify-center items-start gap-1 w-full bg-white border p-2 rounded-2xl"
+        "flex flex-col justify-center items-start gap-1 w-full bg-white border p-2 rounded-lg"
       }
     >
       <div className={"flex gap-2 w-full justify-between"}>
         <div className={"flex flex-nowrap items-center gap-2 break-words"}>
-          <div
-            className={"size-5 rounded"}
-            style={{ backgroundColor: color }}
-          />
-
           <span className={"text-lg font-bold"}>{header}</span>
         </div>
 

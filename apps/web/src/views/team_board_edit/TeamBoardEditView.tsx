@@ -115,14 +115,13 @@ export const TeamBoardEditView: React.FC = () => {
             .map((col, index) => (
               <div key={col.id}>
                 <ColumnCreate
-                  color={col.color}
                   name={col.name}
                   desc={""}
-                  onChange={({ color, name }) =>
+                  onChange={({ name }) =>
                     onChangeColumn(col.id, {
                       id: col.id,
                       name: name,
-                      color: color,
+                      color: "#ffffff",
                       order: index,
                     })
                   }

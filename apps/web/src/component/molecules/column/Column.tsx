@@ -24,7 +24,6 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
     >
       <div className={cn("flex items-end mb-4", headerStyle)}>
         <ColumnHeader
-          color={columnData.color}
           header={columnData.name}
           description={columnData.description ?? undefined}
           right={headerRight}

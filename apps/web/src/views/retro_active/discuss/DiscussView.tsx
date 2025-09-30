@@ -71,7 +71,7 @@ export const DiscussView = () => {
     >
       <div
         className={
-          "hidden lg:flex flex-col gap-4 min-w-[250px] max-w-[w50px] px-4 py-2 scrollbar"
+          "hidden lg:flex flex-col gap-4 min-w-[250px] max-w-[50px] px-4 py-2 scrollbar"
         }
       >
         <span className={"ml-2 text-3xl"}>Już za chwilę...</span>
@@ -225,15 +225,15 @@ export const DiscussView = () => {
         </div>
 
         <div className={"mt-4"}>
-          <div className={"flex w-full -mb-7 px-1"}>
+          <div className={"flex w-full -mb-3 px-1"}>
             <AnimatePresence>
               {usersWritingTasks.slice(0, 8).map((user) => (
                 <motion.div
                   layout
                   key={user.id}
-                  initial={{ y: 24 }}
+                  initial={{ y: 32 }}
                   animate={{ y: 0 }}
-                  exit={{ y: 24 }}
+                  exit={{ y: 32 }}
                 >
                   <Avatar
                     className={"animate-bounce"}
@@ -248,7 +248,7 @@ export const DiscussView = () => {
           <Input
             multiline
             value={value}
-            className={"z-[1]"}
+            className={"z-10 bg-white"}
             setValue={setValue}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {

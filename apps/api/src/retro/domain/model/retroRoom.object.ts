@@ -320,7 +320,12 @@ export class RetroRoom {
   drawMachine() {
     if (this.userIdsQueue.size === 0) {
       this.userIdsQueue = new Set<string>(
-        Array.from(this.connectedUsers.values()).map((user) => user.userId),
+        Array.from(this.connectedUsers.values())
+          .filter((user) => {
+            // return only user who have at least one card
+            return this.cards.find((card) => card.authorId === user.userId);
+          })
+          .map((user) => user.userId),
       );
     }
 

@@ -1,3 +1,4 @@
+import { XIcon } from "lucide-react";
 import {
   AnimatePresence,
   delay,
@@ -11,11 +12,13 @@ import { User } from "shared/model/retro/retroRoom.interface";
 import slotMachineSound from "@/assets/sounds/slot-machine.wav";
 import slotMachineOpenSound from "@/assets/sounds/slot-machine-open.wav";
 import { Avatar } from "@/component/atoms/avatar/Avatar";
+import { Button } from "@/component/atoms/button/Button";
 import { SlotMachineDrawnListener } from "@/context/retro/RetroContext";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useAudio } from "@/hooks/useAudio";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useTeamRole } from "@/hooks/useTeamRole";
 
 export const SLOT_MACHINE_ANIMATION_DURATION = 2400;
 const rowAnimation = {
@@ -46,15 +49,18 @@ const getRandomUsers = (users: User[], amount: number) => {
 
 export const SlotMachine: React.FC = () => {
   const {
+    teamId,
     roomState,
     teamUsers,
     activeUsers,
     drawMachine,
     highlightedUserId,
     slotMachineVisible,
+    setSlotMachineVisible,
     addDrawSlotMachineListener,
     removeDrawSlotMachineListener,
   } = useRetro();
+  const { isAdmin } = useTeamRole(teamId!);
   const { user } = useUser();
   const { play: playAudio } = useAudio();
 
@@ -131,7 +137,7 @@ export const SlotMachine: React.FC = () => {
         <motion.div
           ref={leverRef}
           initial={{ opacity: 0, bottom: 0 }}
-          animate={{ opacity: 1, bottom: 92 }}
+          animate={{ opacity: 1, bottom: 110 }}
           exit={{ opacity: 0, bottom: 0 }}
           transition={{ duration: 0.2 }}
           className={
@@ -143,6 +149,18 @@ export const SlotMachine: React.FC = () => {
               "flex flex-col items-center gap-6 bg-secondary-500 p-2 rounded-xl rounded-t-[48px] shadow-lg w-full z-[1]"
             }
           >
+            {isAdmin && (
+              <Button
+                size={"icon"}
+                className={"absolute top-4 left-4"}
+                variant={"destructive"}
+                onClick={() => {
+                  setSlotMachineVisible(false);
+                }}
+              >
+                <XIcon className={"size-4"} />
+              </Button>
+            )}
             <span
               className={
                 "flex flex-col justify-center items-center font-harlow-solid-italic text-background-50 text-3xl"

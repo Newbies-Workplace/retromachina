@@ -20,7 +20,9 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
 }) => {
   return (
     <div
-      className={"flex flex-col items-stretch gap-2 min-w-[300px] px-2 py-4"}
+      className={
+        "flex flex-col items-stretch gap-2 min-w-[300px] px-2 py-4 h-full"
+      }
     >
       <div className={cn("flex items-end mb-4", headerStyle)}>
         <ColumnHeader

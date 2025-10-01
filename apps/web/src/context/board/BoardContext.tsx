@@ -23,6 +23,10 @@ interface BoardContextParams {
   teamId: string;
 }
 
+interface BoardFilters {
+  showOnlyMyTasks: boolean;
+}
+
 interface BoardContext {
   teamId: string;
   board: BoardResponse | null;
@@ -37,6 +41,8 @@ interface BoardContext {
   ) => void;
   updateTask: (taskId: string, newOwnerId: string | null, text: string) => void;
   deleteTask: (taskId: string) => void;
+  filters: BoardFilters;
+  setFilters: (filters: BoardFilters) => void;
 }
 
 export const BoardContext = createContext<BoardContext>({
@@ -48,6 +54,10 @@ export const BoardContext = createContext<BoardContext>({
   createTask: () => {},
   updateTask: () => {},
   deleteTask: () => {},
+  filters: {
+    showOnlyMyTasks: false,
+  },
+  setFilters: () => {},
 });
 
 export const BoardContextProvider: React.FC<
@@ -57,6 +67,10 @@ export const BoardContextProvider: React.FC<
   const [board, setBoard] = useState<BoardResponse | null>(null);
   const [team, setTeam] = useState<TeamResponse | null>(null);
   const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
+
+  const [filters, setFilters] = useState<BoardFilters>({
+    showOnlyMyTasks: false,
+  });
 
   useEffect(() => {
     getBoard(teamId).then((board) => setBoard(board));
@@ -213,6 +227,8 @@ export const BoardContextProvider: React.FC<
         createTask: createTask,
         updateTask: updateTask,
         deleteTask: deleteTask,
+        filters: filters,
+        setFilters: setFilters,
       }}
     >
       {children}

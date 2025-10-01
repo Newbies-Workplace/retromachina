@@ -12,8 +12,9 @@ const buttonVariants = cva(
         destructive: "bg-red-500 text-black",
       },
       size: {
-        md: "h-9 rounded-md px-4 py-2",
+        xs: "h-6 rounded-md px-3 text-xs",
         sm: "h-8 rounded-md px-3 text-xs",
+        md: "h-9 rounded-md px-4 py-2",
         lg: "h-10 rounded-md px-8",
         xl: "min-w-32 px-8 py-4 rounded-lg text-lg",
         "2xl": "min-w-[250px] px-[42px] py-[25px] rounded-lg text-xl",

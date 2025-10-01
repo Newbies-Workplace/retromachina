@@ -26,7 +26,7 @@ export const GroupView: React.FC = () => {
   return (
     <div
       className={cn(
-        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar",
+        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full",
         slotMachineVisible && "pb-28",
       )}
     >
@@ -66,6 +66,14 @@ export const GroupView: React.FC = () => {
                     ...cards.filter((c) => c.parentCardId === group.id),
                   ];
 
+                  const isGroupHidden =
+                    slotMachineVisible &&
+                    delayedHighlightedUserId !== null &&
+                    delayedHighlightedUserId !== group.authorId &&
+                    !groupCards
+                      .map((card) => card.authorId)
+                      .includes(delayedHighlightedUserId);
+
                   return (
                     <CardGroup
                       key={group.id}
@@ -73,10 +81,7 @@ export const GroupView: React.FC = () => {
                       columnId={column.id}
                       className={cn(
                         "transition-opacity",
-                        slotMachineVisible &&
-                          delayedHighlightedUserId !== null &&
-                          delayedHighlightedUserId !== group.authorId &&
-                          "opacity-30",
+                        isGroupHidden && "opacity-30",
                       )}
                       onCardDropped={moveCard}
                     >

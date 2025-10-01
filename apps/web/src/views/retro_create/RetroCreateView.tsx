@@ -1,3 +1,4 @@
+import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
 import { EraserIcon, PlusIcon, RefreshCwIcon, Share2Icon } from "lucide-react";
 import * as qs from "query-string";
 import type React from "react";
@@ -153,14 +154,18 @@ export const RetroCreateView: React.FC = () => {
   };
 
   if (!team) {
-    return <></>;
+    return (
+      <>
+        <Navbar />
+        loading
+      </>
+    );
   }
 
   return (
     <>
       <Navbar />
-
-      <div className={"flex p-2 m-2 bg-background-500 rounded-xl"}>
+      <div className={"flex p-2 m-4 bg-background-500 rounded-xl"}>
         <div className={"p-2 w-full rounded-lg bg-card flex flex-col gap-2"}>
           <span>Retrospektywa zespołu {team.name}</span>
           <div className={"flex flex-row -space-x-2 flex-wrap"}>
@@ -169,8 +174,8 @@ export const RetroCreateView: React.FC = () => {
             ))}
           </div>
 
-          <div className={"flex justify-between"}>
-            <div className={"flex flex-row gap-2 mt-4"}>
+          <div className={"flex justify-between mt-4"}>
+            <div className={"flex flex-row gap-2"}>
               <Button
                 className={"grow-0"}
                 data-testid={"randomize-template"}
@@ -200,9 +205,27 @@ export const RetroCreateView: React.FC = () => {
             </Button>
           </div>
 
-          <BoardCreator>
+          <BoardCreator
+            className={"min-h-20"}
+            onColumnReorder={({ fromId, toId }) => {
+              const fromIndex = columns.findIndex((c) => c.id === fromId);
+              const toIndex = columns.findIndex((c) => c.id === toId);
+              if (fromIndex === -1 || toIndex === -1) return;
+              if (fromIndex === toIndex) return;
+
+              setColumns(
+                reorder({
+                  list: columns,
+                  startIndex: fromIndex,
+                  finishIndex: toIndex,
+                }),
+              );
+              setTemplateId(null);
+            }}
+          >
             {columns.map((column) => (
               <BoardCreatorColumn
+                id={column.id}
                 key={column.id}
                 onChange={({ name, desc }) =>
                   onChangeColumn(column.id, { name, desc })

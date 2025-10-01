@@ -1,26 +1,57 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import React, { useEffect, useRef } from "react";
-import invariant from "tiny-invariant";
 import { cn } from "@/common/Util";
+import {
+  isColumnData,
+  isDraggingAColumn,
+} from "@/component/molecules/board_creator/data";
+
+type ReorderCallback = (data: { fromId: string; toId: string }) => void;
 
 interface BoardCreatorProps {
+  onColumnReorder: ReorderCallback;
   children?: React.ReactNode;
   className?: string;
 }
 
 export const BoardCreator: React.FC<BoardCreatorProps> = ({
+  onColumnReorder,
   children,
   className,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const element = ref.current;
+    return combine(
+      monitorForElements({
+        canMonitor: isDraggingAColumn,
+        onDrop({ source, location }) {
+          const dragging = source.data;
+          if (!isColumnData(dragging)) {
+            return;
+          }
 
-    invariant(element);
+          const innerMost = location.current.dropTargets[0];
+          if (!innerMost) {
+            return;
+          }
+          const dropTargetData = innerMost.data;
 
-    return combine();
-  }, []);
+          if (!isColumnData(dropTargetData)) {
+            return;
+          }
+
+          onColumnReorder({
+            fromId: dragging.column.id,
+            toId: dropTargetData.column.id,
+          });
+
+          return;
+        },
+      }),
+    );
+  }, [onColumnReorder]);
 
   return (
     <div

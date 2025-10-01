@@ -1,4 +1,10 @@
-import { PlusIcon, SkipBackIcon, SkipForwardIcon } from "lucide-react";
+import {
+  CornerLeftUpIcon,
+  PlusIcon,
+  SaveIcon,
+  SkipBackIcon,
+  SkipForwardIcon,
+} from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -9,7 +15,8 @@ import { v4 as uuidv4 } from "uuid";
 import { editBoard, getBoard } from "@/api/Board.service";
 import { getRandomColor } from "@/common/Util";
 import { Button } from "@/component/atoms/button/Button";
-import { ColumnCreate } from "@/component/molecules/column_create/ColumnCreate";
+import { BoardCreator } from "@/component/molecules/board_creator/BoardCreator";
+import { BoardCreatorColumn } from "@/component/molecules/board_creator/BoardCreatorColumn";
 import Navbar from "@/component/organisms/navbar/Navbar";
 
 const MAX_COLUMNS = 6;
@@ -100,73 +107,55 @@ export const TeamBoardEditView: React.FC = () => {
 
   return (
     <>
-      <Navbar
-        topContent={
-          <Button size={"sm"} onClick={saveBoard}>
-            Zapisz
-          </Button>
-        }
-      />
+      <Navbar />
 
-      <div className={"flex grow scrollbar"}>
-        <div className={"flex items-start gap-4 mt-4 ml-3"}>
-          {board.columns
-            .sort((a, b) => a.order - b.order)
-            .map((col, index) => (
-              <div key={col.id}>
-                <ColumnCreate
-                  name={col.name}
-                  desc={""}
-                  onChange={({ name }) =>
-                    onChangeColumn(col.id, {
-                      id: col.id,
-                      name: name,
-                      color: "#ffffff",
-                      order: index,
-                    })
-                  }
-                  onDelete={() => onDeleteColumn(col.id)}
-                />
+      <div className={"flex p-2 m-2 bg-background-500 rounded-xl"}>
+        <div className={"p-2 w-full rounded-lg bg-card flex flex-col gap-2"}>
+          <div className={"flex justify-between"}>
+            <span>Edycja tablicy</span>
+            <Button
+              disabled={board.columns.length >= MAX_COLUMNS}
+              onClick={onAddColumn}
+            >
+              <PlusIcon />
+              Nowa Kolumna
+            </Button>
+          </div>
 
-                <div className={"flex items-center gap-1 mt-4"}>
-                  {index !== 0 && (
-                    <Button
-                      size={"icon"}
-                      onClick={() => onChangeOrder(index, "prev")}
-                    >
-                      <SkipBackIcon className={"size-4"} />
-                    </Button>
+          <BoardCreator>
+            {board.columns
+              .sort((a, b) => a.order - b.order)
+              .map((col, index) => (
+                <div className={"flex flex-col gap-2"} key={col.id}>
+                  <BoardCreatorColumn
+                    name={col.name}
+                    desc={""}
+                    className={
+                      index === 0 ? "ring-primary-500 ring-2" : undefined
+                    }
+                    onChange={({ name }) =>
+                      onChangeColumn(col.id, {
+                        id: col.id,
+                        name: name,
+                        color: "#ffffff",
+                        order: index,
+                      })
+                    }
+                    onDelete={() => onDeleteColumn(col.id)}
+                  />
+                  {index === 0 && (
+                    <div className={"flex flex-row"}>
+                      <CornerLeftUpIcon />
+                      <span className={"font-bold"}>Domyślna kolumna</span>
+                    </div>
                   )}
-
-                  {index !== board.columns.length - 1 && (
-                    <Button
-                      size={"icon"}
-                      onClick={() => onChangeOrder(index, "next")}
-                    >
-                      <SkipForwardIcon className={"size-4"} />
-                    </Button>
-                  )}
-
-                  <div onClick={() => onChangeDefaultColumn(col.id)}>
-                    <input
-                      type={"radio"}
-                      name={"default"}
-                      value={col.id}
-                      checked={board.defaultColumnId === col.id}
-                    />
-                    <span>Domyślna</span>
-                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+          </BoardCreator>
 
-          <Button
-            className={"mr-4"}
-            disabled={board.columns.length >= MAX_COLUMNS}
-            onClick={onAddColumn}
-          >
-            Nowa Kolumna
-            <PlusIcon className={"size-6"} />
+          <Button className={"mt-4"} size={"sm"} onClick={saveBoard}>
+            <SaveIcon />
+            Zapisz tablicę
           </Button>
         </div>
       </div>

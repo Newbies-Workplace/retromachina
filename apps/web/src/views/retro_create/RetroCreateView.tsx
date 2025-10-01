@@ -15,7 +15,8 @@ import { getUsersByTeamId } from "@/api/User.service";
 import { getRandomColor } from "@/common/Util";
 import { Avatar } from "@/component/atoms/avatar/Avatar";
 import { Button } from "@/component/atoms/button/Button";
-import { ColumnCreate } from "@/component/molecules/column_create/ColumnCreate";
+import { BoardCreator } from "@/component/molecules/board_creator/BoardCreator";
+import { BoardCreatorColumn } from "@/component/molecules/board_creator/BoardCreatorColumn";
 import Navbar from "@/component/organisms/navbar/Navbar";
 
 export interface Column {
@@ -168,30 +169,40 @@ export const RetroCreateView: React.FC = () => {
             ))}
           </div>
 
-          <div className={"flex flex-row gap-2 mt-4"}>
-            <Button
-              className={"grow-0"}
-              data-testid={"randomize-template"}
-              onClick={() => randomizeTemplate()}
-            >
-              <RefreshCwIcon />
-              Losuj szablon
-            </Button>
+          <div className={"flex justify-between"}>
+            <div className={"flex flex-row gap-2 mt-4"}>
+              <Button
+                className={"grow-0"}
+                data-testid={"randomize-template"}
+                onClick={() => randomizeTemplate()}
+              >
+                <RefreshCwIcon />
+                Losuj szablon
+              </Button>
+
+              <Button
+                className={"grow-0"}
+                data-testid={"clear-template"}
+                onClick={() => clearTemplate()}
+                variant={"destructive"}
+              >
+                <EraserIcon />
+                Wyczyść szablon
+              </Button>
+            </div>
 
             <Button
-              className={"grow-0"}
-              data-testid={"clear-template"}
-              onClick={() => clearTemplate()}
-              variant={"destructive"}
+              disabled={columns.length >= MAX_COLUMNS}
+              onClick={onAddColumn}
             >
-              <EraserIcon />
-              Wyczyść kolumny
+              <PlusIcon />
+              Nowa kolumna
             </Button>
           </div>
 
-          <div className={"flex items-start gap-2 scrollbar pb-2"}>
+          <BoardCreator>
             {columns.map((column) => (
-              <ColumnCreate
+              <BoardCreatorColumn
                 key={column.id}
                 onChange={({ name, desc }) =>
                   onChangeColumn(column.id, { name, desc })
@@ -202,21 +213,7 @@ export const RetroCreateView: React.FC = () => {
                 withDescription
               />
             ))}
-
-            <div className={"pr-4"}>
-              <Button
-                className={"min-w-[300px] max-w-[300px] flex-col"}
-                disabled={columns.length >= MAX_COLUMNS}
-                size="xl"
-                onClick={onAddColumn}
-              >
-                Nowa
-                <br />
-                kolumna
-                <PlusIcon className={"size-6"} />
-              </Button>
-            </div>
-          </div>
+          </BoardCreator>
 
           <Button
             data-testid={"create-retro"}
@@ -224,10 +221,8 @@ export const RetroCreateView: React.FC = () => {
             disabled={clicked}
             onClick={onCreateRetroClick}
           >
-            <div className={"flex flex-col items-start gap-1 w-full"}>
-              Rozpocznij retrospektywę
-            </div>
-            <Share2Icon className={"size-6"} />
+            <Share2Icon />
+            Rozpocznij retrospektywę
           </Button>
           <span className={"text-sm mx-auto"}>
             (link zostanie skopiowany do schowka)

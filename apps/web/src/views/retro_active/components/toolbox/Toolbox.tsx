@@ -130,7 +130,9 @@ export const Toolbox: React.FC = () => {
   };
 
   return (
-    <div className={"flex flex-row gap-2 mx-2"}>
+    <div
+      className={"flex flex-row gap-2 mx-2 absolute bottom-0 left-0 right-0"}
+    >
       <SlotMachine />
 
       {isReflectionCardsShelfOpen && (

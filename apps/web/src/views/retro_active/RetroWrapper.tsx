@@ -14,7 +14,7 @@ export const RetroWrapper: React.FC<React.PropsWithChildren> = ({
     if (retroId) {
       getRetroByRetroId(retroId).then((retro) => {
         if (!retro.is_running) {
-          navigate("summary");
+          navigate(`/retro/${retroId}/summary`);
         }
       });
     }

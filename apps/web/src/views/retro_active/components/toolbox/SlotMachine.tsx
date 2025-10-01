@@ -131,7 +131,7 @@ export const SlotMachine: React.FC = () => {
         <motion.div
           ref={leverRef}
           initial={{ opacity: 0, bottom: 0 }}
-          animate={{ opacity: 1, bottom: 92 }}
+          animate={{ opacity: 1, bottom: 110 }}
           exit={{ opacity: 0, bottom: 0 }}
           transition={{ duration: 0.2 }}
           className={

@@ -26,7 +26,7 @@ export const GroupView: React.FC = () => {
   return (
     <div
       className={cn(
-        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full scrollbar",
+        "grid grid-flow-col [grid-auto-columns:minmax(300px,1fr)] h-full",
         slotMachineVisible && "pb-28",
       )}
     >

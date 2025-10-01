@@ -82,7 +82,7 @@ export const RetroActiveView: React.FC = () => {
               {isAdmin && (
                 <div
                   className={
-                    "flex flex-row items-center gap-2 bg-background-500 h-12 -mt-2 pt-1 pb-1.5 px-2 rounded-b-lg"
+                    "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 p-2 rounded-b-lg"
                   }
                 >
                   <Button
@@ -127,7 +127,10 @@ export const RetroActiveView: React.FC = () => {
         }
       />
 
-      <div className={"flex flex-col grow"} ref={ref}>
+      <div
+        className={"flex flex-col h-[calc(100vh-70px-100px)] scrollbar"}
+        ref={ref}
+      >
         <Routes>
           <Route path="reflection" element={<ReflectionView />} />
           <Route path="group" element={<GroupView />} />

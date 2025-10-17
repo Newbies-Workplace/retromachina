@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import { getRetrosByTeamId } from "@/api/Retro.service";
-import { Button } from "@/component/atoms/button/Button";
-import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
-import Navbar from "@/component/organisms/navbar/Navbar";
+import { Button } from "@/components/atoms/button/Button";
+import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
+import Navbar from "@/components/organisms/navbar/Navbar";
 import { useTeam } from "@/hooks/useTeamRole";
 
 export const RetroArchiveView = () => {

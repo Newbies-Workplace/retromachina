@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import RetroImage from "@/assets/images/hero_retro.png?url";
 import TeamsImage from "@/assets/images/hero_teams.png?url";
-import { Button } from "@/component/atoms/button/Button";
+import { Button } from "@/components/atoms/button/Button";
 import { KanbanBoard } from "@/views/hero/components/KanbanBoard";
 
 export const HeroView: React.FC = () => {

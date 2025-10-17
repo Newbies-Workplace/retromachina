@@ -3,7 +3,7 @@ import React, { createContext, FC, ReactNode, useState } from "react";
 import {
   ConfirmDialog,
   ConfirmDialogProps,
-} from "@/component/molecules/confirm_dialog/ConfirmDialog";
+} from "@/components/molecules/confirm_dialog/ConfirmDialog";
 
 interface ConfirmContext {
   showConfirm: (props: ConfirmDialogProps) => void;

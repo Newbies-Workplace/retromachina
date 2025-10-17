@@ -7,11 +7,11 @@ import type { UserResponse } from "shared/model/user/user.response";
 import { getRetroByRetroId } from "@/api/Retro.service";
 import { getTasksByRetroId } from "@/api/Task.service";
 import { getUsersByTeamId } from "@/api/User.service";
-import { Avatar } from "@/component/atoms/avatar/Avatar";
-import { Button } from "@/component/atoms/button/Button";
-import { Card } from "@/component/molecules/card/Card";
-import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
-import Navbar from "@/component/organisms/navbar/Navbar";
+import { Card } from "@/components/molecules/card/Card";
+import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { Button } from "@/components/atoms/button/Button";
+import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
+import Navbar from "@/components/organisms/navbar/Navbar";
 
 export const RetroSummaryView = () => {
   const { retroId } = useParams<{ retroId: string }>();

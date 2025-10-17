@@ -1,16 +1,16 @@
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useMemo, useState } from "react";
-import { type Group, groupCards } from "@/common/groupCards";
-import { pluralText } from "@/common/pluralText";
-import { cn } from "@/common/Util";
-import { Avatar } from "@/component/atoms/avatar/Avatar";
-import { Button } from "@/component/atoms/button/Button";
-import { Input } from "@/component/atoms/input/Input";
-import { Card } from "@/component/molecules/card/Card";
-import { CardGroup } from "@/component/molecules/dragndrop/CardGroup";
+import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { Button } from "@/components/atoms/button/Button";
+import { Input } from "@/components/atoms/input/Input";
+import { Card } from "@/components/molecules/card/Card";
+import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
+import { type Group, groupCards } from "@/lib/groupCards";
+import { pluralText } from "@/lib/pluralText";
+import { cn } from "@/lib/utils";
 
 export const DiscussView = () => {
   const {

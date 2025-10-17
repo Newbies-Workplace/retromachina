@@ -39,9 +39,9 @@ import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { getUsersByTeamId } from "@/api/User.service";
-import { groupCards } from "@/common/groupCards";
-import { CardMoveAction } from "@/component/molecules/dragndrop/dragndrop";
+import { CardMoveAction } from "@/components/molecules/dragndrop/dragndrop";
 import { useUser } from "@/context/user/UserContext.hook";
+import { groupCards } from "@/lib/groupCards";
 
 interface RetroContextParams {
   retroId: string;

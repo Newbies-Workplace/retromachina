@@ -1,6 +1,6 @@
 import type React from "react";
 import { Navigate, useLocation } from "react-router";
-import { Loader } from "@/component/organisms/loader/Loader";
+import { Loader } from "@/components/organisms/loader/Loader";
 import { useUser } from "@/context/user/UserContext.hook";
 import { setRedirectPath } from "@/hooks/useRedirect";
 

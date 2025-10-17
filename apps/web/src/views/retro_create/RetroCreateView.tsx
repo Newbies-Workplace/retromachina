@@ -13,12 +13,11 @@ import { createRetro } from "@/api/Retro.service";
 import { getRandomTemplate } from "@/api/RetroTemplate.service";
 import { getTeamById } from "@/api/Team.service";
 import { getUsersByTeamId } from "@/api/User.service";
-import { getRandomColor } from "@/common/Util";
-import { Avatar } from "@/component/atoms/avatar/Avatar";
-import { Button } from "@/component/atoms/button/Button";
-import { BoardCreator } from "@/component/molecules/board_creator/BoardCreator";
-import { BoardCreatorColumn } from "@/component/molecules/board_creator/BoardCreatorColumn";
-import Navbar from "@/component/organisms/navbar/Navbar";
+import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { Button } from "@/components/atoms/button/Button";
+import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
+import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
+import Navbar from "@/components/organisms/navbar/Navbar";
 
 export interface Column {
   id: string;
@@ -65,7 +64,7 @@ export const RetroCreateView: React.FC = () => {
   const onAddColumn = () => {
     const column = {
       id: uuidv4(),
-      color: getRandomColor(),
+      color: "#ffffff",
       name: "",
       desc: "",
     };

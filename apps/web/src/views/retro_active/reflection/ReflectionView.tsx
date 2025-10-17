@@ -1,11 +1,11 @@
 import { TrashIcon } from "lucide-react";
 import type React from "react";
-import { Button } from "@/component/atoms/button/Button";
-import { Card } from "@/component/molecules/card/Card";
-import { Column } from "@/component/molecules/column/Column";
-import { ColumnInput } from "@/component/molecules/column/ColumnInput";
-import { ColumnCards } from "@/component/molecules/dragndrop/ColumnCards";
-import { DraggableCard } from "@/component/molecules/dragndrop/DraggableCard";
+import { Card } from "@/components/molecules/card/Card";
+import { Column } from "@/components/molecules/column/Column";
+import { ColumnInput } from "@/components/molecules/column/ColumnInput";
+import { Button } from "@/components/atoms/button/Button";
+import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
+import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";

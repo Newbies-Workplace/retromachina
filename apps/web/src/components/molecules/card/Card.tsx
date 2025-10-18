@@ -7,7 +7,7 @@ import { Button } from "@/components/atoms/button/Button";
 import { PositioningBackdrop } from "@/components/molecules/backdrop/PositioningBackdrop";
 import { TeamUserPicker } from "@/components/molecules/card/user_picker/TeamUserPicker";
 import useClickOutside from "@/hooks/useClickOutside";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export interface CardProps {
   style?: React.CSSProperties;
@@ -113,7 +113,7 @@ export const Card: React.FC<React.PropsWithChildren<CardProps>> = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border p-2 rounded-2xl h-full",
+          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border border-black/30 p-2 rounded-2xl h-full",
           className,
         )}
       >

@@ -5,25 +5,38 @@ import {
   PencilIcon,
   PlusIcon,
 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { useNavigate } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
 import { getRetrosByTeamId } from "@/api/Retro.service";
 import { getUsersByTeamId } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
+import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
 import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import {
+  SLOT_MACHINE_ANIMATION_DURATION,
   SlotMachine,
   SlotMachineRef,
 } from "@/components/organisms/slot_machine/SlotMachine";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useTeamRole } from "@/hooks/useTeamRole";
 
 interface TeamRetroListProps {
@@ -42,11 +55,6 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
   const [retros, setRetros] = useState<RetroResponse[]>([]);
   const [teamUsers, setTeamUsers] = useState<UserInTeamResponse[]>();
   const isAnyRetroRunning = retros.findIndex((a) => a.is_running) !== -1;
-
-  const slotMachineRef = useRef<SlotMachineRef>(null);
-  const [highlightedUserId, setHighlightedUserId] = useState<string | null>(
-    null,
-  );
 
   useEffect(() => {
     getRetrosByTeamId(teamId)
@@ -104,30 +112,16 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
             <FilePlusIcon className={"size-4"} />
           </Button>
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button data-testid="open-slot-machine" size="icon">
-                <SlotMachineIcon className={"size-4"} />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <SlotMachine
-                  ref={slotMachineRef}
-                  onMachineDrawn={() => {
-                    const randomUser =
-                      teamUsers?.[
-                        Math.floor(Math.random() * (teamUsers?.length ?? 1))
-                      ];
-                    setHighlightedUserId(randomUser?.id ?? null);
-                    slotMachineRef.current?.animateSlotMachine(false);
-                  }}
-                  highlightedUserId={highlightedUserId}
-                  userPool={teamUsers ?? []}
-                />
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          {teamUsers && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button data-testid="open-slot-machine" size="icon">
+                  <SlotMachineIcon className={"size-4"} />
+                </Button>
+              </DialogTrigger>
+              <SlotMachineDialogContent teamUsers={teamUsers ?? []} />
+            </Dialog>
+          )}
         </div>
       </div>
 
@@ -190,5 +184,122 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         })}
       </div>
     </div>
+  );
+};
+
+type SlotMachineDialogContentProps = {
+  teamUsers: UserInTeamResponse[];
+};
+
+const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
+  teamUsers,
+}) => {
+  const [isDrawing, startDrawingTransition] = useTransition();
+
+  const slotMachineRef = useRef<SlotMachineRef>(null);
+  const [highlightedUserId, setHighlightedUserId] = useState<string | null>(
+    null,
+  );
+  const highlightedUser = useMemo(
+    () => teamUsers.find((u) => u.id === highlightedUserId),
+    [highlightedUserId, teamUsers],
+  );
+  const delayedHighlightedUser = useDebounce(
+    highlightedUser,
+    SLOT_MACHINE_ANIMATION_DURATION - 200,
+  );
+  const [teamUsersInPool, setTeamUsersInPool] = useState<string[]>(
+    teamUsers.map((u) => u.id),
+  );
+
+  const drawMachine = () => {
+    const usersInPool = teamUsers.filter((user) =>
+      teamUsersInPool.includes(user.id),
+    );
+    const randomUser =
+      usersInPool?.[Math.floor(Math.random() * (usersInPool?.length ?? 1))];
+    setHighlightedUserId(randomUser?.id ?? null);
+
+    startDrawingTransition(async () => {
+      await slotMachineRef.current?.animateSlotMachine(false);
+    });
+  };
+
+  return (
+    <DialogContent showCloseButton={false}>
+      <DialogHeader>
+        <DialogTitle>Losowanie</DialogTitle>
+        <DialogDescription>
+          Wybierz losowego członka zespołu, wystarczy pociągnąć za dźwignię
+        </DialogDescription>
+      </DialogHeader>
+
+      <SlotMachine
+        className={"mx-auto min-w-[400px]"}
+        ref={slotMachineRef}
+        onMachineDrawn={() => {
+          if (teamUsersInPool.length === 0) return;
+          if (isDrawing) return;
+
+          drawMachine();
+        }}
+        highlightedUserId={highlightedUserId}
+        userPool={teamUsers ?? []}
+      />
+
+      <div
+        className={
+          "p-2 bg-secondary-500/30 rounded h-16 font-semiboldflex flex flex-row gap-2 justify-center items-center"
+        }
+      >
+        {" "}
+        {delayedHighlightedUser && (
+          <div className={"flex flex-row gap-2 justify-center items-center"}>
+            <Avatar url={delayedHighlightedUser.avatar_link} size={50} />
+            <div>{delayedHighlightedUser.nick}</div>
+          </div>
+        )}
+        {!delayedHighlightedUser && <span>. . .</span>}
+      </div>
+
+      <div className={"mt-2 gap-2"}>
+        <h3 className={"font-semibold"}>Ustawienia losowania</h3>
+        <p>wybierz kto jest brany pod uwagę w losowaniu</p>
+
+        <div className={"flex flex-row flex-wrap gap-2 mt-2"}>
+          {teamUsers.map((user) => {
+            return (
+              <div
+                key={user.id}
+                className={"cursor-pointer"}
+                onClick={() => {
+                  setTeamUsersInPool((prev) => {
+                    if (prev.includes(user.id)) {
+                      return prev.filter((id) => id !== user.id);
+                    } else {
+                      return [...prev, user.id];
+                    }
+                  });
+                }}
+              >
+                <Avatar
+                  url={user.avatar_link}
+                  size={50}
+                  variant={
+                    teamUsersInPool.includes(user.id) ? "ready" : undefined
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button variant={"destructive"}>Zamknij</Button>
+        </DialogClose>
+      </DialogFooter>
+    </DialogContent>
   );
 };

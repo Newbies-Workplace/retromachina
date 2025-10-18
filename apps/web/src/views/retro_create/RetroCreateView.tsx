@@ -165,7 +165,7 @@ export const RetroCreateView: React.FC = () => {
     <>
       <Navbar />
       <div className={"flex p-2 m-4 bg-background-500 rounded-xl"}>
-        <div className={"p-2 w-full rounded-lg bg-card flex flex-col gap-2"}>
+        <div className={"p-2 w-full rounded-lg flex flex-col gap-2"}>
           <span>Retrospektywa zespołu {team.name}</span>
           <div className={"flex flex-row -space-x-2 flex-wrap"}>
             {teamUsers.map((user) => (

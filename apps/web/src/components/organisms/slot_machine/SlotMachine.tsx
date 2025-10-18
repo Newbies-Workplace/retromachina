@@ -163,7 +163,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
           animate={{ opacity: 1, bottom: 110 }}
           exit={{ opacity: 0, bottom: 0 }}
           transition={{ duration: 0.2 }}
-          className={cn("flex flex-row items-center bottom-16", className)}
+          className={cn("flex flex-row items-center", className)}
         >
           <div
             className={

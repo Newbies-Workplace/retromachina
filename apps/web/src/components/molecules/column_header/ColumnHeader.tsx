@@ -14,7 +14,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   return (
     <div
       className={
-        "flex flex-col justify-center items-start gap-1 w-full bg-white border p-2 rounded-lg"
+        "flex flex-col justify-center items-start gap-1 w-full bg-white border border-black/30 p-2 rounded-lg"
       }
     >
       <div className={"flex gap-2 w-full justify-between"}>

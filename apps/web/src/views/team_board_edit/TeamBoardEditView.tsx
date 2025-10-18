@@ -91,7 +91,7 @@ export const TeamBoardEditView: React.FC = () => {
       <Navbar />
 
       <div className={"m-4 flex rounded-xl bg-background-500 p-2"}>
-        <div className={"flex w-full flex-col gap-2 rounded-lg bg-card p-2"}>
+        <div className={"flex w-full flex-col gap-2 rounded-lg p-2"}>
           <div className={"flex justify-between"}>
             <span>Edycja tablicy</span>
             <Button

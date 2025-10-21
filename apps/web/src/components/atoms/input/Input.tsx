@@ -1,7 +1,7 @@
 import type React from "react";
 import type { KeyboardEventHandler } from "react";
 
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface InputProps {
   className?: string;
@@ -39,7 +39,7 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div
       className={cn(
-        "flex h-9 w-full rounded-md border border-input bg-white text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        "flex h-9 w-full rounded-md border border-black/30 bg-white text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
         multiline && "min-h-[120px]",
         disabled && "border-gray-600",
       )}

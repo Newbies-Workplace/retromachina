@@ -39,7 +39,7 @@ const transition = {
 const getRandomUsers = (users: SlotUser[], amount: number) => {
   const randomUsers: SlotUser[] = [];
 
-  if (users.length <= 1) return [];
+  if (users.length < 1) return [];
 
   for (let i = 0; i < amount; i++) {
     const randomIndex = Math.floor(Math.random() * users.length);
@@ -130,17 +130,6 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
     [],
   );
 
-  // Initial draw
-  useEffect(() => {
-    if (
-      slotMachineVisible &&
-      highlightedUserId !== null &&
-      teamUsers.length > 0
-    ) {
-      controls.start("drawing", { duration: 0 });
-    }
-  }, [teamUsers, slotMachineVisible]);
-
   // Play open sound only on visibility change, not on first render
   const isFirstRender = useRef(true);
   useEffect(() => {
@@ -203,8 +192,8 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
                   key={i}
                   animate={controls}
                   variants={rowAnimation}
-                  initial={"idle"}
-                  className={"flex flex-col gap-12 mb-2.5"}
+                  initial={highlightedUserId ? "drawing" : "idle"}
+                  className={"flex flex-col flex-end gap-12 mb-2.5"}
                   transition={transition}
                 >
                   {randomUsers[i].map((user, index) => (

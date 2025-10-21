@@ -158,7 +158,6 @@ export const Toolbox: React.FC = () => {
           <div className={"flex justify-center gap-2 w-24 h-16"}>
             <Button
               className={"w-full h-full"}
-              disabled={activeUsers.length < 2}
               onClick={() => setSlotMachineVisible(!slotMachineVisible)}
             >
               <SlotMachineIcon className={"size-7"} />

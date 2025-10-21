@@ -252,7 +252,6 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
           "p-2 bg-secondary-500/30 rounded h-16 font-semiboldflex flex flex-row gap-2 justify-center items-center"
         }
       >
-        {" "}
         {delayedHighlightedUser && (
           <div className={"flex flex-row gap-2 justify-center items-center"}>
             <Avatar url={delayedHighlightedUser.avatar_link} size={50} />
@@ -273,6 +272,13 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
                 key={user.id}
                 className={"cursor-pointer"}
                 onClick={() => {
+                  if (
+                    teamUsersInPool.includes(user.id) &&
+                    teamUsersInPool.length === 1
+                  ) {
+                    return;
+                  }
+
                   setTeamUsersInPool((prev) => {
                     if (prev.includes(user.id)) {
                       return prev.filter((id) => id !== user.id);

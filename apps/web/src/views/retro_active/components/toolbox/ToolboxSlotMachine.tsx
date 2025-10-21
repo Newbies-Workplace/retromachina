@@ -36,7 +36,7 @@ export const ToolboxSlotMachine: React.FC = () => {
     return () => {
       removeDrawSlotMachineListener(listener);
     };
-  }, []);
+  }, [user?.id]);
 
   return (
     <SlotMachine

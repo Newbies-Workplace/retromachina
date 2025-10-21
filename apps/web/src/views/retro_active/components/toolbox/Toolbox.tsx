@@ -11,19 +11,19 @@ import {
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
-import { groupCards } from "@/common/groupCards";
-import { pluralText } from "@/common/pluralText";
-import { cn } from "@/common/Util";
-import { Button } from "@/component/atoms/button/Button";
-import { isCard } from "@/component/molecules/dragndrop/dragndrop";
+import { Button } from "@/components/atoms/button/Button";
+import { isCard } from "@/components/molecules/dragndrop/dragndrop";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useTeamRole } from "@/hooks/useTeamRole";
+import { groupCards } from "@/lib/groupCards";
+import { pluralText } from "@/lib/pluralText";
+import { cn } from "@/lib/utils";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
-import { SlotMachine } from "@/views/retro_active/components/toolbox/SlotMachine";
+import { ToolboxSlotMachine } from "@/views/retro_active/components/toolbox/ToolboxSlotMachine";
 
 export const Toolbox: React.FC = () => {
   const { showConfirm } = useConfirm();
@@ -133,7 +133,7 @@ export const Toolbox: React.FC = () => {
     <div
       className={"flex flex-row gap-2 mx-2 absolute bottom-0 left-0 right-0"}
     >
-      <SlotMachine />
+      <ToolboxSlotMachine />
 
       {isReflectionCardsShelfOpen && (
         <ReflectionCardsShelf
@@ -158,7 +158,6 @@ export const Toolbox: React.FC = () => {
           <div className={"flex justify-center gap-2 w-24 h-16"}>
             <Button
               className={"w-full h-full"}
-              disabled={activeUsers.length < 2}
               onClick={() => setSlotMachineVisible(!slotMachineVisible)}
             >
               <SlotMachineIcon className={"size-7"} />

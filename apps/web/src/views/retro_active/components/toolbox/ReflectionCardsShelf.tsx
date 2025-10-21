@@ -10,14 +10,14 @@ import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
 import cardDropSound from "@/assets/sounds/card-drop.wav";
 import cardPickSound from "@/assets/sounds/card-pick.wav";
-import { cn } from "@/common/Util";
-import { Button } from "@/component/atoms/button/Button";
+import { Button } from "@/components/atoms/button/Button";
 import {
   getReflectionCard,
   isCard,
-} from "@/component/molecules/dragndrop/dragndrop";
+} from "@/components/molecules/dragndrop/dragndrop";
 import { useAudio } from "@/hooks/useAudio";
 import useClickOutside from "@/hooks/useClickOutside";
+import { cn } from "@/lib/utils";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 
 export const ReflectionCardsShelf: React.FC<{

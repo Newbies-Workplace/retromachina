@@ -8,11 +8,10 @@ import type { BoardResponse } from "shared/model/board/board.response";
 import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
 import { v4 as uuidv4 } from "uuid";
 import { editBoard, getBoard } from "@/api/Board.service";
-import { getRandomColor } from "@/common/Util";
-import { Button } from "@/component/atoms/button/Button";
-import { BoardCreator } from "@/component/molecules/board_creator/BoardCreator";
-import { BoardCreatorColumn } from "@/component/molecules/board_creator/BoardCreatorColumn";
-import Navbar from "@/component/organisms/navbar/Navbar";
+import { Button } from "@/components/atoms/button/Button";
+import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
+import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
+import Navbar from "@/components/organisms/navbar/Navbar";
 
 const MAX_COLUMNS = 6;
 
@@ -43,7 +42,7 @@ export const TeamBoardEditView: React.FC = () => {
   const onAddColumn = () => {
     const column: BoardColumnDto = {
       id: uuidv4(),
-      color: getRandomColor(),
+      color: "#ffffff",
       name: "",
       order: board.columns.length,
     };
@@ -92,7 +91,7 @@ export const TeamBoardEditView: React.FC = () => {
       <Navbar />
 
       <div className={"m-4 flex rounded-xl bg-background-500 p-2"}>
-        <div className={"flex w-full flex-col gap-2 rounded-lg bg-card p-2"}>
+        <div className={"flex w-full flex-col gap-2 rounded-lg p-2"}>
           <div className={"flex justify-between"}>
             <span>Edycja tablicy</span>
             <Button

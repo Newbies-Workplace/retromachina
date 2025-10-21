@@ -5,18 +5,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "@/component/atoms/button/Button";
-import { Switch } from "@/component/atoms/switch/Switch";
-import { Card } from "@/component/molecules/card/Card";
-import { Column } from "@/component/molecules/column/Column";
-import { ColumnCards } from "@/component/molecules/dragndrop/ColumnCards";
-import { DraggableCard } from "@/component/molecules/dragndrop/DraggableCard";
+import { Button } from "@/components/atoms/button/Button";
+import { Switch } from "@/components/atoms/switch/Switch";
+import { Card } from "@/components/molecules/card/Card";
+import { Column } from "@/components/molecules/column/Column";
+import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
+import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/component/molecules/tooltip/Tooltip";
-import Navbar from "@/component/organisms/navbar/Navbar";
+} from "@/components/molecules/tooltip/Tooltip";
+import Navbar from "@/components/organisms/navbar/Navbar";
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 

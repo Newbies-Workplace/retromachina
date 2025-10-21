@@ -13,12 +13,11 @@ import { createRetro } from "@/api/Retro.service";
 import { getRandomTemplate } from "@/api/RetroTemplate.service";
 import { getTeamById } from "@/api/Team.service";
 import { getUsersByTeamId } from "@/api/User.service";
-import { getRandomColor } from "@/common/Util";
-import { Avatar } from "@/component/atoms/avatar/Avatar";
-import { Button } from "@/component/atoms/button/Button";
-import { BoardCreator } from "@/component/molecules/board_creator/BoardCreator";
-import { BoardCreatorColumn } from "@/component/molecules/board_creator/BoardCreatorColumn";
-import Navbar from "@/component/organisms/navbar/Navbar";
+import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { Button } from "@/components/atoms/button/Button";
+import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
+import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
+import Navbar from "@/components/organisms/navbar/Navbar";
 
 export interface Column {
   id: string;
@@ -65,7 +64,7 @@ export const RetroCreateView: React.FC = () => {
   const onAddColumn = () => {
     const column = {
       id: uuidv4(),
-      color: getRandomColor(),
+      color: "#ffffff",
       name: "",
       desc: "",
     };
@@ -166,7 +165,7 @@ export const RetroCreateView: React.FC = () => {
     <>
       <Navbar />
       <div className={"flex p-2 m-4 bg-background-500 rounded-xl"}>
-        <div className={"p-2 w-full rounded-lg bg-card flex flex-col gap-2"}>
+        <div className={"p-2 w-full rounded-lg flex flex-col gap-2"}>
           <span>Retrospektywa zespołu {team.name}</span>
           <div className={"flex flex-row -space-x-2 flex-wrap"}>
             {teamUsers.map((user) => (

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import type { TeamRequest } from "shared/model/team/team.request";
 import { createTeam } from "@/api/Team.service";
-import { AnimatedBackground } from "@/component/organisms/animated_background/AnimatedBackground";
-import { TeamForm } from "@/component/organisms/forms/TeamForm";
-import Navbar from "@/component/organisms/navbar/Navbar";
+import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
+import { TeamForm } from "@/components/organisms/forms/TeamForm";
+import Navbar from "@/components/organisms/navbar/Navbar";
 import { useUser } from "@/context/user/UserContext.hook";
 
 export const TeamCreateView: React.FC = () => {

@@ -5,7 +5,7 @@ import {
   isColumnData,
   isDraggingAColumn,
 } from "@/components/molecules/board_creator/data";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type ReorderCallback = (data: { fromId: string; toId: string }) => void;
 

@@ -7,9 +7,9 @@ import type { UserResponse } from "shared/model/user/user.response";
 import { getRetroByRetroId } from "@/api/Retro.service";
 import { getTasksByRetroId } from "@/api/Task.service";
 import { getUsersByTeamId } from "@/api/User.service";
-import { Card } from "@/components/molecules/card/Card";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
+import { Card } from "@/components/molecules/card/Card";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
 

@@ -16,7 +16,7 @@ import {
   isCard,
 } from "@/components/molecules/dragndrop/dragndrop";
 import { useKeyDownListener } from "@/hooks/useKeyDownListener";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface GroupCardContainerProps {
   className?: string;

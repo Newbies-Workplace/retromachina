@@ -7,7 +7,7 @@ import dropCardAudio from "@/assets/sounds/card-drop.wav";
 import pickCardAudio from "@/assets/sounds/card-pick.wav";
 import { getCard } from "@/components/molecules/dragndrop/dragndrop";
 import { useAudio } from "@/hooks/useAudio";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface DraggableCardProps {
   className?: string;

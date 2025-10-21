@@ -11,7 +11,7 @@ import {
   isCard,
   isReflectionCard,
 } from "@/components/molecules/dragndrop/dragndrop";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface ColumnCardContainerProps {
   columnId: string;

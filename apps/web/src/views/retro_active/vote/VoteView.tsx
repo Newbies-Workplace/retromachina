@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "@/components/molecules/card/Card";
-import Counter from "@/components/molecules/counter/Counter";
 import { Column } from "@/components/molecules/column/Column";
+import Counter from "@/components/molecules/counter/Counter";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";

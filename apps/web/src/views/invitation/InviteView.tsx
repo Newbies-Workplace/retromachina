@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import { TeamResponse } from "shared/model/team/team.response";
-import { getRetrosByTeamId } from "@/api/Retro.service";
-import { acceptTeamInvite, getTeamByInviteKey } from "@/api/Team.service";
+import { RetroService } from "@/api/Retro.service";
+import { TeamService } from "@/api/Team.service";
 import { Button } from "@/components/atoms/button/Button";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
@@ -20,7 +20,7 @@ export const InviteView: React.FC = () => {
   const [team, setTeam] = useState<TeamResponse>();
 
   useEffect(() => {
-    getTeamByInviteKey(inviteKey)
+    TeamService.getTeamByInviteKey(inviteKey)
       .then((team) => {
         setTeam(team);
       })
@@ -36,9 +36,9 @@ export const InviteView: React.FC = () => {
   const onJoinTeamPress = () => {
     if (!inviteKey || !team) return;
 
-    acceptTeamInvite(inviteKey)
+    TeamService.acceptTeamInvite(inviteKey)
       .then(() => {
-        getRetrosByTeamId(team.id)
+        RetroService.getRetrosByTeamId(team.id)
           .then((teamRetros) => {
             const activeRetro = teamRetros.find((retro) => retro.is_running);
 

@@ -6,7 +6,6 @@ interface ColumnProps {
   headerStyle?: string;
   headerRight?: React.ReactNode;
   columnData: {
-    color: string;
     name: string;
     description: string | null;
   };

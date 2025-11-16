@@ -42,7 +42,7 @@ export class UserController {
     });
 
     const teams = userWithTeams.TeamUsers.map(async (teamUser) => {
-      const team = await toTeamResponse(teamUser.Team, teamUser.role);
+      const team = await toTeamResponse(teamUser.Team);
       return {
         ...team,
         role: teamUser.role,

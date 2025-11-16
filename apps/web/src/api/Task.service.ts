@@ -1,7 +1,7 @@
 import type { TaskResponse } from "shared/model/task/task.response";
 import { axiosInstance } from "@/api/AxiosInstance";
 
-export const getTasksByRetroId = async (
+const getTasksByRetroId = async (
   retroId: string,
 ): Promise<TaskResponse[]> => {
   return axiosInstance
@@ -12,3 +12,7 @@ export const getTasksByRetroId = async (
     })
     .then((res) => res.data);
 };
+
+export const TaskService = {
+  getTasksByRetroId,
+}

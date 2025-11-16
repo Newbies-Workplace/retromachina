@@ -2,7 +2,7 @@ import type React from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import type { TeamRequest } from "shared/model/team/team.request";
-import { createTeam } from "@/api/Team.service";
+import { TeamService } from "@/api/Team.service";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import { TeamForm } from "@/components/organisms/forms/TeamForm";
 import Navbar from "@/components/organisms/navbar/Navbar";
@@ -13,7 +13,7 @@ export const TeamCreateView: React.FC = () => {
   const navigate = useNavigate();
 
   const onSubmit = (team: TeamRequest) => {
-    createTeam(team)
+    TeamService.createTeam(team)
       .then(() => {
         refreshUser().then(() => {
           navigate("/");

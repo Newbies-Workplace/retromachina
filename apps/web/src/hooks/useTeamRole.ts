@@ -5,6 +5,7 @@ import { useUser } from "@/context/user/UserContext.hook";
 interface TeamRoleResult {
   role: UserRole | null;
   isAdmin: boolean;
+  isOwner: boolean;
 }
 
 export const useTeam = (teamId: string): TeamResponse | null => {
@@ -21,5 +22,6 @@ export const useTeamRole = (teamId: string): TeamRoleResult => {
   return {
     role: role,
     isAdmin: role === "ADMIN",
+    isOwner: role === "OWNER",
   };
 };

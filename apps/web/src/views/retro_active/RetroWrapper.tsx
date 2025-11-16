@@ -1,7 +1,7 @@
 import type React from "react";
 import { useEffect } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
-import { getRetroByRetroId } from "@/api/Retro.service";
+import { RetroService } from "@/api/Retro.service";
 import { RetroContextProvider } from "@/context/retro/RetroContext";
 
 export const RetroWrapper: React.FC<React.PropsWithChildren> = ({
@@ -12,7 +12,7 @@ export const RetroWrapper: React.FC<React.PropsWithChildren> = ({
 
   useEffect(() => {
     if (retroId) {
-      getRetroByRetroId(retroId).then((retro) => {
+      RetroService.getRetroByRetroId(retroId).then((retro) => {
         if (!retro.is_running) {
           navigate(`/retro/${retroId}/summary`);
         }

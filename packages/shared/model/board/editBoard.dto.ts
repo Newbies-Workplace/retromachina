@@ -14,9 +14,6 @@ export class BoardColumnDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-  @IsString()
-  @IsNotEmpty()
-  color: string;
   @IsInt()
   order: number;
 }

@@ -9,10 +9,10 @@ import type { RetroCreateRequest } from "shared/model/retro/retro.request";
 import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
 import { v4 as uuidv4 } from "uuid";
-import { createRetro } from "@/api/Retro.service";
+import { RetroService } from "@/api/Retro.service";
 import { getRandomTemplate } from "@/api/RetroTemplate.service";
-import { getTeamById } from "@/api/Team.service";
-import { getUsersByTeamId } from "@/api/User.service";
+import { TeamService } from "@/api/Team.service";
+import { UserService } from "@/api/User.service";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
@@ -21,7 +21,6 @@ import Navbar from "@/components/organisms/navbar/Navbar";
 
 export interface Column {
   id: string;
-  color: string;
   name: string;
   desc: string | null;
 }
@@ -39,9 +38,9 @@ export const RetroCreateView: React.FC = () => {
   const teamId: string = params.teamId as string;
 
   useEffect(() => {
-    getTeamById(teamId).then((team) => setTeam(team));
+    TeamService.getTeamById(teamId).then((team) => setTeam(team));
 
-    getUsersByTeamId(teamId)
+    UserService.getUsersByTeamId(teamId)
       .then((users) => setTeamUsers(users))
       .catch(console.log);
   }, [teamId]);
@@ -86,7 +85,6 @@ export const RetroCreateView: React.FC = () => {
 
       columnsTemp.push({
         id: id,
-        color: "#ffffff",
         ...column,
       });
     });
@@ -111,7 +109,7 @@ export const RetroCreateView: React.FC = () => {
       columns: columns,
     };
 
-    createRetro(request)
+    RetroService.createRetro(request)
       .then((retro) => {
         const retroUrl = `${window.location.origin}/retro/${retro.data.id}`;
 
@@ -140,7 +138,6 @@ export const RetroCreateView: React.FC = () => {
             id: uuidv4(),
             name: col.name,
             desc: col.desc,
-            color: col.color,
           })),
         );
       })

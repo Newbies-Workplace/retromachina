@@ -29,18 +29,20 @@ export const HomeView: React.FC = () => {
       >
         {user?.teams?.length === 0 && <EmptyState />}
 
-        <div className={"flex w-full container flex-col gap-6 m-4"}>
-          {user?.teams?.map((team) => (
-            <TeamCard
-              key={team.id}
-              teamId={team.id}
-              teamName={team.name}
-              openReflectionCardsShelfClick={() => {
-                onOpenReflectionCardsShelf(team.id);
-              }}
-            />
-          ))}
-        </div>
+        {user?.teams?.length !== 0 && (
+          <div className={"flex w-full container flex-col gap-6 m-4"}>
+            {user?.teams?.map((team) => (
+              <TeamCard
+                key={team.id}
+                teamId={team.id}
+                teamName={team.name}
+                openReflectionCardsShelfClick={() => {
+                  onOpenReflectionCardsShelf(team.id);
+                }}
+              />
+            ))}
+          </div>
+        )}
       </AnimatedBackground>
 
       {reflectionCardsShelfTeamId && (
@@ -59,7 +61,7 @@ const EmptyState: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-background-500 rounded-2xl pointer-events-auto"
+        "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-background-500 rounded-2xl pointer-events-auto max-w-lg"
       }
     >
       <NotFoundSvg />

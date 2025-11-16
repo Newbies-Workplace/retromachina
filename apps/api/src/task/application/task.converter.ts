@@ -1,4 +1,4 @@
-import { Task } from "@prisma/client";
+import { Task } from "generated/prisma/client";
 import { TaskResponse } from "shared/model/task/task.response";
 
 export const toTaskResponse = (task: Task): TaskResponse => {

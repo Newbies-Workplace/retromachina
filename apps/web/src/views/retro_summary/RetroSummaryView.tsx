@@ -4,9 +4,9 @@ import { useNavigate, useParams } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import type { TaskResponse } from "shared/model/task/task.response";
 import type { UserResponse } from "shared/model/user/user.response";
-import { getRetroByRetroId } from "@/api/Retro.service";
-import { getTasksByRetroId } from "@/api/Task.service";
-import { getUsersByTeamId } from "@/api/User.service";
+import { RetroService } from "@/api/Retro.service";
+import { TaskService } from "@/api/Task.service";
+import { UserService } from "@/api/User.service";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/molecules/card/Card";
@@ -42,14 +42,14 @@ export const RetroSummaryView = () => {
   useEffect(() => {
     if (!retroId) return;
 
-    getTasksByRetroId(retroId).then((tasks) => {
+    TaskService.getTasksByRetroId(retroId).then((tasks) => {
       setTasks(tasks);
     });
 
-    getRetroByRetroId(retroId).then((retro) => {
+    RetroService.getRetroByRetroId(retroId).then((retro) => {
       setRetro(retro);
 
-      getUsersByTeamId(retro.team_id).then((users) => {
+      UserService.getUsersByTeamId(retro.team_id).then((users) => {
         setUsers(users);
       });
     });

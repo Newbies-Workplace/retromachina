@@ -1,5 +1,5 @@
+import { Board, BoardColumn } from "generated/prisma/client";
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { Board, BoardColumn } from "@prisma/client";
 import { BoardColumnDto, EditBoardDto } from "shared/model/board/editBoard.dto";
 import { PrismaService } from "../prisma/prisma.service";
 
@@ -16,7 +16,7 @@ export class BoardService {
     const existingColumns: BoardColumnDto[] = [];
     const createdColumns: BoardColumnDto[] = [];
 
-    boardDto.columns.forEach((column) => {
+    for (const column of boardDto.columns) {
       if (
         board.BoardColumns.map((savedCol) => savedCol.id).includes(column.id)
       ) {
@@ -24,14 +24,14 @@ export class BoardService {
       } else {
         createdColumns.push(column);
       }
-    });
-    board.BoardColumns.forEach((column) => {
+    }
+    for (const column of board.BoardColumns) {
       if (
         !boardDto.columns.map((boardCol) => boardCol.id).includes(column.id)
       ) {
         deletedColumns.push(column);
       }
-    });
+    }
 
     // throw if trying to delete default column
     if (
@@ -49,7 +49,6 @@ export class BoardService {
         return {
           id: column.id,
           name: column.name,
-          color: column.color,
           team_id: teamId,
           order: column.order,
         };
@@ -62,7 +61,6 @@ export class BoardService {
         },
         data: {
           name: column.name,
-          color: column.color,
           team_id: teamId,
           order: column.order,
         },

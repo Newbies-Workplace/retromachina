@@ -3,7 +3,6 @@ import axios from "axios";
 const token = localStorage.getItem("Bearer");
 
 export const axiosInstance = axios.create({
-  // @ts-expect-error
   baseURL: process.env.RETRO_WEB_API_URL,
   timeout: 5000,
   headers: {

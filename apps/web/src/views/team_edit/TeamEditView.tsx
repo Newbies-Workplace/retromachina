@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import type { TeamRequest } from "shared/model/team/team.request";
-import { deleteTeam, editTeam } from "@/api/Team.service";
+import { TeamResponse } from "shared/model/team/team.response";
+import { TeamService } from "@/api/Team.service";
 import { ProgressBar } from "@/components/atoms/progress_bar/ProgressBar";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import { TeamForm } from "@/components/organisms/forms/TeamForm";
@@ -22,14 +23,14 @@ export const TeamEditView: React.FC = () => {
   const { showConfirm } = useConfirm();
   const { team: initialTeam } = useTeamData(teamId);
 
-  const [team, setTeam] = useState<TeamRequest | null>(null);
+  const [team, setTeam] = useState<TeamResponse | null>(null);
 
   useEffect(() => {
     setTeam(initialTeam);
   }, [initialTeam]);
 
   const onSubmit = (team: TeamRequest) => {
-    editTeam(teamId, team)
+    TeamService.editTeam(teamId, team)
       .then(() => {
         refreshUser().then(() => {
           navigate("/");
@@ -49,7 +50,7 @@ export const TeamEditView: React.FC = () => {
       title: "Usunięcie zespołu",
       content: `Czy na pewno chcesz usunąć zespół ${team?.name ?? ""}?`,
       onConfirmed: () => {
-        deleteTeam(teamId)
+        TeamService.deleteTeam(teamId)
           .then(() => {
             refreshUser().then(() => {
               navigate("/");

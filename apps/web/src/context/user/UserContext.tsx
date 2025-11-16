@@ -3,9 +3,9 @@ import type React from "react";
 import { createContext, useEffect, useState } from "react";
 import type { AuthParams } from "shared/model/auth/Auth.interface";
 import type { UserWithTeamsResponse } from "shared/model/user/user.response";
-import { loginGoogle } from "@/api/Auth.service";
+import { AuthService } from "@/api/Auth.service";
 import { axiosInstance } from "@/api/AxiosInstance";
-import { getMyUser } from "@/api/User.service";
+import { UserService } from "@/api/User.service";
 
 interface UserContext {
   user: UserWithTeamsResponse | null;
@@ -46,7 +46,7 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
   const refreshUser = async () => {
     try {
       setIsFetchingUser(true);
-      const response = await getMyUser();
+      const response = await UserService.getMyUser();
       setUser(response);
     } catch (error) {
       if ((error as AxiosError)?.status === 401) {
@@ -60,13 +60,13 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
   };
 
   const login = (params: AuthParams) => {
-    return loginGoogle(params)
+    return AuthService.loginGoogle(params)
       .then((res) => {
         localStorage.setItem("Bearer", res.access_token);
 
         axiosInstance.defaults.headers.Authorization = `Bearer ${res.access_token}`;
         setIsFetchingUser(true);
-        getMyUser()
+        UserService.getMyUser()
           .then((response) => {
             setUser(response);
           })

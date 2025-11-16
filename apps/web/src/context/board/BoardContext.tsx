@@ -15,9 +15,9 @@ import type { BoardResponse } from "shared/model/board/board.response";
 import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
-import { getBoard } from "@/api/Board.service";
-import { getTeamById } from "@/api/Team.service";
-import { getUsersByTeamId } from "@/api/User.service";
+import { BoardService } from "@/api/Board.service";
+import { TeamService } from "@/api/Team.service";
+import { UserService } from "@/api/User.service";
 
 interface BoardContextParams {
   teamId: string;
@@ -73,11 +73,11 @@ export const BoardContextProvider: React.FC<
   });
 
   useEffect(() => {
-    getBoard(teamId).then((board) => setBoard(board));
+    BoardService.getBoard(teamId).then((board) => setBoard(board));
 
-    getTeamById(teamId).then((team) => setTeam(team));
+    TeamService.getTeamById(teamId).then((team) => setTeam(team));
 
-    getUsersByTeamId(teamId)
+    UserService.getUsersByTeamId(teamId)
       .then((users) => setTeamUsers(users))
       .catch(console.log);
   }, [teamId]);

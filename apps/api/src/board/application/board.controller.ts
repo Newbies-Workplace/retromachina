@@ -75,7 +75,6 @@ export class BoardController {
       columns: board.BoardColumns.map((col) => ({
         id: col.id,
         order: col.order,
-        color: col.color,
         name: col.name,
       })),
       tasks: board.Tasks.map(toTaskResponse),

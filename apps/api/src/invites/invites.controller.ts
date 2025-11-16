@@ -1,3 +1,4 @@
+import { Team } from "generated/prisma/client";
 import { ForbiddenError, subject } from "@casl/ability";
 import {
   Controller,
@@ -6,7 +7,6 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { Team } from "@prisma/client";
 import { InviteResponse } from "shared/model/invite/Invite.response";
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";

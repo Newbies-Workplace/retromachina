@@ -1,7 +1,6 @@
 import { RoomState } from "shared/model/retro/retro.events";
 
-export class RoomStateValidator {
-  static validate(value: RoomState) {
+  export const validate = (value: RoomState) => {
     const possibleValues = [
       "reflection",
       "group",
@@ -11,5 +10,4 @@ export class RoomStateValidator {
     ];
 
     return possibleValues.includes(value);
-  }
-}
+  };

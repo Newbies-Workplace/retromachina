@@ -1,7 +1,6 @@
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import { Share2Icon } from "lucide-react";
-import { AnimatePresence } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
@@ -14,19 +13,20 @@ import { useUser } from "@/context/user/UserContext.hook";
 import { useAudio } from "@/hooks/useAudio";
 import { useTeamRole } from "@/hooks/useTeamRole";
 import { RetroTimer } from "@/views/retro_active/components/retro_timer/RetroTimer";
-import { TeamShareDialog } from "@/views/retro_active/components/team_share/TeamShareDialog";
 import { Toolbox } from "@/views/retro_active/components/toolbox/Toolbox";
 import { DiscussView } from "@/views/retro_active/discuss/DiscussView";
 import { GroupView } from "@/views/retro_active/group/GroupView";
 import { ReflectionView } from "@/views/retro_active/reflection/ReflectionView";
 import { VoteView } from "@/views/retro_active/vote/VoteView";
+import {useTeamData} from "@/hooks/useTeamData";
+import {toast} from "react-toastify";
 
 export const RetroActiveView: React.FC = () => {
   const navigate = useNavigate();
   const { roomState, retroId, activeUsers, teamUsers } = useRetro();
   const { user } = useUser();
   const { ready, teamId } = useRetro();
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const { team } = useTeamData(teamId)
   const { play: playAudio } = useAudio();
   const { isAdmin } = useTeamRole(teamId ?? "");
 
@@ -70,6 +70,16 @@ export const RetroActiveView: React.FC = () => {
     prevAllUsersCount.current = allUsersCount;
   }, [readyUsersCount, prevAllUsersCount, playAudio]);
 
+  const onShareButtonClick = () => {
+    if (team?.invite_key) {
+      navigator.clipboard
+        .writeText(`${window.location.origin}/invitation/${team.invite_key}`)
+        .then(() => {
+          toast.success("Link skopiowano do schowka");
+        });
+    }
+  }
+
   return (
     <>
       <Navbar
@@ -88,7 +98,7 @@ export const RetroActiveView: React.FC = () => {
                   <Button
                     size={"icon"}
                     onClick={() => {
-                      setShareDialogOpen(true);
+                      onShareButtonClick()
                     }}
                   >
                     <Share2Icon className={"size-5"} />
@@ -141,16 +151,6 @@ export const RetroActiveView: React.FC = () => {
       </div>
 
       <Toolbox />
-
-      <AnimatePresence>
-        {shareDialogOpen && (
-          <TeamShareDialog
-            onDismiss={() => {
-              setShareDialogOpen(false);
-            }}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 };

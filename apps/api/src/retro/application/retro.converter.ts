@@ -1,4 +1,4 @@
-import { Retrospective } from "@prisma/client";
+import { Retrospective } from "generated/prisma/client";
 import { RetroResponse } from "shared/model/retro/retro.response";
 
 export const toRetroResponse = (retro: Retrospective): RetroResponse => {

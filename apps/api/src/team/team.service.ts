@@ -1,19 +1,23 @@
-import {ReflectionCard, Role, Team} from "generated/prisma/client";
-import {BadRequestException, Injectable} from "@nestjs/common";
-import {ReflectionCardRequest} from "shared/model/team/reflectionCard.request";
-import {EditTeamInviteRequest, EditTeamRequest, TeamRequest, TeamUserRequest,} from "shared/model/team/team.request";
-import {JWTUser} from "src/auth/jwt/JWTUser";
-import {PrismaService} from "src/prisma/prisma.service";
-import {v4 as uuid} from "uuid";
-import {RetroGateway} from "../retro/application/retro.gateway";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { ReflectionCard, Role, Team } from "generated/prisma/client";
+import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
+import {
+  EditTeamInviteRequest,
+  EditTeamRequest,
+  TeamRequest,
+  TeamUserRequest,
+} from "shared/model/team/team.request";
+import { JWTUser } from "src/auth/jwt/JWTUser";
+import { PrismaService } from "src/prisma/prisma.service";
+import { v4 as uuid } from "uuid";
+import { RetroGateway } from "../retro/application/retro.gateway";
 
 @Injectable()
 export class TeamService {
   constructor(
     private prismaService: PrismaService,
     private retroGateway: RetroGateway,
-  ) {
-  }
+  ) {}
 
   async createTeam(user: JWTUser, createTeamDto: TeamRequest): Promise<Team> {
     const team = await this.prismaService.team.create({
@@ -57,16 +61,45 @@ export class TeamService {
     teamId: string,
     requestUser: TeamUserRequest,
   ): Promise<void> {
-    // todo do not overwrite own role
+    // todo check for max role permissions
+
     const user = await this.prismaService.user.findFirst({
       where: {
         email: requestUser.email,
       },
+      include: {
+        TeamUsers: {
+          where: {
+            team_id: teamId,
+          },
+        },
+      },
     });
+
     if (user) {
+      // todo do not overwrite own role
+
+      // update existing team user role
+      if (user.TeamUsers.length > 0) {
+        await this.prismaService.teamUsers.update({
+          where: {
+            team_id_user_id: {
+              team_id: teamId,
+              user_id: user.id,
+            },
+          },
+          data: {
+            role: requestUser.role,
+          },
+        });
+
+        return;
+      }
+
+      // add existing user to team
       await this.addUserToTeam(user.id, teamId, requestUser.role);
 
-      return
+      return;
     }
 
     const invitation = await this.prismaService.invite.findFirst({
@@ -75,6 +108,8 @@ export class TeamService {
         team_id: teamId,
       },
     });
+
+    // update existing invitation
     if (invitation) {
       await this.prismaService.invite.update({
         where: {
@@ -86,9 +121,10 @@ export class TeamService {
         },
       });
 
-      return
+      return;
     }
 
+    // create new invitation
     await this.prismaService.invite.create({
       data: {
         email: requestUser.email,

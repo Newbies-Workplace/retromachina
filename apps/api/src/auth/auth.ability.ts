@@ -1,4 +1,3 @@
-import { Board, Retrospective, Role, Team } from "generated/prisma/client";
 import { AbilityBuilder, type PureAbility } from "@casl/ability";
 import {
   createPrismaAbility,
@@ -6,12 +5,20 @@ import {
   type Subjects,
 } from "@casl/prisma";
 import { Injectable } from "@nestjs/common";
+import {
+  Board,
+  Retrospective,
+  Role,
+  Team,
+  TeamUsers,
+} from "generated/prisma/client";
 import { JWTUser } from "./jwt/JWTUser";
 
 export type Action = "create" | "read" | "update" | "delete" | "startRetro";
 
 type AppSubjects = Subjects<{
   Team: Team;
+  TeamMember: TeamUsers;
   Retro: Retrospective;
   Board: Board;
 }>;

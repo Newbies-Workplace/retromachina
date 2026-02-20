@@ -1,10 +1,10 @@
-import {InviteResponse} from "shared/model/invite/Invite.response";
-import {TeamResponse} from "shared/model/team/team.response";
-import {UserInTeamResponse} from "shared/model/user/user.response";
-import {create} from "zustand";
-import {TeamService} from "@/api/Team.service";
-import {UserService} from "@/api/User.service";
-import {TeamUserRequest} from "shared/model/team/team.request";
+import { InviteResponse } from "shared/model/invite/Invite.response";
+import { TeamUserRequest } from "shared/model/team/team.request";
+import { TeamResponse } from "shared/model/team/team.response";
+import { UserInTeamResponse } from "shared/model/user/user.response";
+import { create } from "zustand";
+import { TeamService } from "@/api/Team.service";
+import { UserService } from "@/api/User.service";
 
 export type TeamState = {
   state: "loading" | "error" | "loaded";
@@ -16,8 +16,8 @@ export type TeamState = {
 type TeamStoreState = {
   teams: Record<string, TeamState>;
   fetchTeamData: (teamId: string) => Promise<void>;
-  putTeamMember: (teamId: string, user: TeamUserRequest) => Promise<void>,
-  removeTeamMember: (teamId: string, userEmail: string) => Promise<void>,
+  putTeamMember: (teamId: string, user: TeamUserRequest) => Promise<void>;
+  removeTeamMember: (teamId: string, userEmail: string) => Promise<void>;
 };
 
 export const useTeamStore = create<TeamStoreState>((set, get) => ({
@@ -27,7 +27,7 @@ export const useTeamStore = create<TeamStoreState>((set, get) => ({
       teams: {
         ...state.teams,
         [teamId]: {
-          ...(state.teams[teamId] || {team: null, users: [], invites: []}),
+          ...(state.teams[teamId] || { team: null, users: [], invites: [] }),
           state: "loading",
         },
       },
@@ -56,7 +56,7 @@ export const useTeamStore = create<TeamStoreState>((set, get) => ({
         teams: {
           ...state.teams,
           [teamId]: {
-            ...(state.teams[teamId] || {team: null, users: [], invites: []}),
+            ...(state.teams[teamId] || { team: null, users: [], invites: [] }),
             state: "error",
           },
         },
@@ -70,13 +70,25 @@ export const useTeamStore = create<TeamStoreState>((set, get) => ({
       ...teamState,
       users: teamState.users.map((existingUser) =>
         existingUser.email === user.email
-          ? {...existingUser, role: user.role}
+          ? { ...existingUser, role: user.role }
           : existingUser,
       ),
       invites: teamState.invites.map((existingInvite) =>
         existingInvite.email === user.email
-          ? {...existingInvite, role: user.role}
-          : existingInvite)
+          ? { ...existingInvite, role: user.role }
+          : existingInvite,
+      ),
+    }));
+
+    // todo replace with response based update
+    const [users, invites] = await Promise.all([
+      UserService.getUsersByTeamId(teamId),
+      TeamService.getInvitesByTeamId(teamId),
+    ]);
+    updateTeam(teamId, (teamState) => ({
+      ...teamState,
+      users: users,
+      invites: invites,
     }));
   },
   removeTeamMember: async (teamId: string, userEmail: string) => {
@@ -90,7 +102,10 @@ export const useTeamStore = create<TeamStoreState>((set, get) => ({
   },
 }));
 
-const updateTeam = (teamId: string, updateFn: (teamState: TeamState) => TeamState) => {
+const updateTeam = (
+  teamId: string,
+  updateFn: (teamState: TeamState) => TeamState,
+) => {
   useTeamStore.setState((state) => {
     const teamState = state.teams[teamId];
     if (!teamState) return state;
@@ -100,6 +115,6 @@ const updateTeam = (teamId: string, updateFn: (teamState: TeamState) => TeamStat
         ...state.teams,
         [teamId]: updateFn(teamState),
       },
-    }
+    };
   });
-}
+};

@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import type { TeamUserRequest } from "shared/model/team/team.request";
-import { UserPicker } from "@/components/molecules/user_picker/UserPicker";
+import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 
 const meta = {
-  title: "molecules/UserPicker",
-  component: UserPicker,
-} satisfies Meta<typeof UserPicker>;
+  title: "molecules/TeamMemberPicker",
+  component: TeamMemberPicker,
+} satisfies Meta<typeof TeamMemberPicker>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -18,7 +18,7 @@ export const Default = () => {
   ]);
 
   return (
-    <UserPicker
+    <TeamMemberPicker
       users={users}
       onAdd={(email) => {
         setUsers([...users, email]);

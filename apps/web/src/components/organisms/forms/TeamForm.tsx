@@ -1,17 +1,13 @@
 import type React from "react";
 import { useState } from "react";
-import type {
-  TeamRequest,
-  TeamUserRequest,
-} from "shared/model/team/team.request";
+import { InviteResponse } from "shared/model/invite/Invite.response";
+import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
-import type { UserRole } from "shared/model/user/user.role";
+import { UserInTeamResponse } from "shared/model/user/user.response";
 import { Button } from "@/components/atoms/button/Button";
 import { Input } from "@/components/atoms/input/Input";
-import { UserPicker } from "@/components/molecules/user_picker/UserPicker";
+import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 import { TeamInviteLinkInput } from "@/components/organisms/forms/TeamInviteLinkInput";
-import {InviteResponse} from "shared/model/invite/Invite.response";
-import {UserInTeamResponse} from "shared/model/user/user.response";
 
 interface TeamFormProps {
   team: TeamResponse | null;
@@ -79,9 +75,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
           <div className={"flex flex-col"}>
             <h1>Członkowie</h1>
 
-            <UserPicker
-              teamId={team.id}
-            />
+            <TeamMemberPicker teamId={team.id} />
           </div>
         )}
 

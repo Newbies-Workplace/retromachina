@@ -2,6 +2,7 @@ import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-sc
 import { Share2Icon } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import { Button } from "@/components/atoms/button/Button";
@@ -11,6 +12,7 @@ import Navbar from "@/components/organisms/navbar/Navbar";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useAudio } from "@/hooks/useAudio";
+import { useTeamData } from "@/hooks/useTeamData";
 import { useTeamRole } from "@/hooks/useTeamRole";
 import { RetroTimer } from "@/views/retro_active/components/retro_timer/RetroTimer";
 import { Toolbox } from "@/views/retro_active/components/toolbox/Toolbox";
@@ -18,15 +20,13 @@ import { DiscussView } from "@/views/retro_active/discuss/DiscussView";
 import { GroupView } from "@/views/retro_active/group/GroupView";
 import { ReflectionView } from "@/views/retro_active/reflection/ReflectionView";
 import { VoteView } from "@/views/retro_active/vote/VoteView";
-import {useTeamData} from "@/hooks/useTeamData";
-import {toast} from "react-toastify";
 
 export const RetroActiveView: React.FC = () => {
   const navigate = useNavigate();
   const { roomState, retroId, activeUsers, teamUsers } = useRetro();
   const { user } = useUser();
   const { ready, teamId } = useRetro();
-  const { team } = useTeamData(teamId)
+  const { team } = useTeamData(teamId);
   const { play: playAudio } = useAudio();
   const { isAdmin } = useTeamRole(teamId ?? "");
 
@@ -78,7 +78,7 @@ export const RetroActiveView: React.FC = () => {
           toast.success("Link skopiowano do schowka");
         });
     }
-  }
+  };
 
   return (
     <>
@@ -98,7 +98,7 @@ export const RetroActiveView: React.FC = () => {
                   <Button
                     size={"icon"}
                     onClick={() => {
-                      onShareButtonClick()
+                      onShareButtonClick();
                     }}
                   >
                     <Share2Icon className={"size-5"} />

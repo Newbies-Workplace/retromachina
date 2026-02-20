@@ -1,4 +1,3 @@
-import { User } from "generated/prisma/client";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
@@ -9,6 +8,7 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import * as dayjs from "dayjs";
+import { User } from "generated/prisma/client";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import {
   AddCardToCardCommand,

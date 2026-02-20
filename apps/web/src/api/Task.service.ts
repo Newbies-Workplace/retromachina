@@ -1,9 +1,7 @@
 import type { TaskResponse } from "shared/model/task/task.response";
 import { axiosInstance } from "@/api/AxiosInstance";
 
-const getTasksByRetroId = async (
-  retroId: string,
-): Promise<TaskResponse[]> => {
+const getTasksByRetroId = async (retroId: string): Promise<TaskResponse[]> => {
   return axiosInstance
     .get("tasks", {
       params: {
@@ -15,4 +13,4 @@ const getTasksByRetroId = async (
 
 export const TaskService = {
   getTasksByRetroId,
-}
+};

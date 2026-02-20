@@ -14,4 +14,4 @@ const loginGoogle = (params: AuthParams): Promise<AuthResponse> => {
 
 export const AuthService = {
   loginGoogle,
-}
+};

@@ -14,4 +14,4 @@ const getBoard = async (teamId: string): Promise<BoardResponse> => {
 export const BoardService = {
   editBoard,
   getBoard,
-}
+};

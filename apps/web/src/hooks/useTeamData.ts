@@ -1,11 +1,11 @@
-import {useEffect} from "react";
-import {useUser} from "@/context/user/UserContext.hook";
-import {TeamState, useTeamStore} from "@/store/useTeamStore";
+import { useEffect } from "react";
+import { useUser } from "@/context/user/UserContext.hook";
+import { TeamState, useTeamStore } from "@/store/useTeamStore";
 
 export const useTeamData = (teamId: string | null): TeamState => {
-  const {user} = useUser();
+  const { user } = useUser();
 
-  const {teams, fetchTeamData} = useTeamStore()
+  const { teams, fetchTeamData } = useTeamStore();
 
   useEffect(() => {
     if (teamId && user) {
@@ -13,5 +13,12 @@ export const useTeamData = (teamId: string | null): TeamState => {
     }
   }, [teamId, user, fetchTeamData]);
 
-  return teams[teamId ?? ""] || {state: "loading", team: null, users: [], invites: []};
-}
+  return (
+    teams[teamId ?? ""] || {
+      state: "loading",
+      team: null,
+      users: [],
+      invites: [],
+    }
+  );
+};

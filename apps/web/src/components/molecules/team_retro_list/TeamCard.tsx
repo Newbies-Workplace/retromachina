@@ -46,10 +46,10 @@ interface TeamRetroListProps {
 }
 
 export const TeamCard: React.FC<TeamRetroListProps> = ({
-                                                         teamName,
-                                                         teamId,
-                                                         openReflectionCardsShelfClick,
-                                                       }) => {
+  teamName,
+  teamId,
+  openReflectionCardsShelfClick,
+}) => {
   const navigate = useNavigate();
   const { role } = useTeamRole(teamId);
   const [retros, setRetros] = useState<RetroResponse[]>([]);
@@ -192,8 +192,8 @@ type SlotMachineDialogContentProps = {
 };
 
 const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
-                                                                             teamUsers,
-                                                                           }) => {
+  teamUsers,
+}) => {
   const [isDrawing, startDrawingTransition] = useTransition();
 
   const slotMachineRef = useRef<SlotMachineRef>(null);

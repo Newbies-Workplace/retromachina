@@ -135,7 +135,7 @@ export const DiscussView = () => {
             return (
               <div
                 className={cn(
-                  "flex flex-col mx-4 bg-white p-2.5 border rounded-2xl break-words whitespace-pre-line",
+                  "flex flex-col mx-4 bg-white p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
                   group.votes === 0 && "opacity-40",
                 )}
               >
@@ -248,9 +248,9 @@ export const DiscussView = () => {
             setValue={setValue}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey && !!user) {
                 e.preventDefault();
-                createTask(value, user?.id!);
+                createTask(value, user.id);
                 setValue("");
               }
             }}

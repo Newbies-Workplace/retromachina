@@ -1,4 +1,3 @@
-import { User } from "generated/prisma/client";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
@@ -8,6 +7,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
+import { User } from "generated/prisma/client";
 import {
   TaskCreateCommand,
   TaskDeleteCommand,

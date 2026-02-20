@@ -1,5 +1,5 @@
-import { Board, BoardColumn } from "generated/prisma/client";
 import { BadRequestException, Injectable } from "@nestjs/common";
+import { Board, BoardColumn } from "generated/prisma/client";
 import { BoardColumnDto, EditBoardDto } from "shared/model/board/editBoard.dto";
 import { PrismaService } from "../prisma/prisma.service";
 

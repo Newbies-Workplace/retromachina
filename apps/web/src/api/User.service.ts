@@ -21,4 +21,4 @@ const getUsersByTeamId = async (
 export const UserService = {
   getMyUser,
   getUsersByTeamId,
-}
+};

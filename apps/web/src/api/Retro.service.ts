@@ -26,4 +26,4 @@ export const RetroService = {
   getRetrosByTeamId,
   getRetroByRetroId,
   createRetro,
-}
+};

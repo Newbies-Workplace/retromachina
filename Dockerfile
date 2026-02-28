@@ -13,6 +13,7 @@ FROM node:24.14.0-alpine as retro-api
 
 COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/apps/api/package*.json ./
+COPY --from=builder /build/apps/api/prisma.config.ts ./
 COPY --from=builder /build/apps/api/dist ./dist
 COPY --from=builder /build/apps/api/prisma ./prisma
 COPY --from=builder /build/packages/shared/.dist ./node_modules/shared

@@ -40,6 +40,7 @@ jobs:
         env:
           RETRO_WEB_API_URL: ${{ secrets.RETRO_WEB_API_URL }}
           RETRO_WEB_SOCKET_URL: ${{ secrets.RETRO_WEB_SOCKET_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: "web: Build and push Docker image"
         uses: docker/build-push-action@v3
@@ -62,8 +63,6 @@ jobs:
         with:
           context: .
           target: retro-api
-          build-args: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
           push: true
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}

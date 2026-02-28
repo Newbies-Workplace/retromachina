@@ -62,6 +62,8 @@ jobs:
         with:
           context: .
           target: retro-api
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
           push: true
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}

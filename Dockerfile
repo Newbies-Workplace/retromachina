@@ -2,6 +2,7 @@ FROM node:24.14.0 AS builder
 
 ARG RETRO_WEB_API_URL
 ARG RETRO_WEB_SOCKET_URL
+ARG DATABASE_URL
 
 WORKDIR /build
 COPY . ./
@@ -10,8 +11,6 @@ RUN npm ci
 RUN npm run build
 
 FROM node:24.14.0-alpine as retro-api
-
-ARG DATABASE_URL
 
 COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/apps/api/package*.json ./

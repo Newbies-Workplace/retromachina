@@ -21,7 +21,7 @@ export const useTeamRole = (teamId: string): TeamRoleResult => {
 
   return {
     role: role,
-    isAdmin: role === "ADMIN",
+    isAdmin: role === "ADMIN" || role === "OWNER",
     isOwner: role === "OWNER",
   };
 };

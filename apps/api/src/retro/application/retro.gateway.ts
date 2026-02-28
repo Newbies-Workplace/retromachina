@@ -35,7 +35,7 @@ import {
   SlotMachineDrawnEvent,
   TimerChangedEvent,
 } from "shared/model/retro/retro.events";
-import { Card, RetroColumn } from "shared/model/retro/retroRoom.interface";
+import { Card, RetroColumn, User as SocketUser } from "shared/model/retro/retroRoom.interface";
 import { Server, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
 import { JWTUser } from "../../auth/jwt/JWTUser";
@@ -220,7 +220,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
-    if (roomUser.role !== "ADMIN") {
+    if (!this.hasAdminPrivileges(roomUser)) {
       return;
     }
 
@@ -422,7 +422,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
-    if (roomUser.role !== "ADMIN") {
+    if (!this.hasAdminPrivileges(roomUser)) {
       return;
     }
 
@@ -454,7 +454,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
-    if (roomUser.role !== "ADMIN") {
+    if (!this.hasAdminPrivileges(roomUser)) {
       return;
     }
 
@@ -577,5 +577,10 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
       }
     }
+  }
+
+  private hasAdminPrivileges(user: SocketUser): boolean {
+
+    return user.role === "ADMIN" || user.role === "OWNER";
   }
 }

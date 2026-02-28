@@ -7,9 +7,10 @@
     "generate": "npx prisma generate && npx prisma format",
     "migrate": "dotenvx run -f ../../.env -- npx prisma migrate dev",
     "studio": "dotenvx run -f ../../.env -- npx prisma studio",
-    "build": "dotenvx run -f ../../.env -- npm run generate && nest build",
-    "start": "npx prisma migrate deploy && node dist/main",
-    "start:prod": "node dist/main",
+    "build": "npm run generate && npm run build:nest",
+    "build:nest": "nest build",
+    "start": "npx prisma migrate deploy && node dist/src/main",
+    "start:prod": "node dist/src/main",
     "start:migrate:prod": "npx prisma migrate deploy && npm run start:prod"
   },
   "dependencies": {

@@ -80,7 +80,12 @@ export const InviteView: React.FC = () => {
               <>
                 <span> Otrzymałeś zaproszenie do zespołu {team?.name}</span>
 
-                <Button onClick={onJoinTeamPress}>Dołącz do zespołu</Button>
+                <Button
+                  onClick={onJoinTeamPress}
+                  data-testid={"join-team-button"}
+                >
+                  Dołącz do zespołu
+                </Button>
               </>
             )}
           </div>

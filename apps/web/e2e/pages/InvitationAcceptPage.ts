@@ -8,6 +8,6 @@ export class InvitationAcceptPage {
   }
 
   async acceptInvitation() {
-    await this.page.getByRole("button", { name: "Dołącz do zespołu" }).click();
+    await this.page.getByTestId("join-team-button").click();
   }
 }

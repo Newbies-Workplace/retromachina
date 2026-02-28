@@ -43,11 +43,15 @@ export class AuthAbilityFactory {
     can("update", "Team", { id: { in: [...adminTeamIds, ...ownerTeamIds] } });
     can("delete", "Team", { id: { in: ownerTeamIds } });
 
-    can("startRetro", "Team", { id: { in: adminTeamIds } });
+    can("startRetro", "Team", {
+      id: { in: [...adminTeamIds, ...ownerTeamIds] },
+    });
 
     can("read", "Retro", { team_id: { in: userTeamIds } });
 
-    can("update", "Board", { team_id: { in: adminTeamIds } });
+    can("update", "Board", {
+      team_id: { in: [...adminTeamIds, ...ownerTeamIds] },
+    });
     can("read", "Board", { team_id: { in: userTeamIds } });
 
     return build();

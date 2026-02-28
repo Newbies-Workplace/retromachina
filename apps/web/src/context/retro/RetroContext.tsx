@@ -38,7 +38,7 @@ import type {
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import { getUsersByTeamId } from "@/api/User.service";
+import { UserService } from "@/api/User.service";
 import { CardMoveAction } from "@/components/molecules/dragndrop/dragndrop";
 import { useUser } from "@/context/user/UserContext.hook";
 import { groupCards } from "@/lib/groupCards";
@@ -531,7 +531,7 @@ export const RetroContextProvider: React.FC<
   };
 
   const fetchTeamUsers = async (teamId: string) => {
-    const users = await getUsersByTeamId(teamId);
+    const users = await UserService.getUsersByTeamId(teamId);
     setTeamUsers(users);
   };
 

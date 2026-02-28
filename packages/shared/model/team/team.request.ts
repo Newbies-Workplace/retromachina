@@ -1,20 +1,10 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 import type { UserRole } from "../user/user.role";
 
 export class TeamRequest {
   @IsNotEmpty()
   @IsString()
   name: string;
-
-  @IsOptional()
-  @IsArray()
-  users?: TeamUserRequest[];
 
   @IsOptional()
   @IsString()
@@ -25,9 +15,6 @@ export class TeamRequest {
 export class EditTeamRequest {
   @IsString()
   name: string;
-
-  @IsArray()
-  users?: TeamUserRequest[];
 
   @IsOptional()
   @IsString()

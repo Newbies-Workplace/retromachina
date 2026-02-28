@@ -1,4 +1,4 @@
-import { ReflectionCard } from "@prisma/client";
+import { ReflectionCard } from "generated/prisma/client";
 import { ReflectionCardResponse } from "shared/model/team/reflectionCard.response";
 
 export const toReflectionCardResponse = (

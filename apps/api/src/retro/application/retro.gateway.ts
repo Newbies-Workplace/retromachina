@@ -7,8 +7,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import { User } from "@prisma/client";
 import * as dayjs from "dayjs";
+import { User } from "generated/prisma/client";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import {
   AddCardToCardCommand,
@@ -41,7 +41,7 @@ import { v4 as uuid } from "uuid";
 import { JWTUser } from "../../auth/jwt/JWTUser";
 import { PrismaService } from "../../prisma/prisma.service";
 import { RetroRoom } from "../domain/model/retroRoom.object";
-import { RoomStateValidator } from "./roomstate.validator";
+import { validate as validateRoomState } from "./roomstate.validator";
 
 type SocketId = string;
 
@@ -354,7 +354,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    const isValid = RoomStateValidator.validate(payload.roomState);
+    const isValid = validateRoomState(payload.roomState);
     if (!isValid) {
       this.doException(
         client,

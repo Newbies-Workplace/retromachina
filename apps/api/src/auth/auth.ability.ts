@@ -5,14 +5,20 @@ import {
   type Subjects,
 } from "@casl/prisma";
 import { Injectable } from "@nestjs/common";
-import { Board, Retrospective, Team } from "@prisma/client";
-import { PrismaService } from "../prisma/prisma.service";
+import {
+  Board,
+  Retrospective,
+  Role,
+  Team,
+  TeamUsers,
+} from "generated/prisma/client";
 import { JWTUser } from "./jwt/JWTUser";
 
 export type Action = "create" | "read" | "update" | "delete" | "startRetro";
 
 type AppSubjects = Subjects<{
   Team: Team;
+  TeamMember: TeamUsers;
   Retro: Retrospective;
   Board: Board;
 }>;
@@ -21,24 +27,31 @@ export type AppAbility = PureAbility<[Action, AppSubjects], PrismaQuery>;
 @Injectable()
 export class AuthAbilityFactory {
   create(user: JWTUser) {
-    const { can, cannot, build } = new AbilityBuilder<AppAbility>(
-      createPrismaAbility,
-    );
+    const { can, build } = new AbilityBuilder<AppAbility>(createPrismaAbility);
 
     const userTeamIds = user.teams.map((team) => team.id);
+    const ownerTeamIds = user.teams
+      .filter((team) => team.role === Role.OWNER)
+      .map((team) => team.id);
     const adminTeamIds = user.teams
-      .filter((team) => team.role === "ADMIN")
+      .filter((team) => team.role === Role.ADMIN)
       .map((team) => team.id);
 
     can("create", "Team");
     can("read", "Team", { id: { in: userTeamIds } });
-    can("update", "Team", { owner_id: user.id });
-    can("delete", "Team", { owner_id: user.id });
-    can("startRetro", "Team", { id: { in: adminTeamIds } });
+
+    can("update", "Team", { id: { in: [...adminTeamIds, ...ownerTeamIds] } });
+    can("delete", "Team", { id: { in: ownerTeamIds } });
+
+    can("startRetro", "Team", {
+      id: { in: [...adminTeamIds, ...ownerTeamIds] },
+    });
 
     can("read", "Retro", { team_id: { in: userTeamIds } });
 
-    can("update", "Board", { team_id: { in: adminTeamIds } });
+    can("update", "Board", {
+      team_id: { in: [...adminTeamIds, ...ownerTeamIds] },
+    });
     can("read", "Board", { team_id: { in: userTeamIds } });
 
     return build();

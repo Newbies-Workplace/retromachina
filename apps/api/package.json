@@ -4,13 +4,13 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nest start --watch",
-    "generate": "prisma generate && prisma format",
-    "migrate": "dotenvx run -f ../../.env -- prisma migrate dev",
+    "generate": "npx prisma generate && npx prisma format",
+    "migrate": "dotenvx run -f ../../.env -- npx prisma migrate dev",
     "studio": "dotenvx run -f ../../.env -- npx prisma studio",
     "build": "npm run generate && nest build",
-    "start": "prisma migrate deploy && node dist/main",
+    "start": "npx prisma migrate deploy && node dist/main",
     "start:prod": "node dist/main",
-    "start:migrate:prod": "prisma migrate deploy && npm run start:prod"
+    "start:migrate:prod": "npx prisma migrate deploy && npm run start:prod"
   },
   "dependencies": {
     "@casl/ability": "^6.5.0",
@@ -25,7 +25,8 @@
     "@nestjs/platform-ws": "^9.2.1",
     "@nestjs/schedule": "^2.2.0",
     "@nestjs/websockets": "^9.2.0",
-    "@prisma/client": "^5.1.1",
+    "@prisma/adapter-mariadb": "^7.2.0",
+    "@prisma/client": "^7.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
@@ -52,14 +53,14 @@
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^8.3.4",
     "jest": "^28.1.2",
-    "prisma": "^5.1.1",
+    "prisma": "^7.2.0",
     "source-map-support": "^0.5.21",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.5",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.8.2",
     "tsconfig-paths": "^4.0.0",
-    "typescript": "^4.7.4"
+    "typescript": "^5.9.3"
   },
   "jest": {
     "moduleFileExtensions": [

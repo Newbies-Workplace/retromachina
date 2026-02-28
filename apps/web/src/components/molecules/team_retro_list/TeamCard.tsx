@@ -15,8 +15,8 @@ import React, {
 import { useNavigate } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
-import { getRetrosByTeamId } from "@/api/Retro.service";
-import { getUsersByTeamId } from "@/api/User.service";
+import { RetroService } from "@/api/Retro.service";
+import { UserService } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
@@ -51,19 +51,19 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
   openReflectionCardsShelfClick,
 }) => {
   const navigate = useNavigate();
-  const { isAdmin } = useTeamRole(teamId);
+  const { role } = useTeamRole(teamId);
   const [retros, setRetros] = useState<RetroResponse[]>([]);
   const [teamUsers, setTeamUsers] = useState<UserInTeamResponse[]>();
   const isAnyRetroRunning = retros.findIndex((a) => a.is_running) !== -1;
 
   useEffect(() => {
-    getRetrosByTeamId(teamId)
+    RetroService.getRetrosByTeamId(teamId)
       .then((retros) => {
         setRetros(retros);
       })
       .catch(console.error);
 
-    getUsersByTeamId(teamId)
+    UserService.getUsersByTeamId(teamId)
       .then((users) => {
         setTeamUsers(users);
       })
@@ -93,7 +93,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         </div>
 
         <div className={"flex gap-2"}>
-          {isAdmin && (
+          {role !== "USER" && (
             <Button
               data-testid="edit-team"
               onClick={() => navigate(`/team/${teamId}/edit`)}
@@ -150,7 +150,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           <ArchiveIcon className={"min-size-6 size-6"} />
         </Button>
 
-        {isAdmin && !isAnyRetroRunning && (
+        {role !== "USER" && !isAnyRetroRunning && (
           <Button
             data-testid="create-retro"
             size={"xl"}

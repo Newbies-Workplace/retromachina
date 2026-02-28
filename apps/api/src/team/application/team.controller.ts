@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { Role } from "@prisma/client";
+import { Role } from "generated/prisma/client";
 import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
 import { ReflectionCardResponse } from "shared/model/team/reflectionCard.response";
 import { TeamGetQuery } from "shared/model/team/team.query";
@@ -20,6 +20,7 @@ import {
   EditTeamInviteRequest,
   EditTeamRequest,
   TeamRequest,
+  TeamUserRequest,
 } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { JWTUser } from "src/auth/jwt/JWTUser";
@@ -51,7 +52,7 @@ export class TeamController {
 
     const team = await this.teamService.createTeam(user, request);
 
-    return toTeamResponse(team, "ADMIN");
+    return toTeamResponse(team);
   }
 
   @Get(":id")
@@ -69,11 +70,10 @@ export class TeamController {
       },
     });
     const ability = this.abilityFactory.create(user);
-    const userRole = user.teams.find((team) => team.id === teamId)?.role;
 
     ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
 
-    return toTeamResponse(team, userRole);
+    return toTeamResponse(team);
   }
 
   @UseGuards(JwtGuard)
@@ -90,7 +90,6 @@ export class TeamController {
       },
     });
     const ability = this.abilityFactory.create(user);
-    const userRole = user.teams.find((team) => team.id === teamId)?.role;
 
     ForbiddenError.from(ability).throwUnlessCan(
       "update",
@@ -99,7 +98,51 @@ export class TeamController {
 
     const updatedTeam = await this.teamService.editTeam(user, team, request);
 
-    return toTeamResponse(updatedTeam, userRole);
+    return toTeamResponse(updatedTeam);
+  }
+
+  @UseGuards(JwtGuard)
+  @Put(":id/members")
+  async setTeamMember(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Body() request: TeamUserRequest,
+  ): Promise<void> {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        id: teamId,
+      },
+    });
+    const ability = this.abilityFactory.create(user);
+
+    ForbiddenError.from(ability).throwUnlessCan(
+      "update",
+      subject("Team", team),
+    );
+
+    await this.teamService.putTeamMember(user, teamId, request);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(":id/members/:email")
+  async deleteTeamMember(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Param("email") email: string,
+  ): Promise<void> {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        id: teamId,
+      },
+    });
+    const ability = this.abilityFactory.create(user);
+
+    ForbiddenError.from(ability).throwUnlessCan(
+      "update",
+      subject("Team", team),
+    );
+
+    await this.teamService.deleteTeamMember(user, teamId, email);
   }
 
   @UseGuards(JwtGuard)
@@ -116,16 +159,15 @@ export class TeamController {
       },
     });
     const ability = this.abilityFactory.create(user);
-    const userRole = user.teams.find((team) => team.id === teamId)?.role;
 
     ForbiddenError.from(ability).throwUnlessCan(
       "update",
       subject("Team", team),
     );
 
-    const updatedTeam = await this.teamService.editTeamInvite(team, request);
+    const updatedTeam = await this.teamService.editTeamInviteKey(team, request);
 
-    return toTeamResponse(updatedTeam, userRole);
+    return toTeamResponse(updatedTeam);
   }
 
   @UseGuards(JwtGuard)
@@ -166,7 +208,7 @@ export class TeamController {
       throw new BadRequestException("User is already in team");
     }
 
-    return toTeamResponse(team, "USER");
+    return toTeamResponse(team);
   }
 
   @UseGuards(JwtGuard)

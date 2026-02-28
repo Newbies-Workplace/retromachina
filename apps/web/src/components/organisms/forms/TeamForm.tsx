@@ -1,52 +1,37 @@
 import type React from "react";
 import { useState } from "react";
-import type {
-  TeamRequest,
-  TeamUserRequest,
-} from "shared/model/team/team.request";
-import type { UserRole } from "shared/model/user/user.role";
+import { InviteResponse } from "shared/model/invite/Invite.response";
+import type { TeamRequest } from "shared/model/team/team.request";
+import { TeamResponse } from "shared/model/team/team.response";
+import { UserInTeamResponse } from "shared/model/user/user.response";
 import { Button } from "@/components/atoms/button/Button";
 import { Input } from "@/components/atoms/input/Input";
-import { UserPicker } from "@/components/molecules/user_picker/UserPicker";
+import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 import { TeamInviteLinkInput } from "@/components/organisms/forms/TeamInviteLinkInput";
 
-interface CreateTeamFormProps {
-  team: TeamRequest | null;
+interface TeamFormProps {
+  team: TeamResponse | null;
+  users?: UserInTeamResponse[];
+  invites?: InviteResponse[];
   onSubmit: (team: TeamRequest) => void;
   onDelete?: () => void;
   deletable?: boolean;
 }
 
-export const TeamForm: React.FC<CreateTeamFormProps> = ({
+export const TeamForm: React.FC<TeamFormProps> = ({
   team,
   onSubmit,
   onDelete,
   deletable,
 }) => {
-  const [users, setUsers] = useState(team?.users || []);
-  const [name, setName] = useState(team?.name || "");
+  const [name, setName] = useState<string>(team?.name || "");
   const [inviteKey, setInviteKey] = useState<string | undefined>(
     team?.invite_key || "",
   );
 
-  const onAddUser = (user: TeamUserRequest) => {
-    setUsers([...users, user]);
-  };
-
-  const onDeleteEmailClick = (email: string) => {
-    setUsers(users.filter((user) => user.email !== email));
-  };
-
-  const onRoleChange = (email: string, role: UserRole) => {
-    setUsers([
-      ...users.map((user) => (user.email === email ? { ...user, role } : user)),
-    ]);
-  };
-
   const onSubmitClick = () => {
     onSubmit({
       name: name,
-      users: users,
       invite_key: inviteKey && inviteKey.length > 0 ? inviteKey : undefined,
     });
   };
@@ -80,17 +65,19 @@ export const TeamForm: React.FC<CreateTeamFormProps> = ({
             setInviteKey(key);
           }}
         />
+        {!team && (
+          <span className={"opacity-40 text-xs"}>
+            (Link będzie aktywny po zapisaniu zespołu)
+          </span>
+        )}
 
-        <div className={"flex flex-col"}>
-          <h1>Członkowie</h1>
+        {team && (
+          <div className={"flex flex-col"}>
+            <h1>Członkowie</h1>
 
-          <UserPicker
-            users={users}
-            onAdd={(user) => onAddUser(user)}
-            onRoleChange={(email, role) => onRoleChange(email, role)}
-            onDelete={(email) => onDeleteEmailClick(email)}
-          />
-        </div>
+            <TeamMemberPicker teamId={team.id} />
+          </div>
+        )}
 
         <div className={"flex justify-between gap-2 mt-auto w-full"}>
           {deletable ? (

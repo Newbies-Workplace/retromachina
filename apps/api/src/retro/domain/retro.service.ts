@@ -36,7 +36,6 @@ export class RetroService implements OnModuleInit {
       request.columns.map((column) => {
         return {
           id: uuid(),
-          color: column.color,
           name: column.name,
           description: column.desc,
           cards: [],

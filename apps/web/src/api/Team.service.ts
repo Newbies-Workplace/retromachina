@@ -2,17 +2,16 @@ import type { InviteResponse } from "shared/model/invite/Invite.response";
 import {
   EditTeamInviteRequest,
   TeamRequest,
+  TeamUserRequest,
 } from "shared/model/team/team.request";
 import type { TeamResponse } from "shared/model/team/team.response";
 import { axiosInstance } from "@/api/AxiosInstance";
 
-export const getTeamById = async (teamId: string): Promise<TeamResponse> => {
+const getTeamById = async (teamId: string): Promise<TeamResponse> => {
   return axiosInstance.get(`teams/${teamId}`).then((res) => res.data);
 };
 
-export const getTeamByInviteKey = async (
-  inviteKey: string,
-): Promise<TeamResponse> => {
+const getTeamByInviteKey = async (inviteKey: string): Promise<TeamResponse> => {
   return axiosInstance
     .get("teams", {
       params: {
@@ -22,28 +21,42 @@ export const getTeamByInviteKey = async (
     .then((res) => res.data);
 };
 
-export const acceptTeamInvite = async (inviteKey: string): Promise<void> => {
+const putTeamMember = async (
+  teamId: string,
+  user: TeamUserRequest,
+): Promise<void> => {
+  return axiosInstance.put(`teams/${teamId}/members`, user);
+};
+
+const deleteTeamMember = async (
+  teamId: string,
+  email: string,
+): Promise<void> => {
+  return axiosInstance.delete(`teams/${teamId}/members/${email}`);
+};
+
+const acceptTeamInvite = async (inviteKey: string): Promise<void> => {
   return axiosInstance.post(`teams/link_invite/${inviteKey}/accept`);
 };
 
-export const getInvitesByTeamId = async (
+const getInvitesByTeamId = async (
   teamId: string,
 ): Promise<InviteResponse[]> => {
   return axiosInstance.get(`invites?team_id=${teamId}`).then((res) => res.data);
 };
 
-export const createTeam = async (team: TeamRequest): Promise<TeamResponse> => {
+const createTeam = async (team: TeamRequest): Promise<TeamResponse> => {
   return axiosInstance.post("teams", team).then((res) => res.data);
 };
 
-export const editTeam = async (
+const editTeam = async (
   teamId: string,
   team: TeamRequest,
 ): Promise<TeamResponse> => {
   return axiosInstance.put(`teams/${teamId}`, team).then((res) => res.data);
 };
 
-export const editTeamInvitation = async (
+const editTeamInvitation = async (
   teamId: string,
   invitation: EditTeamInviteRequest,
 ): Promise<TeamResponse> => {
@@ -52,6 +65,19 @@ export const editTeamInvitation = async (
     .then((res) => res.data);
 };
 
-export const deleteTeam = async (teamId: string): Promise<void> => {
+const deleteTeam = async (teamId: string): Promise<void> => {
   return axiosInstance.delete(`teams/${teamId}`);
+};
+
+export const TeamService = {
+  getTeamById,
+  getTeamByInviteKey,
+  putTeamMember,
+  removeTeamMember: deleteTeamMember,
+  acceptTeamInvite,
+  getInvitesByTeamId,
+  createTeam,
+  editTeam,
+  editTeamInvitation,
+  deleteTeam,
 };

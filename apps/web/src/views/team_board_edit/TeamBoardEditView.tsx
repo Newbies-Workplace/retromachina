@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import type { BoardResponse } from "shared/model/board/board.response";
 import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
 import { v4 as uuidv4 } from "uuid";
-import { editBoard, getBoard } from "@/api/Board.service";
+import { BoardService } from "@/api/Board.service";
 import { Button } from "@/components/atoms/button/Button";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
@@ -23,7 +23,7 @@ export const TeamBoardEditView: React.FC = () => {
   useEffect(() => {
     if (!teamId) return;
 
-    getBoard(teamId).then((board) => setBoard(board));
+    BoardService.getBoard(teamId).then((board) => setBoard(board));
   }, [teamId]);
 
   if (!teamId) {
@@ -42,7 +42,6 @@ export const TeamBoardEditView: React.FC = () => {
   const onAddColumn = () => {
     const column: BoardColumnDto = {
       id: uuidv4(),
-      color: "#ffffff",
       name: "",
       order: board.columns.length,
     };
@@ -73,7 +72,7 @@ export const TeamBoardEditView: React.FC = () => {
   };
 
   const saveBoard = () => {
-    editBoard(teamId, board)
+    BoardService.editBoard(teamId, board)
       .then(() => {
         navigate(`/team/${teamId}/board`);
       })
@@ -141,7 +140,6 @@ export const TeamBoardEditView: React.FC = () => {
                     onChangeColumn(col.id, {
                       id: col.id,
                       name: name,
-                      color: "#ffffff",
                       order: col.order,
                     })
                   }

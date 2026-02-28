@@ -7,7 +7,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import { User } from "@prisma/client";
+import { User } from "generated/prisma/client";
 import {
   TaskCreateCommand,
   TaskDeleteCommand,

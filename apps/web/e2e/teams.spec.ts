@@ -12,7 +12,6 @@ test.beforeEach(async ({ firstUser }) => {
   const teamCreatePage = new TeamCreatePage(firstUser.page);
   await teamCreatePage.goto();
   await teamCreatePage.fillTeamName(teamName);
-  await teamCreatePage.fillTeamUsers([{ email: "retromachina2@gmail.com" }]);
   await teamCreatePage.saveTeam();
 
   await expect(firstUser.page).toHaveURL("/");

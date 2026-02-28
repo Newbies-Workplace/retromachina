@@ -19,11 +19,12 @@ import {
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
+import { useTeamRole } from "@/hooks/useTeamRole";
 
 export const TeamBoardView: React.FC = () => {
   const {
     board,
-    team,
+    teamId,
     teamUsers,
     moveTask,
     createTask,
@@ -34,6 +35,7 @@ export const TeamBoardView: React.FC = () => {
   } = useBoard();
   const [creatingTask, setCreatingTask] = useState<TaskResponse>();
   const { user } = useUser();
+  const { isOwner } = useTeamRole(teamId);
   const navigate = useNavigate();
 
   if (!board || !user) {
@@ -83,7 +85,7 @@ export const TeamBoardView: React.FC = () => {
               />
             </div>
 
-            {team?.owner_id === user?.id && (
+            {isOwner && (
               <Button size={"xs"} onClick={onEditClick}>
                 Edytuj
               </Button>
@@ -104,7 +106,6 @@ export const TeamBoardView: React.FC = () => {
               key={column.id}
               columnData={{
                 name: column.name,
-                color: column.color,
                 description: null,
               }}
               headerRight={

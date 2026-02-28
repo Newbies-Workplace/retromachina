@@ -1,4 +1,4 @@
-FROM node:18.16.0 AS builder
+FROM node:24.14.0 AS builder
 
 ARG RETRO_WEB_API_URL
 ARG RETRO_WEB_SOCKET_URL
@@ -9,7 +9,7 @@ COPY . ./
 RUN npm ci
 RUN npm run build
 
-FROM node:18.16.0-alpine as retro-api
+FROM node:24.14.0-alpine as retro-api
 
 COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/apps/api/package*.json ./
@@ -21,7 +21,7 @@ EXPOSE 3000
 
 CMD [ "npm", "run", "start:migrate:prod" ]
 
-FROM node:18.16.0-alpine as retro-web
+FROM node:24.14.0-alpine as retro-web
 
 WORKDIR /app
 

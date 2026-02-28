@@ -1,12 +1,12 @@
 generator client {
   provider      = "prisma-client"
   output        = "../generated/prisma"
+  moduleFormat  = "cjs"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
 
 model Team {
@@ -124,7 +124,7 @@ model Invite {
 }
 
 enum Role {
-  OWNER
   ADMIN
   USER
+  OWNER
 }

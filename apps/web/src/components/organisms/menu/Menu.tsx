@@ -24,7 +24,7 @@ export const Menu = () => {
   return (
     <div
       className={
-        "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-[280px] bg-background-500 rounded-xl shadow-lg "
+        "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-70 bg-background-500 rounded-xl shadow-lg "
       }
     >
       <div className={"flex flex-col gap-3 rounded-t-xl p-2 bg-primary-500"}>
@@ -54,7 +54,7 @@ export const Menu = () => {
             <span
               key={team.id}
               className={
-                "flex justify-center items-center px-1.5 h-6 text-sm rounded-full bg-background-50"
+                "px-1.5 h-6 text-sm rounded-full bg-background-50 text-ellipsis line-clamp-1"
               }
             >
               {team.name}

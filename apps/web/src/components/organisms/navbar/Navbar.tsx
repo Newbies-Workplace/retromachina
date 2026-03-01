@@ -29,7 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary-500"}>
-      <div className={"flex flex-row items-center gap-4 w-full"}>
+      <div className={"flex flex-row items-center gap-4 w-full h-[50px]"}>
         <span
           onClick={() => navigate("/")}
           className={
@@ -39,9 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({
           Retromachina
         </span>
 
-        <div
-          className={"flex justify-end items-center gap-4 overflow-hidden pt-1"}
-        >
+        <div className={"flex justify-end items-center gap-4"}>
           <div className={"flex flex-row justify-end items-start gap-4"}>
             {topContent}
           </div>
@@ -78,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({
       )}
 
       <div
-        className={cn("w-full h-1 bg-repeat-x")}
+        className={cn("w-full h-1 bg-repeat-x mt-auto")}
         style={{
           backgroundImage: `url("${lineSvg}")`,
         }}

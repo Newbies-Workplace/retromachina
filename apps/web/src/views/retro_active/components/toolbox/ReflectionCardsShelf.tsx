@@ -213,6 +213,7 @@ const ReflectionCard: React.FC<{
   const { play: playSound } = useAudio();
 
   const [isDragging, setIsDragging] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (!enableDrag) {

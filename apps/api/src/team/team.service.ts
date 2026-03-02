@@ -246,6 +246,20 @@ export class TeamService {
     });
   }
 
+  async editReflectionCard(
+    reflectionCardId: string,
+    request: ReflectionCardRequest,
+  ) {
+    await this.prismaService.reflectionCard.update({
+      where: {
+        id: reflectionCardId,
+      },
+      data: {
+        text: request.text,
+      },
+    });
+  }
+
   async deleteReflectionCard(reflectionCardId: string) {
     await this.prismaService.reflectionCard.delete({
       where: {

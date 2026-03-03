@@ -1,5 +1,9 @@
-import React from "react";
-import { Card } from "@/components/molecules/card/Card";
+import {
+  Card,
+  CardActions,
+  CardAuthor,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import { Column } from "@/components/molecules/column/Column";
 import Counter from "@/components/molecules/counter/Counter";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
@@ -27,7 +31,6 @@ export const VoteView = () => {
           <Column
             key={column.id}
             columnData={{
-              color: column.color,
               name: column.name,
               description: column.description,
             }}
@@ -60,31 +63,30 @@ export const VoteView = () => {
                         <Card
                           id={card.id}
                           key={card.id}
-                          text={card.text}
                           style={{ marginTop: index === 0 ? 0 : -80 }}
-                          author={{
-                            avatar: author?.avatar_link || "",
-                            name: author?.nick || "",
-                            id: card.authorId,
-                          }}
-                          teamUsers={teamUsers.map((user) => ({
-                            id: user.id,
-                            name: user.nick,
-                            avatar: user.avatar_link,
-                          }))}
                         >
+                          <CardContent text={card.text} />
+                          <CardAuthor
+                            author={{
+                              avatar: author?.avatar_link || "",
+                              name: author?.nick || "",
+                              id: card.authorId,
+                            }}
+                          />
                           {groupCards.length === index + 1 && (
-                            <Counter
-                              className={"h-full"}
-                              canIncrement={votesLeft > 0}
-                              count={userVotes}
-                              onIncrement={() => {
-                                addVote(card.id);
-                              }}
-                              onDecrement={() => {
-                                removeVote(card.id);
-                              }}
-                            />
+                            <CardActions>
+                              <Counter
+                                className={"h-full"}
+                                canIncrement={votesLeft > 0}
+                                count={userVotes}
+                                onIncrement={() => {
+                                  addVote(card.id);
+                                }}
+                                onDecrement={() => {
+                                  removeVote(card.id);
+                                }}
+                              />
+                            </CardActions>
                           )}
                         </Card>
                       );

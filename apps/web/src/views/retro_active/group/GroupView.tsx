@@ -1,5 +1,9 @@
 import React from "react";
-import { Card } from "@/components/molecules/card/Card";
+import {
+  Card,
+  CardAuthor,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import { Column } from "@/components/molecules/column/Column";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
@@ -37,7 +41,6 @@ export const GroupView: React.FC = () => {
           <Column
             key={column.id}
             columnData={{
-              color: column.color,
               name: column.name,
               description: column.description,
             }}
@@ -98,20 +101,16 @@ export const GroupView: React.FC = () => {
                             columnId={column.id}
                             className={cn(index === 0 ? "mt-0" : "mt-[-80px]")}
                           >
-                            <Card
-                              id={card.id}
-                              text={card.text}
-                              author={{
-                                avatar: user?.avatar_link || "",
-                                name: user?.nick || "",
-                                id: card.authorId,
-                              }}
-                              teamUsers={teamUsers.map((user) => ({
-                                id: user.id,
-                                name: user.nick,
-                                avatar: user.avatar_link,
-                              }))}
-                            />
+                            <Card id={card.id}>
+                              <CardContent text={card.text} />
+                              <CardAuthor
+                                author={{
+                                  avatar: user?.avatar_link || "",
+                                  name: user?.nick || "",
+                                  id: card.authorId,
+                                }}
+                              />
+                            </Card>
                           </DraggableCard>
                         );
                       })}

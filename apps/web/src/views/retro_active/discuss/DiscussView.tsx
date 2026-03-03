@@ -1,10 +1,15 @@
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
 import { Input } from "@/components/atoms/input/Input";
-import { Card } from "@/components/molecules/card/Card";
+import {
+  Card,
+  CardActions,
+  CardAuthor,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -97,22 +102,21 @@ export const DiscussView = () => {
                       id={card.id}
                       key={card.id}
                       style={{ marginTop: index === 0 ? 0 : -80 }}
-                      text={card.text}
-                      author={{
-                        avatar: author?.avatar_link || "",
-                        name: author?.nick || "",
-                        id: card.authorId,
-                      }}
-                      teamUsers={teamUsers.map((user) => ({
-                        id: user.id,
-                        name: user.nick,
-                        avatar: user.avatar_link,
-                      }))}
                     >
+                      <CardContent text={card.text} />
+                      <CardAuthor
+                        author={{
+                          avatar: author?.avatar_link || "",
+                          name: author?.nick || "",
+                          id: card.authorId,
+                        }}
+                      />
                       {group.cards.length === index + 1 && (
-                        <div className={"flex justify-center grow w-8"}>
-                          <span className={"self-center"}>{group.votes}</span>
-                        </div>
+                        <CardActions>
+                          <div className={"flex justify-center grow w-8"}>
+                            <span className={"self-center"}>{group.votes}</span>
+                          </div>
+                        </CardActions>
                       )}
                     </Card>
                   );
@@ -184,37 +188,47 @@ export const DiscussView = () => {
               );
 
               return (
-                <Card
-                  id={actionPoint.id}
-                  key={actionPoint.id}
-                  editableUser
-                  editableText
-                  onUpdate={(ownerId, text) => {
-                    updateTask(actionPoint.id, ownerId, text);
-                  }}
-                  teamUsers={teamUsers.map((user) => ({
-                    id: user.id,
-                    name: user.nick,
-                    avatar: user.avatar_link,
-                  }))}
-                  text={actionPoint.description}
-                  author={
-                    author
-                      ? {
-                          avatar: author.avatar_link,
-                          name: author.nick,
-                          id: author.id,
-                        }
-                      : undefined
-                  }
-                >
-                  <Button
-                    size={"icon"}
-                    variant={"destructive"}
-                    onClick={() => deleteTask(actionPoint.id)}
-                  >
-                    <TrashIcon className={"size-4"} />
-                  </Button>
+                <Card id={actionPoint.id} key={actionPoint.id}>
+                  <CardContent
+                    text={actionPoint.description}
+                    editable
+                    onSave={(text) => {
+                      updateTask(actionPoint.id, author?.id ?? null, text);
+                    }}
+                  />
+                  <CardAuthor
+                    author={
+                      author
+                        ? {
+                            avatar: author.avatar_link,
+                            name: author.nick,
+                            id: author.id,
+                          }
+                        : undefined
+                    }
+                    teamUsers={teamUsers.map((user) => ({
+                      id: user.id,
+                      name: user.nick,
+                      avatar: user.avatar_link,
+                    }))}
+                    editable
+                    onUserChange={(ownerId) => {
+                      updateTask(
+                        actionPoint.id,
+                        ownerId,
+                        actionPoint.description,
+                      );
+                    }}
+                  />
+                  <CardActions>
+                    <Button
+                      size={"icon"}
+                      variant={"destructive"}
+                      onClick={() => deleteTask(actionPoint.id)}
+                    >
+                      <TrashIcon className={"size-4"} />
+                    </Button>
+                  </CardActions>
                 </Card>
               );
             })}

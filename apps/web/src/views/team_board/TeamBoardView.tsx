@@ -7,7 +7,12 @@ import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/atoms/button/Button";
 import { Switch } from "@/components/atoms/switch/Switch";
-import { Card } from "@/components/molecules/card/Card";
+import {
+  Card,
+  CardActions,
+  CardAuthor,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
@@ -131,27 +136,36 @@ export const TeamBoardView: React.FC = () => {
                     return (
                       <Card
                         id={creatingTask.id}
-                        text={creatingTask.text}
-                        author={
-                          author && creatingTask.ownerId
-                            ? {
-                                avatar: author.avatar_link,
-                                name: author.nick,
-                                id: creatingTask.ownerId,
-                              }
-                            : undefined
-                        }
-                        teamUsers={[]}
-                        editableText
-                        autoFocus
                         onEditDismiss={() => {
                           setCreatingTask(undefined);
                         }}
-                        onUpdate={(ownerId, text) => {
-                          createTask(creatingTask.id, text, ownerId, column.id);
-                          setCreatingTask(undefined);
-                        }}
-                      />
+                      >
+                        <CardContent
+                          text={creatingTask.text}
+                          editable
+                          autoFocus
+                          onSave={(text) => {
+                            createTask(
+                              creatingTask.id,
+                              text,
+                              author?.id ?? null,
+                              column.id,
+                            );
+                            setCreatingTask(undefined);
+                          }}
+                        />
+                        <CardAuthor
+                          author={
+                            author && creatingTask.ownerId
+                              ? {
+                                  avatar: author.avatar_link,
+                                  name: author.nick,
+                                  id: creatingTask.ownerId,
+                                }
+                              : undefined
+                          }
+                        />
+                      </Card>
                     );
                   })()}
 
@@ -189,81 +203,88 @@ export const TeamBoardView: React.FC = () => {
                             : ""
                         }
                       >
-                        <Card
-                          id={task.id}
-                          text={task.text}
-                          author={
-                            author && task.ownerId
-                              ? {
-                                  avatar: author.avatar_link,
-                                  name: author.nick,
-                                  id: task.ownerId,
-                                }
-                              : undefined
-                          }
-                          teamUsers={teamUsers.map((user) => ({
-                            id: user.id,
-                            name: user.nick,
-                            avatar: user.avatar_link,
-                          }))}
-                          editableUser
-                          editableText
-                          onUpdate={(ownerId, text) =>
-                            updateTask(task.id, ownerId, text)
-                          }
-                        >
-                          <Button
-                            size={"icon"}
-                            variant={"destructive"}
-                            onClick={() => deleteTask(task.id)}
-                          >
-                            <TrashIcon className={"size-4"} />
-                          </Button>
+                        <Card id={task.id}>
+                          <CardContent
+                            text={task.text}
+                            editable
+                            onSave={(text: string) =>
+                              updateTask(task.id, author?.id ?? null, text)
+                            }
+                          />
+                          <CardAuthor
+                            author={
+                              author && task.ownerId
+                                ? {
+                                    avatar: author.avatar_link,
+                                    name: author.nick,
+                                    id: task.ownerId,
+                                  }
+                                : undefined
+                            }
+                            teamUsers={teamUsers.map((user) => ({
+                              id: user.id,
+                              name: user.nick,
+                              avatar: user.avatar_link,
+                            }))}
+                            editable
+                            onUserChange={(ownerId: string | null) =>
+                              updateTask(task.id, ownerId, task.text)
+                            }
+                          />
+                          <CardActions>
+                            <Button
+                              size={"icon"}
+                              variant={"destructive"}
+                              onClick={() => deleteTask(task.id)}
+                            >
+                              <TrashIcon className={"size-4"} />
+                            </Button>
 
-                          <div className={"mt-auto self-end h-6"}>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <InfoIcon
-                                  className={
-                                    "size-6 p-1 rounded-full hover:bg-gray-500"
-                                  }
-                                />
-                              </TooltipTrigger>
-                              <TooltipContent
-                                side={"bottom"}
-                                className={"flex flex-col gap-2"}
-                              >
-                                <div
-                                  className={
-                                    "flex flex-row justify-between gap-1"
-                                  }
+                            <div className={"mt-auto self-end h-6"}>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <InfoIcon
+                                    className={
+                                      "size-6 p-1 rounded-full hover:bg-gray-500"
+                                    }
+                                  />
+                                </TooltipTrigger>
+                                <TooltipContent
+                                  side={"bottom"}
+                                  className={"flex flex-col gap-2"}
                                 >
-                                  <span className={"text-xs font-bold"}>
-                                    Stworzono:
-                                  </span>
-                                  <span className={"text-xs"}>
-                                    {dayjs(task.createdAt).format(
-                                      "DD.MM.YYYY HH:mm",
-                                    )}
-                                  </span>
-                                </div>
-                                <div
-                                  className={
-                                    "flex flex-row justify-between gap-1"
-                                  }
-                                >
-                                  <span className={"text-xs font-bold"}>
-                                    Zaktualizowano:
-                                  </span>
-                                  <span className={"text-xs"}>
-                                    {dayjs(task.updatedAt).format(
-                                      "DD.MM.YYYY HH:mm",
-                                    )}
-                                  </span>
-                                </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </div>
+                                  <div
+                                    className={
+                                      "flex flex-row justify-between gap-1"
+                                    }
+                                  >
+                                    <span className={"text-xs font-bold"}>
+                                      Stworzono:
+                                    </span>
+                                    <span className={"text-xs"}>
+                                      {dayjs(task.createdAt).format(
+                                        "DD.MM.YYYY HH:mm",
+                                      )}
+                                    </span>
+                                  </div>
+                                  <div
+                                    className={
+                                      "flex flex-row justify-between gap-1"
+                                    }
+                                  >
+                                    <span className={"text-xs font-bold"}>
+                                      Zaktualizowano:
+                                    </span>
+                                    <span className={"text-xs"}>
+                                      {dayjs(task.updatedAt).format(
+                                        "DD.MM.YYYY HH:mm",
+                                      )}
+                                    </span>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </CardActions>
                         </Card>
                       </DraggableCard>
                     );

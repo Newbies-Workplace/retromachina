@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card } from "@/components/molecules/card/Card";
+import {
+  Card,
+  CardActions,
+  CardAuthor,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import Counter from "@/components/molecules/counter/Counter";
 
 const meta = {
@@ -11,65 +16,91 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
-    id: "1",
-    text: "Test",
-    author: {
-      id: "aaa",
-      avatar: "assets/sample.png",
-      name: "John Doe",
-    },
-    teamUsers: [],
-  },
+  render: () => (
+    <Card id="1">
+      <CardContent text="Test" />
+      <CardAuthor
+        author={{
+          id: "aaa",
+          avatar: "assets/sample.png",
+          name: "John Doe",
+        }}
+      />
+    </Card>
+  ),
 };
+
 export const WithEditableAuthor: Story = {
-  args: {
-    ...Default.args,
-    text: "Test",
-    editableUser: true,
-    teamUsers: [
-      {
-        id: "bbb",
-        avatar: "assets/sample.png",
-        name: "John Doe 2",
-      },
-      {
-        id: "cc",
-        avatar: "assets/sample.png",
-        name: "John Doe 3",
-      },
-    ],
-  },
+  render: () => (
+    <Card id="1">
+      <CardContent text="Test" />
+      <CardAuthor
+        author={{
+          id: "aaa",
+          avatar: "assets/sample.png",
+          name: "John Doe",
+        }}
+        teamUsers={[
+          {
+            id: "bbb",
+            avatar: "assets/sample.png",
+            name: "John Doe 2",
+          },
+          {
+            id: "cc",
+            avatar: "assets/sample.png",
+            name: "John Doe 3",
+          },
+        ]}
+        editable
+      />
+    </Card>
+  ),
 };
 
 export const WithoutAuthor: Story = {
-  args: {
-    ...Default.args,
-    author: undefined,
-    text: "Test",
-    teamUsers: [],
-  },
+  render: () => (
+    <Card id="1">
+      <CardContent text="Test" />
+      <CardAuthor author={null} />
+    </Card>
+  ),
 };
 
 export const WithEditableText: Story = {
-  args: {
-    ...Default.args,
-    text: "click me",
-    editableText: true,
-  },
+  render: () => (
+    <Card id="1">
+      <CardContent text="click me" editable />
+      <CardAuthor
+        author={{
+          id: "aaa",
+          avatar: "assets/sample.png",
+          name: "John Doe",
+        }}
+      />
+    </Card>
+  ),
 };
 
 export const WithCounter: Story = {
-  args: {
-    ...Default.args,
-    text: "count count",
-    children: (
-      <Counter
-        canIncrement={true}
-        count={12}
-        onIncrement={() => {}}
-        onDecrement={() => {}}
+  render: () => (
+    <Card id="1">
+      <CardContent text="count count" />
+      <CardAuthor
+        author={{
+          id: "aaa",
+          avatar: "assets/sample.png",
+          name: "John Doe",
+        }}
       />
-    ),
-  },
+      <CardActions>
+        <Counter
+          canIncrement={true}
+          count={12}
+          onIncrement={() => {}}
+          onDecrement={() => {}}
+        />
+      </CardActions>
+    </Card>
+  ),
 };

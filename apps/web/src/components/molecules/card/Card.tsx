@@ -107,8 +107,9 @@ export const Card: React.FC<CardProps> = (props) => {
   );
 };
 
+// Re-export sub-components for convenient imports
 export { CardActions } from "./CardActions";
 export type { CardUser } from "./CardAuthor";
 export { CardAuthor } from "./CardAuthor";
-// Re-export sub-components for convenient imports
 export { CardContent } from "./CardContent";
+export { CardMetadataTooltip } from "./CardMetadataTooltip";

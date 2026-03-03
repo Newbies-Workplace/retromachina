@@ -5,5 +5,7 @@ export interface CardActionsProps {
 }
 
 export const CardActions: React.FC<CardActionsProps> = ({ children }) => {
-  return <div className={"flex flex-col select-none gap-2"}>{children}</div>;
+  return (
+    <div className={"flex flex-col select-none gap-2 h-full"}>{children}</div>
+  );
 };

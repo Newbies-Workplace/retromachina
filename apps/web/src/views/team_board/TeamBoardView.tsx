@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { InfoIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { PlusIcon, TrashIcon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -12,15 +12,11 @@ import {
   CardActions,
   CardAuthor,
   CardContent,
+  CardMetadataTooltip,
 } from "@/components/molecules/card/Card";
 import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/molecules/tooltip/Tooltip";
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -240,50 +236,10 @@ export const TeamBoardView: React.FC = () => {
                               <TrashIcon className={"size-4"} />
                             </Button>
 
-                            <div className={"mt-auto self-end h-6"}>
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <InfoIcon
-                                    className={
-                                      "size-6 p-1 rounded-full hover:bg-gray-500"
-                                    }
-                                  />
-                                </TooltipTrigger>
-                                <TooltipContent
-                                  side={"bottom"}
-                                  className={"flex flex-col gap-2"}
-                                >
-                                  <div
-                                    className={
-                                      "flex flex-row justify-between gap-1"
-                                    }
-                                  >
-                                    <span className={"text-xs font-bold"}>
-                                      Stworzono:
-                                    </span>
-                                    <span className={"text-xs"}>
-                                      {dayjs(task.createdAt).format(
-                                        "DD.MM.YYYY HH:mm",
-                                      )}
-                                    </span>
-                                  </div>
-                                  <div
-                                    className={
-                                      "flex flex-row justify-between gap-1"
-                                    }
-                                  >
-                                    <span className={"text-xs font-bold"}>
-                                      Zaktualizowano:
-                                    </span>
-                                    <span className={"text-xs"}>
-                                      {dayjs(task.updatedAt).format(
-                                        "DD.MM.YYYY HH:mm",
-                                      )}
-                                    </span>
-                                  </div>
-                                </TooltipContent>
-                              </Tooltip>
-                            </div>
+                            <CardMetadataTooltip
+                              createdAt={task.createdAt}
+                              updatedAt={task.updatedAt}
+                            />
                           </CardActions>
                         </Card>
                       </DraggableCard>

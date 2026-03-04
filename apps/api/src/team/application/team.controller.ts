@@ -296,7 +296,12 @@ export class TeamController {
 
     ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
 
-    await this.teamService.editReflectionCard(reflectionCardId, request);
+    const editedCard = await this.teamService.editReflectionCard(
+      reflectionCardId,
+      request,
+    );
+
+    return toReflectionCardResponse(editedCard);
   }
 
   @UseGuards(JwtGuard)

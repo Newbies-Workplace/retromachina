@@ -250,7 +250,7 @@ export class TeamService {
     reflectionCardId: string,
     request: ReflectionCardRequest,
   ) {
-    await this.prismaService.reflectionCard.update({
+    return await this.prismaService.reflectionCard.update({
       where: {
         id: reflectionCardId,
       },

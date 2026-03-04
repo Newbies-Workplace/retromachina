@@ -6,6 +6,11 @@ interface ReflectionCardState {
   reflectionCards: ReflectionCardResponse[];
   fetchReflectionCards: (teamId: string) => Promise<void>;
   addReflectionCard: (teamId: string, text: string) => Promise<void>;
+  editReflectionCard: (
+    reflectionCardId: string,
+    teamId: string,
+    text: string,
+  ) => Promise<void>;
   deleteReflectionCard: (
     teamId: string,
     reflectionCardId: string,
@@ -24,6 +29,19 @@ export const useReflectionCardStore = create<ReflectionCardState>((set) => ({
     set((state) => ({
       reflectionCards: [card, ...state.reflectionCards],
     }));
+  },
+  editReflectionCard: async (reflectionCardId, teamId, text) => {
+    await ReflectionCardService.editReflectionCard(
+      reflectionCardId,
+      teamId,
+      text,
+    ).then((updatedCard) => {
+      set((state) => ({
+        reflectionCards: state.reflectionCards.map((card) =>
+          card.id === reflectionCardId ? updatedCard : card,
+        ),
+      }));
+    });
   },
   deleteReflectionCard: async (teamId, reflectionCardId) => {
     await ReflectionCardService.deleteReflectionCard(

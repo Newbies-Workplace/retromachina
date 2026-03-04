@@ -114,11 +114,13 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
 
           {teamUsers && (
             <Dialog>
-              <DialogTrigger asChild>
-                <Button data-testid="open-slot-machine" size="icon">
-                  <SlotMachineIcon className={"size-4"} />
-                </Button>
-              </DialogTrigger>
+              <DialogTrigger
+                render={
+                  <Button data-testid="open-slot-machine" size="icon">
+                    <SlotMachineIcon className={"size-4"} />
+                  </Button>
+                }
+              />
               <SlotMachineDialogContent teamUsers={teamUsers ?? []} />
             </Dialog>
           )}
@@ -302,9 +304,9 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
       </div>
 
       <DialogFooter>
-        <DialogClose asChild>
-          <Button variant={"destructive"}>Zamknij</Button>
-        </DialogClose>
+        <DialogClose
+          render={<Button variant={"destructive"}>Zamknij</Button>}
+        />
       </DialogFooter>
     </DialogContent>
   );

@@ -19,7 +19,7 @@ export const PreferencesDialogContent = () => {
   const [tempVolumeLevel, setTempVolumeLevel] = useState(volumeLevel);
 
   return (
-    <DialogContent showCloseButton={false}>
+    <DialogContent showCloseButton={false} onClick={(e) => e.stopPropagation()}>
       <DialogHeader>
         <DialogTitle>Ustawienia</DialogTitle>
       </DialogHeader>

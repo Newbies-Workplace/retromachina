@@ -9,6 +9,8 @@ import React from "react";
 import { Link, useNavigate } from "react-router";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
+import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useUser } from "@/context/user/UserContext.hook";
 
 export const Menu = () => {
@@ -64,15 +66,22 @@ export const Menu = () => {
       </div>
 
       <div className={"flex flex-col items-center gap-2 w-full px-2"}>
-        <Link
-          className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
-          }
-          to={"/preferences"}
-        >
-          <SettingsIcon className={"size-4"} />
-          Ustawienia
-        </Link>
+        <Dialog>
+          <DialogTrigger
+            render={
+              <div
+                className={
+                  "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+                }
+              >
+                <SettingsIcon className={"size-4"} />
+                Ustawienia
+              </div>
+            }
+          />
+
+          <PreferencesDialogContent />
+        </Dialog>
 
         <Link
           className={

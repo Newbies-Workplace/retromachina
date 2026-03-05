@@ -35,7 +35,11 @@ import {
   SlotMachineDrawnEvent,
   TimerChangedEvent,
 } from "shared/model/retro/retro.events";
-import { Card, RetroColumn, User as SocketUser } from "shared/model/retro/retroRoom.interface";
+import {
+  Card,
+  RetroColumn,
+  User as SocketUser,
+} from "shared/model/retro/retroRoom.interface";
 import { Server, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
 import { JWTUser } from "../../auth/jwt/JWTUser";
@@ -580,7 +584,6 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   private hasAdminPrivileges(user: SocketUser): boolean {
-
     return user.role === "ADMIN" || user.role === "OWNER";
   }
 }

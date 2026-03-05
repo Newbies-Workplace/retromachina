@@ -147,6 +147,7 @@ export const ReflectionCardsShelf: React.FC<{
                 <Card
                   id="new-reflection-card"
                   onEditDismiss={onDeleteNewReflectionCardClick}
+                  positioningBackgroundEnabled={false}
                 >
                   <CardContent
                     text={newReflectionCardText}
@@ -237,7 +238,7 @@ const DraggableReflectionCard: React.FC<{
         isDragging ? "opacity-25" : "opacity-100",
       )}
     >
-      <Card id={id}>
+      <Card id={id} positioningBackgroundEnabled={false}>
         <CardContent text={text} editable onSave={onEdit} />
         <CardActions>
           <Button onClick={onDeleteClick} size={"icon"} variant={"destructive"}>

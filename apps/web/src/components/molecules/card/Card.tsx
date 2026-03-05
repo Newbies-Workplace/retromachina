@@ -15,6 +15,7 @@ export interface CardProps {
   className?: string;
   children: React.ReactNode;
   onEditDismiss?: () => void;
+  positioningBackgroundEnabled?: boolean;
 }
 
 const CardInner: React.FC<CardProps> = ({
@@ -23,6 +24,7 @@ const CardInner: React.FC<CardProps> = ({
   className,
   children,
   onEditDismiss,
+  positioningBackgroundEnabled = true,
 }) => {
   const {
     isEditingText,
@@ -65,7 +67,9 @@ const CardInner: React.FC<CardProps> = ({
   return (
     <PositioningBackdrop
       onDismiss={closeEditingMode}
-      visible={isEditingText || isUsersPickerOpen}
+      visible={
+        positioningBackgroundEnabled && (isEditingText || isUsersPickerOpen)
+      }
     >
       <motion.div
         layout

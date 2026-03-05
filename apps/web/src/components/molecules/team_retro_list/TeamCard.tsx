@@ -228,7 +228,7 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
   };
 
   return (
-    <DialogContent showCloseButton={false}>
+    <DialogContent showCloseButton={false} className={"sm:max-w-150"}>
       <DialogHeader>
         <DialogTitle>Losowanie</DialogTitle>
         <DialogDescription>
@@ -237,7 +237,7 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
       </DialogHeader>
 
       <SlotMachine
-        className={"mx-auto min-w-[400px]"}
+        className={"mx-auto min-w-100"}
         ref={slotMachineRef}
         onMachineDrawn={() => {
           if (teamUsersInPool.length === 0) return;
@@ -251,7 +251,7 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
 
       <div
         className={
-          "p-2 bg-secondary-500/30 rounded h-16 font-semiboldflex flex flex-row gap-2 justify-center items-center"
+          "p-2 bg-secondary-500/30 rounded h-16 font-semibold flex flex-row gap-2 justify-center items-center"
         }
       >
         {delayedHighlightedUser && (

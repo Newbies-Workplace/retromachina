@@ -18,6 +18,23 @@ const addReflectionCard = async (teamId: string, text: string) => {
     .then((response) => response.data);
 };
 
+const editReflectionCard = async (
+  reflectionCardId: string,
+  teamId: string,
+  text: string,
+) => {
+  const request: ReflectionCardRequest = {
+    text,
+  };
+
+  return axiosInstance
+    .put<ReflectionCardResponse>(
+      `teams/${teamId}/reflection_cards/${reflectionCardId}`,
+      request,
+    )
+    .then((response) => response.data);
+};
+
 const deleteReflectionCard = async (
   teamId: string,
   reflectionCardId: string,
@@ -30,5 +47,6 @@ const deleteReflectionCard = async (
 export const ReflectionCardService = {
   getReflectionCards,
   addReflectionCard,
+  editReflectionCard,
   deleteReflectionCard,
 };

@@ -3,7 +3,7 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { FilePlusIcon, SaveIcon, TrashIcon } from "lucide-react";
+import { FilePlusIcon, TrashIcon } from "lucide-react";
 import { motion } from "motion/react";
 import React, { createRef, useEffect, useState } from "react";
 import { Portal } from "react-portal";
@@ -11,6 +11,11 @@ import invariant from "tiny-invariant";
 import cardDropSound from "@/assets/sounds/card-drop.wav";
 import cardPickSound from "@/assets/sounds/card-pick.wav";
 import { Button } from "@/components/atoms/button/Button";
+import {
+  Card,
+  CardActions,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import {
   getReflectionCard,
   isCard,
@@ -27,7 +32,6 @@ export const ReflectionCardsShelf: React.FC<{
   onDismiss: () => void;
 }> = ({ teamId, onCardDrop, enableDrag = false, onDismiss }) => {
   const drawerRef = createRef<HTMLDivElement>();
-  const newCardInputRef = createRef<HTMLTextAreaElement>();
 
   const [isCreatingNewReflectionCard, setIsCreatingNewReflectionCard] =
     useState(false);
@@ -35,8 +39,12 @@ export const ReflectionCardsShelf: React.FC<{
 
   const [isOverDropDiv, setIsOverDropDiv] = useState(false);
 
-  const { deleteReflectionCard, addReflectionCard, reflectionCards } =
-    useReflectionCardStore();
+  const {
+    deleteReflectionCard,
+    editReflectionCard,
+    addReflectionCard,
+    reflectionCards,
+  } = useReflectionCardStore();
 
   useEffect(() => {
     const drawerElement = drawerRef.current;
@@ -63,12 +71,6 @@ export const ReflectionCardsShelf: React.FC<{
     closeDrawer();
   });
 
-  useEffect(() => {
-    if (isCreatingNewReflectionCard) {
-      newCardInputRef.current?.focus();
-    }
-  }, [isCreatingNewReflectionCard]);
-
   const closeDrawer = () => {
     onDismiss();
     setIsOverDropDiv(false);
@@ -78,21 +80,24 @@ export const ReflectionCardsShelf: React.FC<{
     deleteReflectionCard(teamId, reflectionCardId).then();
   };
 
+  const onReflectionCardEdit = (reflectionCardId: string, newText: string) => {
+    editReflectionCard(reflectionCardId, teamId, newText).then();
+  };
+
   const onNewReflectionCardClick = () => {
     setIsCreatingNewReflectionCard(true);
   };
 
-  const onSaveNewReflectionCardClick = () => {
-    const trimmedText = newReflectionCardText.trim();
+  const onSaveNewReflectionCardClick = (text: string) => {
+    const trimmedText = text.trim();
 
     if (trimmedText === "") {
       return;
     }
 
     setIsCreatingNewReflectionCard(false);
-    addReflectionCard(teamId, trimmedText).then(() => {
-      setNewReflectionCardText("");
-    });
+    setNewReflectionCardText("");
+    addReflectionCard(teamId, trimmedText);
   };
 
   const onDeleteNewReflectionCardClick = () => {
@@ -104,7 +109,7 @@ export const ReflectionCardsShelf: React.FC<{
     <Portal>
       <div
         ref={drawerRef}
-        className={cn("absolute bottom-0 h-48 w-full z-10 overflow-hidden")}
+        className={cn("absolute bottom-0 min-h-50 w-full z-10 overflow-hidden")}
       >
         <motion.div
           initial={{ bottom: -150 }}
@@ -137,40 +142,21 @@ export const ReflectionCardsShelf: React.FC<{
           )}
 
           {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
-            <div
-              className={cn(
-                "flex flex-row gap-2 h-full w-full scrollbar rounded",
-              )}
-            >
+            <div className={cn("flex flex-row gap-2 h-full w-full rounded")}>
               {isCreatingNewReflectionCard && (
-                <div
-                  className={
-                    "flex flex-row gap-2 min-w-52 w-52 h-full p-2 bg-gray-500 rounded-md border border-black"
-                  }
+                <Card
+                  id="new-reflection-card"
+                  onEditDismiss={onDeleteNewReflectionCardClick}
+                  positioningBackgroundEnabled={false}
                 >
-                  <textarea
-                    ref={newCardInputRef}
-                    className={
-                      "w-full h-full bg-gray-500 scrollbar active:outline-none focus:outline-none"
-                    }
-                    value={newReflectionCardText}
-                    onChange={(e) => setNewReflectionCardText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        onSaveNewReflectionCardClick();
-                      }
-                    }}
+                  <CardContent
+                    text={newReflectionCardText}
+                    editable
+                    autoFocus
+                    onSave={onSaveNewReflectionCardClick}
+                    onEditDismiss={onDeleteNewReflectionCardClick}
                   />
-
-                  <div className={"flex flex-col gap-2"}>
-                    <Button
-                      onClick={onSaveNewReflectionCardClick}
-                      size={"icon"}
-                    >
-                      <SaveIcon className={"size-4"} />
-                    </Button>
-
+                  <CardActions>
                     <Button
                       onClick={onDeleteNewReflectionCardClick}
                       size={"icon"}
@@ -178,17 +164,20 @@ export const ReflectionCardsShelf: React.FC<{
                     >
                       <TrashIcon className={"size-4"} />
                     </Button>
-                  </div>
-                </div>
+                  </CardActions>
+                </Card>
               )}
 
               {reflectionCards.map((card) => {
                 return (
-                  <ReflectionCard
+                  <DraggableReflectionCard
                     key={card.id}
                     id={card.id}
                     text={card.text}
                     enableDrag={enableDrag}
+                    onEdit={(newText) => {
+                      onReflectionCardEdit(card.id, newText);
+                    }}
                     onDeleteClick={() => {
                       onReflectionCardDeleteClick(card.id);
                     }}
@@ -203,12 +192,13 @@ export const ReflectionCardsShelf: React.FC<{
   );
 };
 
-const ReflectionCard: React.FC<{
+const DraggableReflectionCard: React.FC<{
   id: string;
   text: string;
+  onEdit: (newText: string) => void;
   onDeleteClick: () => void;
   enableDrag?: boolean;
-}> = ({ id, text, onDeleteClick, enableDrag = false }) => {
+}> = ({ id, text, onEdit, onDeleteClick, enableDrag = false }) => {
   const cardRef = createRef<HTMLDivElement>();
   const { play: playSound } = useAudio();
 
@@ -241,25 +231,21 @@ const ReflectionCard: React.FC<{
   return (
     <motion.div
       layout
-      layoutId={id}
+      layoutId={`${id}-draggable`}
       ref={cardRef}
       className={cn(
-        "flex justify-center items-start gap-1 h-full w-52 min-w-52 p-2 bg-white rounded-md border border-black",
         enableDrag && "cursor-grab",
         isDragging ? "opacity-25" : "opacity-100",
       )}
     >
-      <span
-        className={"word-break whitespace-pre-line w-full h-full scrollbar"}
-      >
-        {text}
-      </span>
-
-      <div>
-        <Button onClick={onDeleteClick} size={"icon"} variant={"destructive"}>
-          <TrashIcon className={"size-4"} />
-        </Button>
-      </div>
+      <Card id={id} positioningBackgroundEnabled={false}>
+        <CardContent text={text} editable onSave={onEdit} />
+        <CardActions>
+          <Button onClick={onDeleteClick} size={"icon"} variant={"destructive"}>
+            <TrashIcon className={"size-4"} />
+          </Button>
+        </CardActions>
+      </Card>
     </motion.div>
   );
 };

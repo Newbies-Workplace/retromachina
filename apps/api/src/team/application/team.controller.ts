@@ -280,6 +280,31 @@ export class TeamController {
   }
 
   @UseGuards(JwtGuard)
+  @Put(":id/reflection_cards/:reflectionCardId")
+  async editReflectionCard(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Param("reflectionCardId") reflectionCardId: string,
+    @Body() request: ReflectionCardRequest,
+  ) {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: {
+        id: teamId,
+      },
+    });
+    const ability = this.abilityFactory.create(user);
+
+    ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
+
+    const editedCard = await this.teamService.editReflectionCard(
+      reflectionCardId,
+      request,
+    );
+
+    return toReflectionCardResponse(editedCard);
+  }
+
+  @UseGuards(JwtGuard)
   @Delete(":id/reflection_cards/:reflectionCardId")
   async removeReflectionCard(
     @User() user: JWTUser,

@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import type { TaskResponse } from "shared/model/task/task.response";
@@ -9,7 +9,11 @@ import { TaskService } from "@/api/Task.service";
 import { UserService } from "@/api/User.service";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
-import { Card } from "@/components/molecules/card/Card";
+import {
+  Card,
+  CardAuthor,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
 
@@ -103,10 +107,10 @@ export const RetroSummaryView = () => {
                           id={task.id}
                           key={task.id}
                           className={"w-[350px]"}
-                          teamUsers={[]}
-                          author={null}
-                          text={task.text}
-                        />
+                        >
+                          <CardContent text={task.text} />
+                          <CardAuthor author={null} />
+                        </Card>
                       );
                     })}
                   </div>
@@ -127,14 +131,10 @@ export const RetroSummaryView = () => {
                 >
                   {unassignedTasks.map((task) => {
                     return (
-                      <Card
-                        id={task.id}
-                        key={task.id}
-                        className={"w-[350px]"}
-                        teamUsers={[]}
-                        author={null}
-                        text={task.text}
-                      />
+                      <Card id={task.id} key={task.id} className={"w-[350px]"}>
+                        <CardContent text={task.text} />
+                        <CardAuthor author={null} />
+                      </Card>
                     );
                   })}
                 </div>

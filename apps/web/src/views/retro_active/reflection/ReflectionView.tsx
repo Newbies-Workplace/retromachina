@@ -1,7 +1,12 @@
 import { TrashIcon } from "lucide-react";
 import type React from "react";
 import { Button } from "@/components/atoms/button/Button";
-import { Card } from "@/components/molecules/card/Card";
+import {
+  Card,
+  CardActions,
+  CardAuthor,
+  CardContent,
+} from "@/components/molecules/card/Card";
 import { Column } from "@/components/molecules/column/Column";
 import { ColumnInput } from "@/components/molecules/column/ColumnInput";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
@@ -52,7 +57,6 @@ export const ReflectionView: React.FC = () => {
           <Column
             key={column.id}
             columnData={{
-              color: column.color,
               name: column.name,
               description: column.description,
             }}
@@ -89,30 +93,28 @@ export const ReflectionView: React.FC = () => {
                       columnId={column.id}
                       changeOpacityOnDrag
                     >
-                      <Card
-                        id={card.id}
-                        key={card.id}
-                        text={card.text}
-                        editableText
-                        author={{
-                          avatar: user?.avatar_link || "",
-                          name: user?.nick || "",
-                          id: card.authorId,
-                        }}
-                        teamUsers={teamUsers.map((user) => ({
-                          id: user.id,
-                          name: user.nick,
-                          avatar: user.avatar_link,
-                        }))}
-                        onUpdate={(_, text) => updateCard(card.id, text)}
-                      >
-                        <Button
-                          size={"icon"}
-                          variant={"destructive"}
-                          onClick={() => deleteCard(card.id)}
-                        >
-                          <TrashIcon className={"size-4"} />
-                        </Button>
+                      <Card id={card.id} key={card.id}>
+                        <CardContent
+                          text={card.text}
+                          editable
+                          onSave={(text) => updateCard(card.id, text)}
+                        />
+                        <CardAuthor
+                          author={{
+                            avatar: user?.avatar_link || "",
+                            name: user?.nick || "",
+                            id: card.authorId,
+                          }}
+                        />
+                        <CardActions>
+                          <Button
+                            size={"icon"}
+                            variant={"destructive"}
+                            onClick={() => deleteCard(card.id)}
+                          >
+                            <TrashIcon className={"size-4"} />
+                          </Button>
+                        </CardActions>
                       </Card>
                     </DraggableCard>
                   );

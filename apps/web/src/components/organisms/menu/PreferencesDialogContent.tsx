@@ -69,10 +69,14 @@ export const PreferencesDialogContent = () => {
 
         <Select
           value={theme}
+          itemToStringLabel={(item) => {
+            const found = items.find((i) => i.value === item);
+            return found ? found.label : "";
+          }}
           onValueChange={(theme) => setTheme(theme ?? "system")}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Theme" />
+            <SelectValue placeholder="Motyw" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>

@@ -80,7 +80,7 @@ const CardInner: React.FC<CardProps> = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border border-black/30 p-2 rounded-2xl h-full",
+          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-card border border-black/30 p-2 rounded-2xl h-full",
           className,
         )}
       >

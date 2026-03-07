@@ -13,7 +13,7 @@ export const HeroView: React.FC = () => {
   };
 
   return (
-    <div className={"flex flex-col w-full bg-secondary-500 scrollbar"}>
+    <div className={"flex flex-col w-full bg-secondary scrollbar"}>
       <div
         className={
           "flex flex-row flex-wrap gap-2 items-center w-full px-8 py-4"
@@ -22,12 +22,12 @@ export const HeroView: React.FC = () => {
         <div className={"flex flex-col"}>
           <span
             className={
-              "font-harlow-solid-italic text-5xl text-background-50 select-none"
+              "font-harlow-solid-italic text-5xl text-background select-none"
             }
           >
             Retromachina
           </span>
-          <span className={"text-background-50"}>
+          <span className={"text-background"}>
             Twoje nowe narzędzie do przeprowadzania retrospektyw
           </span>
         </div>
@@ -38,7 +38,7 @@ export const HeroView: React.FC = () => {
 
       <div
         className={
-          "flex flex-col gap-12 p-8 w-full bg-background-50 rounded-t-2xl"
+          "flex flex-col gap-12 p-8 w-full bg-background rounded-t-2xl"
         }
       >
         {/* first section */}
@@ -49,7 +49,7 @@ export const HeroView: React.FC = () => {
         >
           <div
             className={
-              "flex xl:flex-1 w-full h-[500px] bg-secondary-500 rounded-2xl p-2"
+              "flex xl:flex-1 w-full h-[500px] bg-secondary rounded-2xl p-2"
             }
           >
             <img
@@ -108,7 +108,7 @@ export const HeroView: React.FC = () => {
         >
           <div
             className={
-              "flex xl:flex-1 w-full h-[500px] bg-secondary-500 rounded-2xl p-2"
+              "flex xl:flex-1 w-full h-[500px] bg-secondary rounded-2xl p-2"
             }
           >
             <img

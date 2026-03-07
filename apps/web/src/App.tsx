@@ -7,6 +7,7 @@ import { AppRouter } from "@/views/AppRouter";
 import "react-toastify/dist/ReactToastify.css";
 import "@/App.css";
 import { TooltipProvider } from "@/components/molecules/tooltip/Tooltip";
+import { ThemeChanger } from "@/components/organisms/ThemeChanger";
 import { ConfirmProvider } from "@/context/confirm/ConfirmContext";
 
 export const App: React.FC = () => {
@@ -16,6 +17,8 @@ export const App: React.FC = () => {
     <TooltipProvider>
       <ConfirmProvider>
         <UserContextProvider>
+          <ThemeChanger />
+
           <ToastContainer
             icon={false}
             closeButton={false}

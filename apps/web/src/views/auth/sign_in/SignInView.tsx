@@ -16,7 +16,7 @@ export const SignInView: React.FC = () => {
     <AnimatedBackground className={"items-center"}>
       <div
         className={
-          "flex flex-col justify-center items-center gap-[140px] max-w-[700px] max-h-[400px] px-20 py-[120px] rounded-2xl text-background-500 bg-secondary-500"
+          "flex flex-col justify-center items-center gap-[140px] max-w-[700px] max-h-[400px] px-20 py-[120px] rounded-2xl text-card bg-secondary"
         }
       >
         <div
@@ -24,17 +24,17 @@ export const SignInView: React.FC = () => {
         >
           <span
             className={
-              "font-harlow-solid-italic text-5xl text-background-50 select-none"
+              "font-harlow-solid-italic text-5xl text-background select-none"
             }
           >
             Retromachina
           </span>
 
-          <span className={"text-md text-background-50"}>
+          <span className={"text-md text-background"}>
             powered by{" "}
             <a
               href="https://newbies.pl"
-              className={"underline text-md text-background-500"}
+              className={"underline text-md text-card"}
             >
               Newbies
             </a>
@@ -50,13 +50,10 @@ export const SignInView: React.FC = () => {
             <GoogleButton type={"light"} />
           </a>
 
-          <span className={"text-sm text-background-50"}>
+          <span className={"text-sm text-background"}>
             Korzystając z Retromachiny akceptujesz
             <br />
-            <a
-              href={"/privacy"}
-              className={"underline text-sm text-background-500"}
-            >
+            <a href={"/privacy"} className={"underline text-sm text-card"}>
               politykę prywatności
             </a>
           </span>

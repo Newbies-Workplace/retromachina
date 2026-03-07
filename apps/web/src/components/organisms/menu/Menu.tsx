@@ -26,10 +26,10 @@ export const Menu = () => {
   return (
     <div
       className={
-        "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-70 bg-background-500 rounded-xl shadow-lg "
+        "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-70 bg-card rounded-xl shadow-lg "
       }
     >
-      <div className={"flex flex-col gap-3 rounded-t-xl p-2 bg-primary-500"}>
+      <div className={"flex flex-col gap-3 rounded-t-xl p-2 bg-primary"}>
         <div className={"flex flex-row items-center gap-2"}>
           <Avatar url={user?.avatar_link} size={40} />
 
@@ -56,7 +56,7 @@ export const Menu = () => {
             <span
               key={team.id}
               className={
-                "px-1.5 h-6 text-sm rounded-full bg-background-50 text-ellipsis line-clamp-1"
+                "px-1.5 h-6 text-sm rounded-full bg-background text-ellipsis line-clamp-1"
               }
             >
               {team.name}
@@ -71,7 +71,7 @@ export const Menu = () => {
             render={
               <div
                 className={
-                  "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+                  "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
                 }
               >
                 <SettingsIcon className={"size-4"} />
@@ -85,7 +85,7 @@ export const Menu = () => {
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={"/team/create"}
         >
@@ -95,7 +95,7 @@ export const Menu = () => {
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={"http://newbies.pl"}
         >
@@ -104,7 +104,7 @@ export const Menu = () => {
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={"/hero"}
         >
@@ -113,7 +113,7 @@ export const Menu = () => {
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={
             "mailto:newbies@rst.com.pl?subject=Bug retromachina&body=Opis błędu:"

@@ -32,12 +32,12 @@ export const RetroArchiveView = () => {
       <AnimatedBackground contentClassName={"flex-1 max-w-[1000px]"}>
         <div
           className={
-            "flex flex-col max-w-[1000px] bg-background-500 rounded-lg m-8"
+            "flex flex-col max-w-[1000px] bg-background rounded-lg m-8"
           }
         >
           <div
             className={
-              "flex justify-between w-full bg-primary-500 p-4 rounded-t-lg font-bold text-2xl"
+              "flex justify-between w-full bg-primary p-4 rounded-t-lg font-bold text-2xl"
             }
           >
             Archiwum
@@ -56,7 +56,7 @@ export const RetroArchiveView = () => {
                     key={retro.id}
                     size={"2xl"}
                     className={
-                      "self-stretch min-h-[126px] flex-col bg-white border-4 border-red-500"
+                      "self-stretch min-h-[126px] flex-col bg-card border-4 border-destructive"
                     }
                     onClick={() => navigate(`/retro/${retro.id}/reflection`)}
                   >
@@ -69,7 +69,7 @@ export const RetroArchiveView = () => {
                   data-testid="retro"
                   key={retro.id}
                   size={"2xl"}
-                  className={"self-stretch min-h-[126px] flex-col bg-white"}
+                  className={"self-stretch min-h-[126px] flex-col bg-card"}
                   onClick={() => navigate(`/retro/${retro.id}/summary`)}
                 >
                   Retro {dayjs(retro.date).format("DD.MM.YYYY")}

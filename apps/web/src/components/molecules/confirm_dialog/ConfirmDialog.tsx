@@ -19,11 +19,13 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <Backdrop onDismiss={onDismiss}>
       <div
         className={
-          "flex flex-col min-w-[500px] min-h-[150px] bg-background-500 rounded-lg"
+          "flex flex-col min-w-[500px] min-h-[150px] bg-background0 rounded-lg"
         }
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={"bg-red-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}>
+        <div
+          className={"bg-destructive p-4 pb-2 rounded-t-lg font-bold text-lg"}
+        >
           {title}
         </div>
 

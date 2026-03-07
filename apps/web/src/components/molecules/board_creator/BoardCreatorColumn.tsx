@@ -49,7 +49,7 @@ type ColumnState =
 const BoardColumnShadow = ({ dragging }: { dragging: DOMRect }) => {
   return (
     <div
-      className="flex-shrink-0 rounded-2xl bg-secondary-500/50"
+      className="flex-shrink-0 rounded-2xl bg-secondary/50"
       style={{ width: dragging.width }}
     />
   );
@@ -91,7 +91,7 @@ export const BoardCreatorColumnDisplay = ({
         ref={innerRef}
         data-testid={"column-create"}
         className={cn(
-          "flex flex-col gap-2 min-w-[300px] max-w-[300px] bg-secondary-500 p-2 rounded-xl",
+          "flex flex-col gap-2 min-w-[300px] max-w-[300px] bg-secondary p-2 rounded-xl",
           state.type === "is-dragging" && "opacity-40",
           className,
         )}

@@ -57,7 +57,7 @@ export const BoardCreator: React.FC<BoardCreatorProps> = ({
     <div
       ref={ref}
       className={cn(
-        "flex items-start gap-2 scrollbar p-2 bg-secondary-500/20 rounded-2xl",
+        "flex items-start gap-2 scrollbar p-2 bg-secondary/20 rounded-2xl",
         className,
       )}
     >

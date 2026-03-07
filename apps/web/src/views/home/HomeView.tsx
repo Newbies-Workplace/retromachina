@@ -61,7 +61,7 @@ const EmptyState: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-background-500 rounded-2xl pointer-events-auto max-w-lg"
+        "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-card rounded-2xl pointer-events-auto max-w-lg"
       }
     >
       <NotFoundSvg />

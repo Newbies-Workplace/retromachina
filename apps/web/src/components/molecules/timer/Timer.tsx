@@ -61,9 +61,8 @@ export const Timer: React.FC<TimerProps> = ({
       className={cn(
         "flex items-center justify-center h-9 w-[100px] rounded-lg border-2 border-black bg-white text-xl font-bold select-none",
         variant === "expires" &&
-          "text-red-500 border-red-500 animate-timer-blink",
-        variant === "end" &&
-          "bg-red-500 text-background-50 border-background-50",
+          "text-destructive border-destructive animate-timer-blink",
+        variant === "end" && "bg-destructive text-background border-background",
         onClick && "cursor-pointer hover:opacity-70",
       )}
       onClick={onClick}

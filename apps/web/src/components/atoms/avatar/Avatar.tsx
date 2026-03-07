@@ -13,7 +13,7 @@ const avatarVariants = cva(
       variant: {
         inactive: "grayscale",
         active: "",
-        ready: "border-primary-500",
+        ready: "border-primary",
       },
     },
   },
@@ -66,7 +66,7 @@ export const Avatar: React.FC<AvatarProps> = ({
                 type: "spring",
               }}
               className={
-                "absolute w-3 h-3 bg-primary-500 rounded-[50%] bottom-1 -translate-x-1/2 left-1/2"
+                "absolute w-3 h-3 bg-primary rounded-[50%] bottom-1 -translate-x-1/2 left-1/2"
               }
             />
           </motion.div>

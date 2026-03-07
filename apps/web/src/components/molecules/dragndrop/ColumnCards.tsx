@@ -110,7 +110,7 @@ export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
       ref={ref}
       className={cn(
         "flex flex-col gap-2 pb-[90px] rounded-2xl min-h-[300px] h-full",
-        isDraggedOver && "ring-2 ring-primary-500",
+        isDraggedOver && "ring-2 ring-primary",
       )}
     >
       {children}

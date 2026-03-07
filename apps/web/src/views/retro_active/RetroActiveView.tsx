@@ -92,7 +92,7 @@ export const RetroActiveView: React.FC = () => {
               {isAdmin && (
                 <div
                   className={
-                    "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 p-2 rounded-b-lg"
+                    "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg"
                   }
                 >
                   <Button

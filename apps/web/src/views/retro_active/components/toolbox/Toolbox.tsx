@@ -146,7 +146,7 @@ export const Toolbox: React.FC = () => {
 
       <div
         className={
-          "relative flex items-center justify-center gap-2 w-full p-2 bg-background-500 rounded-t-2xl"
+          "relative flex items-center justify-center gap-2 w-full p-2 bg-card rounded-t-2xl"
         }
       >
         {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}
@@ -170,7 +170,7 @@ export const Toolbox: React.FC = () => {
             <Button
               ref={reflectionCardsShelfButtonRef}
               className={cn(
-                "relative flex flex-col justify-center items-center gap-4 size-full bg-white border-2 border-primary-500 border-dashed",
+                "relative flex flex-col justify-center items-center gap-4 size-full bg-white border-2 border-primary border-dashed",
               )}
               onClick={() => {
                 setIsReflectionCardsShelfOpen(true);
@@ -180,7 +180,7 @@ export const Toolbox: React.FC = () => {
               {hasReflectionCards && (
                 <div
                   className={
-                    "absolute size-4 rounded-full bg-red-500 w-20 h-2 bottom-1 animate-pulse "
+                    "absolute size-4 rounded-full bg-destructive w-20 h-2 bottom-1 animate-pulse "
                   }
                 />
               )}
@@ -198,7 +198,7 @@ export const Toolbox: React.FC = () => {
               {isVoteOpen && (
                 <div
                   className={
-                    "flex flex-col absolute bottom-[86px] bg-background-500 rounded-xl p-2 shadow-md"
+                    "flex flex-col absolute bottom-[86px] bg-card rounded-xl p-2 shadow-md"
                   }
                   ref={votePopover}
                 >
@@ -213,7 +213,7 @@ export const Toolbox: React.FC = () => {
 
                   <div
                     className={
-                      "flex justify-between gap-2 h-[30px] w-full pt-1 bg-background-500"
+                      "flex justify-between gap-2 h-[30px] w-full pt-1 bg-card"
                     }
                   >
                     <Button
@@ -227,7 +227,7 @@ export const Toolbox: React.FC = () => {
                     </Button>
                     <div
                       className={
-                        "flex justify-center items-center bg-background-50 h-[30px] min-w-[50px] rounded"
+                        "flex justify-center items-center bg-background h-[30px] min-w-[50px] rounded"
                       }
                     >
                       {maxVotes}
@@ -270,7 +270,7 @@ export const Toolbox: React.FC = () => {
           {isVotingVisible && (
             <div
               className={
-                "flex justify-center items-center relative w-full h-full rounded bg-background-50 text-center break-words"
+                "flex justify-center items-center relative w-full h-full rounded bg-background text-center break-words"
               }
             >
               {`${userVotes}/${maxVotes}`}

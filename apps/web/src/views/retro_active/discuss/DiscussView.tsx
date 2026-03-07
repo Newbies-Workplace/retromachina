@@ -174,7 +174,7 @@ export const DiscussView = () => {
       )}
       <div
         className={
-          "flex flex-col grow p-2 min-w-[300px] max-w-[400px] my-4 rounded-l-2xl bg-background-500"
+          "flex flex-col grow p-2 min-w-[300px] max-w-[400px] my-4 rounded-l-2xl bg-card"
         }
       >
         <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>

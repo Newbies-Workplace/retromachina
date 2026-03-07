@@ -151,7 +151,7 @@ export const CardGroup: React.FC<GroupCardContainerProps> = ({
         ref={ref}
         className={cn(
           "relative flex flex-col min-w-[100px] ",
-          closestEdge === "mid" && "ring-2 ring-primary-500 rounded-2xl",
+          closestEdge === "mid" && "ring-2 ring-primary rounded-2xl",
           groupDragged ? "opacity-25" : "opacity-100",
           isShiftPressed &&
             "[&>:not(:last-child):hover]:mb-[90px] [&>:not(:last-child)]:transition-[margin]",

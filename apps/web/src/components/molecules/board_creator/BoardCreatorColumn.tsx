@@ -12,12 +12,13 @@ import { GripVerticalIcon, TrashIcon } from "lucide-react";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
 import {
   getColumnData,
   isColumnData,
   isDraggingAColumn,
 } from "@/components/molecules/board_creator/data";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 export interface BoardCreatorColumnProps {
@@ -105,9 +106,9 @@ export const BoardCreatorColumnDisplay = ({
             data-testid={"column-name"}
             maxLength={35}
             value={name}
-            setValue={(name) => {
+            onChange={(e) => {
               onChange({
-                name: name,
+                name: e.target.value,
                 desc: desc,
               });
             }}
@@ -125,14 +126,13 @@ export const BoardCreatorColumnDisplay = ({
         </div>
 
         {withDescription && (
-          <Input
+          <Textarea
             data-testid={"column-description"}
-            multiline
             value={desc}
-            setValue={(desc) =>
+            onChange={(e) =>
               onChange({
                 name: name,
-                desc: desc,
+                desc: e.target.value,
               })
             }
             placeholder="Opis"

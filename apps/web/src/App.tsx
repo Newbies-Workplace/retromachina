@@ -6,8 +6,8 @@ import { UserContextProvider } from "@/context/user/UserContext";
 import { AppRouter } from "@/views/AppRouter";
 import "react-toastify/dist/ReactToastify.css";
 import "@/App.css";
-import { TooltipProvider } from "@/components/molecules/tooltip/Tooltip";
 import { ThemeChanger } from "@/components/organisms/ThemeChanger";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { ConfirmProvider } from "@/context/confirm/ConfirmContext";
 
 export const App: React.FC = () => {

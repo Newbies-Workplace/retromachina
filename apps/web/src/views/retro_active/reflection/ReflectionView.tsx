@@ -28,19 +28,21 @@ export const ReflectionView: React.FC = () => {
     updateCard,
     deleteCard,
   } = useRetro();
-  const { deleteReflectionCard } = useReflectionCardStore();
+  const { reflectionCards, deleteReflectionCard } = useReflectionCardStore();
 
-  const onReflectionCardDrop = (
-    reflectionCardId: string,
-    text: string,
-    columnId: string,
-  ) => {
+  const onReflectionCardDrop = (reflectionCardId: string, columnId: string) => {
     if (!teamId) {
       return;
     }
 
+    const card = reflectionCards.find((c) => c.id === reflectionCardId);
+    if (!card) {
+      console.log("Reflection card not found for id:", reflectionCardId);
+      return;
+    }
+
     deleteReflectionCard(teamId, reflectionCardId).then(() => {
-      createCard(text, columnId);
+      createCard(card.text, columnId);
     });
   };
 
@@ -73,8 +75,8 @@ export const ReflectionView: React.FC = () => {
 
             <ColumnCards
               columnId={column.id}
-              onReflectionCardDropped={({ id, text }) => {
-                onReflectionCardDrop(id, text, column.id);
+              onReflectionCardDropped={({ id }) => {
+                onReflectionCardDrop(id, column.id);
               }}
               onCardDropped={moveCard}
             >

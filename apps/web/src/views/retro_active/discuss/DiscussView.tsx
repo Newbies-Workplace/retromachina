@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
 import {
   Card,
   CardActions,
@@ -11,6 +10,7 @@ import {
   CardContent,
 } from "@/components/molecules/card/Card";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
+import { Textarea } from "@/components/ui/textarea";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { type Group, groupCards } from "@/lib/groupCards";
@@ -139,7 +139,7 @@ export const DiscussView = () => {
             return (
               <div
                 className={cn(
-                  "flex flex-col mx-4 bg-white p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
+                  "flex flex-col mx-4 bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
                   group.votes === 0 && "opacity-40",
                 )}
               >
@@ -255,11 +255,10 @@ export const DiscussView = () => {
             </AnimatePresence>
           </div>
 
-          <Input
-            multiline
+          <Textarea
             value={value}
             className={"z-10 bg-white"}
-            setValue={setValue}
+            onChange={(event) => setValue(event.target.value)}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey && !!user) {

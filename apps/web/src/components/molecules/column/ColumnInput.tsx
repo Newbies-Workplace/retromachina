@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { RetroColumn } from "shared/model/retro/retroRoom.interface";
 import { CardCount } from "@/components/atoms/card_indicator/CardIndicator";
-import { Input } from "@/components/atoms/input/Input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ColumnInputProps {
   columnData: RetroColumn;
@@ -44,11 +44,10 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
 
   return (
     <>
-      <Input
-        className={"bg-[#EAEAEA]"}
+      <Textarea
+        className={"resize-none"}
         value={value}
-        setValue={setValue}
-        multiline={true}
+        onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();

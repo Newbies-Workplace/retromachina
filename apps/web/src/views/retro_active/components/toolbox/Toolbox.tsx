@@ -40,7 +40,6 @@ export const Toolbox: React.FC = () => {
     maxVotes,
     setMaxVotesAmount,
     votes,
-    activeUsers,
     endRetro,
     slotMachineVisible,
     setSlotMachineVisible,
@@ -270,7 +269,7 @@ export const Toolbox: React.FC = () => {
           {isVotingVisible && (
             <div
               className={
-                "flex justify-center items-center relative w-full h-full rounded bg-background text-center break-words"
+                "flex justify-center items-center relative w-full h-full rounded bg-background text-center wrap-break-word"
               }
             >
               {`${userVotes}/${maxVotes}`}
@@ -289,9 +288,7 @@ export const Toolbox: React.FC = () => {
         )}
 
         {isAdmin && (
-          <div
-            className={"flex justify-between gap-2 w-24 h-16 *:w-[60px] *:p-0"}
-          >
+          <div className={"flex justify-between gap-2 w-24 h-16 *:w-15 *:p-0"}>
             <Button
               className={"size-full"}
               disabled={prevDisabled}
@@ -312,15 +309,13 @@ export const Toolbox: React.FC = () => {
 
         <div className={"flex justify-center gap-2 w-24 h-16"}>
           {isAdmin && (
-            <>
-              <Button
-                variant={"destructive"}
-                className={"size-full"}
-                onClick={onFinishRetroPress}
-              >
-                <FlagIcon className={"size-6"} />
-              </Button>
-            </>
+            <Button
+              variant={"destructive"}
+              className={"size-full"}
+              onClick={onFinishRetroPress}
+            >
+              <FlagIcon className={"size-6"} />
+            </Button>
           )}
         </div>
       </div>

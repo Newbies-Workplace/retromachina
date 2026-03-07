@@ -53,14 +53,20 @@ const CardInner: React.FC<CardProps> = ({
   let author: React.ReactNode = null;
 
   for (const child of childrenArray) {
-    if (React.isValidElement(child)) {
-      if (child.type === CardContent) {
+    if (!React.isValidElement(child)) {
+      continue;
+    }
+
+    switch (child.type) {
+      case CardContent:
         content = child;
-      } else if (child.type === CardActions) {
+        break;
+      case CardActions:
         actions = child;
-      } else if (child.type === CardAuthor) {
+        break;
+      case CardAuthor:
         author = child;
-      }
+        break;
     }
   }
 

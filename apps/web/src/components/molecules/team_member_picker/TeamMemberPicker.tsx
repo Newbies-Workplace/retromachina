@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import type { UserRole } from "shared/model/user/user.role";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -108,7 +108,7 @@ export const TeamMemberPicker: React.FC<UserPickerProps> = ({ teamId }) => {
           data-testid={"new-user-email"}
           value={email}
           placeholder="Podaj adres email..."
-          setValue={(value) => setEmail(value)}
+          onChange={(event) => setEmail(event.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               onUserAdd();
@@ -139,6 +139,12 @@ type UserProps = {
   onDelete?: () => void;
 };
 
+const USER_ROLES = [
+  { value: "OWNER", label: "Właściciel" },
+  { value: "ADMIN", label: "Administrator" },
+  { value: "USER", label: "Użytkownik" },
+];
+
 const TeamMember: React.FC<UserProps> = ({
   email,
   avatarUrl,
@@ -161,26 +167,23 @@ const TeamMember: React.FC<UserProps> = ({
         data-testid={"role-select"}
         value={role}
         onValueChange={onRoleChange}
+        itemToStringLabel={(role) =>
+          USER_ROLES.find((r) => r.value === role)?.label || role
+        }
       >
         <SelectTrigger disabled={!onRoleChange}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem
-            value={"OWNER"}
-            disabled={hasHigherRole(maxRole, "OWNER")}
-          >
-            Właściciel
-          </SelectItem>
-          <SelectItem
-            value={"ADMIN"}
-            disabled={hasHigherRole(maxRole, "ADMIN")}
-          >
-            Administrator
-          </SelectItem>
-          <SelectItem value={"USER"} disabled={hasHigherRole(maxRole, "USER")}>
-            Użytkownik
-          </SelectItem>
+          {USER_ROLES.map((role) => (
+            <SelectItem
+              key={role.value}
+              value={role.value}
+              disabled={hasHigherRole(maxRole, role.value as UserRole)}
+            >
+              {role.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 

@@ -215,18 +215,18 @@ const DraggableReflectionCard: React.FC<{
     return combine(
       draggable({
         element: element,
-        getInitialData: () => getReflectionCard({ reflectionCardId: id, text }),
+        getInitialData: () => getReflectionCard({ reflectionCardId: id }),
         onDragStart: () => {
-          playSound(cardPickSound);
+          playSound(cardPickSound).then();
           setIsDragging(true);
         },
         onDrop: () => {
-          playSound(cardDropSound);
+          playSound(cardDropSound).then();
           setIsDragging(false);
         },
       }),
     );
-  }, []);
+  }, [id]);
 
   return (
     <motion.div

@@ -6,7 +6,6 @@ import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/atoms/button/Button";
-import { Switch } from "@/components/atoms/switch/Switch";
 import {
   Card,
   CardActions,
@@ -18,6 +17,7 @@ import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Switch } from "@/components/ui/switch";
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useTeamRole } from "@/hooks/useTeamRole";

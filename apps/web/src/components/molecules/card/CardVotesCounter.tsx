@@ -11,7 +11,7 @@ interface CounterProps {
   onDecrement(): void;
 }
 
-const Counter: React.FC<CounterProps> = ({
+const CardVotesCounter: React.FC<CounterProps> = ({
   count,
   canIncrement,
   onIncrement,
@@ -61,4 +61,4 @@ const Counter: React.FC<CounterProps> = ({
     </div>
   );
 };
-export default Counter;
+export default CardVotesCounter;

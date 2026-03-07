@@ -15,8 +15,8 @@ type Card = {
 };
 
 type ReflectionCard = {
+  [reflectionCardPrivateKey]: true;
   reflectionCardId: string;
-  text: string;
 };
 
 export function getCard(data: Omit<Card, typeof cardPrivateKey>) {

@@ -41,11 +41,11 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
         element: element,
         onDragStart: () => {
           setDragging(true);
-          playAudio(pickCardAudio);
+          playAudio(pickCardAudio).then();
         },
         onDrop: () => {
           setDragging(false);
-          playAudio(dropCardAudio);
+          playAudio(dropCardAudio).then();
         },
         getInitialData: () => getCard({ cardId, columnId, parentCardId }),
         onGenerateDragPreview({ source }) {
@@ -53,7 +53,7 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
         },
       }),
     );
-  }, []);
+  }, [playAudio, cardId, columnId, parentCardId]);
 
   return (
     <div

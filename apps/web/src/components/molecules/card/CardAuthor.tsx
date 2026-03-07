@@ -84,7 +84,7 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
         ref={userPickerButtonRef}
         className={cn(
           "flex items-center gap-2 p-0.5 rounded",
-          editable && "cursor-pointer hover:bg-gray-500",
+          editable && "cursor-pointer hover:bg-white/50",
         )}
         onClick={() => {
           if (editable) {

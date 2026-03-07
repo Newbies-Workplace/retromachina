@@ -165,7 +165,7 @@ const TimerSetModal: React.FC<{
         <div className={"flex w-11 text-3xl items-center"}>
           <span
             className={
-              "w-11 absolute text-3xl text-end text-gray-600 select-none pointer-events-none"
+              "w-11 absolute text-3xl text-end select-none pointer-events-none"
             }
           >
             {"0".repeat(2 - minutes.length)}
@@ -197,7 +197,7 @@ const TimerSetModal: React.FC<{
         <div className={"flex w-11 text-3xl items-center"}>
           <span
             className={
-              "w-9 absolute text-3xl text-end text-gray-600 select-none pointer-events-none "
+              "w-9 absolute text-3xl text-end select-none pointer-events-none "
             }
           >
             {"0".repeat(2 - seconds.length)}

@@ -2,7 +2,6 @@ import { SunIcon, Volume1Icon } from "lucide-react";
 import React, { useState } from "react";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import { Button } from "@/components/atoms/button/Button";
-import { Slider } from "@/components/atoms/slider/slider";
 import {
   DialogClose,
   DialogContent,
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { useAudio } from "@/hooks/useAudio";
 import { usePreferencesStore } from "@/store/usePreferencesStore";
 
@@ -46,13 +46,12 @@ export const PreferencesDialogContent = () => {
         </div>
 
         <Slider
-          className={"bg-red-50"}
-          value={[tempVolumeLevel]}
+          value={tempVolumeLevel}
           onValueChange={(value) => {
-            setTempVolumeLevel(value[0]);
+            setTempVolumeLevel(value as number);
           }}
           onValueCommitted={async (value) => {
-            const level = value[0];
+            const level = value as number;
             setTempVolumeLevel(level);
             setVolumeLevel(level);
 

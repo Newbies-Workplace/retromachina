@@ -4,8 +4,8 @@ import {
   CardAuthor,
   CardContent,
 } from "@/components/molecules/card/Card";
+import CardVotesCounter from "@/components/molecules/card/CardVotesCounter";
 import { Column } from "@/components/molecules/column/Column";
-import Counter from "@/components/molecules/counter/Counter";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -75,7 +75,7 @@ export const VoteView = () => {
                           />
                           {groupCards.length === index + 1 && (
                             <CardActions>
-                              <Counter
+                              <CardVotesCounter
                                 className={"h-full"}
                                 canIncrement={votesLeft > 0}
                                 count={userVotes}

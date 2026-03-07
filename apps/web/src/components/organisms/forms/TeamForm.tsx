@@ -5,9 +5,9 @@ import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
 import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
 import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 import { TeamInviteLinkInput } from "@/components/organisms/forms/TeamInviteLinkInput";
+import { Input } from "@/components/ui/input";
 
 interface TeamFormProps {
   team: TeamResponse | null;
@@ -54,7 +54,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
           <Input
             data-testid={"team-name"}
             value={name}
-            setValue={setName}
+            onChange={(event) => setName(event.target.value)}
             placeholder={"Nazwa zespołu"}
           />
         </div>

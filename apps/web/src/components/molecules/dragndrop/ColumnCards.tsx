@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 interface ColumnCardContainerProps {
   columnId: string;
-  onReflectionCardDropped?: (action: { id: string; text: string }) => void;
+  onReflectionCardDropped?: (action: { id: string }) => void;
   onCardDropped?: (action: CardMoveAction) => void;
   children?: React.ReactNode;
 }
@@ -79,7 +79,6 @@ export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
           if (isReflectionCard(data)) {
             onReflectionCardDropped?.({
               id: data.reflectionCardId,
-              text: data.text,
             });
             setIsDraggedOver(false);
           }
@@ -103,7 +102,7 @@ export const ColumnCards: React.FC<ColumnCardContainerProps> = ({
         },
       }),
     );
-  }, []);
+  }, [onReflectionCardDropped]);
 
   return (
     <div

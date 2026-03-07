@@ -8,6 +8,7 @@ import {
 } from "motion/react";
 import React, {
   RefObject,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -105,20 +106,23 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
   const [leverRef, animate] = useAnimate();
   const controls = useAnimation();
 
-  const animateSlotMachine = async (animateLever: boolean) => {
-    if (animateLever) {
-      await animate(".lever", { y: [0, 35, 50, 50, 0] }, { duration: 0.4 });
-    }
+  const animateSlotMachine = useCallback(
+    async (animateLever: boolean) => {
+      if (animateLever) {
+        await animate(".lever", { y: [0, 35, 50, 50, 0] }, { duration: 0.4 });
+      }
 
-    await controls.start("idle", { duration: 0.1 });
-    playAudio(slotMachineSound);
-    await controls.start("drawing");
+      await controls.start("idle", { duration: 0.1 });
+      playAudio(slotMachineSound).then();
+      await controls.start("drawing");
 
-    setHasConfetti(true);
-    delay(() => {
-      setHasConfetti(false);
-    }, 1500);
-  };
+      setHasConfetti(true);
+      delay(() => {
+        setHasConfetti(false);
+      }, 1500);
+    },
+    [animate, controls, playAudio],
+  );
 
   useImperativeHandle(
     ref,
@@ -127,7 +131,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
         await animateSlotMachine(animateLever);
       },
     }),
-    [],
+    [animateSlotMachine],
   );
 
   // Play open sound only on visibility change, not on first render
@@ -141,7 +145,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
     if (slotMachineVisible) {
       playAudio(slotMachineOpenSound);
     }
-  }, [slotMachineVisible]);
+  }, [slotMachineVisible, playAudio]);
 
   return (
     <AnimatePresence>
@@ -156,7 +160,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
         >
           <div
             className={
-              "flex flex-col items-center gap-6 bg-secondary p-2 rounded-xl rounded-t-[48px] shadow-lg w-full z-[1]"
+              "flex flex-col items-center gap-6 bg-secondary p-2 rounded-xl rounded-t-[48px] shadow-lg w-full z-1"
             }
           >
             {hideMachineEnabled && (
@@ -229,10 +233,10 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
             >
               <div
                 className={
-                  "bg-destructive size-16 rounded-full z-[2] cursor-grab active:cursor-grabbing"
+                  "bg-destructive size-16 rounded-full z-2 cursor-grab active:cursor-grabbing"
                 }
               />
-              <div className={"absolute -bottom-4 bg-gray-600 w-4 h-8 z-[1]"} />
+              <div className={"absolute -bottom-4 bg-gray-600 w-4 h-8 z-1"} />
             </motion.div>
             <div className={"bg-gray-500 w-4 h-16 ml-12"} />
             <div className={"bg-gray-500 w-16 h-4 rounded-br"} />

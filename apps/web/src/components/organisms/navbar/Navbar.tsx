@@ -28,12 +28,12 @@ const Navbar: React.FC<NavbarProps> = ({
   useClickOutside(popover, close);
 
   return (
-    <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary-500"}>
+    <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary"}>
       <div className={"flex flex-row items-center gap-4 w-full h-[50px]"}>
         <span
           onClick={() => navigate("/")}
           className={
-            "font-harlow-solid-italic text-3xl text-background-50 cursor-pointer ml-4 mt-1 mr-auto"
+            "font-harlow-solid-italic text-3xl text-background cursor-pointer ml-4 mt-1 mr-auto"
           }
         >
           Retromachina

@@ -46,7 +46,7 @@ const Counter: React.FC<CounterProps> = ({
 
       <span
         className={cn("flex justify-center items-center size-8 rounded-full", {
-          "bg-primary-500": count > 0,
+          "bg-primary": count > 0,
         })}
       >
         {count}

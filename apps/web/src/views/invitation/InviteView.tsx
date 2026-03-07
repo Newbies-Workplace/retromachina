@@ -64,13 +64,11 @@ export const InviteView: React.FC = () => {
       <AnimatedBackground>
         <div
           className={
-            "flex flex-col bg-background-500 rounded-lg min-w-[500px] m-8"
+            "flex flex-col bg-background0 rounded-lg min-w-[500px] m-8"
           }
           onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className={"flex flex-col bg-primary-500 p-4 pb-2 rounded-t-lg "}
-          >
+          <div className={"flex flex-col bg-primary p-4 pb-2 rounded-t-lg "}>
             <span className={"font-bold text-lg"}>Zaproszenia do zespołu</span>
           </div>
 

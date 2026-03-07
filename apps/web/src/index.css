@@ -5,9 +5,9 @@
 
 :root {
     --radius: 0.625rem;
-    --background: #f8e2c3;
+    --background: #F4F2E6;
     --foreground: oklch(0.145 0 0);
-    --card: #F4F2E6;
+    --card: #f8e2c3;
     --card-foreground: oklch(0.145 0 0);
     --popover: #F4F2E6;
     --popover-foreground: oklch(0.145 0 0);
@@ -20,58 +20,49 @@
     --accent: oklch(0.97 0 0);
     --accent-foreground: oklch(0.205 0 0);
     --destructive: #DC6E47;
+    --destructive-foreground: oklch(1.0000 0 0);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
 
-    --destructive-foreground: oklch(1.0000 0 0);
     --shadow-x: 4px;
-    --shadow-y: 4px;
+    --shadow-y: 0px;
     --shadow-blur: 0px;
     --shadow-spread: 0px;
     --shadow-opacity: 1;
-    --shadow-color: hsl(0, 0%, 0%);
-    --shadow-2xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.50);
-    --shadow-xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.50);
-    --shadow-sm: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 1px 2px -1px hsl(0 0% 0% / 1.00);
-    --shadow: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 1px 2px -1px hsl(0 0% 0% / 1.00);
-    --shadow-md: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 2px 4px -1px hsl(0 0% 0% / 1.00);
-    --shadow-lg: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 4px 6px -1px hsl(0 0% 0% / 1.00);
-    --shadow-xl: 4px 4px 0px 0px hsl(0 0% 0% / 1.00), 4px 8px 10px -1px hsl(0 0% 0% / 1.00);
-    --shadow-2xl: 4px 4px 0px 0px hsl(0 0% 0% / 2.50);
+    --shadow-color: rgba(0,0,0,0.25);
+    --shadow-2xs: 0px 4px 0px rgba(0,0,0,0.25);
+    --shadow-xs: 0px 4px 0px rgba(0,0,0,0.25);
+    --shadow-sm: 0px 4px 0px rgba(0,0,0,0.25);
+    --shadow: 0px 4px 0px rgba(0,0,0,0.25);
+    --shadow-md: 0px 4px 0px rgba(0,0,0,0.25);
+    --shadow-lg: 0px 4px 0px rgba(0,0,0,0.25);
+    --shadow-xl: 0px 4px 0px rgba(0,0,0,0.25);
+    --shadow-2xl: 0px 4px 0px rgba(0,0,0,0.25);
     --tracking-normal: 0.02em;
     --spacing: 0.25rem;
 }
 
 .dark {
-    --background: oklch(0.1649 0.0308 162.2739);
+    --background: oklch(0.222 0.004 84.588);
     --foreground: oklch(0.9809 0.0260 91.6197);
-    --card: oklch(0.2283 0.0445 158.2398);
+    --card: oklch(0.242 0.044 92.757);
     --card-foreground: oklch(0.9809 0.0260 91.6197);
     --popover: oklch(0.2283 0.0445 158.2398);
     --popover-foreground: oklch(0.9809 0.0260 91.6197);
-    --primary: oklch(0.8484 0.2275 151.1487);
+    --primary: #335348;
     --primary-foreground: oklch(0.1292 0.0270 165.3808);
-    --secondary: oklch(0.6489 0.2370 26.9728);
+    --secondary: oklch(0.277 0.036 61.892);
     --secondary-foreground: oklch(1.0000 0 0);
     --muted: oklch(0.2724 0.0467 159.1721);
     --muted-foreground: oklch(0.8253 0.0270 91.6606);
     --accent: oklch(0.7951 0.1631 68.6392);
     --accent-foreground: oklch(0.1292 0.0270 165.3808);
-    --destructive: oklch(0.6280 0.2577 29.2339);
+    --destructive: #6e3623;
     --destructive-foreground: oklch(1.0000 0 0);
     --border: oklch(0.9809 0.0260 91.6197);
     --input: oklch(0.2642 0.0387 160.3481);
     --ring: oklch(0.7951 0.1631 68.6392);
-    --shadow-color: hsl(45, 100%, 80%);
-    --shadow-2xs: 4px 4px 0px 0px hsl(45 100% 80% / 0.50);
-    --shadow-xs: 4px 4px 0px 0px hsl(45 100% 80% / 0.50);
-    --shadow-sm: 4px 4px 0px 0px hsl(45 100% 80% / 1.00), 4px 1px 2px -1px hsl(45 100% 80% / 1.00);
-    --shadow: 4px 4px 0px 0px hsl(45 100% 80% / 1.00), 4px 1px 2px -1px hsl(45 100% 80% / 1.00);
-    --shadow-md: 4px 4px 0px 0px hsl(45 100% 80% / 1.00), 4px 2px 4px -1px hsl(45 100% 80% / 1.00);
-    --shadow-lg: 4px 4px 0px 0px hsl(45 100% 80% / 1.00), 4px 4px 6px -1px hsl(45 100% 80% / 1.00);
-    --shadow-xl: 4px 4px 0px 0px hsl(45 100% 80% / 1.00), 4px 8px 10px -1px hsl(45 100% 80% / 1.00);
-    --shadow-2xl: 4px 4px 0px 0px hsl(45 100% 80% / 2.50);
 }
 
 @theme {
@@ -82,15 +73,6 @@
     --color-gray-400: #EAEAEA;
     --color-gray-500: #D9D9D9;
     --color-gray-600: #bdbdbd;
-    --color-red-500: #DC6E47;
-    --color-red-600: #b75939;
-    --color-primary-500: #73BDA8;
-    --color-primary-600: #5e9b8a;
-    --color-secondary-400: #9c7556;
-    --color-secondary-500: #946847;
-    --color-background-50: #F4F2E6;
-    --color-background-100: #f8e2c3;
-    --color-background-500: #EBD3A8;
 
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -192,19 +174,19 @@
 
 @keyframes timer-blink{
     0%, 100% {
-        border-color: var(--color-red-500);
-        background-color: var(--color-background-50);
-        color: var(--color-red-500);
+        border-color: var(--color-destructive);
+        background-color: var(--color-background);
+        color: var(--color-destructive);
     }
     50% {
-        border-color: var(--color-background-50);
-        background-color: var(--color-red-500);
-        color: var(--color-background-50);
+        border-color: var(--color-background);
+        background-color: var(--color-destructive);
+        color: var(--color-background);
     }
 }
 
 body, main {
-    @apply min-h-full p-0 m-0 bg-background-50 font-jetbrains-mono;
+    @apply min-h-full p-0 m-0 bg-background font-jetbrains-mono;
 }
 
 #root {

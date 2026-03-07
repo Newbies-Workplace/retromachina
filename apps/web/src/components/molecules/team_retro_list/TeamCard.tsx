@@ -73,7 +73,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
   return (
     <div
       data-testid={`team-${teamName}`}
-      className={"flex flex-col w-full p-4 gap-4 bg-background-500 rounded-lg"}
+      className={"flex flex-col w-full p-4 gap-4 bg-card rounded-lg"}
     >
       <div className={"flex gap-2 justify-between rounded-t-lg"}>
         <div
@@ -142,7 +142,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           data-testid="task-list"
           size={"xl"}
           className={
-            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-white"
+            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-secondary"
           }
           onClick={() => navigate(`/team/${teamId}/archive`)}
         >
@@ -173,7 +173,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
                 key={retro.id}
                 size={"xl"}
                 className={
-                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-white border-4 border-red-500"
+                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-white border-4 border-destructive"
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >
@@ -251,7 +251,7 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
 
       <div
         className={
-          "p-2 bg-secondary-500/30 rounded h-16 font-semibold flex flex-row gap-2 justify-center items-center"
+          "p-2 bg-secondary/30 rounded h-16 font-semibold flex flex-row gap-2 justify-center items-center"
         }
       >
         {delayedHighlightedUser && (

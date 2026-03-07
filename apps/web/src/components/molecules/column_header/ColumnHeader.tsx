@@ -14,11 +14,11 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   return (
     <div
       className={
-        "flex flex-col justify-center items-start gap-1 w-full bg-white border border-black/30 p-2 rounded-lg"
+        "flex flex-col justify-center items-start gap-1 w-full bg-card border border-black/30 p-2 rounded-lg"
       }
     >
       <div className={"flex gap-2 w-full justify-between"}>
-        <div className={"flex flex-nowrap items-center gap-2 break-words"}>
+        <div className={"flex flex-nowrap items-center gap-2 wrap-break-word"}>
           <span className={"text-lg font-bold"}>{header}</span>
         </div>
 
@@ -26,7 +26,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
       </div>
 
       {description !== undefined && (
-        <div className={"break-words max-w-full max-h-[140px] scrollbar"}>
+        <div className={"wrap-break-word max-w-full max-h-35 scrollbar"}>
           {description}
         </div>
       )}

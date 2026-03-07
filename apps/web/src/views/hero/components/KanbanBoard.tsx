@@ -71,7 +71,7 @@ const Column: React.FC<{
     <div className={"flex grow flex-col gap-2 w-1/3"}>
       <div
         className={
-          "flex justify-center items-center w-full h-8 bg-background-50 border rounded-lg"
+          "flex justify-center items-center w-full h-8 bg-background border rounded-lg"
         }
       >
         {title}
@@ -79,7 +79,7 @@ const Column: React.FC<{
 
       <div
         ref={ref}
-        className={"flex flex-col gap-2 h-full bg-secondary-400 rounded-lg"}
+        className={"flex flex-col gap-2 h-full bg-secondary rounded-lg"}
       >
         {children}
       </div>
@@ -130,7 +130,7 @@ export const KanbanBoard: React.FC = () => {
     <AnimatePresence>
       <div
         className={
-          "w-full h-[500px] flex xl:flex-1 flex-row bg-secondary-500 rounded-2xl p-2 gap-4"
+          "w-full h-[500px] flex xl:flex-1 flex-row bg-secondary rounded-2xl p-2 gap-4"
         }
       >
         <Column
@@ -175,7 +175,7 @@ export const KanbanBoard: React.FC = () => {
                 key={card.id}
                 id={card.id}
                 columnId={"done"}
-                className={"bg-primary-500"}
+                className={"bg-primary"}
               />
             ))}
         </Column>

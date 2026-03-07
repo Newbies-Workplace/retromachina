@@ -39,10 +39,10 @@ export const TeamForm: React.FC<TeamFormProps> = ({
   return (
     <div
       className={
-        "flex flex-col gap-2 w-[600px] min-h-[700px] h-fit bg-background-500 m-8 rounded-lg"
+        "flex flex-col gap-2 w-[600px] min-h-[700px] h-fit bg-card m-8 rounded-lg"
       }
     >
-      <div className={"bg-primary-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}>
+      <div className={"bg-primary p-4 pb-2 rounded-t-lg font-bold text-lg"}>
         {team ? "Zarządzanie zespołem" : "Stworz nowy zespół"}
       </div>
 

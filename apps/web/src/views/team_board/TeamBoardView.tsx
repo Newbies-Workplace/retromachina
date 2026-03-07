@@ -70,7 +70,7 @@ export const TeamBoardView: React.FC = () => {
           <div className={"flex flex-row items-center gap-4"}>
             <div
               className={
-                "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 p-2 rounded-b-lg"
+                "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg"
               }
             >
               <span className={"text-sm"}>Tylko moje</span>

@@ -49,7 +49,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
 
       <div
         className={
-          "fixed w-full h-full flex overflow-hidden justify-center items-center bg-background-50"
+          "fixed w-full h-full flex overflow-hidden justify-center items-center bg-background"
         }
       >
         {Array.from({ length: columns }).map((_, i) => {
@@ -124,16 +124,14 @@ const AnimatedIcon: React.FC = () => {
       onMouseMoveCapture={animate}
       transition={{ duration: 0.3 }}
       className={cn(
-        "flex justify-center items-center size-32 bg-background-500/30 rounded m-2",
+        "flex justify-center items-center size-32 bg-card/50 rounded m-2",
       )}
     >
       {icon === 0 && (
-        <ClipboardCheckIcon className={"text-secondary-500/60 size-8"} />
+        <ClipboardCheckIcon className={"text-secondary/30 size-8"} />
       )}
-      {icon === 1 && <SaveIcon className={"text-secondary-500/60 size-8"} />}
-      {icon === 2 && (
-        <TrendingUpIcon className={"text-secondary-500/60 size-8"} />
-      )}
+      {icon === 1 && <SaveIcon className={"text-secondary/30 size-8"} />}
+      {icon === 2 && <TrendingUpIcon className={"text-secondary/30 size-8"} />}
     </motion.div>
   );
 };

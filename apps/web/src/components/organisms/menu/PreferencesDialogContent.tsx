@@ -39,18 +39,19 @@ export const PreferencesDialogContent = () => {
         <DialogTitle>Ustawienia</DialogTitle>
       </DialogHeader>
 
-      <div className={"flex flex-col gap-4"}>
+      <div className={"flex flex-col gap-4 w-full"}>
         <div className={"flex flex-row gap-2 items-center"}>
           <Volume1Icon className={"size-6"} />
           Dźwięki w aplikacji
         </div>
 
         <Slider
+          className={"bg-red-50"}
           value={[tempVolumeLevel]}
           onValueChange={(value) => {
             setTempVolumeLevel(value[0]);
           }}
-          onValueCommit={async (value) => {
+          onValueCommitted={async (value) => {
             const level = value[0];
             setTempVolumeLevel(level);
             setVolumeLevel(level);
@@ -75,7 +76,7 @@ export const PreferencesDialogContent = () => {
           }}
           onValueChange={(theme) => setTheme(theme ?? "system")}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-45">
             <SelectValue placeholder="Motyw" />
           </SelectTrigger>
           <SelectContent>

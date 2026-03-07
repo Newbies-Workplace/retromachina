@@ -89,7 +89,7 @@ export const TeamBoardEditView: React.FC = () => {
     <>
       <Navbar />
 
-      <div className={"m-4 flex rounded-xl bg-background-500 p-2"}>
+      <div className={"m-4 flex rounded-xl bg-card p-2"}>
         <div className={"flex w-full flex-col gap-2 rounded-lg p-2"}>
           <div className={"flex justify-between"}>
             <span>Edycja tablicy</span>
@@ -133,9 +133,7 @@ export const TeamBoardEditView: React.FC = () => {
                   key={col.id}
                   name={col.name}
                   desc={""}
-                  className={
-                    index === 0 ? "ring-primary-500 ring-2" : undefined
-                  }
+                  className={index === 0 ? "ring-primary ring-2" : undefined}
                   onChange={({ name }) =>
                     onChangeColumn(col.id, {
                       id: col.id,

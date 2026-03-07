@@ -55,7 +55,7 @@ export const RetroTimer: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 pt-3 pb-2 px-2 rounded-b-lg"
+        "flex flex-row items-center gap-2 bg-card h-11 -mt-2 pt-3 pb-2 px-2 rounded-b-lg"
       }
     >
       <div className={"flex flex-row gap-2"}>
@@ -153,7 +153,7 @@ const TimerSetModal: React.FC<{
   return (
     <div
       className={
-        "flex flex-col absolute top-16 bg-background-500 rounded-xl p-2 shadow-lg gap-2"
+        "flex flex-col absolute top-16 bg-card rounded-xl p-2 shadow-lg gap-2"
       }
       ref={timePopover}
     >

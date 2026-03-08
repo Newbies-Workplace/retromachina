@@ -134,7 +134,7 @@ export const ReflectionCardsShelf: React.FC<{
             {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
               <div
                 className={
-                  "flex justify-center items-center h-full border-2 border-dashed border-background text-background text-center"
+                  "flex justify-center items-center h-full border-2 border-dashed rounded-xl text-center"
                 }
               >
                 Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby

@@ -59,7 +59,7 @@ export const Timer: React.FC<TimerProps> = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-center h-9 w-25 rounded-lg border-2 border-black bg-white text-xl font-bold select-none",
+        "flex items-center justify-center h-9 w-25 rounded-lg border-2 bg-background text-xl font-bold select-none",
         variant === "expires" &&
           "text-destructive border-destructive animate-timer-blink",
         variant === "end" && "bg-destructive text-background border-background",

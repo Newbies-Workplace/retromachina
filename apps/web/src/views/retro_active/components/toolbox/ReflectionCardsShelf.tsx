@@ -121,7 +121,7 @@ export const ReflectionCardsShelf: React.FC<{
               : "border-2 border-transparent",
           )}
         >
-          <div className={"flex justify-between text-background"}>
+          <div className={"flex justify-between"}>
             <span className={"font-harlow-solid-italic text-3xl"}>Wrzutki</span>
 
             <Button onClick={onNewReflectionCardClick} size={"sm"}>

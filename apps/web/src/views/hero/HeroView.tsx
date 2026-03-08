@@ -25,7 +25,7 @@ export const HeroView: React.FC = () => {
               "font-harlow-solid-italic text-5xl text-background select-none"
             }
           >
-            Retromachina
+            Retromachine
           </span>
           <span className={"text-background"}>
             Twoje nowe narzędzie do przeprowadzania retrospektyw
@@ -70,7 +70,7 @@ export const HeroView: React.FC = () => {
               Wyciśnij z retrospektyw tyle, ile się da!
             </b>
             <p>
-              Czujesz oddech agile-manifesto na swojej szyi? Retromachina pomoże
+              Czujesz oddech agile-manifesto na swojej szyi? Retromachine pomoże
               Ci w przeprowadzaniu retrospektyw w sposób zorganizowany i
               efektywny. Wszystko po to, abyś mógł skupić się na doskonaleniu
               swojego zespołu i sposobu pracy.
@@ -131,7 +131,7 @@ export const HeroView: React.FC = () => {
             <p>
               Niezależnie od tego czy pracujesz w jednym zespole czy w{" "}
               <b className={"text-lg tracking-widest"}>wielkiej</b> organizacji,
-              Retromachina pozwoli Ci na zarządzanie zespołami w prosty i
+              Retromachine pozwoli Ci na zarządzanie zespołami w prosty i
               przejrzysty sposób.
             </p>
           </div>

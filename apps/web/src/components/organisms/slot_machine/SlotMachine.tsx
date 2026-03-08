@@ -177,7 +177,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
             )}
             <span
               className={
-                "flex flex-col justify-center items-center font-harlow-solid-italic text-background text-3xl"
+                "flex flex-col justify-center items-center font-harlow-solid-italic text-secondary-foreground text-3xl"
               }
             >
               {hasConfetti && (
@@ -236,10 +236,16 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
                   "bg-destructive size-16 rounded-full z-2 cursor-grab active:cursor-grabbing"
                 }
               />
-              <div className={"absolute -bottom-4 bg-gray-600 w-4 h-8 z-1"} />
+              <div
+                className={
+                  "absolute -bottom-4 bg-gray-400 dark:bg-gray-600 w-4 h-8 z-1"
+                }
+              />
             </motion.div>
-            <div className={"bg-gray-500 w-4 h-16 ml-12"} />
-            <div className={"bg-gray-500 w-16 h-4 rounded-br"} />
+            <div className={"bg-gray-300 dark:bg-gray-500 w-4 h-16 ml-12"} />
+            <div
+              className={"bg-gray-300 dark:bg-gray-500 w-16 h-4 rounded-br"}
+            />
           </div>
         </motion.div>
       )}

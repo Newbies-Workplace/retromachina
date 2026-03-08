@@ -169,7 +169,7 @@ export const Toolbox: React.FC = () => {
             <Button
               ref={reflectionCardsShelfButtonRef}
               className={cn(
-                "relative flex flex-col justify-center items-center gap-4 size-full bg-white border-2 border-primary border-dashed",
+                "relative flex flex-col justify-center items-center gap-4 size-full bg-background text-foreground border-2 border-primary border-dashed",
               )}
               onClick={() => {
                 setIsReflectionCardsShelfOpen(true);
@@ -179,7 +179,7 @@ export const Toolbox: React.FC = () => {
               {hasReflectionCards && (
                 <div
                   className={
-                    "absolute size-4 rounded-full bg-destructive w-20 h-2 bottom-1 animate-pulse "
+                    "absolute rounded-full bg-destructive left-4 right-4 h-2 bottom-1 animate-pulse "
                   }
                 />
               )}

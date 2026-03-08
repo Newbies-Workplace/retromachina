@@ -159,7 +159,7 @@ const TimerSetModal: React.FC<{
     >
       <div
         className={
-          "flex items-center w-28 h-12 rounded-lg bg-white border-2 text-3xl"
+          "flex items-center w-28 h-12 rounded-lg bg-background border-2 text-3xl"
         }
       >
         <div className={"flex w-11 text-3xl items-center"}>

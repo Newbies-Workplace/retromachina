@@ -23,7 +23,7 @@ export const SignInView: React.FC = () => {
           className={"w-full flex flex-col justify-center items-center gap-2"}
         >
           <span className={"font-harlow-solid-italic text-5xl select-none"}>
-            Retromachina
+            Retromachine
           </span>
 
           <span className={"text-md"}>

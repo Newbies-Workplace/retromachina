@@ -119,7 +119,7 @@ export const Menu = () => {
             "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={
-            "mailto:newbies@rst.com.pl?subject=Bug retromachina&body=Opis błędu:"
+            "mailto:newbies@rst.com.pl?subject=Bug retromachine&body=Opis błędu:"
           }
         >
           <BugIcon className={"size-4"} />

@@ -29,10 +29,10 @@ const Navbar: React.FC<NavbarProps> = ({
         <span
           onClick={() => navigate("/")}
           className={
-            "font-harlow-solid-italic text-3xl text-background cursor-pointer ml-4 mt-1 mr-auto"
+            "font-harlow-solid-italic text-3xl text-secondary-foreground cursor-pointer ml-4 mt-1 mr-auto"
           }
         >
-          Retromachina
+          Retromachine
         </span>
 
         <div className={"flex justify-end items-center gap-4"}>

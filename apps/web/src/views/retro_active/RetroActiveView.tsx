@@ -5,10 +5,10 @@ import { Route, Routes, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
-import { ProgressBar } from "@/components/atoms/progress_bar/ProgressBar";
 import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useAudio } from "@/hooks/useAudio";
@@ -146,7 +146,7 @@ export const RetroActiveView: React.FC = () => {
           <Route path="group" element={<GroupView />} />
           <Route path="vote" element={<VoteView />} />
           <Route path="discuss" element={<DiscussView />} />
-          <Route path="*" element={<ProgressBar />} />
+          <Route path="*" element={<Spinner className={"size-8"} />} />
         </Routes>
       </div>
 

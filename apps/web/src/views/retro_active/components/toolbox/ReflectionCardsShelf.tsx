@@ -109,7 +109,7 @@ export const ReflectionCardsShelf: React.FC<{
     <Portal>
       <div
         ref={drawerRef}
-        className={cn("absolute bottom-0 min-h-50 w-full z-10 overflow-hidden")}
+        className={cn("absolute bottom-0 min-h-52 w-full z-10 overflow-hidden")}
       >
         <motion.div
           initial={{ bottom: -150 }}
@@ -130,62 +130,64 @@ export const ReflectionCardsShelf: React.FC<{
             </Button>
           </div>
 
-          {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
-            <div
-              className={
-                "flex justify-center items-center h-full border-2 border-dashed border-background text-background text-center"
-              }
-            >
-              Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
-              zapisać ją na później!
-            </div>
-          )}
+          <div className={"flex flex-row gap-2 h-full overflow-x-scroll"}>
+            {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
+              <div
+                className={
+                  "flex justify-center items-center h-full border-2 border-dashed border-background text-background text-center"
+                }
+              >
+                Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
+                zapisać ją na później!
+              </div>
+            )}
 
-          {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
-            <div className={cn("flex flex-row gap-2 h-full w-full rounded")}>
-              {isCreatingNewReflectionCard && (
-                <Card
-                  id="new-reflection-card"
-                  onEditDismiss={onDeleteNewReflectionCardClick}
-                  positioningBackgroundEnabled={false}
-                >
-                  <CardContent
-                    text={newReflectionCardText}
-                    editable
-                    autoFocus
-                    onSave={onSaveNewReflectionCardClick}
+            {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
+              <div className={cn("flex flex-row gap-2 h-full w-full rounded")}>
+                {isCreatingNewReflectionCard && (
+                  <Card
+                    id="new-reflection-card"
                     onEditDismiss={onDeleteNewReflectionCardClick}
-                  />
-                  <CardActions>
-                    <Button
-                      onClick={onDeleteNewReflectionCardClick}
-                      size={"icon"}
-                      variant={"destructive"}
-                    >
-                      <TrashIcon className={"size-4"} />
-                    </Button>
-                  </CardActions>
-                </Card>
-              )}
+                    positioningBackgroundEnabled={false}
+                  >
+                    <CardContent
+                      text={newReflectionCardText}
+                      editable
+                      autoFocus
+                      onSave={onSaveNewReflectionCardClick}
+                      onEditDismiss={onDeleteNewReflectionCardClick}
+                    />
+                    <CardActions>
+                      <Button
+                        onClick={onDeleteNewReflectionCardClick}
+                        size={"icon"}
+                        variant={"destructive"}
+                      >
+                        <TrashIcon className={"size-4"} />
+                      </Button>
+                    </CardActions>
+                  </Card>
+                )}
 
-              {reflectionCards.map((card) => {
-                return (
-                  <DraggableReflectionCard
-                    key={card.id}
-                    id={card.id}
-                    text={card.text}
-                    enableDrag={enableDrag}
-                    onEdit={(newText) => {
-                      onReflectionCardEdit(card.id, newText);
-                    }}
-                    onDeleteClick={() => {
-                      onReflectionCardDeleteClick(card.id);
-                    }}
-                  />
-                );
-              })}
-            </div>
-          )}
+                {reflectionCards.map((card) => {
+                  return (
+                    <DraggableReflectionCard
+                      key={card.id}
+                      id={card.id}
+                      text={card.text}
+                      enableDrag={enableDrag}
+                      onEdit={(newText) => {
+                        onReflectionCardEdit(card.id, newText);
+                      }}
+                      onDeleteClick={() => {
+                        onReflectionCardDeleteClick(card.id);
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </motion.div>
       </div>
     </Portal>

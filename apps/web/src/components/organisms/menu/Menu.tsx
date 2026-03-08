@@ -25,6 +25,9 @@ export const Menu = () => {
 
   return (
     <div
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       className={
         "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-70 bg-card rounded-xl shadow-lg "
       }

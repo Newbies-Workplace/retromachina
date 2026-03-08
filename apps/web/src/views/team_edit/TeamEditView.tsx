@@ -5,10 +5,10 @@ import { toast } from "react-toastify";
 import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { TeamService } from "@/api/Team.service";
-import { ProgressBar } from "@/components/atoms/progress_bar/ProgressBar";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import { TeamForm } from "@/components/organisms/forms/TeamForm";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Spinner } from "@/components/ui/spinner";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useTeamData } from "@/hooks/useTeamData";
@@ -74,7 +74,7 @@ export const TeamEditView: React.FC = () => {
       <AnimatedBackground>
         {!team && (
           <div className={"flex items-center justify-center"}>
-            <ProgressBar color={"black"} />
+            <Spinner className={"size-10"} />
           </div>
         )}
 

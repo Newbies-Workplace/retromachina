@@ -3,7 +3,7 @@ import type React from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import type { UserRole } from "shared/model/user/user.role";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -159,7 +159,10 @@ const TeamMember: React.FC<UserProps> = ({
         "flex grow items-center bg-secondary w-full gap-2.5 min-h-10 p-1 rounded-md border-solid shadow-sm border [line-break:anywhere]"
       }
     >
-      <Avatar size={32} url={avatarUrl} />
+      <Avatar size={"sm"}>
+        <AvatarImage src={avatarUrl} />
+        <AvatarFallback>:)</AvatarFallback>
+      </Avatar>
 
       <span className={"grow"}>{email}</span>
 

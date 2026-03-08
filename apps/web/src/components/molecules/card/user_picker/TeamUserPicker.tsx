@@ -1,6 +1,6 @@
 import React from "react";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { CardUser } from "@/components/molecules/card/Card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface TeamUserPickerProps {
   teamUsers: CardUser[];
@@ -28,7 +28,9 @@ export const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
             onUserPicked(null);
           }}
         >
-          <Avatar url={undefined} size={24} />
+          <Avatar size={"sm"}>
+            <AvatarFallback>:)</AvatarFallback>
+          </Avatar>
           <span className={"text-sm"}>Nieprzypisany</span>
         </div>
       )}
@@ -44,7 +46,10 @@ export const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
               onUserPicked(user.id);
             }}
           >
-            <Avatar url={user.avatar} size={24} />
+            <Avatar size={"sm"}>
+              <AvatarImage src={user.avatar} />
+              <AvatarFallback>:)</AvatarFallback>
+            </Avatar>
 
             <span className={"text-sm"}>{user.name}</span>
           </div>

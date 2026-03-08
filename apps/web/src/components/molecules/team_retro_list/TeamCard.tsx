@@ -18,13 +18,18 @@ import { UserInTeamResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { UserService } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import {
   SLOT_MACHINE_ANIMATION_DURATION,
   SlotMachine,
   SlotMachineRef,
 } from "@/components/organisms/slot_machine/SlotMachine";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  AvatarStatus,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -252,7 +257,11 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
       >
         {delayedHighlightedUser && (
           <div className={"flex flex-row gap-2 justify-center items-center"}>
-            <Avatar url={delayedHighlightedUser.avatar_link} size={50} />
+            <Avatar size={"lg"}>
+              <AvatarImage src={delayedHighlightedUser.avatar_link} />
+              <AvatarFallback>??</AvatarFallback>
+            </Avatar>
+
             <div>{delayedHighlightedUser.nick}</div>
           </div>
         )}
@@ -286,13 +295,11 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
                   });
                 }}
               >
-                <Avatar
-                  url={user.avatar_link}
-                  size={50}
-                  variant={
-                    teamUsersInPool.includes(user.id) ? "ready" : undefined
-                  }
-                />
+                <Avatar size={"lg"}>
+                  <AvatarImage src={user.avatar_link} />
+                  <AvatarFallback>??</AvatarFallback>
+                  {teamUsersInPool.includes(user.id) && <AvatarStatus />}
+                </Avatar>
               </div>
             );
           })}

@@ -7,7 +7,7 @@ import type { UserResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { TaskService } from "@/api/Task.service";
 import { UserService } from "@/api/User.service";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { UserAvatar } from "@/components/atoms/avatar/UserAvatar";
 import {
   Card,
   CardAuthor,
@@ -90,7 +90,7 @@ export const RetroSummaryView = () => {
                       "flex flex-row justify-center items-center gap-4"
                     }
                   >
-                    <Avatar url={user.avatar_link} />
+                    <UserAvatar url={user.avatar_link} />
                     {user.nick}
                   </div>
 
@@ -150,7 +150,7 @@ export const RetroSummaryView = () => {
                         }
                         key={user.id}
                       >
-                        <Avatar url={user.avatar_link} />
+                        <UserAvatar url={user.avatar_link} />
                         {user.nick}
                       </div>
                     );

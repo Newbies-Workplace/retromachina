@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
 import lineSvg from "@/assets/images/line.svg?inline";
-import { Avatar, type AvatarProps } from "@/components/atoms/avatar/Avatar";
+import {
+  type AvatarProps,
+  UserAvatar,
+} from "@/components/atoms/avatar/UserAvatar";
 import { Backdrop } from "@/components/molecules/backdrop/Backdrop";
 import { Menu } from "@/components/organisms/menu/Menu";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -46,7 +49,7 @@ const Navbar: React.FC<NavbarProps> = ({
             }
           >
             <div onClick={() => setIsMenuOpen((value) => !value)}>
-              <Avatar
+              <UserAvatar
                 className={"cursor-pointer"}
                 url={user?.avatar_link}
                 {...avatarProps}

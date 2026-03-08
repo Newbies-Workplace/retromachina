@@ -18,7 +18,7 @@ import React, {
 import ConfettiExplosion from "react-confetti-explosion";
 import slotMachineSound from "@/assets/sounds/slot-machine.wav";
 import slotMachineOpenSound from "@/assets/sounds/slot-machine-open.wav";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -202,14 +202,16 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
                 >
                   {randomUsers[i].map((user, index) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
-                    <Avatar size={60} key={index} url={user.avatar_link} />
+                    <Avatar size={"xl"} key={index}>
+                      <AvatarImage src={user.avatar_link} />
+                      <AvatarFallback>??</AvatarFallback>
+                    </Avatar>
                   ))}
                   {delayedHighlightedUser !== undefined && (
-                    <Avatar
-                      size={60}
-                      key={delayedHighlightedUser.id}
-                      url={delayedHighlightedUser.avatar_link}
-                    />
+                    <Avatar size={"xl"} key={delayedHighlightedUser.id}>
+                      <AvatarImage src={delayedHighlightedUser.avatar_link} />
+                      <AvatarFallback>??</AvatarFallback>
+                    </Avatar>
                   )}
                 </motion.div>
               ))}

@@ -1,5 +1,5 @@
 import type React from "react";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { UserAvatar } from "@/components/atoms/avatar/UserAvatar";
 import { cn } from "@/lib/utils";
 
 interface TeamAvatarsProps {
@@ -23,7 +23,7 @@ export const TeamAvatars: React.FC<
   return (
     <div className={cn("flex flex-row ml-2.5", className)}>
       {users.map((user) => (
-        <Avatar
+        <UserAvatar
           style={{ marginLeft: -10 }}
           key={user.id}
           variant={

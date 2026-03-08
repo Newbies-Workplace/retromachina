@@ -13,10 +13,16 @@ import { RetroService } from "@/api/Retro.service";
 import { getRandomTemplate } from "@/api/RetroTemplate.service";
 import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { UserAvatar } from "@/components/atoms/avatar/UserAvatar";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export interface Column {
@@ -164,11 +170,15 @@ export const RetroCreateView: React.FC = () => {
       <div className={"flex p-2 m-4 bg-card rounded-xl"}>
         <div className={"p-2 w-full rounded-lg flex flex-col gap-2"}>
           <span>Retrospektywa zespołu {team.name}</span>
-          <div className={"flex flex-row -space-x-2 flex-wrap"}>
+
+          <AvatarGroup>
             {teamUsers.map((user) => (
-              <Avatar key={user.id} url={user.avatar_link} size={48} />
+              <Avatar key={user.id}>
+                <AvatarImage src={user.avatar_link} />
+                <AvatarFallback>:)</AvatarFallback>
+              </Avatar>
             ))}
-          </div>
+          </AvatarGroup>
 
           <div className={"flex justify-between mt-4"}>
             <div className={"flex flex-row gap-2"}>

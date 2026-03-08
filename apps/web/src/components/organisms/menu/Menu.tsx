@@ -7,8 +7,8 @@ import {
 } from "lucide-react";
 import React from "react";
 import { Link, useNavigate } from "react-router";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
 import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -34,7 +34,10 @@ export const Menu = () => {
     >
       <div className={"flex flex-col gap-3 rounded-t-xl p-2 bg-primary"}>
         <div className={"flex flex-row items-center gap-2"}>
-          <Avatar url={user?.avatar_link} size={40} />
+          <Avatar>
+            <AvatarImage src={user?.avatar_link} />
+            <AvatarFallback>:)</AvatarFallback>
+          </Avatar>
 
           <div className={"flex flex-col gap-1 overflow-hidden"}>
             <span

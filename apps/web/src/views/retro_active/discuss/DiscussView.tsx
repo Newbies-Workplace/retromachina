@@ -1,7 +1,7 @@
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
+import { UserAvatar } from "@/components/atoms/avatar/UserAvatar";
 import {
   Card,
   CardActions,
@@ -148,7 +148,7 @@ export const DiscussView = () => {
 
                   return (
                     <div key={card.id} className={"flex gap-2 mb-4"}>
-                      <Avatar url={author?.avatar_link ?? ""} size={24} />
+                      <UserAvatar url={author?.avatar_link ?? ""} size={24} />
 
                       {card.text}
                     </div>
@@ -245,7 +245,7 @@ export const DiscussView = () => {
                   animate={{ y: 0 }}
                   exit={{ y: 32 }}
                 >
-                  <Avatar
+                  <UserAvatar
                     className={"animate-bounce"}
                     url={user.avatar_link}
                     size={32}

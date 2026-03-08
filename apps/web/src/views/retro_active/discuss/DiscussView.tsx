@@ -257,7 +257,7 @@ export const DiscussView = () => {
 
           <Textarea
             value={value}
-            className={"z-10 bg-white"}
+            className={"z-10 resize-none min-h-20"}
             onChange={(event) => setValue(event.target.value)}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {

@@ -69,7 +69,7 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
         {isUsersPickerOpen && teamUsers.length > 1 && (
           <div
             ref={userPickerRef}
-            className={cn("flex absolute w-[265px] max-h-[180px] -left-1.5")}
+            className={cn("flex absolute w-[265px] max-h-45 -left-1.5")}
           >
             <TeamUserPicker
               teamUsers={teamUsers.filter((user) => user.id !== author?.id)}
@@ -84,7 +84,7 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
         ref={userPickerButtonRef}
         className={cn(
           "flex items-center gap-2 p-0.5 rounded",
-          editable && "cursor-pointer hover:bg-white/50",
+          editable && "cursor-pointer hover:bg-accent/30",
         )}
         onClick={() => {
           if (editable) {

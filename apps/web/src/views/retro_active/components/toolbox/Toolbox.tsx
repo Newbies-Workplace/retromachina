@@ -1,6 +1,5 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import ProgressBar from "@ramonak/react-progress-bar";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -13,6 +12,7 @@ import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
 import { isCard } from "@/components/molecules/dragndrop/dragndrop";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -216,7 +216,7 @@ export const Toolbox: React.FC = () => {
                     }
                   >
                     <Button
-                      className={"size-full"}
+                      className={"grow"}
                       size={"sm"}
                       onClick={() =>
                         maxVotes > 0 && setMaxVotesAmount(maxVotes - 1)
@@ -232,7 +232,7 @@ export const Toolbox: React.FC = () => {
                       {maxVotes}
                     </div>
                     <Button
-                      className={"size-full"}
+                      className={"grow"}
                       size={"sm"}
                       onClick={() => setMaxVotesAmount(maxVotes + 1)}
                     >
@@ -247,22 +247,13 @@ export const Toolbox: React.FC = () => {
 
         <div className={cn("flex flex-col justify-center gap-2 w-24 h-16")}>
           <Button
-            className={cn("h-full w-full")}
+            className={cn("grow w-full")}
             onClick={() => setReady(!ready)}
           >
             <CheckIcon className={"size-6"} />
           </Button>
 
-          <ProgressBar
-            completed={readyPercentage}
-            maxCompleted={100}
-            bgColor="#73bda8"
-            transitionDuration={"0.4s"}
-            isLabelVisible={false}
-            labelColor="#e80909"
-            height="10px"
-            baseBgColor="#F4F2E6"
-          />
+          <Progress value={readyPercentage} />
         </div>
 
         <div className={"flex justify-center gap-2 w-24 h-16"}>
@@ -288,9 +279,9 @@ export const Toolbox: React.FC = () => {
         )}
 
         {isAdmin && (
-          <div className={"flex justify-between gap-2 w-24 h-16 *:w-15 *:p-0"}>
+          <div className={"flex justify-between gap-2 w-24 h-16"}>
             <Button
-              className={"size-full"}
+              className={"h-full grow p-0"}
               size={"sm"}
               disabled={prevDisabled}
               onClick={prevRoomState}
@@ -299,7 +290,7 @@ export const Toolbox: React.FC = () => {
             </Button>
 
             <Button
-              className={"size-full"}
+              className={"h-full grow p-0"}
               disabled={nextDisabled}
               onClick={nextRoomState}
             >

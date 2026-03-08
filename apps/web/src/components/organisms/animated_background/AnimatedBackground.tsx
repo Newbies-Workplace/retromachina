@@ -124,7 +124,7 @@ const AnimatedIcon: React.FC = () => {
       onMouseMoveCapture={animate}
       transition={{ duration: 0.3 }}
       className={cn(
-        "flex justify-center items-center size-32 bg-card/50 rounded m-2",
+        "flex justify-center items-center size-32 bg-secondary/10 rounded m-2",
       )}
     >
       {icon === 0 && (

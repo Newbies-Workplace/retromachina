@@ -6,7 +6,6 @@
 :root {
     --font-mono: "JetBrains Mono", monospace;
 
-    --radius: 0.625rem;
     --background: #F4F2E6;
     --foreground: oklch(0.145 0 0);
     --card: #f8e2c3;
@@ -26,6 +25,8 @@
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
+
+    --radius: 0.625rem;
 
     --shadow-x: 4px;
     --shadow-y: 0px;

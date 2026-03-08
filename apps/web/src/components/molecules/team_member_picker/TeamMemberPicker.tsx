@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import type { UserRole } from "shared/model/user/user.role";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,

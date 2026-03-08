@@ -1,7 +1,7 @@
 import { SunIcon, Volume1Icon } from "lucide-react";
 import React, { useState } from "react";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
-import { Button } from "@/components/atoms/button/Button";
+import { Button } from "@/components/ui/button";
 import {
   DialogClose,
   DialogContent,

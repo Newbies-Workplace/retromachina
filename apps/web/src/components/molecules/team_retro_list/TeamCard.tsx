@@ -19,13 +19,13 @@ import { RetroService } from "@/api/Retro.service";
 import { UserService } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
 import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import {
   SLOT_MACHINE_ANIMATION_DURATION,
   SlotMachine,
   SlotMachineRef,
 } from "@/components/organisms/slot_machine/SlotMachine";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -130,7 +130,6 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
       <div className={"flex flex-col sm:flex-row gap-2"}>
         <Button
           data-testid="task-list"
-          size={"xl"}
           className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar"}
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
@@ -140,7 +139,6 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
 
         <Button
           data-testid="task-list"
-          size={"xl"}
           className={
             "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-secondary"
           }
@@ -155,7 +153,6 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         {role !== "USER" && !isAnyRetroRunning && (
           <Button
             data-testid="create-retro"
-            size={"xl"}
             variant={"destructive"}
             className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24"}
             onClick={() => navigate(`/retro/create?teamId=${teamId}`)}
@@ -171,9 +168,8 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
               <Button
                 data-testid="current-retro"
                 key={retro.id}
-                size={"xl"}
                 className={
-                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-white border-4 border-destructive"
+                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-background text-on-background border-4 border-destructive"
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >

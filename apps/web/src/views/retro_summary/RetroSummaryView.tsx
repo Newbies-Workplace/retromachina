@@ -8,7 +8,6 @@ import { RetroService } from "@/api/Retro.service";
 import { TaskService } from "@/api/Task.service";
 import { UserService } from "@/api/User.service";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardAuthor,
@@ -16,6 +15,7 @@ import {
 } from "@/components/molecules/card/Card";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 export const RetroSummaryView = () => {
   const { retroId } = useParams<{ retroId: string }>();
@@ -163,7 +163,6 @@ export const RetroSummaryView = () => {
 
             <Button
               className={"mt-4 self-end"}
-              size={"lg"}
               onClick={() => {
                 navigate(`/team/${retro?.team_id}/board`);
               }}

@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -17,6 +16,7 @@ import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -87,7 +87,7 @@ export const TeamBoardView: React.FC = () => {
             </div>
 
             {isOwner && (
-              <Button size={"xs"} onClick={onEditClick}>
+              <Button size={"sm"} onClick={onEditClick}>
                 Edytuj
               </Button>
             )}

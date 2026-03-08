@@ -2,7 +2,7 @@ import { RefreshCwIcon, TrashIcon } from "lucide-react";
 import type React from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "@/components/atoms/button/Button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 

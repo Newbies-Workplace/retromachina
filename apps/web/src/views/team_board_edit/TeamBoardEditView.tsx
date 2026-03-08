@@ -8,10 +8,10 @@ import type { BoardResponse } from "shared/model/board/board.response";
 import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
 import { v4 as uuidv4 } from "uuid";
 import { BoardService } from "@/api/Board.service";
-import { Button } from "@/components/atoms/button/Button";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 const MAX_COLUMNS = 6;
 
@@ -146,7 +146,7 @@ export const TeamBoardEditView: React.FC = () => {
               ))}
           </BoardCreator>
 
-          <Button className={"mt-4"} size={"sm"} onClick={saveBoard}>
+          <Button className={"mt-4"} onClick={saveBoard}>
             <SaveIcon />
             Zapisz tablicę
           </Button>

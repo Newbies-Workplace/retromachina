@@ -5,9 +5,9 @@ import { toast } from "react-toastify";
 import { TeamResponse } from "shared/model/team/team.response";
 import { RetroService } from "@/api/Retro.service";
 import { TeamService } from "@/api/Team.service";
-import { Button } from "@/components/atoms/button/Button";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 export const InviteView: React.FC = () => {
   const { inviteKey } = useParams<{ inviteKey: string }>();

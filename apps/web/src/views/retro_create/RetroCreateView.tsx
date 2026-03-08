@@ -14,10 +14,10 @@ import { getRandomTemplate } from "@/api/RetroTemplate.service";
 import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 export interface Column {
   id: string;

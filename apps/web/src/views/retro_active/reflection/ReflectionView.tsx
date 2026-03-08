@@ -1,6 +1,5 @@
 import { TrashIcon } from "lucide-react";
 import type React from "react";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -11,6 +10,7 @@ import { Column } from "@/components/molecules/column/Column";
 import { ColumnInput } from "@/components/molecules/column/ColumnInput";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
+import { Button } from "@/components/ui/button";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";

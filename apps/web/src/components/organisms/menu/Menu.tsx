@@ -8,8 +8,8 @@ import {
 import React from "react";
 import { Link, useNavigate } from "react-router";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
 import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useUser } from "@/context/user/UserContext.hook";
 
@@ -125,7 +125,6 @@ export const Menu = () => {
       </div>
 
       <Button
-        size="sm"
         className={"mx-2 mb-2"}
         variant={"destructive"}
         onClick={onLogoutClick}

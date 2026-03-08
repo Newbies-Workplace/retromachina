@@ -11,12 +11,12 @@ import {
 import { GripVerticalIcon, TrashIcon } from "lucide-react";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
-import { Button } from "@/components/atoms/button/Button";
 import {
   getColumnData,
   isColumnData,
   isDraggingAColumn,
 } from "@/components/molecules/board_creator/data";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -117,11 +117,11 @@ export const BoardCreatorColumnDisplay = ({
 
           <Button
             data-testid={"remove-column"}
-            size={"sm"}
+            size={"icon"}
             variant={"destructive"}
             onClick={onDelete}
           >
-            <TrashIcon className={"size-5"} />
+            <TrashIcon className={"size-4"} />
           </Button>
         </div>
 

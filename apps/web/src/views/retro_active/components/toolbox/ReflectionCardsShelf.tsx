@@ -10,7 +10,6 @@ import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
 import cardDropSound from "@/assets/sounds/card-drop.wav";
 import cardPickSound from "@/assets/sounds/card-pick.wav";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -20,6 +19,7 @@ import {
   getReflectionCard,
   isCard,
 } from "@/components/molecules/dragndrop/dragndrop";
+import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";

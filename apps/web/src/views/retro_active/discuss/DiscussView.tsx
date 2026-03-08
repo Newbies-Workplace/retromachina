@@ -2,7 +2,6 @@ import { TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -10,6 +9,7 @@ import {
   CardContent,
 } from "@/components/molecules/card/Card";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -174,7 +174,7 @@ export const DiscussView = () => {
       )}
       <div
         className={
-          "flex flex-col grow p-2 min-w-[300px] max-w-[400px] my-4 rounded-l-2xl bg-card"
+          "flex flex-col grow p-2 min-w-75 max-w-100 my-4 rounded-l-2xl bg-card"
         }
       >
         <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>

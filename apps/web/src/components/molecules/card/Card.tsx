@@ -1,8 +1,8 @@
 import { SaveIcon } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useCallback } from "react";
-import { Button } from "@/components/atoms/button/Button";
 import { PositioningBackdrop } from "@/components/molecules/backdrop/PositioningBackdrop";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CardActions } from "./CardActions";
 import { CardAuthor } from "./CardAuthor";

@@ -1,8 +1,8 @@
 import type React from "react";
 import { useNavigate } from "react-router";
 import NotFoundSvg from "@/assets/images/not-found.svg";
-import { Button } from "@/components/atoms/button/Button";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 export const NotFoundView: React.FC = () => {
   const navigate = useNavigate();

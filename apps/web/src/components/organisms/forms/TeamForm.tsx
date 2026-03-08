@@ -4,9 +4,9 @@ import { InviteResponse } from "shared/model/invite/Invite.response";
 import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
-import { Button } from "@/components/atoms/button/Button";
 import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 import { TeamInviteLinkInput } from "@/components/organisms/forms/TeamInviteLinkInput";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface TeamFormProps {

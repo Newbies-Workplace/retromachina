@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TrashIcon } from "lucide-react";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -9,6 +8,7 @@ import {
   CardMetadataTooltip,
 } from "@/components/molecules/card/Card";
 import CardVotesCounter from "@/components/molecules/card/CardVotesCounter";
+import { Button } from "@/components/ui/button";
 
 const meta = {
   title: "molecules/Card",

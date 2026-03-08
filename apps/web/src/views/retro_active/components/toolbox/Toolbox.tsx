@@ -11,8 +11,8 @@ import {
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
-import { Button } from "@/components/atoms/button/Button";
 import { isCard } from "@/components/molecules/dragndrop/dragndrop";
+import { Button } from "@/components/ui/button";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -291,6 +291,7 @@ export const Toolbox: React.FC = () => {
           <div className={"flex justify-between gap-2 w-24 h-16 *:w-15 *:p-0"}>
             <Button
               className={"size-full"}
+              size={"sm"}
               disabled={prevDisabled}
               onClick={prevRoomState}
             >

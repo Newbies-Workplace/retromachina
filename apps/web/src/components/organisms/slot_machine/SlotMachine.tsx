@@ -19,7 +19,7 @@ import ConfettiExplosion from "react-confetti-explosion";
 import slotMachineSound from "@/assets/sounds/slot-machine.wav";
 import slotMachineOpenSound from "@/assets/sounds/slot-machine-open.wav";
 import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
+import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";

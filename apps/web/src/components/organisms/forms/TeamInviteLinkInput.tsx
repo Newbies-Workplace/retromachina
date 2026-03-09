@@ -1,6 +1,6 @@
 import { RefreshCwIcon, TrashIcon } from "lucide-react";
 import type React from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

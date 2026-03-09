@@ -2,7 +2,7 @@ import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-sc
 import { Share2Icon } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import Navbar from "@/components/organisms/navbar/Navbar";

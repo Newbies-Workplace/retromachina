@@ -1,6 +1,5 @@
 import type React from "react";
 import { createContext, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import type {
   TaskCreateCommand,
   TaskDeleteCommand,
@@ -15,6 +14,7 @@ import type { BoardResponse } from "shared/model/board/board.response";
 import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
+import { toast } from "sonner";
 import { BoardService } from "@/api/Board.service";
 import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";

@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
-import { toast } from "react-toastify";
 import { TeamResponse } from "shared/model/team/team.response";
+import { toast } from "sonner";
 import { RetroService } from "@/api/Retro.service";
 import { TeamService } from "@/api/Team.service";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";

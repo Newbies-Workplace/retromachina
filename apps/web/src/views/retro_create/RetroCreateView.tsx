@@ -4,10 +4,10 @@ import * as qs from "query-string";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
-import { toast } from "react-toastify";
 import type { RetroCreateRequest } from "shared/model/retro/retro.request";
 import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { RetroService } from "@/api/Retro.service";
 import { getRandomTemplate } from "@/api/RetroTemplate.service";
@@ -121,7 +121,7 @@ export const RetroCreateView: React.FC = () => {
         navigator.clipboard?.writeText(retroUrl).catch(console.log);
 
         toast.success("Link został skopiowany do schowka", {
-          autoClose: 3000,
+          duration: 3000,
         });
 
         navigate(`/retro/${retro.data.id}`);

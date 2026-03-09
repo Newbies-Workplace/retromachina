@@ -1,8 +1,8 @@
 import { XIcon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import type { UserRole } from "shared/model/user/user.role";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

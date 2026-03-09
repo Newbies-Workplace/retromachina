@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
 import type {
   AddCardToCardCommand,
   AddCardVoteCommand,
@@ -37,6 +36,7 @@ import type {
 } from "shared/model/retro/retroRoom.interface";
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { UserService } from "@/api/User.service";
 import { CardMoveAction } from "@/components/molecules/dragndrop/dragndrop";

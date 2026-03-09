@@ -158,11 +158,7 @@ export const DiscussView = () => {
                   );
                 })}
 
-                <span
-                  className={
-                    "flex justify-end items-end mt-auto text-sm text-gray-600"
-                  }
-                >
+                <span className={"flex justify-end items-end mt-auto text-sm"}>
                   {group.votes}{" "}
                   {pluralText(group.votes, {
                     one: "głos",

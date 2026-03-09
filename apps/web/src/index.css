@@ -23,7 +23,7 @@
     --destructive: #DC6E47;
     --destructive-foreground: oklch(1.0000 0 0);
     --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
+    --input: oklch(0.754 0 89.876);
     --ring: oklch(0.7951 0.1631 68.6392);
 
     --radius: 0.625rem;

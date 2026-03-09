@@ -10,7 +10,6 @@ import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
 import cardDropSound from "@/assets/sounds/card-drop.wav";
 import cardPickSound from "@/assets/sounds/card-pick.wav";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -20,6 +19,7 @@ import {
   getReflectionCard,
   isCard,
 } from "@/components/molecules/dragndrop/dragndrop";
+import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
@@ -109,20 +109,26 @@ export const ReflectionCardsShelf: React.FC<{
     <Portal>
       <div
         ref={drawerRef}
-        className={cn("absolute bottom-0 min-h-50 w-full z-10 overflow-hidden")}
+        className={cn("absolute bottom-0 min-h-54 w-full z-10 overflow-hidden")}
       >
         <motion.div
           initial={{ bottom: -150 }}
           animate={{ bottom: 0 }}
           className={cn(
-            "absolute bottom-0 h-full w-full p-2 bg-secondary-500 rounded-t-lg flex flex-col gap-2",
+            "absolute bottom-0 h-full w-full p-2 bg-secondary rounded-t-lg flex flex-col gap-2",
             isOverDropDiv
-              ? "border-2 border-b-0 border-primary-500"
+              ? "border-2 border-b-0 border-primary"
               : "border-2 border-transparent",
           )}
         >
-          <div className={"flex justify-between text-background-50"}>
-            <span className={"font-harlow-solid-italic text-3xl"}>Wrzutki</span>
+          <div className={"flex justify-between"}>
+            <span
+              className={
+                "font-harlow-solid-italic text-3xl text-secondary-foreground"
+              }
+            >
+              Wrzutki
+            </span>
 
             <Button onClick={onNewReflectionCardClick} size={"sm"}>
               Nowa wrzutka
@@ -130,62 +136,69 @@ export const ReflectionCardsShelf: React.FC<{
             </Button>
           </div>
 
-          {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
-            <div
-              className={
-                "flex justify-center items-center h-full border-2 border-dashed border-background-50 text-background-50 text-center"
-              }
-            >
-              Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
-              zapisać ją na później!
-            </div>
-          )}
+          <div
+            className={
+              "flex flex-row gap-2 h-full w-full p-2 overflow-x-scroll"
+            }
+          >
+            {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
+              <div
+                className={
+                  "flex justify-center items-center h-full w-full border-2 border-dashed rounded-xl text-center"
+                }
+              >
+                Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
+                zapisać ją na później!
+              </div>
+            )}
 
-          {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
-            <div className={cn("flex flex-row gap-2 h-full w-full rounded")}>
-              {isCreatingNewReflectionCard && (
-                <Card
-                  id="new-reflection-card"
-                  onEditDismiss={onDeleteNewReflectionCardClick}
-                  positioningBackgroundEnabled={false}
-                >
-                  <CardContent
-                    text={newReflectionCardText}
-                    editable
-                    autoFocus
-                    onSave={onSaveNewReflectionCardClick}
+            {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
+              <div className={cn("flex flex-row gap-2 h-full w-full rounded")}>
+                {isCreatingNewReflectionCard && (
+                  <Card
+                    id="new-reflection-card"
+                    className={"w-[225px]"}
                     onEditDismiss={onDeleteNewReflectionCardClick}
-                  />
-                  <CardActions>
-                    <Button
-                      onClick={onDeleteNewReflectionCardClick}
-                      size={"icon"}
-                      variant={"destructive"}
-                    >
-                      <TrashIcon className={"size-4"} />
-                    </Button>
-                  </CardActions>
-                </Card>
-              )}
+                    positioningBackgroundEnabled={false}
+                  >
+                    <CardContent
+                      text={newReflectionCardText}
+                      editable
+                      autoFocus
+                      onSave={onSaveNewReflectionCardClick}
+                      onEditDismiss={onDeleteNewReflectionCardClick}
+                    />
+                    <CardActions>
+                      <Button
+                        onClick={onDeleteNewReflectionCardClick}
+                        size={"icon"}
+                        variant={"destructive"}
+                      >
+                        <TrashIcon className={"size-4"} />
+                      </Button>
+                    </CardActions>
+                  </Card>
+                )}
 
-              {reflectionCards.map((card) => {
-                return (
-                  <DraggableReflectionCard
-                    key={card.id}
-                    id={card.id}
-                    text={card.text}
-                    enableDrag={enableDrag}
-                    onEdit={(newText) => {
-                      onReflectionCardEdit(card.id, newText);
-                    }}
-                    onDeleteClick={() => {
-                      onReflectionCardDeleteClick(card.id);
-                    }}
-                  />
-                );
-              })}
-            </div>
-          )}
+                {reflectionCards.map((card) => {
+                  return (
+                    <DraggableReflectionCard
+                      key={card.id}
+                      id={card.id}
+                      text={card.text}
+                      enableDrag={enableDrag}
+                      onEdit={(newText) => {
+                        onReflectionCardEdit(card.id, newText);
+                      }}
+                      onDeleteClick={() => {
+                        onReflectionCardDeleteClick(card.id);
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </motion.div>
       </div>
     </Portal>
@@ -215,18 +228,18 @@ const DraggableReflectionCard: React.FC<{
     return combine(
       draggable({
         element: element,
-        getInitialData: () => getReflectionCard({ reflectionCardId: id, text }),
+        getInitialData: () => getReflectionCard({ reflectionCardId: id }),
         onDragStart: () => {
-          playSound(cardPickSound);
+          playSound(cardPickSound).then();
           setIsDragging(true);
         },
         onDrop: () => {
-          playSound(cardDropSound);
+          playSound(cardDropSound).then();
           setIsDragging(false);
         },
       }),
     );
-  }, []);
+  }, [id]);
 
   return (
     <motion.div
@@ -238,7 +251,11 @@ const DraggableReflectionCard: React.FC<{
         isDragging ? "opacity-25" : "opacity-100",
       )}
     >
-      <Card id={id} positioningBackgroundEnabled={false}>
+      <Card
+        className={"w-[225px]"}
+        id={id}
+        positioningBackgroundEnabled={false}
+      >
         <CardContent text={text} editable onSave={onEdit} />
         <CardActions>
           <Button onClick={onDeleteClick} size={"icon"} variant={"destructive"}>

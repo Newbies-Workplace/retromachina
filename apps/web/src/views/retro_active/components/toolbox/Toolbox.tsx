@@ -1,6 +1,5 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import ProgressBar from "@ramonak/react-progress-bar";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -11,8 +10,9 @@ import {
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
-import { Button } from "@/components/atoms/button/Button";
 import { isCard } from "@/components/molecules/dragndrop/dragndrop";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -40,7 +40,6 @@ export const Toolbox: React.FC = () => {
     maxVotes,
     setMaxVotesAmount,
     votes,
-    activeUsers,
     endRetro,
     slotMachineVisible,
     setSlotMachineVisible,
@@ -146,7 +145,7 @@ export const Toolbox: React.FC = () => {
 
       <div
         className={
-          "relative flex items-center justify-center gap-2 w-full p-2 bg-background-500 rounded-t-2xl"
+          "relative flex items-center justify-center gap-2 w-full p-2 bg-card rounded-t-2xl"
         }
       >
         {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}
@@ -170,7 +169,7 @@ export const Toolbox: React.FC = () => {
             <Button
               ref={reflectionCardsShelfButtonRef}
               className={cn(
-                "relative flex flex-col justify-center items-center gap-4 size-full bg-white border-2 border-primary-500 border-dashed",
+                "relative flex flex-col justify-center items-center gap-4 size-full bg-background text-foreground border-2 border-primary border-dashed",
               )}
               onClick={() => {
                 setIsReflectionCardsShelfOpen(true);
@@ -180,7 +179,7 @@ export const Toolbox: React.FC = () => {
               {hasReflectionCards && (
                 <div
                   className={
-                    "absolute size-4 rounded-full bg-red-500 w-20 h-2 bottom-1 animate-pulse "
+                    "absolute rounded-full bg-destructive left-4 right-4 h-2 bottom-1 animate-pulse "
                   }
                 />
               )}
@@ -198,7 +197,7 @@ export const Toolbox: React.FC = () => {
               {isVoteOpen && (
                 <div
                   className={
-                    "flex flex-col absolute bottom-[86px] bg-background-500 rounded-xl p-2 shadow-md"
+                    "flex flex-col absolute bottom-[86px] bg-card rounded-xl p-2 shadow-md"
                   }
                   ref={votePopover}
                 >
@@ -213,11 +212,11 @@ export const Toolbox: React.FC = () => {
 
                   <div
                     className={
-                      "flex justify-between gap-2 h-[30px] w-full pt-1 bg-background-500"
+                      "flex justify-between gap-2 h-[30px] w-full pt-1 bg-card"
                     }
                   >
                     <Button
-                      className={"size-full"}
+                      className={"grow"}
                       size={"sm"}
                       onClick={() =>
                         maxVotes > 0 && setMaxVotesAmount(maxVotes - 1)
@@ -227,13 +226,13 @@ export const Toolbox: React.FC = () => {
                     </Button>
                     <div
                       className={
-                        "flex justify-center items-center bg-background-50 h-[30px] min-w-[50px] rounded"
+                        "flex justify-center items-center bg-background h-[30px] min-w-[50px] rounded"
                       }
                     >
                       {maxVotes}
                     </div>
                     <Button
-                      className={"size-full"}
+                      className={"grow"}
                       size={"sm"}
                       onClick={() => setMaxVotesAmount(maxVotes + 1)}
                     >
@@ -248,29 +247,20 @@ export const Toolbox: React.FC = () => {
 
         <div className={cn("flex flex-col justify-center gap-2 w-24 h-16")}>
           <Button
-            className={cn("h-full w-full")}
+            className={cn("grow w-full")}
             onClick={() => setReady(!ready)}
           >
             <CheckIcon className={"size-6"} />
           </Button>
 
-          <ProgressBar
-            completed={readyPercentage}
-            maxCompleted={100}
-            bgColor="#73bda8"
-            transitionDuration={"0.4s"}
-            isLabelVisible={false}
-            labelColor="#e80909"
-            height="10px"
-            baseBgColor="#F4F2E6"
-          />
+          <Progress value={readyPercentage} />
         </div>
 
         <div className={"flex justify-center gap-2 w-24 h-16"}>
           {isVotingVisible && (
             <div
               className={
-                "flex justify-center items-center relative w-full h-full rounded bg-background-50 text-center break-words"
+                "flex justify-center items-center relative w-full h-full rounded bg-background text-center wrap-break-word"
               }
             >
               {`${userVotes}/${maxVotes}`}
@@ -289,11 +279,10 @@ export const Toolbox: React.FC = () => {
         )}
 
         {isAdmin && (
-          <div
-            className={"flex justify-between gap-2 w-24 h-16 *:w-[60px] *:p-0"}
-          >
+          <div className={"flex justify-between gap-2 w-24 h-16"}>
             <Button
-              className={"size-full"}
+              className={"h-full grow p-0"}
+              size={"sm"}
               disabled={prevDisabled}
               onClick={prevRoomState}
             >
@@ -301,7 +290,7 @@ export const Toolbox: React.FC = () => {
             </Button>
 
             <Button
-              className={"size-full"}
+              className={"h-full grow p-0"}
               disabled={nextDisabled}
               onClick={nextRoomState}
             >
@@ -312,15 +301,13 @@ export const Toolbox: React.FC = () => {
 
         <div className={"flex justify-center gap-2 w-24 h-16"}>
           {isAdmin && (
-            <>
-              <Button
-                variant={"destructive"}
-                className={"size-full"}
-                onClick={onFinishRetroPress}
-              >
-                <FlagIcon className={"size-6"} />
-              </Button>
-            </>
+            <Button
+              variant={"destructive"}
+              className={"size-full"}
+              onClick={onFinishRetroPress}
+            >
+              <FlagIcon className={"size-6"} />
+            </Button>
           )}
         </div>
       </div>

@@ -8,6 +8,7 @@ import {
 } from "motion/react";
 import React, {
   RefObject,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -17,8 +18,8 @@ import React, {
 import ConfettiExplosion from "react-confetti-explosion";
 import slotMachineSound from "@/assets/sounds/slot-machine.wav";
 import slotMachineOpenSound from "@/assets/sounds/slot-machine-open.wav";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
@@ -105,20 +106,23 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
   const [leverRef, animate] = useAnimate();
   const controls = useAnimation();
 
-  const animateSlotMachine = async (animateLever: boolean) => {
-    if (animateLever) {
-      await animate(".lever", { y: [0, 35, 50, 50, 0] }, { duration: 0.4 });
-    }
+  const animateSlotMachine = useCallback(
+    async (animateLever: boolean) => {
+      if (animateLever) {
+        await animate(".lever", { y: [0, 35, 50, 50, 0] }, { duration: 0.4 });
+      }
 
-    await controls.start("idle", { duration: 0.1 });
-    playAudio(slotMachineSound);
-    await controls.start("drawing");
+      await controls.start("idle", { duration: 0.1 });
+      playAudio(slotMachineSound).then();
+      await controls.start("drawing");
 
-    setHasConfetti(true);
-    delay(() => {
-      setHasConfetti(false);
-    }, 1500);
-  };
+      setHasConfetti(true);
+      delay(() => {
+        setHasConfetti(false);
+      }, 1500);
+    },
+    [animate, controls, playAudio],
+  );
 
   useImperativeHandle(
     ref,
@@ -127,7 +131,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
         await animateSlotMachine(animateLever);
       },
     }),
-    [],
+    [animateSlotMachine],
   );
 
   // Play open sound only on visibility change, not on first render
@@ -141,7 +145,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
     if (slotMachineVisible) {
       playAudio(slotMachineOpenSound);
     }
-  }, [slotMachineVisible]);
+  }, [slotMachineVisible, playAudio]);
 
   return (
     <AnimatePresence>
@@ -156,7 +160,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
         >
           <div
             className={
-              "flex flex-col items-center gap-6 bg-secondary-500 p-2 rounded-xl rounded-t-[48px] shadow-lg w-full z-[1]"
+              "flex flex-col items-center gap-6 bg-secondary p-2 rounded-xl rounded-t-[48px] shadow-lg w-full z-1"
             }
           >
             {hideMachineEnabled && (
@@ -173,7 +177,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
             )}
             <span
               className={
-                "flex flex-col justify-center items-center font-harlow-solid-italic text-background-50 text-3xl"
+                "flex flex-col justify-center items-center font-harlow-solid-italic text-secondary-foreground text-3xl"
               }
             >
               {hasConfetti && (
@@ -184,7 +188,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
 
             <div
               className={
-                "flex justify-evenly items-end gap-2 w-full bg-background-50 h-20 rounded-xl overflow-hidden"
+                "flex justify-evenly items-end gap-2 w-full bg-background h-20 rounded-xl overflow-hidden"
               }
             >
               {[0, 1, 2].map((i) => (
@@ -198,14 +202,16 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
                 >
                   {randomUsers[i].map((user, index) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
-                    <Avatar size={60} key={index} url={user.avatar_link} />
+                    <Avatar size={"xl"} key={index}>
+                      <AvatarImage src={user.avatar_link} />
+                      <AvatarFallback>??</AvatarFallback>
+                    </Avatar>
                   ))}
                   {delayedHighlightedUser !== undefined && (
-                    <Avatar
-                      size={60}
-                      key={delayedHighlightedUser.id}
-                      url={delayedHighlightedUser.avatar_link}
-                    />
+                    <Avatar size={"xl"} key={delayedHighlightedUser.id}>
+                      <AvatarImage src={delayedHighlightedUser.avatar_link} />
+                      <AvatarFallback>??</AvatarFallback>
+                    </Avatar>
                   )}
                 </motion.div>
               ))}
@@ -229,13 +235,19 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
             >
               <div
                 className={
-                  "bg-red-500 size-16 rounded-full z-[2] cursor-grab active:cursor-grabbing"
+                  "bg-destructive size-16 rounded-full z-2 cursor-grab active:cursor-grabbing"
                 }
               />
-              <div className={"absolute -bottom-4 bg-gray-600 w-4 h-8 z-[1]"} />
+              <div
+                className={
+                  "absolute -bottom-4 bg-gray-400 dark:bg-gray-600 w-4 h-8 z-1"
+                }
+              />
             </motion.div>
-            <div className={"bg-gray-500 w-4 h-16 ml-12"} />
-            <div className={"bg-gray-500 w-16 h-4 rounded-br"} />
+            <div className={"bg-gray-300 dark:bg-gray-500 w-4 h-16 ml-12"} />
+            <div
+              className={"bg-gray-300 dark:bg-gray-500 w-16 h-4 rounded-br"}
+            />
           </div>
         </motion.div>
       )}

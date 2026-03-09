@@ -11,7 +11,7 @@ interface CounterProps {
   onDecrement(): void;
 }
 
-const Counter: React.FC<CounterProps> = ({
+const CardVotesCounter: React.FC<CounterProps> = ({
   count,
   canIncrement,
   onIncrement,
@@ -46,7 +46,7 @@ const Counter: React.FC<CounterProps> = ({
 
       <span
         className={cn("flex justify-center items-center size-8 rounded-full", {
-          "bg-primary-500": count > 0,
+          "bg-primary": count > 0,
         })}
       >
         {count}
@@ -61,4 +61,4 @@ const Counter: React.FC<CounterProps> = ({
     </div>
   );
 };
-export default Counter;
+export default CardVotesCounter;

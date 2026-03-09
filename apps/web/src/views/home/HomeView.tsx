@@ -2,10 +2,10 @@ import { HandshakeIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import NotFoundSvg from "@/assets/images/not-found.svg";
-import { Button } from "@/components/atoms/button/Button";
 import { TeamCard } from "@/components/molecules/team_retro_list/TeamCard";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
@@ -61,7 +61,7 @@ const EmptyState: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-background-500 rounded-2xl pointer-events-auto max-w-lg"
+        "flex flex-col grow items-center justify-center gap-4 m-8 p-4 bg-card rounded-2xl pointer-events-auto max-w-lg"
       }
     >
       <NotFoundSvg />

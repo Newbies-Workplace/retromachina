@@ -2,13 +2,19 @@ import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-sc
 import { Share2Icon } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
-import { Button } from "@/components/atoms/button/Button";
-import { ProgressBar } from "@/components/atoms/progress_bar/ProgressBar";
-import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+  AvatarStatus,
+} from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useAudio } from "@/hooks/useAudio";
@@ -84,7 +90,7 @@ export const RetroActiveView: React.FC = () => {
     <>
       <Navbar
         avatarProps={{
-          variant: ready ? "ready" : "active",
+          isReady: ready,
         }}
         topContent={
           <>
@@ -92,7 +98,7 @@ export const RetroActiveView: React.FC = () => {
               {isAdmin && (
                 <div
                   className={
-                    "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 p-2 rounded-b-lg"
+                    "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg"
                   }
                 >
                   <Button
@@ -109,30 +115,21 @@ export const RetroActiveView: React.FC = () => {
               <RetroTimer />
             </div>
 
-            <TeamAvatars
-              users={
-                teamUsers
-                  .filter((u) => u.id !== user?.id)
-                  .map((user) => {
-                    const socketUser = activeUsers.find(
-                      (socketUser) => socketUser.userId === user.id,
-                    );
-
-                    if (!socketUser) {
-                      return undefined;
-                    }
-
-                    return {
-                      id: user.id,
-                      nick: user.nick,
-                      avatar_link: user.avatar_link,
-                      isReady: socketUser?.isReady ?? false,
-                      isActive: true,
-                    };
-                  })
-                  .filter((u) => u !== undefined) as any[]
-              }
-            />
+            <AvatarGroup className={"mt-0.5"}>
+              {teamUsers
+                .filter((u) => u.id !== user?.id)
+                .map((u) =>
+                  activeUsers.find((socketUser) => socketUser.userId === u.id),
+                )
+                .filter((u) => u !== undefined)
+                .map((user) => (
+                  <Avatar key={user?.userId}>
+                    <AvatarImage src={user.avatar_link} />
+                    <AvatarFallback>:)</AvatarFallback>
+                    {user?.isReady && <AvatarStatus />}
+                  </Avatar>
+                ))}
+            </AvatarGroup>
           </>
         }
       />
@@ -146,7 +143,7 @@ export const RetroActiveView: React.FC = () => {
           <Route path="group" element={<GroupView />} />
           <Route path="vote" element={<VoteView />} />
           <Route path="discuss" element={<DiscussView />} />
-          <Route path="*" element={<ProgressBar />} />
+          <Route path="*" element={<Spinner className={"size-8"} />} />
         </Routes>
       </div>
 

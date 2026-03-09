@@ -4,18 +4,23 @@ import { Portal } from "react-portal";
 
 interface BackdropProps {
   onDismiss?: () => void;
+  hasDarkBackground?: boolean;
   children: React.ReactNode;
 }
 
 export const Backdrop: React.FC<BackdropProps> = ({
   children,
+  hasDarkBackground = true,
   onDismiss = () => {},
 }) => {
   return (
     <Portal>
       <motion.div
         initial={{ backgroundColor: "#00000000", opacity: 0 }}
-        animate={{ backgroundColor: "#00000045", opacity: 1 }}
+        animate={{
+          backgroundColor: hasDarkBackground ? "#00000045" : "#00000000",
+          opacity: 1,
+        }}
         exit={{ backgroundColor: "#00000000", opacity: 0 }}
         transition={{ duration: 0.15 }}
         className={

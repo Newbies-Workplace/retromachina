@@ -4,10 +4,10 @@ import { InviteResponse } from "shared/model/invite/Invite.response";
 import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
-import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
 import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 import { TeamInviteLinkInput } from "@/components/organisms/forms/TeamInviteLinkInput";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface TeamFormProps {
   team: TeamResponse | null;
@@ -39,10 +39,10 @@ export const TeamForm: React.FC<TeamFormProps> = ({
   return (
     <div
       className={
-        "flex flex-col gap-2 w-[600px] min-h-[700px] h-fit bg-background-500 m-8 rounded-lg"
+        "flex flex-col gap-2 w-[600px] min-h-[700px] h-fit bg-card m-8 rounded-lg"
       }
     >
-      <div className={"bg-primary-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}>
+      <div className={"bg-primary p-4 pb-2 rounded-t-lg font-bold text-lg"}>
         {team ? "Zarządzanie zespołem" : "Stworz nowy zespół"}
       </div>
 
@@ -54,7 +54,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
           <Input
             data-testid={"team-name"}
             value={name}
-            setValue={setName}
+            onChange={(event) => setName(event.target.value)}
             placeholder={"Nazwa zespołu"}
           />
         </div>

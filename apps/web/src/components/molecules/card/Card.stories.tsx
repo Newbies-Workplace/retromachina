@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TrashIcon } from "lucide-react";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -8,7 +7,8 @@ import {
   CardContent,
   CardMetadataTooltip,
 } from "@/components/molecules/card/Card";
-import Counter from "@/components/molecules/counter/Counter";
+import CardVotesCounter from "@/components/molecules/card/CardVotesCounter";
+import { Button } from "@/components/ui/button";
 
 const meta = {
   title: "molecules/Card",
@@ -97,7 +97,7 @@ export const WithCounter: Story = {
         }}
       />
       <CardActions>
-        <Counter
+        <CardVotesCounter
           canIncrement={true}
           count={12}
           onIncrement={() => {}}

@@ -1,11 +1,11 @@
 import { XIcon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import type { UserRole } from "shared/model/user/user.role";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -108,7 +108,7 @@ export const TeamMemberPicker: React.FC<UserPickerProps> = ({ teamId }) => {
           data-testid={"new-user-email"}
           value={email}
           placeholder="Podaj adres email..."
-          setValue={(value) => setEmail(value)}
+          onChange={(event) => setEmail(event.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               onUserAdd();
@@ -139,6 +139,12 @@ type UserProps = {
   onDelete?: () => void;
 };
 
+const USER_ROLES = [
+  { value: "OWNER", label: "Właściciel" },
+  { value: "ADMIN", label: "Administrator" },
+  { value: "USER", label: "Użytkownik" },
+];
+
 const TeamMember: React.FC<UserProps> = ({
   email,
   avatarUrl,
@@ -150,10 +156,13 @@ const TeamMember: React.FC<UserProps> = ({
   return (
     <div
       className={
-        "flex grow items-center bg-white w-full gap-2.5 min-h-[40px] border p-1 rounded-md border-solid border [line-break:anywhere]"
+        "flex grow items-center bg-secondary/50 w-full gap-2.5 min-h-10 p-1.5 rounded-md shadow-sm [line-break:anywhere]"
       }
     >
-      <Avatar size={32} url={avatarUrl} />
+      <Avatar size={"sm"}>
+        <AvatarImage src={avatarUrl} />
+        <AvatarFallback>:)</AvatarFallback>
+      </Avatar>
 
       <span className={"grow"}>{email}</span>
 
@@ -161,26 +170,23 @@ const TeamMember: React.FC<UserProps> = ({
         data-testid={"role-select"}
         value={role}
         onValueChange={onRoleChange}
+        itemToStringLabel={(role) =>
+          USER_ROLES.find((r) => r.value === role)?.label || role
+        }
       >
         <SelectTrigger disabled={!onRoleChange}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem
-            value={"OWNER"}
-            disabled={hasHigherRole(maxRole, "OWNER")}
-          >
-            Właściciel
-          </SelectItem>
-          <SelectItem
-            value={"ADMIN"}
-            disabled={hasHigherRole(maxRole, "ADMIN")}
-          >
-            Administrator
-          </SelectItem>
-          <SelectItem value={"USER"} disabled={hasHigherRole(maxRole, "USER")}>
-            Użytkownik
-          </SelectItem>
+          {USER_ROLES.map((role) => (
+            <SelectItem
+              key={role.value}
+              value={role.value}
+              disabled={hasHigherRole(maxRole, role.value as UserRole)}
+            >
+              {role.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 

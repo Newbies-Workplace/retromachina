@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import type { RetroResponse } from "shared/model/retro/retro.response";
 import { RetroService } from "@/api/Retro.service";
-import { Button } from "@/components/atoms/button/Button";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 import { useTeam } from "@/hooks/useTeamRole";
 
 export const RetroArchiveView = () => {
@@ -29,15 +29,11 @@ export const RetroArchiveView = () => {
   return (
     <>
       <Navbar />
-      <AnimatedBackground contentClassName={"flex-1 max-w-[1000px]"}>
-        <div
-          className={
-            "flex flex-col max-w-[1000px] bg-background-500 rounded-lg m-8"
-          }
-        >
+      <AnimatedBackground contentClassName={"flex-1 max-w-250"}>
+        <div className={"flex flex-col max-w-250 bg-card rounded-lg m-8"}>
           <div
             className={
-              "flex justify-between w-full bg-primary-500 p-4 rounded-t-lg font-bold text-2xl"
+              "flex justify-between w-full bg-primary p-4 rounded-t-lg font-bold text-2xl"
             }
           >
             Archiwum
@@ -45,7 +41,7 @@ export const RetroArchiveView = () => {
 
           <div
             className={
-              "grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 p-4 h-full scrollbar"
+              "grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 p-4 h-full scrollbar"
             }
           >
             {retros.map((retro) => {
@@ -54,9 +50,8 @@ export const RetroArchiveView = () => {
                   <Button
                     data-testid="current-retro"
                     key={retro.id}
-                    size={"2xl"}
                     className={
-                      "self-stretch min-h-[126px] flex-col bg-white border-4 border-red-500"
+                      "self-stretch min-h-[126px] flex-col bg-secondary/50 text-secondary-foreground border-4 border-destructive"
                     }
                     onClick={() => navigate(`/retro/${retro.id}/reflection`)}
                   >
@@ -68,8 +63,9 @@ export const RetroArchiveView = () => {
                 <Button
                   data-testid="retro"
                   key={retro.id}
-                  size={"2xl"}
-                  className={"self-stretch min-h-[126px] flex-col bg-white"}
+                  className={
+                    "self-stretch min-h-[126px] flex-col bg-secondary/50 text-secondary-foreground"
+                  }
                   onClick={() => navigate(`/retro/${retro.id}/summary`)}
                 >
                   Retro {dayjs(retro.date).format("DD.MM.YYYY")}

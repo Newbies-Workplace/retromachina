@@ -1,9 +1,9 @@
 import { RefreshCwIcon, TrashIcon } from "lucide-react";
 import type React from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 
 type TeamInviteLinkInputProps = {
@@ -60,11 +60,10 @@ export const TeamInviteLinkInput: React.FC<TeamInviteLinkInputProps> = ({
       <div className={"flex flex-row gap-2 items-center"}>
         <Input
           data-testid="invitation-link"
-          disabled
+          readOnly
           value={
             inviteKey ? `${window.location.origin}/invitation/${inviteKey}` : ""
           }
-          setValue={() => {}}
         />
         {inviteKey ? (
           <>

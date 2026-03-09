@@ -7,15 +7,11 @@ import type { UserResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { TaskService } from "@/api/Task.service";
 import { UserService } from "@/api/User.service";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
-import {
-  Card,
-  CardAuthor,
-  CardContent,
-} from "@/components/molecules/card/Card";
+import { Card, CardContent } from "@/components/molecules/card/Card";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 export const RetroSummaryView = () => {
   const { retroId } = useParams<{ retroId: string }>();
@@ -66,12 +62,10 @@ export const RetroSummaryView = () => {
       <AnimatedBackground>
         <div
           className={
-            "flex flex-col gap-2 min-w-[500px] max-w-[1200px] min-h-[700px] h-fit bg-background-500 m-8 rounded-lg"
+            "flex flex-col gap-2 min-w-[500px] max-w-[1200px] min-h-[700px] h-fit bg-card m-8 rounded-lg"
           }
         >
-          <div
-            className={"bg-primary-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}
-          >
+          <div className={"bg-primary p-4 pb-2 rounded-t-lg font-bold text-lg"}>
             Retro {dayjs(retro?.date).format("DD.MM.YYYY")}
           </div>
 
@@ -92,7 +86,11 @@ export const RetroSummaryView = () => {
                       "flex flex-row justify-center items-center gap-4"
                     }
                   >
-                    <Avatar url={user.avatar_link} />
+                    <Avatar>
+                      <AvatarImage src={user.avatar_link} />
+                      <AvatarFallback>:)</AvatarFallback>
+                    </Avatar>
+
                     {user.nick}
                   </div>
 
@@ -109,7 +107,6 @@ export const RetroSummaryView = () => {
                           className={"w-[350px]"}
                         >
                           <CardContent text={task.text} />
-                          <CardAuthor author={null} />
                         </Card>
                       );
                     })}
@@ -133,7 +130,6 @@ export const RetroSummaryView = () => {
                     return (
                       <Card id={task.id} key={task.id} className={"w-[350px]"}>
                         <CardContent text={task.text} />
-                        <CardAuthor author={null} />
                       </Card>
                     );
                   })}
@@ -152,7 +148,11 @@ export const RetroSummaryView = () => {
                         }
                         key={user.id}
                       >
-                        <Avatar url={user.avatar_link} />
+                        <Avatar>
+                          <AvatarImage src={user.avatar_link} />
+                          <AvatarFallback>:)</AvatarFallback>
+                        </Avatar>
+
                         {user.nick}
                       </div>
                     );
@@ -165,7 +165,6 @@ export const RetroSummaryView = () => {
 
             <Button
               className={"mt-4 self-end"}
-              size={"lg"}
               onClick={() => {
                 navigate(`/team/${retro?.team_id}/board`);
               }}

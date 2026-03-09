@@ -1,9 +1,4 @@
 :root {
   /* atlassian drop indicator color */
   --ds-border-selected: #73BDA8;
-
-  --toastify-color-success: #73BDA8;
-  --toastify-color-error: #DC6E47;
-  --toastify-text-color-success: black;
-  --toastify-text-color-error: black;
 }

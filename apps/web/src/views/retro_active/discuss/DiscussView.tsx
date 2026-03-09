@@ -1,9 +1,6 @@
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
 import {
   Card,
   CardActions,
@@ -11,6 +8,9 @@ import {
   CardContent,
 } from "@/components/molecules/card/Card";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { type Group, groupCards } from "@/lib/groupCards";
@@ -139,7 +139,7 @@ export const DiscussView = () => {
             return (
               <div
                 className={cn(
-                  "flex flex-col mx-4 bg-white p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
+                  "flex flex-col mx-4 bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
                   group.votes === 0 && "opacity-40",
                 )}
               >
@@ -148,18 +148,17 @@ export const DiscussView = () => {
 
                   return (
                     <div key={card.id} className={"flex gap-2 mb-4"}>
-                      <Avatar url={author?.avatar_link ?? ""} size={24} />
+                      <Avatar size={"sm"}>
+                        <AvatarImage src={author?.avatar_link} />
+                        <AvatarFallback>:)</AvatarFallback>
+                      </Avatar>
 
                       {card.text}
                     </div>
                   );
                 })}
 
-                <span
-                  className={
-                    "flex justify-end items-end mt-auto text-sm text-gray-600"
-                  }
-                >
+                <span className={"flex justify-end items-end mt-auto text-sm"}>
                   {group.votes}{" "}
                   {pluralText(group.votes, {
                     one: "głos",
@@ -174,7 +173,7 @@ export const DiscussView = () => {
       )}
       <div
         className={
-          "flex flex-col grow p-2 min-w-[300px] max-w-[400px] my-4 rounded-l-2xl bg-background-500"
+          "flex flex-col grow p-2 min-w-75 max-w-100 my-4 rounded-l-2xl bg-card"
         }
       >
         <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>
@@ -234,32 +233,20 @@ export const DiscussView = () => {
             })}
         </div>
 
-        <div className={"mt-4"}>
-          <div className={"flex w-full -mb-3 px-1"}>
-            <AnimatePresence>
-              {usersWritingTasks.slice(0, 8).map((user) => (
-                <motion.div
-                  layout
-                  key={user.id}
-                  initial={{ y: 32 }}
-                  animate={{ y: 0 }}
-                  exit={{ y: 32 }}
-                >
-                  <Avatar
-                    className={"animate-bounce"}
-                    url={user.avatar_link}
-                    size={32}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+        <div className={"relative mt-4"}>
+          <div className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}>
+            {usersWritingTasks.slice(0, 8).map((user) => (
+              <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
+                <AvatarImage src={user.avatar_link} />
+                <AvatarFallback>:)</AvatarFallback>
+              </Avatar>
+            ))}
           </div>
 
-          <Input
-            multiline
+          <Textarea
             value={value}
-            className={"z-10 bg-white"}
-            setValue={setValue}
+            className={"resize-none min-h-20"}
+            onChange={(event) => setValue(event.target.value)}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey && !!user) {

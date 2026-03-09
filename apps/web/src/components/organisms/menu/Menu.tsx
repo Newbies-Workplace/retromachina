@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 import React from "react";
 import { Link, useNavigate } from "react-router";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
 import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useUser } from "@/context/user/UserContext.hook";
 
@@ -25,13 +25,19 @@ export const Menu = () => {
 
   return (
     <div
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       className={
-        "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-70 bg-background-500 rounded-xl shadow-lg "
+        "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-70 bg-card rounded-xl shadow-lg "
       }
     >
-      <div className={"flex flex-col gap-3 rounded-t-xl p-2 bg-primary-500"}>
+      <div className={"flex flex-col gap-3 rounded-t-xl p-2 bg-primary"}>
         <div className={"flex flex-row items-center gap-2"}>
-          <Avatar url={user?.avatar_link} size={40} />
+          <Avatar>
+            <AvatarImage src={user?.avatar_link} />
+            <AvatarFallback>:)</AvatarFallback>
+          </Avatar>
 
           <div className={"flex flex-col gap-1 overflow-hidden"}>
             <span
@@ -56,7 +62,7 @@ export const Menu = () => {
             <span
               key={team.id}
               className={
-                "px-1.5 h-6 text-sm rounded-full bg-background-50 text-ellipsis line-clamp-1"
+                "px-1.5 h-6 text-sm rounded-full bg-background text-ellipsis line-clamp-1"
               }
             >
               {team.name}
@@ -71,7 +77,7 @@ export const Menu = () => {
             render={
               <div
                 className={
-                  "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+                  "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
                 }
               >
                 <SettingsIcon className={"size-4"} />
@@ -85,7 +91,7 @@ export const Menu = () => {
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={"/team/create"}
         >
@@ -95,16 +101,16 @@ export const Menu = () => {
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
-          to={"http://newbies.pl"}
+          to={"https://newbies.pl"}
         >
           <RocketIcon className={"size-4"} />O autorach
         </Link>
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={"/hero"}
         >
@@ -113,10 +119,10 @@ export const Menu = () => {
 
         <Link
           className={
-            "flex flex-row items-center gap-2 w-full text-black cursor-pointer p-2 rounded-xl bg-background-50"
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
           to={
-            "mailto:newbies@rst.com.pl?subject=Bug retromachina&body=Opis błędu:"
+            "mailto:newbies@rst.com.pl?subject=Bug retromachine&body=Opis błędu:"
           }
         >
           <BugIcon className={"size-4"} />
@@ -125,7 +131,6 @@ export const Menu = () => {
       </div>
 
       <Button
-        size="sm"
         className={"mx-2 mb-2"}
         variant={"destructive"}
         onClick={onLogoutClick}

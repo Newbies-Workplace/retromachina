@@ -1,6 +1,5 @@
 import { TrashIcon } from "lucide-react";
 import type React from "react";
-import { Button } from "@/components/atoms/button/Button";
 import {
   Card,
   CardActions,
@@ -11,6 +10,7 @@ import { Column } from "@/components/molecules/column/Column";
 import { ColumnInput } from "@/components/molecules/column/ColumnInput";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
+import { Button } from "@/components/ui/button";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
@@ -28,19 +28,21 @@ export const ReflectionView: React.FC = () => {
     updateCard,
     deleteCard,
   } = useRetro();
-  const { deleteReflectionCard } = useReflectionCardStore();
+  const { reflectionCards, deleteReflectionCard } = useReflectionCardStore();
 
-  const onReflectionCardDrop = (
-    reflectionCardId: string,
-    text: string,
-    columnId: string,
-  ) => {
+  const onReflectionCardDrop = (reflectionCardId: string, columnId: string) => {
     if (!teamId) {
       return;
     }
 
+    const card = reflectionCards.find((c) => c.id === reflectionCardId);
+    if (!card) {
+      console.log("Reflection card not found for id:", reflectionCardId);
+      return;
+    }
+
     deleteReflectionCard(teamId, reflectionCardId).then(() => {
-      createCard(text, columnId);
+      createCard(card.text, columnId);
     });
   };
 
@@ -73,8 +75,8 @@ export const ReflectionView: React.FC = () => {
 
             <ColumnCards
               columnId={column.id}
-              onReflectionCardDropped={({ id, text }) => {
-                onReflectionCardDrop(id, text, column.id);
+              onReflectionCardDropped={({ id }) => {
+                onReflectionCardDrop(id, column.id);
               }}
               onCardDropped={moveCard}
             >

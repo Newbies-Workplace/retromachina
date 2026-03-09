@@ -1,8 +1,8 @@
 import { SaveIcon } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useCallback } from "react";
-import { Button } from "@/components/atoms/button/Button";
 import { PositioningBackdrop } from "@/components/molecules/backdrop/PositioningBackdrop";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CardActions } from "./CardActions";
 import { CardAuthor } from "./CardAuthor";
@@ -53,14 +53,20 @@ const CardInner: React.FC<CardProps> = ({
   let author: React.ReactNode = null;
 
   for (const child of childrenArray) {
-    if (React.isValidElement(child)) {
-      if (child.type === CardContent) {
+    if (!React.isValidElement(child)) {
+      continue;
+    }
+
+    switch (child.type) {
+      case CardContent:
         content = child;
-      } else if (child.type === CardActions) {
+        break;
+      case CardActions:
         actions = child;
-      } else if (child.type === CardAuthor) {
+        break;
+      case CardAuthor:
         author = child;
-      }
+        break;
     }
   }
 
@@ -80,7 +86,7 @@ const CardInner: React.FC<CardProps> = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          "flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white border border-black/30 p-2 rounded-2xl h-full",
+          "relative flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white dark:bg-card border border-black/30 p-2 rounded-2xl h-full",
           className,
         )}
       >

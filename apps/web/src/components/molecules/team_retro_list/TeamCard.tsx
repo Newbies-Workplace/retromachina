@@ -18,14 +18,19 @@ import { UserInTeamResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { UserService } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
-import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import {
   SLOT_MACHINE_ANIMATION_DURATION,
   SlotMachine,
   SlotMachineRef,
 } from "@/components/organisms/slot_machine/SlotMachine";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+  AvatarStatus,
+} from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -73,7 +78,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
   return (
     <div
       data-testid={`team-${teamName}`}
-      className={"flex flex-col w-full p-4 gap-4 bg-background-500 rounded-lg"}
+      className={"flex flex-col w-full p-4 gap-4 bg-card rounded-lg"}
     >
       <div className={"flex gap-2 justify-between rounded-t-lg"}>
         <div
@@ -84,11 +89,14 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           {teamName}
 
           {teamUsers && (
-            <TeamAvatars
-              users={teamUsers.map((user) => {
-                return { ...user, isActive: true, isReady: false };
-              })}
-            />
+            <AvatarGroup>
+              {teamUsers.map((user) => (
+                <Avatar key={user.id}>
+                  <AvatarImage src={user.avatar_link} />
+                  <AvatarFallback>:)</AvatarFallback>
+                </Avatar>
+              ))}
+            </AvatarGroup>
           )}
         </div>
 
@@ -130,7 +138,6 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
       <div className={"flex flex-col sm:flex-row gap-2"}>
         <Button
           data-testid="task-list"
-          size={"xl"}
           className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar"}
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
@@ -140,9 +147,8 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
 
         <Button
           data-testid="task-list"
-          size={"xl"}
           className={
-            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-white"
+            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-secondary/50 text-secondary-foreground"
           }
           onClick={() => navigate(`/team/${teamId}/archive`)}
         >
@@ -155,7 +161,6 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         {role !== "USER" && !isAnyRetroRunning && (
           <Button
             data-testid="create-retro"
-            size={"xl"}
             variant={"destructive"}
             className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24"}
             onClick={() => navigate(`/retro/create?teamId=${teamId}`)}
@@ -171,9 +176,8 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
               <Button
                 data-testid="current-retro"
                 key={retro.id}
-                size={"xl"}
                 className={
-                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-white border-4 border-red-500"
+                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-background text-on-background border-4 border-destructive"
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >
@@ -251,12 +255,16 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
 
       <div
         className={
-          "p-2 bg-secondary-500/30 rounded h-16 font-semibold flex flex-row gap-2 justify-center items-center"
+          "p-2 bg-secondary/30 rounded h-16 font-semibold flex flex-row gap-2 justify-center items-center"
         }
       >
         {delayedHighlightedUser && (
           <div className={"flex flex-row gap-2 justify-center items-center"}>
-            <Avatar url={delayedHighlightedUser.avatar_link} size={50} />
+            <Avatar size={"lg"}>
+              <AvatarImage src={delayedHighlightedUser.avatar_link} />
+              <AvatarFallback>??</AvatarFallback>
+            </Avatar>
+
             <div>{delayedHighlightedUser.nick}</div>
           </div>
         )}
@@ -290,13 +298,11 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
                   });
                 }}
               >
-                <Avatar
-                  url={user.avatar_link}
-                  size={50}
-                  variant={
-                    teamUsersInPool.includes(user.id) ? "ready" : undefined
-                  }
-                />
+                <Avatar size={"lg"}>
+                  <AvatarImage src={user.avatar_link} />
+                  <AvatarFallback>??</AvatarFallback>
+                  {teamUsersInPool.includes(user.id) && <AvatarStatus />}
+                </Avatar>
               </div>
             );
           })}

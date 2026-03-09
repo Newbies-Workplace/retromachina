@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import RetroImage from "@/assets/images/hero_retro.png?url";
 import TeamsImage from "@/assets/images/hero_teams.png?url";
-import { Button } from "@/components/atoms/button/Button";
+import { Button } from "@/components/ui/button";
 import { KanbanBoard } from "@/views/hero/components/KanbanBoard";
 
 export const HeroView: React.FC = () => {
@@ -13,7 +13,7 @@ export const HeroView: React.FC = () => {
   };
 
   return (
-    <div className={"flex flex-col w-full bg-secondary-500 scrollbar"}>
+    <div className={"flex flex-col w-full bg-secondary scrollbar"}>
       <div
         className={
           "flex flex-row flex-wrap gap-2 items-center w-full px-8 py-4"
@@ -22,12 +22,12 @@ export const HeroView: React.FC = () => {
         <div className={"flex flex-col"}>
           <span
             className={
-              "font-harlow-solid-italic text-5xl text-background-50 select-none"
+              "font-harlow-solid-italic text-5xl text-background select-none"
             }
           >
-            Retromachina
+            Retromachine
           </span>
-          <span className={"text-background-50"}>
+          <span className={"text-background"}>
             Twoje nowe narzędzie do przeprowadzania retrospektyw
           </span>
         </div>
@@ -38,7 +38,7 @@ export const HeroView: React.FC = () => {
 
       <div
         className={
-          "flex flex-col gap-12 p-8 w-full bg-background-50 rounded-t-2xl"
+          "flex flex-col gap-12 p-8 w-full bg-background rounded-t-2xl"
         }
       >
         {/* first section */}
@@ -49,14 +49,14 @@ export const HeroView: React.FC = () => {
         >
           <div
             className={
-              "flex xl:flex-1 w-full h-[500px] bg-secondary-500 rounded-2xl p-2"
+              "flex xl:flex-1 w-full h-125 bg-secondary rounded-2xl p-2"
             }
           >
             <img
               src={RetroImage}
               alt="Retrospektywa przeprawadzana na retromachinie"
               className={
-                "w-full h-full rounded-xl object-cover object-left-top"
+                "w-full h-full rounded-xl object-cover object-top-left"
               }
             />
           </div>
@@ -70,7 +70,7 @@ export const HeroView: React.FC = () => {
               Wyciśnij z retrospektyw tyle, ile się da!
             </b>
             <p>
-              Czujesz oddech agile-manifesto na swojej szyi? Retromachina pomoże
+              Czujesz oddech agile-manifesto na swojej szyi? Retromachine pomoże
               Ci w przeprowadzaniu retrospektyw w sposób zorganizowany i
               efektywny. Wszystko po to, abyś mógł skupić się na doskonaleniu
               swojego zespołu i sposobu pracy.
@@ -108,14 +108,14 @@ export const HeroView: React.FC = () => {
         >
           <div
             className={
-              "flex xl:flex-1 w-full h-[500px] bg-secondary-500 rounded-2xl p-2"
+              "flex xl:flex-1 w-full h-125 bg-secondary rounded-2xl p-2"
             }
           >
             <img
               src={TeamsImage}
               alt="Lista zespołów wraz z informacjami o przeprowadzonych retrospektywach"
               className={
-                "w-full h-full rounded-xl object-cover object-left-top"
+                "w-full h-full rounded-xl object-cover object-top-left"
               }
             />
           </div>
@@ -131,7 +131,7 @@ export const HeroView: React.FC = () => {
             <p>
               Niezależnie od tego czy pracujesz w jednym zespole czy w{" "}
               <b className={"text-lg tracking-widest"}>wielkiej</b> organizacji,
-              Retromachina pozwoli Ci na zarządzanie zespołami w prosty i
+              Retromachine pozwoli Ci na zarządzanie zespołami w prosty i
               przejrzysty sposób.
             </p>
           </div>
@@ -139,7 +139,7 @@ export const HeroView: React.FC = () => {
 
         {/* footer */}
         <div className={"flex flex-col items-center w-full gap-2"}>
-          <Button size={"2xl"} className={"w-full"} onClick={onJoinClick}>
+          <Button size={"lg"} className={"w-full"} onClick={onJoinClick}>
             Dołącz za darmo
           </Button>
           <span>(uczciwa cena)</span>

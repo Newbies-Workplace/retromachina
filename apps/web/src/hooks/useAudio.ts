@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { usePreferencesStore } from "@/store/usePreferencesStore";
 
 interface UseAudio {
@@ -11,11 +12,14 @@ interface UseAudioOptions {
 export const useAudio = (): UseAudio => {
   const { volumeLevel } = usePreferencesStore();
 
-  const play = async (audio: string, options?: UseAudioOptions) => {
-    const audioElement = new Audio(audio);
-    audioElement.volume = options?.volumeLevel ?? volumeLevel;
-    await audioElement.play();
-  };
+  const play = useCallback(
+    async (audio: string, options?: UseAudioOptions) => {
+      const audioElement = new Audio(audio);
+      audioElement.volume = options?.volumeLevel ?? volumeLevel;
+      await audioElement.play();
+    },
+    [volumeLevel],
+  );
 
   return {
     play,

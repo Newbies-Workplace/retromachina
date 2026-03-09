@@ -1,8 +1,8 @@
 import { computePosition, flip } from "@floating-ui/dom";
 import { PencilIcon } from "lucide-react";
-import React, { createRef, useCallback, useEffect, useState } from "react";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
+import React, { createRef, useCallback, useEffect } from "react";
 import { TeamUserPicker } from "@/components/molecules/card/user_picker/TeamUserPicker";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
 import { useCardContext } from "./CardContext";
@@ -65,11 +65,11 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
 
   return (
     <div className={"flex items-center pt-1"}>
-      <div style={{ position: "relative" }}>
+      <div className={"relative"}>
         {isUsersPickerOpen && teamUsers.length > 1 && (
           <div
             ref={userPickerRef}
-            className={cn("flex absolute w-[265px] max-h-[180px] -left-1.5")}
+            className={cn("flex absolute w-[265px] max-h-45 -left-1.5")}
           >
             <TeamUserPicker
               teamUsers={teamUsers.filter((user) => user.id !== author?.id)}
@@ -83,8 +83,8 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
       <div
         ref={userPickerButtonRef}
         className={cn(
-          "flex items-center gap-2 p-0.5 rounded",
-          editable && "cursor-pointer hover:bg-gray-500",
+          "flex items-center gap-2 p-0.5 rounded-md",
+          editable && "cursor-pointer hover:bg-accent/30",
         )}
         onClick={() => {
           if (editable) {
@@ -92,7 +92,11 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
           }
         }}
       >
-        <Avatar url={author?.avatar} size={24} />
+        <Avatar size={"sm"}>
+          <AvatarImage src={author?.avatar} />
+          <AvatarFallback>:)</AvatarFallback>
+        </Avatar>
+
         <span className={"text-sm"}>
           {author ? author.name : "Nieprzypisany"}
         </span>

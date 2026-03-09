@@ -1,13 +1,13 @@
 import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
-import { toast } from "react-toastify";
 import { TeamResponse } from "shared/model/team/team.response";
+import { toast } from "sonner";
 import { RetroService } from "@/api/Retro.service";
 import { TeamService } from "@/api/Team.service";
-import { Button } from "@/components/atoms/button/Button";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 export const InviteView: React.FC = () => {
   const { inviteKey } = useParams<{ inviteKey: string }>();
@@ -64,13 +64,11 @@ export const InviteView: React.FC = () => {
       <AnimatedBackground>
         <div
           className={
-            "flex flex-col bg-background-500 rounded-lg min-w-[500px] m-8"
+            "flex flex-col bg-background0 rounded-lg min-w-[500px] m-8"
           }
           onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className={"flex flex-col bg-primary-500 p-4 pb-2 rounded-t-lg "}
-          >
+          <div className={"flex flex-col bg-primary p-4 pb-2 rounded-t-lg "}>
             <span className={"font-bold text-lg"}>Zaproszenia do zespołu</span>
           </div>
 

@@ -1,15 +1,23 @@
-import React, { createRef, useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
 import lineSvg from "@/assets/images/line.svg?inline";
-import { Avatar, type AvatarProps } from "@/components/atoms/avatar/Avatar";
+import { Backdrop } from "@/components/molecules/backdrop/Backdrop";
 import { Menu } from "@/components/organisms/menu/Menu";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+  AvatarStatus,
+} from "@/components/ui/avatar";
 import { useUser } from "@/context/user/UserContext.hook";
-import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
 
 interface NavbarProps {
-  avatarProps?: Partial<AvatarProps>;
+  avatarProps?: {
+    isReady?: boolean;
+  };
   topContent?: React.ReactNode;
   children?: React.ReactNode;
 }
@@ -21,22 +29,18 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const popover = createRef<HTMLDivElement>();
-  const [isOpen, toggle] = useState(false);
-  const close = useCallback(() => toggle(false), []);
-
-  useClickOutside(popover, close);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary-500"}>
+    <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary"}>
       <div className={"flex flex-row items-center gap-4 w-full h-[50px]"}>
         <span
           onClick={() => navigate("/")}
           className={
-            "font-harlow-solid-italic text-3xl text-background-50 cursor-pointer ml-4 mt-1 mr-auto"
+            "font-harlow-solid-italic text-3xl text-secondary-foreground cursor-pointer ml-4 mt-1 mr-auto"
           }
         >
-          Retromachina
+          Retromachine
         </span>
 
         <div className={"flex justify-end items-center gap-4"}>
@@ -49,20 +53,25 @@ const Navbar: React.FC<NavbarProps> = ({
               "flex justify-center items-center size-8 bg-white rounded-full mr-4 z-20"
             }
           >
-            <div onClick={() => toggle(true)}>
-              <Avatar
-                className={"cursor-pointer"}
-                url={user?.avatar_link}
-                {...avatarProps}
-              />
-              <Portal>
-                {isOpen && (
-                  <div ref={popover}>
-                    <Menu />
-                  </div>
-                )}
-              </Portal>
-            </div>
+            <AvatarGroup onClick={() => setIsMenuOpen((value) => !value)}>
+              <Avatar className={"cursor-pointer"}>
+                <AvatarImage src={user?.avatar_link} />
+                <AvatarFallback>:)</AvatarFallback>
+                {avatarProps?.isReady && <AvatarStatus />}
+              </Avatar>
+            </AvatarGroup>
+            <Portal>
+              {isMenuOpen && (
+                <Backdrop
+                  hasDarkBackground={false}
+                  onDismiss={() => {
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Menu />
+                </Backdrop>
+              )}
+            </Portal>
           </div>
         </div>
       </div>
@@ -76,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({
       )}
 
       <div
-        className={cn("w-full h-1 bg-repeat-x mt-auto")}
+        className={cn("w-full h-1.5 bg-repeat-x mt-auto")}
         style={{
           backgroundImage: `url("${lineSvg}")`,
         }}

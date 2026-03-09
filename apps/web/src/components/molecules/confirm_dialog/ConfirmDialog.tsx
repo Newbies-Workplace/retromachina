@@ -1,6 +1,6 @@
 import type React from "react";
-import { Button } from "@/components/atoms/button/Button";
 import { Backdrop } from "@/components/molecules/backdrop/Backdrop";
+import { Button } from "@/components/ui/button";
 
 export interface ConfirmDialogProps {
   title: string;
@@ -19,24 +19,27 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <Backdrop onDismiss={onDismiss}>
       <div
         className={
-          "flex flex-col min-w-[500px] min-h-[150px] bg-background-500 rounded-lg"
+          "flex flex-col min-w-125 min-h-35 p-4 bg-background rounded-lg"
         }
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={"bg-red-500 p-4 pb-2 rounded-t-lg font-bold text-lg"}>
+        <div
+          className={
+            "bg-destructive -mt-4 -mx-4 p-4 rounded-t-lg font-bold text-lg"
+          }
+        >
           {title}
         </div>
 
         <div className={"flex p-4"}>{content}</div>
 
         <div className={"flex justify-center items-center gap-4 mt-auto mb-2"}>
-          <Button size={"sm"} className={"px-8"} onClick={onDismiss}>
+          <Button className={"grow"} onClick={onDismiss}>
             Nie
           </Button>
 
           <Button
-            size={"sm"}
-            className={"px-8"}
+            className={"grow"}
             variant={"destructive"}
             onClick={onConfirmed}
           >

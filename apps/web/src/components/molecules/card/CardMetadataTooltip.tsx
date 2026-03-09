@@ -5,7 +5,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/molecules/tooltip/Tooltip";
+} from "@/components/ui/tooltip";
 
 export interface CardMetadataTooltipProps {
   createdAt: Date;
@@ -20,7 +20,7 @@ export const CardMetadataTooltip: React.FC<CardMetadataTooltipProps> = ({
     <div className={"mt-auto self-end h-6"}>
       <Tooltip>
         <TooltipTrigger>
-          <InfoIcon className={"size-6 p-1 rounded-full hover:bg-gray-500"} />
+          <InfoIcon className={"size-6 p-1 rounded-full hover:bg-white/50"} />
         </TooltipTrigger>
         <TooltipContent side={"bottom"} className={"flex flex-col gap-2"}>
           <div className={"flex flex-row justify-between gap-1"}>

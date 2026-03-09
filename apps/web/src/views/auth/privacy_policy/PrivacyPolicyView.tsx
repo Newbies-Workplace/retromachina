@@ -29,7 +29,7 @@ export const PrivacyPolicyView = () => {
       <ul>
         <li>
           <p>
-            <strong>Serwis</strong> - serwis internetowy "Retromachina"
+            <strong>Serwis</strong> - serwis internetowy "Retromachine"
             działający pod adresem https://retro.newbies.pl
           </p>
         </li>

@@ -1,10 +1,10 @@
-# Retromachina
+# Retromachine
 
 Cool app for retrospectives
 
 ## Develop
 
-To develop retromachina, run the following commands:
+To develop retromachine, run the following commands:
 
 Copy the .env.template file to .env and fill in the values:
 ```

@@ -3,15 +3,15 @@ import { PlusIcon, SaveIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
-import { toast } from "react-toastify";
 import type { BoardResponse } from "shared/model/board/board.response";
 import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { BoardService } from "@/api/Board.service";
-import { Button } from "@/components/atoms/button/Button";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
 
 const MAX_COLUMNS = 6;
 
@@ -89,7 +89,7 @@ export const TeamBoardEditView: React.FC = () => {
     <>
       <Navbar />
 
-      <div className={"m-4 flex rounded-xl bg-background-500 p-2"}>
+      <div className={"m-4 flex rounded-xl bg-card p-2"}>
         <div className={"flex w-full flex-col gap-2 rounded-lg p-2"}>
           <div className={"flex justify-between"}>
             <span>Edycja tablicy</span>
@@ -133,9 +133,7 @@ export const TeamBoardEditView: React.FC = () => {
                   key={col.id}
                   name={col.name}
                   desc={""}
-                  className={
-                    index === 0 ? "ring-primary-500 ring-2" : undefined
-                  }
+                  className={index === 0 ? "ring-primary ring-2" : undefined}
                   onChange={({ name }) =>
                     onChangeColumn(col.id, {
                       id: col.id,
@@ -148,7 +146,7 @@ export const TeamBoardEditView: React.FC = () => {
               ))}
           </BoardCreator>
 
-          <Button className={"mt-4"} size={"sm"} onClick={saveBoard}>
+          <Button className={"mt-4"} onClick={saveBoard}>
             <SaveIcon />
             Zapisz tablicę
           </Button>

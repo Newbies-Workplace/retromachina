@@ -2,8 +2,8 @@ import dayjs from "dayjs";
 import { CheckIcon, XIcon } from "lucide-react";
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import timerEndSound from "@/assets/sounds/timer-end.wav";
-import { Button } from "@/components/atoms/button/Button";
 import { Timer } from "@/components/molecules/timer/Timer";
+import { Button } from "@/components/ui/button";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useAudio } from "@/hooks/useAudio";
 import useClickOutside from "@/hooks/useClickOutside";
@@ -55,7 +55,7 @@ export const RetroTimer: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 pt-3 pb-2 px-2 rounded-b-lg"
+        "flex flex-row items-center gap-2 bg-card h-11 -mt-2 pt-3 pb-2 px-2 rounded-b-lg"
       }
     >
       <div className={"flex flex-row gap-2"}>
@@ -153,19 +153,19 @@ const TimerSetModal: React.FC<{
   return (
     <div
       className={
-        "flex flex-col absolute top-16 bg-background-500 rounded-xl p-2 shadow-lg gap-2"
+        "flex flex-col absolute top-16 bg-card rounded-xl p-2 shadow-lg gap-2"
       }
       ref={timePopover}
     >
       <div
         className={
-          "flex items-center w-28 h-12 rounded-lg bg-white border-2 text-3xl"
+          "flex items-center w-28 h-12 rounded-lg bg-background border-2 text-3xl"
         }
       >
         <div className={"flex w-11 text-3xl items-center"}>
           <span
             className={
-              "w-11 absolute text-3xl text-end text-gray-600 select-none pointer-events-none"
+              "w-11 absolute text-3xl text-end select-none pointer-events-none"
             }
           >
             {"0".repeat(2 - minutes.length)}
@@ -197,7 +197,7 @@ const TimerSetModal: React.FC<{
         <div className={"flex w-11 text-3xl items-center"}>
           <span
             className={
-              "w-9 absolute text-3xl text-end text-gray-600 select-none pointer-events-none "
+              "w-9 absolute text-3xl text-end select-none pointer-events-none "
             }
           >
             {"0".repeat(2 - seconds.length)}

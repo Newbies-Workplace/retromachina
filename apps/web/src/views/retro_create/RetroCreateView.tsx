@@ -4,20 +4,25 @@ import * as qs from "query-string";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
-import { toast } from "react-toastify";
 import type { RetroCreateRequest } from "shared/model/retro/retro.request";
 import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { RetroService } from "@/api/Retro.service";
 import { getRandomTemplate } from "@/api/RetroTemplate.service";
 import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
-import { Avatar } from "@/components/atoms/avatar/Avatar";
-import { Button } from "@/components/atoms/button/Button";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 export interface Column {
   id: string;
@@ -116,7 +121,7 @@ export const RetroCreateView: React.FC = () => {
         navigator.clipboard?.writeText(retroUrl).catch(console.log);
 
         toast.success("Link został skopiowany do schowka", {
-          autoClose: 3000,
+          duration: 3000,
         });
 
         navigate(`/retro/${retro.data.id}`);
@@ -161,14 +166,18 @@ export const RetroCreateView: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className={"flex p-2 m-4 bg-background-500 rounded-xl"}>
+      <div className={"flex p-2 m-4 bg-card rounded-xl"}>
         <div className={"p-2 w-full rounded-lg flex flex-col gap-2"}>
           <span>Retrospektywa zespołu {team.name}</span>
-          <div className={"flex flex-row -space-x-2 flex-wrap"}>
+
+          <AvatarGroup>
             {teamUsers.map((user) => (
-              <Avatar key={user.id} url={user.avatar_link} size={48} />
+              <Avatar key={user.id}>
+                <AvatarImage src={user.avatar_link} />
+                <AvatarFallback>:)</AvatarFallback>
+              </Avatar>
             ))}
-          </div>
+          </AvatarGroup>
 
           <div className={"flex justify-between mt-4"}>
             <div className={"flex flex-row gap-2"}>

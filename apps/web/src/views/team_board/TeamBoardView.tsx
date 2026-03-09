@@ -5,8 +5,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "@/components/atoms/button/Button";
-import { Switch } from "@/components/atoms/switch/Switch";
 import {
   Card,
   CardActions,
@@ -18,6 +16,8 @@ import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useTeamRole } from "@/hooks/useTeamRole";
@@ -70,7 +70,7 @@ export const TeamBoardView: React.FC = () => {
           <div className={"flex flex-row items-center gap-4"}>
             <div
               className={
-                "flex flex-row items-center gap-2 bg-background-500 h-11 -mt-2 p-2 rounded-b-lg"
+                "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg"
               }
             >
               <span className={"text-sm"}>Tylko moje</span>
@@ -87,7 +87,7 @@ export const TeamBoardView: React.FC = () => {
             </div>
 
             {isOwner && (
-              <Button size={"xs"} onClick={onEditClick}>
+              <Button size={"sm"} onClick={onEditClick}>
                 Edytuj
               </Button>
             )}

@@ -1,7 +1,7 @@
 import type React from "react";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
 import type { TeamRequest } from "shared/model/team/team.request";
+import { toast } from "sonner";
 import { TeamService } from "@/api/Team.service";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import { TeamForm } from "@/components/organisms/forms/TeamForm";

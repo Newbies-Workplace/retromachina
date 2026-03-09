@@ -9,12 +9,11 @@ interface PropsCardCount {
 
 export const CardCount: React.FC<PropsCardCount> = ({ count, isWriting }) => {
   return (
-    <div className={"flex items-center gap-2 p-2"}>
+    <div className={"flex items-center gap-2 py-2"}>
       <div
         className={cn(
           "w-16 h-8 border rounded-lg bg-background",
-          isWriting &&
-            "animate-pulse bg-linear-to-br from-[#325AE8] to-[#58EA66]",
+          isWriting && "animate-pulse bg-linear-to-br from-primary to-accent",
         )}
       />
       {count}{" "}

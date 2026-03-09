@@ -7,14 +7,10 @@ import type { UserResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { TaskService } from "@/api/Task.service";
 import { UserService } from "@/api/User.service";
-import { UserAvatar } from "@/components/atoms/avatar/UserAvatar";
-import {
-  Card,
-  CardAuthor,
-  CardContent,
-} from "@/components/molecules/card/Card";
+import { Card, CardContent } from "@/components/molecules/card/Card";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export const RetroSummaryView = () => {
@@ -90,7 +86,11 @@ export const RetroSummaryView = () => {
                       "flex flex-row justify-center items-center gap-4"
                     }
                   >
-                    <UserAvatar url={user.avatar_link} />
+                    <Avatar>
+                      <AvatarImage src={user.avatar_link} />
+                      <AvatarFallback>:)</AvatarFallback>
+                    </Avatar>
+
                     {user.nick}
                   </div>
 
@@ -107,7 +107,6 @@ export const RetroSummaryView = () => {
                           className={"w-[350px]"}
                         >
                           <CardContent text={task.text} />
-                          <CardAuthor author={null} />
                         </Card>
                       );
                     })}
@@ -131,7 +130,6 @@ export const RetroSummaryView = () => {
                     return (
                       <Card id={task.id} key={task.id} className={"w-[350px]"}>
                         <CardContent text={task.text} />
-                        <CardAuthor author={null} />
                       </Card>
                     );
                   })}
@@ -150,7 +148,11 @@ export const RetroSummaryView = () => {
                         }
                         key={user.id}
                       >
-                        <UserAvatar url={user.avatar_link} />
+                        <Avatar>
+                          <AvatarImage src={user.avatar_link} />
+                          <AvatarFallback>:)</AvatarFallback>
+                        </Avatar>
+
                         {user.nick}
                       </div>
                     );

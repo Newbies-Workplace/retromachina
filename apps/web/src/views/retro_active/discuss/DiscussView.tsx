@@ -1,7 +1,6 @@
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import { UserAvatar } from "@/components/atoms/avatar/UserAvatar";
 import {
   Card,
   CardActions,
@@ -9,6 +8,7 @@ import {
   CardContent,
 } from "@/components/molecules/card/Card";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useRetro } from "@/context/retro/RetroContext.hook";
@@ -148,7 +148,10 @@ export const DiscussView = () => {
 
                   return (
                     <div key={card.id} className={"flex gap-2 mb-4"}>
-                      <UserAvatar url={author?.avatar_link ?? ""} size={24} />
+                      <Avatar size={"sm"}>
+                        <AvatarImage src={author?.avatar_link} />
+                        <AvatarFallback>:)</AvatarFallback>
+                      </Avatar>
 
                       {card.text}
                     </div>
@@ -245,11 +248,10 @@ export const DiscussView = () => {
                   animate={{ y: 0 }}
                   exit={{ y: 32 }}
                 >
-                  <UserAvatar
-                    className={"animate-bounce"}
-                    url={user.avatar_link}
-                    size={32}
-                  />
+                  <Avatar size={"sm"} className={"animate-bounce"}>
+                    <AvatarImage src={user.avatar_link} />
+                    <AvatarFallback>:)</AvatarFallback>
+                  </Avatar>
                 </motion.div>
               ))}
             </AnimatePresence>

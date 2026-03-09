@@ -2,17 +2,22 @@ import React, { useState } from "react";
 import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
 import lineSvg from "@/assets/images/line.svg?inline";
-import {
-  type AvatarProps,
-  UserAvatar,
-} from "@/components/atoms/avatar/UserAvatar";
 import { Backdrop } from "@/components/molecules/backdrop/Backdrop";
 import { Menu } from "@/components/organisms/menu/Menu";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+  AvatarStatus,
+} from "@/components/ui/avatar";
 import { useUser } from "@/context/user/UserContext.hook";
 import { cn } from "@/lib/utils";
 
 interface NavbarProps {
-  avatarProps?: Partial<AvatarProps>;
+  avatarProps?: {
+    isReady?: boolean;
+  };
   topContent?: React.ReactNode;
   children?: React.ReactNode;
 }
@@ -48,13 +53,13 @@ const Navbar: React.FC<NavbarProps> = ({
               "flex justify-center items-center size-8 bg-white rounded-full mr-4 z-20"
             }
           >
-            <div onClick={() => setIsMenuOpen((value) => !value)}>
-              <UserAvatar
-                className={"cursor-pointer"}
-                url={user?.avatar_link}
-                {...avatarProps}
-              />
-            </div>
+            <AvatarGroup onClick={() => setIsMenuOpen((value) => !value)}>
+              <Avatar className={"cursor-pointer"}>
+                <AvatarImage src={user?.avatar_link} />
+                <AvatarFallback>:)</AvatarFallback>
+                {avatarProps?.isReady && <AvatarStatus />}
+              </Avatar>
+            </AvatarGroup>
             <Portal>
               {isMenuOpen && (
                 <Backdrop

@@ -1,6 +1,6 @@
 import { computePosition, flip } from "@floating-ui/dom";
 import { PencilIcon } from "lucide-react";
-import React, { createRef, useCallback, useEffect, useState } from "react";
+import React, { createRef, useCallback, useEffect } from "react";
 import { TeamUserPicker } from "@/components/molecules/card/user_picker/TeamUserPicker";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useClickOutside from "@/hooks/useClickOutside";
@@ -83,7 +83,7 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
       <div
         ref={userPickerButtonRef}
         className={cn(
-          "flex items-center gap-2 p-0.5 rounded",
+          "flex items-center gap-2 p-0.5 rounded-md",
           editable && "cursor-pointer hover:bg-accent/30",
         )}
         onClick={() => {

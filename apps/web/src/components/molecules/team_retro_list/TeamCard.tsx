@@ -18,7 +18,6 @@ import { UserInTeamResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { UserService } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
-import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import {
   SLOT_MACHINE_ANIMATION_DURATION,
   SlotMachine,
@@ -27,6 +26,7 @@ import {
 import {
   Avatar,
   AvatarFallback,
+  AvatarGroup,
   AvatarImage,
   AvatarStatus,
 } from "@/components/ui/avatar";
@@ -89,11 +89,14 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           {teamName}
 
           {teamUsers && (
-            <TeamAvatars
-              users={teamUsers.map((user) => {
-                return { ...user, isActive: true, isReady: false };
-              })}
-            />
+            <AvatarGroup>
+              {teamUsers.map((user) => (
+                <Avatar key={user.id}>
+                  <AvatarImage src={user.avatar_link} />
+                  <AvatarFallback>:)</AvatarFallback>
+                </Avatar>
+              ))}
+            </AvatarGroup>
           )}
         </div>
 

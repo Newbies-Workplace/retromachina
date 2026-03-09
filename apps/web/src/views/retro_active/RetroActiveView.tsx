@@ -5,8 +5,14 @@ import { Route, Routes, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
-import { TeamAvatars } from "@/components/molecules/team_avatars/TeamAvatars";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+  AvatarStatus,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useRetro } from "@/context/retro/RetroContext.hook";
@@ -84,7 +90,7 @@ export const RetroActiveView: React.FC = () => {
     <>
       <Navbar
         avatarProps={{
-          variant: ready ? "ready" : "active",
+          isReady: ready,
         }}
         topContent={
           <>
@@ -109,30 +115,21 @@ export const RetroActiveView: React.FC = () => {
               <RetroTimer />
             </div>
 
-            <TeamAvatars
-              users={
-                teamUsers
-                  .filter((u) => u.id !== user?.id)
-                  .map((user) => {
-                    const socketUser = activeUsers.find(
-                      (socketUser) => socketUser.userId === user.id,
-                    );
-
-                    if (!socketUser) {
-                      return undefined;
-                    }
-
-                    return {
-                      id: user.id,
-                      nick: user.nick,
-                      avatar_link: user.avatar_link,
-                      isReady: socketUser?.isReady ?? false,
-                      isActive: true,
-                    };
-                  })
-                  .filter((u) => u !== undefined) as any[]
-              }
-            />
+            <AvatarGroup>
+              {teamUsers
+                .filter((u) => u.id !== user?.id)
+                .map((u) =>
+                  activeUsers.find((socketUser) => socketUser.userId === u.id),
+                )
+                .filter((u) => u !== undefined)
+                .map((user) => (
+                  <Avatar key={user?.userId}>
+                    <AvatarImage src={user.avatar_link} />
+                    <AvatarFallback>:)</AvatarFallback>
+                    {user?.isReady && <AvatarStatus />}
+                  </Avatar>
+                ))}
+            </AvatarGroup>
           </>
         }
       />

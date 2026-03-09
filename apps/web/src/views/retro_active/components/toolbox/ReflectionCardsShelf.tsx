@@ -122,7 +122,13 @@ export const ReflectionCardsShelf: React.FC<{
           )}
         >
           <div className={"flex justify-between"}>
-            <span className={"font-harlow-solid-italic text-3xl"}>Wrzutki</span>
+            <span
+              className={
+                "font-harlow-solid-italic text-3xl text-secondary-foreground"
+              }
+            >
+              Wrzutki
+            </span>
 
             <Button onClick={onNewReflectionCardClick} size={"sm"}>
               Nowa wrzutka
@@ -130,11 +136,15 @@ export const ReflectionCardsShelf: React.FC<{
             </Button>
           </div>
 
-          <div className={"flex flex-row gap-2 h-full overflow-x-scroll"}>
+          <div
+            className={
+              "flex flex-row gap-2 h-full w-full p-2 overflow-x-scroll"
+            }
+          >
             {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
               <div
                 className={
-                  "flex justify-center items-center h-full border-2 border-dashed rounded-xl text-center"
+                  "flex justify-center items-center h-full w-full border-2 border-dashed rounded-xl text-center"
                 }
               >
                 Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby

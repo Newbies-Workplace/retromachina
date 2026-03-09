@@ -237,29 +237,19 @@ export const DiscussView = () => {
             })}
         </div>
 
-        <div className={"mt-4"}>
-          <div className={"flex w-full -mb-3 px-1"}>
-            <AnimatePresence>
-              {usersWritingTasks.slice(0, 8).map((user) => (
-                <motion.div
-                  layout
-                  key={user.id}
-                  initial={{ y: 32 }}
-                  animate={{ y: 0 }}
-                  exit={{ y: 32 }}
-                >
-                  <Avatar size={"sm"} className={"animate-bounce"}>
-                    <AvatarImage src={user.avatar_link} />
-                    <AvatarFallback>:)</AvatarFallback>
-                  </Avatar>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+        <div className={"relative mt-4"}>
+          <div className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}>
+            {usersWritingTasks.slice(0, 8).map((user) => (
+              <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
+                <AvatarImage src={user.avatar_link} />
+                <AvatarFallback>:)</AvatarFallback>
+              </Avatar>
+            ))}
           </div>
 
           <Textarea
             value={value}
-            className={"z-10 resize-none min-h-20"}
+            className={"resize-none min-h-20"}
             onChange={(event) => setValue(event.target.value)}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {

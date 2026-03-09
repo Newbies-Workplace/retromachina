@@ -59,7 +59,7 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
     <div
       ref={ref}
       className={cn(
-        "cursor-grab",
+        "cursor-grab relative",
         // don't show opacity when dragging first card in group so that opacity is not applied twice to first card in group
         dragging && (changeOpacityOnDrag || parentCardId !== null)
           ? "opacity-25"

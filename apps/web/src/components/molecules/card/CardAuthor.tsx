@@ -65,7 +65,7 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
 
   return (
     <div className={"flex items-center pt-1"}>
-      <div style={{ position: "relative" }}>
+      <div className={"relative"}>
         {isUsersPickerOpen && teamUsers.length > 1 && (
           <div
             ref={userPickerRef}

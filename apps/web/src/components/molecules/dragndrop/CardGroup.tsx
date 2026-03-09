@@ -146,24 +146,22 @@ export const CardGroup: React.FC<GroupCardContainerProps> = ({
   const isShiftPressed = useKeyDownListener("Shift");
 
   return (
-    <>
-      <div
-        ref={ref}
-        className={cn(
-          "relative flex flex-col min-w-[100px] ",
-          closestEdge === "mid" && "ring-2 ring-primary rounded-2xl",
-          groupDragged ? "opacity-25" : "opacity-100",
-          isShiftPressed &&
-            "[&>:not(:last-child):hover]:mb-[90px] [&>:not(:last-child)]:transition-[margin]",
-          className,
-        )}
-      >
-        {children}
+    <div
+      ref={ref}
+      className={cn(
+        "flex flex-col min-w-25",
+        closestEdge === "mid" && "ring-2 ring-primary rounded-2xl",
+        groupDragged ? "opacity-25" : "opacity-100",
+        isShiftPressed &&
+          "[&>:not(:last-child):hover]:mb-[90px] [&>:not(:last-child)]:transition-[margin]",
+        className,
+      )}
+    >
+      {children}
 
-        {closestEdge && closestEdge !== "mid" && (
-          <DropIndicator edge={closestEdge} gap={"8px"} />
-        )}
-      </div>
-    </>
+      {closestEdge && closestEdge !== "mid" && (
+        <DropIndicator edge={closestEdge} gap={"8px"} />
+      )}
+    </div>
   );
 };

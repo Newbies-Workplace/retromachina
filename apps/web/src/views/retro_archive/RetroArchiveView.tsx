@@ -30,7 +30,7 @@ export const RetroArchiveView = () => {
     <>
       <Navbar />
       <AnimatedBackground contentClassName={"flex-1 max-w-250"}>
-        <div className={"flex flex-col max-w-250 bg-background rounded-lg m-8"}>
+        <div className={"flex flex-col max-w-250 bg-card rounded-lg m-8"}>
           <div
             className={
               "flex justify-between w-full bg-primary p-4 rounded-t-lg font-bold text-2xl"
@@ -41,7 +41,7 @@ export const RetroArchiveView = () => {
 
           <div
             className={
-              "grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 p-4 h-full scrollbar"
+              "grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 p-4 h-full scrollbar"
             }
           >
             {retros.map((retro) => {
@@ -51,7 +51,7 @@ export const RetroArchiveView = () => {
                     data-testid="current-retro"
                     key={retro.id}
                     className={
-                      "self-stretch min-h-[126px] flex-col bg-card text-on-card border-4 border-destructive"
+                      "self-stretch min-h-[126px] flex-col bg-secondary/50 text-secondary-foreground border-4 border-destructive"
                     }
                     onClick={() => navigate(`/retro/${retro.id}/reflection`)}
                   >
@@ -64,7 +64,7 @@ export const RetroArchiveView = () => {
                   data-testid="retro"
                   key={retro.id}
                   className={
-                    "self-stretch min-h-[126px] flex-col bg-card text-on-card"
+                    "self-stretch min-h-[126px] flex-col bg-secondary/50 text-secondary-foreground"
                   }
                   onClick={() => navigate(`/retro/${retro.id}/summary`)}
                 >

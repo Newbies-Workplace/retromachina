@@ -156,7 +156,7 @@ const TeamMember: React.FC<UserProps> = ({
   return (
     <div
       className={
-        "flex grow items-center bg-secondary w-full gap-2.5 min-h-10 p-1 rounded-md border-solid shadow-sm border [line-break:anywhere]"
+        "flex grow items-center bg-secondary/50 w-full gap-2.5 min-h-10 p-1 rounded-md border-solid shadow-sm border [line-break:anywhere]"
       }
     >
       <Avatar size={"sm"}>

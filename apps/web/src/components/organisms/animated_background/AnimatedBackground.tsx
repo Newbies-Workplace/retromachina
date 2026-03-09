@@ -128,10 +128,20 @@ const AnimatedIcon: React.FC = () => {
       )}
     >
       {icon === 0 && (
-        <ClipboardCheckIcon className={"text-secondary/30 size-8"} />
+        <ClipboardCheckIcon
+          className={"dark:text-secondary-foreground opacity-30 size-8"}
+        />
       )}
-      {icon === 1 && <SaveIcon className={"text-secondary/30 size-8"} />}
-      {icon === 2 && <TrendingUpIcon className={"text-secondary/30 size-8"} />}
+      {icon === 1 && (
+        <SaveIcon
+          className={"dark:text-secondary-foreground opacity-30 size-8"}
+        />
+      )}
+      {icon === 2 && (
+        <TrendingUpIcon
+          className={"dark:text-secondary-foreground opacity-30 size-8"}
+        />
+      )}
     </motion.div>
   );
 };

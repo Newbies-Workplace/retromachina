@@ -148,7 +148,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         <Button
           data-testid="task-list"
           className={
-            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-secondary"
+            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-secondary/50 text-secondary-foreground"
           }
           onClick={() => navigate(`/team/${teamId}/archive`)}
         >

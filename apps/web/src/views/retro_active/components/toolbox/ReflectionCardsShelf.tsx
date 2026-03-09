@@ -109,7 +109,7 @@ export const ReflectionCardsShelf: React.FC<{
     <Portal>
       <div
         ref={drawerRef}
-        className={cn("absolute bottom-0 min-h-52 w-full z-10 overflow-hidden")}
+        className={cn("absolute bottom-0 min-h-54 w-full z-10 overflow-hidden")}
       >
         <motion.div
           initial={{ bottom: -150 }}

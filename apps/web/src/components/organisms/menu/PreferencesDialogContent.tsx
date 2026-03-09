@@ -46,7 +46,7 @@ export const PreferencesDialogContent = () => {
         </div>
 
         <Slider
-          value={tempVolumeLevel}
+          value={[tempVolumeLevel]}
           onValueChange={(value) => {
             setTempVolumeLevel(value as number);
           }}

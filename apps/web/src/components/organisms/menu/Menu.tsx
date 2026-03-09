@@ -103,7 +103,7 @@ export const Menu = () => {
           className={
             "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
           }
-          to={"http://newbies.pl"}
+          to={"https://newbies.pl"}
         >
           <RocketIcon className={"size-4"} />O autorach
         </Link>

@@ -85,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({
       )}
 
       <div
-        className={cn("w-full h-1 bg-repeat-x mt-auto")}
+        className={cn("w-full h-1.5 bg-repeat-x mt-auto")}
         style={{
           backgroundImage: `url("${lineSvg}")`,
         }}

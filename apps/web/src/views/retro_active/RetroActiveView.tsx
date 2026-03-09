@@ -115,7 +115,7 @@ export const RetroActiveView: React.FC = () => {
               <RetroTimer />
             </div>
 
-            <AvatarGroup>
+            <AvatarGroup className={"mt-0.5"}>
               {teamUsers
                 .filter((u) => u.id !== user?.id)
                 .map((u) =>

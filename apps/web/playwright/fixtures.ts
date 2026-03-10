@@ -41,8 +41,14 @@ export const test = base.extend<MyFixtures>({
   },
 
   setupBrowserPage: async ({ browser }, use) => {
-    const cdpBrowser = await chromium.connectOverCDP("http://localhost:9222");
-    await use(cdpBrowser.contexts()[0].pages()[0]);
-    await cdpBrowser.close();
+    // Uncomment when using Chrome with remote debugging enabled for authentication setup
+    // const cdpBrowser = await chromium.connectOverCDP("http://localhost:9222");
+    // await use(cdpBrowser.contexts()[0].pages()[0]);
+    // await cdpBrowser.close();
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await use(page);
+    await context.close();
   },
 });

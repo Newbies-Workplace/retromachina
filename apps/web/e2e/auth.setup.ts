@@ -8,34 +8,45 @@ import {
   test as setup,
 } from "../playwright/fixtures";
 
-setup("authenticate as first user", async ({ page }) => {
+/**
+ * Download Chrome for testing
+ *
+ * npx @puppeteer/browsers install chrome@stable
+ *
+ * Start Chrome with remote debugging enabled
+ *
+ * --remote-debugging-port=9222
+ *
+ * clear browser data before running each setup test
+ */
+setup("authenticate as first user", async ({ setupBrowserPage }) => {
   if (fs.existsSync(firstAuthFile)) {
     return;
   }
 
   await authenticateWithCredentials(
-    page,
+    setupBrowserPage,
     process.env.E2E_FIRST_LOGIN,
     process.env.E2E_FIRST_PASSWORD,
     process.env.E2E_FIRST_OTP_SECRET,
   );
 
-  await page.context().storageState({ path: firstAuthFile });
+  await setupBrowserPage.context().storageState({ path: firstAuthFile });
 });
 
-setup("authenticate as second user", async ({ page }) => {
+setup("authenticate as second user", async ({ setupBrowserPage }) => {
   if (fs.existsSync(secondAuthFile)) {
     return;
   }
 
   await authenticateWithCredentials(
-    page,
+    setupBrowserPage,
     process.env.E2E_SECOND_LOGIN,
     process.env.E2E_SECOND_PASSWORD,
     process.env.E2E_SECOND_OTP_SECRET,
   );
 
-  await page.context().storageState({ path: secondAuthFile });
+  await setupBrowserPage.context().storageState({ path: secondAuthFile });
 });
 
 const authenticateWithCredentials = async (
@@ -44,7 +55,7 @@ const authenticateWithCredentials = async (
   password: string,
   otpSecret: string,
 ) => {
-  await page.goto("/signin");
+  await page.goto("http://localhost:8080/signin");
   await page.getByRole("button", { name: "Sign in with Google" }).click();
   await page.waitForSelector('input[type="email"]');
   await page.fill('input[type="email"]', login);
@@ -58,14 +69,16 @@ const authenticateWithCredentials = async (
   });
   await page.click("#passwordNext");
 
-  await page.getByLabel("Enter code").waitFor({ state: "visible" });
-
   const otpCode = generateOTP(otpSecret);
+  console.log(`Generated OTP code: ${otpCode}`);
+
+  await page.getByText("Google Authenticator", { exact: false }).click(); //waitFor({ state: "visible" });
+
   await page.getByLabel("Enter code").fill(otpCode);
   await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Allow" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
 
-  await page.waitForURL("/");
+  await page.waitForURL("http://localhost:8080/");
 };
 
 function generateOTP(secret: string) {

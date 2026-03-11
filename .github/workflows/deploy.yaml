@@ -24,6 +24,8 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
 
+    needs: [ approve ]
+
     steps:
       - uses: actions/checkout@v4
 

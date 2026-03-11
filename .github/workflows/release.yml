@@ -27,7 +27,7 @@ jobs:
           node-version: 24.x
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Release
         env:

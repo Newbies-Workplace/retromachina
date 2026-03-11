@@ -62,7 +62,7 @@ export const Menu = () => {
             <span
               key={team.id}
               className={
-                "px-1.5 h-6 text-sm rounded-full bg-background text-ellipsis line-clamp-1"
+                "px-1.5 text-sm rounded-full bg-background text-ellipsis line-clamp-1"
               }
             >
               {team.name}

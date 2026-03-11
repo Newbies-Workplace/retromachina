@@ -2,7 +2,7 @@ name: Build and Publish storybook to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -17,21 +17,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Node
-        uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.2.0
         with:
-          node-version: lts/*
-          cache: 'npm'
+          node-version: 24.x
+
       - name: Install dependencies
         run: npm ci
+
       - name: Build
         run: cd apps/web && npm run build-storybook
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './apps/web/storybook-static'
+
       - name: Deploy to GitHub Pages
         id: storybook
         uses: actions/deploy-pages@v4

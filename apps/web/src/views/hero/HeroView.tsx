@@ -19,17 +19,11 @@ export const HeroView: React.FC = () => {
           "flex flex-row flex-wrap gap-2 items-center w-full px-8 py-4"
         }
       >
-        <div className={"flex flex-col"}>
-          <span
-            className={
-              "font-harlow-solid-italic text-5xl text-background select-none"
-            }
-          >
+        <div className={"flex flex-col text-secondary-foreground"}>
+          <span className={"font-harlow-solid-italic text-5xl select-none"}>
             Retromachine
           </span>
-          <span className={"text-background"}>
-            Twoje nowe narzędzie do przeprowadzania retrospektyw
-          </span>
+          <span>Twoje nowe narzędzie do przeprowadzania retrospektyw</span>
         </div>
         <Button className={"ml-auto"} onClick={onJoinClick}>
           Dołącz

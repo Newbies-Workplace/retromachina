@@ -1,11 +1,13 @@
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
-import { Share2Icon } from "lucide-react";
+import { Disc3Icon, Share2Icon } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
 import { toast } from "sonner";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
+import { Gramophone } from "@/components/organisms/gramophone/Gramophone";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import {
   Avatar,
   AvatarFallback,
@@ -96,11 +98,7 @@ export const RetroActiveView: React.FC = () => {
           <>
             <div className={"flex flex-row gap-4"}>
               {isAdmin && (
-                <div
-                  className={
-                    "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg"
-                  }
-                >
+                <NavbarAction>
                   <Button
                     size={"icon"}
                     onClick={() => {
@@ -109,10 +107,12 @@ export const RetroActiveView: React.FC = () => {
                   >
                     <Share2Icon className={"size-5"} />
                   </Button>
-                </div>
+                </NavbarAction>
               )}
 
               <RetroTimer />
+
+              <Gramophone />
             </div>
 
             <AvatarGroup className={"mt-0.5"}>

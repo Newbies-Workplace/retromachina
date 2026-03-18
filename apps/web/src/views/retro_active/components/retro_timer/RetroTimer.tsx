@@ -148,7 +148,7 @@ const TimerSetModal: React.FC<{
   return (
     <div
       className={
-        "flex flex-col absolute top-16 bg-card rounded-xl p-2 shadow-lg gap-2"
+        "flex flex-col absolute top-12 bg-card rounded-xl p-2 shadow-lg gap-2"
       }
       ref={timePopover}
     >

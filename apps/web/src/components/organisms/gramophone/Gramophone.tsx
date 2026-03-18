@@ -17,9 +17,14 @@ type Vinyl = {
 };
 
 const VINYLS: Vinyl[] = [
-  { id: "1", name: "Space silence", author: "Cosmic Voyager" },
-  { id: "2", name: "Jazz", author: "Smooth Sax" },
-  { id: "3", name: "Funky", author: "Funky" },
+  {
+    id: "1",
+    name: "Space silence",
+    author: "Cosmic Voyager",
+    color: "#143985",
+  },
+  { id: "2", name: "Jazz", author: "Smooth Sax", color: "#8B4513" },
+  { id: "3", name: "Funky", author: "Funky", color: "#FF6347" },
 ];
 
 export const Gramophone: React.FC = () => {
@@ -63,11 +68,7 @@ const GramophoneModal: React.FC<{ onDismiss: () => void }> = ({
       }
       ref={gramophonePopover}
     >
-      <div
-        className={
-          "flex flex-col gap-2 items-center rounded-lg bg-background text-3xl"
-        }
-      >
+      <div className={"flex flex-col gap-2 items-center rounded-lgtext-3xl"}>
         <div className={"flex text-3xl font-harlow-solid-italic items-center"}>
           Gramofon
         </div>
@@ -81,10 +82,8 @@ const GramophoneModal: React.FC<{ onDismiss: () => void }> = ({
 
         {activeVinyl && (
           <div>
-            <div className={"text-sm text-gray-300 mt-2"}>
-              {activeVinyl.name}
-            </div>
-            <div className={"text-xs text-gray-500"}>{activeVinyl.author}</div>
+            <div className={"text-sm mt-2"}>{activeVinyl.name}</div>
+            <div className={"text-xs"}>{activeVinyl.author}</div>
           </div>
         )}
 
@@ -125,10 +124,8 @@ const GramophoneDropzone: React.FC<{
     <div
       ref={dropzoneRef}
       className={cn(
-        "size-32 rounded-lg shadow-lg flex items-center justify-center transition-all duration-200",
-        isDragOver
-          ? "bg-linear-to-br from-blue-500 to-blue-700 scale-105"
-          : "bg-gray-900",
+        "size-32 rounded-lg flex items-center justify-center bg-secondary",
+        isDragOver ? "border-2 border-dashed" : "",
       )}
     >
       {activeVinyl ? (
@@ -136,9 +133,7 @@ const GramophoneDropzone: React.FC<{
           <VinylRecord data={activeVinyl} isDraggable={false} />
         </div>
       ) : (
-        <div className={"text-center text-sm text-gray-400"}>
-          Drop vinyl here
-        </div>
+        <div className={"text-center text-sm"}>Drop vinyl here</div>
       )}
     </div>
   );
@@ -168,16 +163,18 @@ const VinylRecord: React.FC<{
     <div
       ref={dragRef}
       className={cn(
-        "relative size-24 min-w-24 min-h-24 cursor-grab active:cursor-grabbing transition-opacity",
+        "relative size-24 min-w-24 min-h-24 transition-opacity",
         isDragging && "opacity-0",
+        isDraggable && "cursor-grab active:cursor-grabbing",
         className,
       )}
     >
       {/* Vinyl Record with grooves */}
       <div
-        className={
-          "relative w-full h-full rounded-full bg-linear-to-br from-gray-800 to-black"
-        }
+        className={"relative w-full h-full rounded-full"}
+        style={{
+          background: `linear-gradient(135deg, ${data.color} 0%, #000000 100%)`,
+        }}
       >
         {/* Grooves effect */}
         <div className={"absolute inset-0 rounded-full overflow-hidden"}>
@@ -198,7 +195,14 @@ const VinylRecord: React.FC<{
           </svg>
         </div>
 
-        {/* Center label */}
+        <div
+          className={"absolute inset-0 rounded-full"}
+          style={{
+            background:
+              "radial-gradient(circle, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 70%)",
+          }}
+        />
+
         <div
           className={
             "absolute inset-0 flex items-center justify-center rounded-full"
@@ -206,10 +210,13 @@ const VinylRecord: React.FC<{
         >
           <div
             className={
-              "w-12 h-12 rounded-full bg-linear-to-br from-red-700 to-red-900 shadow-md flex items-center justify-center border-2 border-red-600"
+              "w-12 h-12 rounded-full flex items-center justify-center border-2"
             }
+            style={{
+              background: `linear-gradient(135deg, ${data.color} 0%, ${data.color}dd 100%)`,
+              borderColor: data.color,
+            }}
           >
-            {/* Curved text around label */}
             {/** biome-ignore lint/a11y/noSvgWithoutTitle: svg */}
             <svg
               className={"absolute w-full h-full"}
@@ -249,9 +256,10 @@ const VinylRecord: React.FC<{
 
   if (isDraggable) {
     return (
-      <div className={"flex flex-row items-start w-full"}>
-        <VinylBox>{vinylContent}</VinylBox>
-        <div className={"flex flex-col text-sm"}>
+      <div className={"flex flex-row items-start w-full p-2 gap-2"}>
+        {vinylContent}
+
+        <div className={"flex flex-col text-sm justify-center"}>
           <span>{data.name}</span>
           <span>{data.author}</span>
         </div>
@@ -260,20 +268,4 @@ const VinylRecord: React.FC<{
   }
 
   return vinylContent;
-};
-
-const VinylBox: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className,
-}) => {
-  return (
-    <div
-      className={cn(
-        "relative w-28 h-28 rounded-lg bg-linear-to-br from-gray-700 to-gray-900 shadow-lg flex items-center justify-center overflow-visible",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
 };

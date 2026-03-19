@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from "react-router";
 import { toast } from "sonner";
 import invariant from "tiny-invariant";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
-import { Gramophone } from "@/components/organisms/gramophone/Gramophone";
+import { GramophoneAction } from "@/components/organisms/gramophone/GramophoneAction";
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import {
@@ -112,7 +112,7 @@ export const RetroActiveView: React.FC = () => {
 
               <RetroTimer />
 
-              <Gramophone />
+              <GramophoneAction />
             </div>
 
             <AvatarGroup className={"mt-0.5"}>

@@ -65,7 +65,7 @@ export const VinylDisc: React.FC<{
           >
             {/** biome-ignore lint/a11y/noSvgWithoutTitle: svg */}
             <svg
-              className={"absolute w-full h-full"}
+              className={"absolute w-1/2 h-1/2"}
               viewBox={"0 0 100 100"}
               style={{ filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.5))" }}
             >
@@ -81,6 +81,7 @@ export const VinylDisc: React.FC<{
                 fontWeight={"bold"}
                 fill={"white"}
                 letterSpacing={"2"}
+                className={"select-none"}
               >
                 <textPath
                   href={`#curve-${data.id}`}

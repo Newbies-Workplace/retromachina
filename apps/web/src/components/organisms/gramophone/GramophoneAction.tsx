@@ -6,11 +6,13 @@ import { getVinyl, isVinyl } from "@/components/organisms/gramophone/dragndrop";
 import { VINYLS, Vinyl } from "@/components/organisms/gramophone/Vinyl";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import { Button } from "@/components/ui/button";
+import { useGramophone } from "@/context/gramophone/GramophoneContext.hook";
 import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
 
 export const GramophoneAction: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { currentVinyl, playVinyl, stopVinyl } = useGramophone();
 
   return (
     <NavbarAction>
@@ -20,11 +22,24 @@ export const GramophoneAction: React.FC = () => {
           setIsOpen(true);
         }}
       >
-        <Disc3Icon className={"size-5"} />
+        <Disc3Icon
+          className={cn(
+            "size-5",
+            !!currentVinyl && "animate-[spin_5s_linear_infinite]",
+          )}
+        />
       </Button>
 
       {isOpen && (
         <GramophoneModal
+          activeVinyl={currentVinyl}
+          onVinylChanged={(vinyl) => {
+            if (vinyl) {
+              playVinyl(vinyl);
+            } else {
+              stopVinyl();
+            }
+          }}
           onDismiss={() => {
             setIsOpen(false);
           }}
@@ -34,14 +49,14 @@ export const GramophoneAction: React.FC = () => {
   );
 };
 
-const GramophoneModal: React.FC<{ onDismiss: () => void }> = ({
-  onDismiss,
-}) => {
+const GramophoneModal: React.FC<{
+  onDismiss: () => void;
+  activeVinyl: Vinyl | null;
+  onVinylChanged: (vinyl: Vinyl | null) => void;
+}> = ({ onDismiss, activeVinyl, onVinylChanged }) => {
   const gramophonePopover = createRef<HTMLDivElement>();
 
   useClickOutside(gramophonePopover, onDismiss);
-
-  const [activeVinyl, setActiveVinyl] = useState<Vinyl | null>(null);
 
   return (
     <div
@@ -58,7 +73,7 @@ const GramophoneModal: React.FC<{ onDismiss: () => void }> = ({
         <Gramophone
           activeVinyl={activeVinyl}
           onVinylDropped={(vinyl) => {
-            setActiveVinyl(vinyl);
+            onVinylChanged(vinyl);
           }}
         />
 
@@ -73,7 +88,7 @@ const GramophoneModal: React.FC<{ onDismiss: () => void }> = ({
                   <VinylDropzone
                     activeVinyl={activeVinyl}
                     onVinylDropped={() => {
-                      setActiveVinyl(null);
+                      onVinylChanged(null);
                     }}
                   />
                 ) : (
@@ -204,7 +219,7 @@ const Gramophone: React.FC<{
           {/* Vinyl turntable */}
           <div className="absolute inset-0 rounded-full bg-gray-900 flex items-center justify-center shadow-lg">
             {activeVinyl ? (
-              <div className="w-24 h-24 animate-[spin_5s_linear_infinite]">
+              <div className="pointer-events-auto w-24 h-24 animate-[spin_5s_linear_infinite]">
                 <DraggableVinyl data={activeVinyl} />
               </div>
             ) : (
@@ -215,7 +230,7 @@ const Gramophone: React.FC<{
           </div>
 
           {/* Tonearm */}
-          <div className="absolute top-0 right-0 z-20">
+          <div className="absolute top-0 right-0 z-20 pointer-events-none">
             <div className="relative w-12 h-12">
               {/* Arm base */}
               <div className="absolute top-0 right-0 w-2 h-2 bg-gray-600 rounded-full" />

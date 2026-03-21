@@ -1,7 +1,4 @@
-import {
-  draggable,
-  dropTargetForElements,
-} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import React, { useEffect, useRef, useState } from "react";
 import { getVinyl } from "@/components/organisms/gramophone/dragndrop";
 import { Vinyl } from "@/components/organisms/gramophone/Vinyl";

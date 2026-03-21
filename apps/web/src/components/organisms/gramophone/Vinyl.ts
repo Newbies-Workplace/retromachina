@@ -3,6 +3,7 @@ export type Vinyl = {
   name: string;
   author?: string;
   color?: string;
+  path: string;
 };
 
 export const VINYLS: Vinyl[] = [
@@ -11,7 +12,20 @@ export const VINYLS: Vinyl[] = [
     name: "Space silence",
     author: "Cosmic Voyager",
     color: "#143985",
+    path: "",
   },
-  { id: "2", name: "Jazz", author: "Smooth Sax", color: "#8B4513" },
-  { id: "3", name: "Funky", author: "Funky", color: "#FF6347" },
+  {
+    id: "2",
+    name: "Focus",
+    author: "FreeGroove",
+    color: "#8B4513",
+    path: "/assets/vinyl/focus.mp3",
+  },
+  {
+    id: "3",
+    name: "Elevator",
+    author: "Ievgen Poltavskyi",
+    color: "#FF6347",
+    path: "/assets/vinyl/elevator.mp3",
+  },
 ];

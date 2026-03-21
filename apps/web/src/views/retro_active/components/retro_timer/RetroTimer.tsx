@@ -19,7 +19,7 @@ export const RetroTimer: React.FC = () => {
 
   const { timerEnds, teamId, setTimer } = useRetro();
   const { isAdmin } = useTeamRole(teamId!);
-  const { play: playAudio } = useAudio();
+  const { playAudio } = useAudio();
 
   const onQuickAddTime = () => {
     const currentOrEndTime = timerEnds ? dayjs(timerEnds) : dayjs();

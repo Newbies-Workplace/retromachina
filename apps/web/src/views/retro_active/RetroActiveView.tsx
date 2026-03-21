@@ -1,5 +1,5 @@
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
-import { Disc3Icon, Share2Icon } from "lucide-react";
+import { Share2Icon } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -35,7 +35,7 @@ export const RetroActiveView: React.FC = () => {
   const { user } = useUser();
   const { ready, teamId } = useRetro();
   const { team } = useTeamData(teamId);
-  const { play: playAudio } = useAudio();
+  const { playAudio } = useAudio();
   const { isAdmin } = useTeamRole(teamId ?? "");
 
   const readyUsersCount = activeUsers.filter((user) => user.isReady).length;

@@ -30,7 +30,7 @@ const items = [
 export const PreferencesDialogContent = () => {
   const { volumeLevel, setVolumeLevel, theme, setTheme } =
     usePreferencesStore();
-  const { play } = useAudio();
+  const { playAudio } = useAudio();
   const [tempVolumeLevel, setTempVolumeLevel] = useState(volumeLevel);
 
   return (
@@ -55,7 +55,7 @@ export const PreferencesDialogContent = () => {
             setTempVolumeLevel(level);
             setVolumeLevel(level);
 
-            await play(readySingleSound, { volumeLevel: level });
+            await playAudio(readySingleSound, { volumeLevel: level });
           }}
           min={0}
           max={1}

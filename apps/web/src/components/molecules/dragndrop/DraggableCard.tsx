@@ -29,7 +29,7 @@ export const DraggableCard: React.FC<DraggableCardProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
 
-  const { play: playAudio } = useAudio();
+  const { playAudio } = useAudio();
 
   useEffect(() => {
     const element = ref.current;

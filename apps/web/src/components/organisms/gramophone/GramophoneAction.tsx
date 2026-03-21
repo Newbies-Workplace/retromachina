@@ -204,14 +204,14 @@ const Gramophone: React.FC<{
     <div
       ref={dropzoneRef}
       className={cn(
-        "relative w-50 h-36 rounded-lg bg-linear-to-br from-amber-100 to-amber-200 flex items-center justify-center transition-shadow",
+        "relative w-50 h-36 rounded-lg flex items-center justify-center transition-shadow",
         isDragOver
           ? "shadow-lg ring-2 ring-offset-2 ring-primary"
           : "shadow-md",
       )}
     >
       {/* Gramophone body */}
-      <div className="absolute inset-0 rounded-lg bg-linear-to-br from-amber-50 to-amber-300 opacity-40" />
+      <div className="absolute inset-0 rounded-lg bg-linear-to-br from-gray-500 to-gray-600 opacity-60" />
 
       {/* Center vinyl area */}
       <div className="relative z-10 flex items-center justify-center w-full h-full pr-16">

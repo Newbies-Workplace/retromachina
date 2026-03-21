@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { usePreferencesStore } from "@/store/usePreferencesStore";
 
 interface UseAudio {
@@ -21,6 +21,15 @@ export const useAudio = (): UseAudio => {
   const audioChannelsRef = useRef<
     Record<AudioChannel, HTMLAudioElement | null>
   >({ music: null, sfx: null });
+
+  // Update volume on all channels when volumeLevel changes
+  useEffect(() => {
+    Object.values(audioChannelsRef.current).forEach((audioElement) => {
+      if (audioElement) {
+        audioElement.volume = volumeLevel;
+      }
+    });
+  }, [volumeLevel]);
 
   const playAudio = useCallback(
     async (audio: string, options?: UseAudioOptions) => {

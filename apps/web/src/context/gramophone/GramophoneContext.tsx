@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import { Vinyl } from "@/components/organisms/gramophone/Vinyl";
 import { useAudio } from "@/hooks/useAudio";
 
@@ -27,11 +27,17 @@ export const GramophoneContextProvider: React.FC<React.PropsWithChildren> = ({
     playAudio(vinyl.path, { channel: "music", loop: true });
   };
 
-  const stopVinyl = () => {
+  const stopVinyl = useCallback(() => {
     setCurrentVinyl(null);
 
     stopAudio("music");
-  };
+  }, [stopAudio]);
+
+  useEffect(() => {
+    return () => {
+      stopVinyl();
+    };
+  }, [stopVinyl]);
 
   return (
     <GramophoneContext.Provider value={{ currentVinyl, playVinyl, stopVinyl }}>

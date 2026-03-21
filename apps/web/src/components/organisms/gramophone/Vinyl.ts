@@ -12,7 +12,7 @@ export const VINYLS: Vinyl[] = [
     name: "Space silence",
     author: "Cosmic Voyager",
     color: "#143985",
-    path: "",
+    path: "/assets/sounds/slot-machine.wav",
   },
   {
     id: "2",

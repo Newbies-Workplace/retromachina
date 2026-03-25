@@ -9,10 +9,10 @@ export type Vinyl = {
 export const VINYLS: Vinyl[] = [
   {
     id: "1",
-    name: "Space silence",
-    author: "Cosmic Voyager",
+    name: "Lofi",
+    author: "BFCMUSIC",
     color: "#143985",
-    path: "/assets/sounds/slot-machine.wav",
+    path: "/assets/vinyl/lofi.mp3",
   },
   {
     id: "2",

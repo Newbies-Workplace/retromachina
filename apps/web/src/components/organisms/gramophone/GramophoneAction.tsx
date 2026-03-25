@@ -14,6 +14,30 @@ export const GramophoneAction: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { currentVinyl, playVinyl, stopVinyl } = useGramophone();
 
+  useEffect(() => {
+    if (!currentVinyl) return;
+
+    return dropTargetForElements({
+      element: document.body,
+      canDrop: ({ source }) => {
+        const data = source.data;
+        return isVinyl(data) && currentVinyl !== null;
+      },
+      onDrop: (args) => {
+        const data = args.source.data;
+        if (!isVinyl(data)) {
+          return;
+        }
+
+        const vinyl = getVinyl(data);
+        // Only clear if the dropped vinyl matches the current vinyl
+        if (vinyl.id === currentVinyl?.id) {
+          stopVinyl();
+        }
+      },
+    });
+  }, [currentVinyl, stopVinyl]);
+
   return (
     <NavbarAction>
       <Button
@@ -60,48 +84,52 @@ const GramophoneModal: React.FC<{
 
   return (
     <div
-      className={
-        "z-10 flex flex-col absolute top-12 right-12 bg-card rounded-xl p-2 shadow-lg gap-2"
-      }
+      className={"z-10 flex flex-col absolute top-12 right-12 shadow-lg"}
       ref={gramophonePopover}
     >
       <div className={"flex flex-col gap-2 items-center rounded-lg text-3xl"}>
-        <div className={"flex text-3xl font-harlow-solid-italic items-center"}>
-          Gramofon
+        <div
+          className={"flex flex-col items-center bg-card rounded-xl p-2 gap-2"}
+        >
+          <div
+            className={"flex text-3xl font-harlow-solid-italic items-center"}
+          >
+            Gramofon
+          </div>
+
+          <Gramophone
+            activeVinyl={activeVinyl}
+            onVinylDropped={(vinyl) => {
+              onVinylChanged(vinyl);
+            }}
+          />
         </div>
 
-        <Gramophone
-          activeVinyl={activeVinyl}
-          onVinylDropped={(vinyl) => {
-            onVinylChanged(vinyl);
-          }}
-        />
-
-        <div className={"flex flex-col gap-2 items-center justify-center"}>
-          {VINYLS.map((vinyl) => (
-            <div
-              key={vinyl.id}
-              className={"flex flex-row items-start w-full p-2 gap-2"}
-            >
-              <div className={"size-24 bg-black/20 rounded-full"}>
-                {activeVinyl === vinyl ? (
-                  <VinylDropzone
-                    activeVinyl={activeVinyl}
-                    onVinylDropped={() => {
-                      onVinylChanged(null);
-                    }}
-                  />
-                ) : (
-                  <DraggableVinyl data={vinyl} />
+        <div
+          className={
+            "bg-card rounded-xl flex flex-col gap-2 items-center justify-center"
+          }
+        >
+          {VINYLS.filter((vinyl) => vinyl.id !== activeVinyl?.id).map(
+            (vinyl, index) => (
+              <div
+                key={vinyl.id}
+                className={cn(
+                  "flex flex-row items-center w-full p-2 gap-2",
+                  index !== 0 && "-mt-14",
                 )}
-              </div>
+              >
+                <div className={"size-24 bg-black/20 rounded-full"}>
+                  <DraggableVinyl data={vinyl} />
+                </div>
 
-              <div className={"flex flex-col text-sm justify-center"}>
-                <span>{vinyl.name}</span>
-                <span>{vinyl.author}</span>
+                <div className={"flex flex-col justify-center"}>
+                  <span className={"text-sm font-bold"}>{vinyl.name}</span>
+                  <span className={"text-xs"}>{vinyl.author}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ),
+          )}
         </div>
       </div>
     </div>

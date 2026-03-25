@@ -6,6 +6,11 @@ import { getVinyl, isVinyl } from "@/components/organisms/gramophone/dragndrop";
 import { VINYLS, Vinyl } from "@/components/organisms/gramophone/Vinyl";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useGramophone } from "@/context/gramophone/GramophoneContext.hook";
 import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
@@ -107,87 +112,38 @@ const GramophoneModal: React.FC<{
 
         <div
           className={
-            "bg-card rounded-xl flex flex-col gap-2 items-center justify-center"
+            "bg-card rounded-xl flex flex-row gap-2 items-center justify-center"
           }
         >
-          {VINYLS.filter((vinyl) => vinyl.id !== activeVinyl?.id).map(
-            (vinyl, index) => (
-              <div
-                key={vinyl.id}
-                className={cn(
-                  "flex flex-row items-center w-full p-2 gap-2",
-                  index !== 0 && "-mt-14",
-                )}
-              >
-                <div className={"size-24 bg-black/20 rounded-full"}>
-                  <DraggableVinyl data={vinyl} />
-                </div>
-
-                <div className={"flex flex-col justify-center"}>
+          {VINYLS.map((vinyl, index) => (
+            <div
+              key={vinyl.id}
+              className={cn(
+                "flex flex-row items-center w-full p-2 gap-2",
+                index !== 0 && "-ml-14",
+              )}
+            >
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className={"size-24 bg-black/20 rounded-full"}>
+                    {activeVinyl?.id !== vinyl.id && (
+                      <DraggableVinyl data={vinyl} />
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent
+                  side={"bottom"}
+                  className={"flex flex-col gap-2"}
+                >
                   <span className={"text-sm font-bold"}>{vinyl.name}</span>
                   <span className={"text-xs"}>{vinyl.author}</span>
-                </div>
-              </div>
-            ),
-          )}
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          ))}
         </div>
       </div>
     </div>
-  );
-};
-
-const VinylDropzone: React.FC<{
-  activeVinyl: Vinyl | null;
-  onVinylDropped: (vinyl: Vinyl) => void;
-}> = ({ activeVinyl, onVinylDropped }) => {
-  const dropzoneRef = useRef<HTMLDivElement>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-
-  useEffect(() => {
-    const element = dropzoneRef.current;
-    if (!element) return;
-
-    return dropTargetForElements({
-      element,
-      canDrop: ({ source }) => {
-        const data = source.data;
-
-        if (!isVinyl(data)) {
-          return false;
-        }
-
-        const vinyl = getVinyl(data);
-
-        return vinyl.id === activeVinyl?.id;
-      },
-      onDrop: (args) => {
-        const data = args.source.data;
-        if (!isVinyl(data)) {
-          return;
-        }
-
-        const vinyl = getVinyl(data);
-        const foundVinyl = VINYLS.find((v) => v.id === vinyl.id);
-        if (foundVinyl) {
-          onVinylDropped(foundVinyl);
-        }
-        setIsDragOver(false);
-      },
-      onDragEnter: () => setIsDragOver(true),
-      onDragLeave: () => setIsDragOver(false),
-    });
-  }, [onVinylDropped, activeVinyl?.id]);
-
-  return (
-    <div
-      ref={dropzoneRef}
-      className={cn(
-        "size-24 rounded-full transition-colors",
-        isDragOver
-          ? "ring-2 ring-offset-2 ring-offset-background ring-primary"
-          : "",
-      )}
-    />
   );
 };
 

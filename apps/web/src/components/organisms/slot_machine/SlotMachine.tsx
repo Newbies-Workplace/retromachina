@@ -87,7 +87,7 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
   highlightedUserId = null,
   userPool: teamUsers,
 }) => {
-  const { play: playAudio } = useAudio();
+  const { playAudio } = useAudio();
 
   const highlightedUser = useMemo(
     () => teamUsers.find((u) => u.id === highlightedUserId),

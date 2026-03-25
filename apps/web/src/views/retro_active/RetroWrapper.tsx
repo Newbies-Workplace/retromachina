@@ -2,6 +2,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { RetroService } from "@/api/Retro.service";
+import { GramophoneContextProvider } from "@/context/gramophone/GramophoneContext";
 import { RetroContextProvider } from "@/context/retro/RetroContext";
 
 export const RetroWrapper: React.FC<React.PropsWithChildren> = ({
@@ -25,6 +26,8 @@ export const RetroWrapper: React.FC<React.PropsWithChildren> = ({
   }
 
   return (
-    <RetroContextProvider retroId={retroId}>{children}</RetroContextProvider>
+    <GramophoneContextProvider>
+      <RetroContextProvider retroId={retroId}>{children}</RetroContextProvider>
+    </GramophoneContextProvider>
   );
 };

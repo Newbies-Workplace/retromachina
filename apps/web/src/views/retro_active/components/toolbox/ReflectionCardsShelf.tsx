@@ -213,7 +213,7 @@ const DraggableReflectionCard: React.FC<{
   enableDrag?: boolean;
 }> = ({ id, text, onEdit, onDeleteClick, enableDrag = false }) => {
   const cardRef = createRef<HTMLDivElement>();
-  const { play: playSound } = useAudio();
+  const { playAudio } = useAudio();
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -230,11 +230,11 @@ const DraggableReflectionCard: React.FC<{
         element: element,
         getInitialData: () => getReflectionCard({ reflectionCardId: id }),
         onDragStart: () => {
-          playSound(cardPickSound).then();
+          playAudio(cardPickSound).then();
           setIsDragging(true);
         },
         onDrop: () => {
-          playSound(cardDropSound).then();
+          playAudio(cardDropSound).then();
           setIsDragging(false);
         },
       }),

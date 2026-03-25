@@ -3,6 +3,7 @@ import { CheckIcon, XIcon } from "lucide-react";
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import timerEndSound from "@/assets/sounds/timer-end.wav";
 import { Timer } from "@/components/molecules/timer/Timer";
+import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import { Button } from "@/components/ui/button";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useAudio } from "@/hooks/useAudio";
@@ -18,7 +19,7 @@ export const RetroTimer: React.FC = () => {
 
   const { timerEnds, teamId, setTimer } = useRetro();
   const { isAdmin } = useTeamRole(teamId!);
-  const { play: playAudio } = useAudio();
+  const { playAudio } = useAudio();
 
   const onQuickAddTime = () => {
     const currentOrEndTime = timerEnds ? dayjs(timerEnds) : dayjs();
@@ -53,41 +54,35 @@ export const RetroTimer: React.FC = () => {
   }, [playAudio]);
 
   return (
-    <div
-      className={
-        "flex flex-row items-center gap-2 bg-card h-11 -mt-2 pt-3 pb-2 px-2 rounded-b-lg"
-      }
-    >
-      <div className={"flex flex-row gap-2"}>
-        {isAdmin && (
-          <Button onClick={onQuickAddTime} size={"icon"}>
-            +30
-          </Button>
-        )}
+    <NavbarAction>
+      {isAdmin && (
+        <Button onClick={onQuickAddTime} size={"icon"}>
+          +30
+        </Button>
+      )}
 
-        <Timer
-          timerEnds={timerEnds}
-          onClick={isAdmin ? () => setDialogTimerOpen(true) : undefined}
-          onTimerEnd={onTimerEnd}
-        />
+      <Timer
+        timerEnds={timerEnds}
+        onClick={isAdmin ? () => setDialogTimerOpen(true) : undefined}
+        onTimerEnd={onTimerEnd}
+      />
 
-        {isAdmin && (
-          <Button
-            onClick={() => {
-              onSetTimer(null);
-            }}
-            size={"icon"}
-            variant={"destructive"}
-          >
-            <XIcon className={"size-4"} />
-          </Button>
-        )}
-      </div>
+      {isAdmin && (
+        <Button
+          onClick={() => {
+            onSetTimer(null);
+          }}
+          size={"icon"}
+          variant={"destructive"}
+        >
+          <XIcon className={"size-4"} />
+        </Button>
+      )}
 
       {isTimerDialogOpen && (
         <TimerSetModal onDismiss={closeTimer} onTimeSet={onSetTimer} />
       )}
-    </div>
+    </NavbarAction>
   );
 };
 
@@ -153,7 +148,7 @@ const TimerSetModal: React.FC<{
   return (
     <div
       className={
-        "flex flex-col absolute top-16 bg-card rounded-xl p-2 shadow-lg gap-2"
+        "flex flex-col absolute top-12 bg-card rounded-xl p-2 shadow-lg gap-2"
       }
       ref={timePopover}
     >

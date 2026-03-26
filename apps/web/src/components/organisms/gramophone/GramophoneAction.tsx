@@ -89,12 +89,14 @@ const GramophoneModal: React.FC<{
 
   return (
     <div
-      className={"z-10 flex flex-col absolute top-12 right-12 shadow-lg"}
+      className={"z-10 flex flex-col absolute top-12 right-12"}
       ref={gramophonePopover}
     >
-      <div className={"flex flex-col gap-2 items-center rounded-lg text-3xl"}>
+      <div className={"flex flex-col gap-2 items-center"}>
         <div
-          className={"flex flex-col items-center bg-card rounded-xl p-2 gap-2"}
+          className={
+            "flex flex-col items-center bg-card rounded-xl p-2 gap-2 shadow"
+          }
         >
           <div
             className={"flex text-3xl font-harlow-solid-italic items-center"}
@@ -112,7 +114,7 @@ const GramophoneModal: React.FC<{
 
         <div
           className={
-            "bg-card rounded-xl flex flex-row gap-2 items-center justify-center"
+            "bg-card rounded-xl flex flex-row gap-2 items-center justify-center shadow"
           }
         >
           {VINYLS.map((vinyl, index) => (

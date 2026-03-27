@@ -1,4 +1,4 @@
-import { SunIcon, Volume1Icon } from "lucide-react";
+import { MusicIcon, SunIcon, Volume1Icon } from "lucide-react";
 import React, { useState } from "react";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ export const PreferencesDialogContent = () => {
       <div className={"flex flex-col gap-4 w-full"}>
         <div className={"flex flex-row gap-2 items-center"}>
           <Volume1Icon className={"size-6"} />
-          Dźwięki w aplikacji
+          Efekty dźwiękowe w aplikacji
         </div>
 
         <Slider
@@ -61,6 +61,13 @@ export const PreferencesDialogContent = () => {
           max={1}
           step={0.05}
         />
+
+        <div className={"flex flex-row gap-2 items-center"}>
+          <MusicIcon className={"size-6"} />
+          Muzyka w aplikacji
+        </div>
+
+        <MusicPreferenceSlider />
 
         <div className={"flex flex-row gap-2 items-center"}>
           <SunIcon className={"size-6"} />
@@ -96,5 +103,34 @@ export const PreferencesDialogContent = () => {
         />
       </DialogFooter>
     </DialogContent>
+  );
+};
+
+export const MusicPreferenceSlider = () => {
+  const { musicVolumeLevel, setMusicVolumeLevel } = usePreferencesStore();
+  const [tempMusicVolumeLevel, setTempMusicVolumeLevel] =
+    useState(musicVolumeLevel);
+  const { playAudio } = useAudio();
+
+  return (
+    <Slider
+      value={[tempMusicVolumeLevel]}
+      onValueChange={(value) => {
+        setTempMusicVolumeLevel(value as number);
+      }}
+      onValueCommitted={async (value) => {
+        const level = value as number;
+        setTempMusicVolumeLevel(level);
+        setMusicVolumeLevel(level);
+
+        await playAudio(readySingleSound, {
+          volumeLevel: level,
+          channel: "music",
+        });
+      }}
+      min={0}
+      max={1}
+      step={0.05}
+    />
   );
 };

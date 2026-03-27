@@ -17,19 +17,28 @@ interface UseAudioOptions {
 }
 
 export const useAudio = (): UseAudio => {
-  const { volumeLevel } = usePreferencesStore();
+  const { volumeLevel, musicVolumeLevel } = usePreferencesStore();
   const audioChannelsRef = useRef<
     Record<AudioChannel, HTMLAudioElement | null>
   >({ music: null, sfx: null });
 
+  const getVolumeForChannel = useCallback(
+    (channel: AudioChannel): number => {
+      return channel === "music" ? musicVolumeLevel : volumeLevel;
+    },
+    [volumeLevel, musicVolumeLevel],
+  );
+
   // Update volume on all channels when volumeLevel changes
   useEffect(() => {
-    Object.values(audioChannelsRef.current).forEach((audioElement) => {
+    for (const [channel, audioElement] of Object.entries(
+      audioChannelsRef.current,
+    )) {
       if (audioElement) {
-        audioElement.volume = volumeLevel;
+        audioElement.volume = getVolumeForChannel(channel as AudioChannel);
       }
-    });
-  }, [volumeLevel]);
+    }
+  }, [getVolumeForChannel]);
 
   const playAudio = useCallback(
     async (audio: string, options?: UseAudioOptions) => {
@@ -44,19 +53,20 @@ export const useAudio = (): UseAudio => {
 
       const audioElement = new Audio(audio);
       audioElement.loop = options?.loop ?? false;
-      audioElement.volume = options?.volumeLevel ?? volumeLevel;
+      audioElement.volume =
+        options?.volumeLevel ?? getVolumeForChannel(channel);
       audioChannelsRef.current[channel] = audioElement;
 
       await audioElement.play();
     },
-    [volumeLevel],
+    [volumeLevel, getVolumeForChannel],
   );
 
   const stopAudio = useCallback((channel: AudioChannel) => {
     const audioElement = audioChannelsRef.current[channel];
     if (audioElement) {
       audioElement.pause();
-      audioElement.currentTime = 0;
+      audioElement.srcObject = null;
       audioChannelsRef.current[channel] = null;
     }
   }, []);

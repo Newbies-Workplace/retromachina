@@ -4,6 +4,7 @@ import React, { createRef, useEffect, useRef, useState } from "react";
 import { DraggableVinyl } from "@/components/organisms/gramophone/DraggableVinyl";
 import { getVinyl, isVinyl } from "@/components/organisms/gramophone/dragndrop";
 import { VINYLS, Vinyl } from "@/components/organisms/gramophone/Vinyl";
+import { MusicPreferenceSlider } from "@/components/organisms/menu/PreferencesDialogContent";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,12 +90,14 @@ const GramophoneModal: React.FC<{
 
   return (
     <div
-      className={"z-10 flex flex-col absolute top-12 right-12 shadow-lg"}
+      className={"z-10 flex flex-col absolute top-12 right-12"}
       ref={gramophonePopover}
     >
-      <div className={"flex flex-col gap-2 items-center rounded-lg text-3xl"}>
+      <div className={"flex flex-col gap-2 items-center"}>
         <div
-          className={"flex flex-col items-center bg-card rounded-xl p-2 gap-2"}
+          className={
+            "flex flex-col items-center bg-card rounded-xl p-2 gap-2 shadow"
+          }
         >
           <div
             className={"flex text-3xl font-harlow-solid-italic items-center"}
@@ -112,7 +115,7 @@ const GramophoneModal: React.FC<{
 
         <div
           className={
-            "bg-card rounded-xl flex flex-row gap-2 items-center justify-center"
+            "bg-card rounded-xl flex flex-row gap-2 items-center justify-center shadow"
           }
         >
           {VINYLS.map((vinyl, index) => (
@@ -188,7 +191,7 @@ const Gramophone: React.FC<{
     <div
       ref={dropzoneRef}
       className={cn(
-        "relative w-50 h-36 rounded-lg flex items-center justify-center transition-shadow",
+        "relative w-50 h-38 rounded-lg flex items-center justify-center transition-shadow",
         isDragOver
           ? "shadow-lg ring-2 ring-offset-2 ring-primary"
           : "shadow-md",
@@ -198,7 +201,7 @@ const Gramophone: React.FC<{
       <div className="absolute inset-0 rounded-lg bg-linear-to-br from-gray-500 to-gray-600 opacity-60" />
 
       {/* Center vinyl area */}
-      <div className="relative z-10 flex items-center justify-center w-full h-full pr-16">
+      <div className="relative z-10 flex p-4 w-full h-full pr-16">
         <div className="relative w-28 h-28">
           {/* Vinyl turntable */}
           <div className="absolute inset-0 rounded-full bg-gray-900 flex items-center justify-center shadow-lg">
@@ -234,10 +237,14 @@ const Gramophone: React.FC<{
         </div>
       </div>
 
+      <div className={"absolute bottom-2 left-2 right-2 z-10"}>
+        <MusicPreferenceSlider />
+      </div>
+
       {/* Control buttons on the right side */}
-      <div className="absolute top-6 right-4 w-3 h-3 rounded-full bg-gray-600 shadow-sm" />
-      <div className="absolute top-12 right-4 w-3 h-3 rounded-full bg-gray-600 shadow-sm" />
-      <div className="absolute bottom-6 right-4 w-3 h-3 rounded-full bg-destructive shadow-sm" />
+      <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-gray-600 shadow-sm" />
+      <div className="absolute top-10 right-4 w-3 h-3 rounded-full bg-gray-600 shadow-sm" />
+      <div className="absolute bottom-8 right-4 w-3 h-3 rounded-full bg-destructive shadow-sm" />
     </div>
   );
 };

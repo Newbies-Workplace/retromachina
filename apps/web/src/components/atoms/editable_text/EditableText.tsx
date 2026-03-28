@@ -13,12 +13,13 @@ export interface EditableTextProps {
   editable?: boolean;
   autoFocus?: boolean;
   className?: string;
-  onEditDismiss?: () => void;
+  onEditDismiss?: (text: string) => void;
   onEditingChange?: (isEditing: boolean) => void;
 }
 
 export interface EditableTextRef {
   save: () => string;
+  dismiss: () => string;
 }
 
 export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
@@ -38,13 +39,8 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
     const [editingText, setEditingText] = useState(text);
 
     useImperativeHandle(ref, () => ({
-      save: () => {
-        const trimmedText = editingText.trim();
-        onSave(trimmedText);
-        setIsEditingText(false);
-        onEditingChange?.(false);
-        return trimmedText;
-      },
+      save: () => handleSave(),
+      dismiss: () => handleDismiss(),
     }));
 
     useEffect(() => {
@@ -69,13 +65,19 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
       onSave(trimmedText);
       setIsEditingText(false);
       onEditingChange?.(false);
+
+      return trimmedText;
     };
 
     const handleDismiss = () => {
+      const trimmedText = editingText.trim();
+
       setIsEditingText(false);
       setEditingText(text);
       onEditingChange?.(false);
-      onEditDismiss?.();
+      onEditDismiss?.(trimmedText);
+
+      return trimmedText;
     };
 
     if (isEditingText) {

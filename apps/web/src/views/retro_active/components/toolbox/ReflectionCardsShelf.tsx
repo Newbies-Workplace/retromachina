@@ -92,6 +92,7 @@ export const ReflectionCardsShelf: React.FC<{
     const trimmedText = text.trim();
 
     if (trimmedText === "") {
+      onDeleteNewReflectionCardClick();
       return;
     }
 
@@ -158,7 +159,7 @@ export const ReflectionCardsShelf: React.FC<{
                   <Card
                     id="new-reflection-card"
                     className={"w-[225px]"}
-                    onEditDismiss={onDeleteNewReflectionCardClick}
+                    // onEditDismiss={onDeleteNewReflectionCardClick}
                     positioningBackgroundEnabled={false}
                   >
                     <CardContent
@@ -166,7 +167,7 @@ export const ReflectionCardsShelf: React.FC<{
                       editable
                       autoFocus
                       onSave={onSaveNewReflectionCardClick}
-                      onEditDismiss={onDeleteNewReflectionCardClick}
+                      // onEditDismiss={onDeleteNewReflectionCardClick}
                     />
                     <CardActions>
                       <Button

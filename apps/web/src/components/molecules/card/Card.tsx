@@ -14,8 +14,8 @@ export interface CardProps {
   style?: React.CSSProperties;
   className?: string;
   children: React.ReactNode;
-  onEditDismiss?: () => void;
   positioningBackgroundEnabled?: boolean;
+  saveOnDismiss?: boolean;
 }
 
 const CardInner: React.FC<CardProps> = ({
@@ -23,8 +23,8 @@ const CardInner: React.FC<CardProps> = ({
   style,
   className,
   children,
-  onEditDismiss,
   positioningBackgroundEnabled = true,
+  saveOnDismiss = true,
 }) => {
   const {
     isEditingText,
@@ -37,8 +37,22 @@ const CardInner: React.FC<CardProps> = ({
   const closeEditingMode = useCallback(() => {
     setIsEditingText(false);
     setIsUsersPickerOpen(false);
-    onEditDismiss?.();
-  }, [onEditDismiss, setIsEditingText, setIsUsersPickerOpen]);
+
+    if (!editableTextRef?.current) {
+      return;
+    }
+
+    if (saveOnDismiss) {
+      editableTextRef.current.save();
+    } else {
+      editableTextRef.current.dismiss();
+    }
+  }, [
+    saveOnDismiss,
+    editableTextRef?.current,
+    setIsEditingText,
+    setIsUsersPickerOpen,
+  ]);
 
   const handleSaveClick = () => {
     if (editableTextRef?.current) {

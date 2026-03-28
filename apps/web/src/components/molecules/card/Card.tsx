@@ -1,6 +1,6 @@
 import { SaveIcon } from "lucide-react";
 import { motion } from "motion/react";
-import React, { useCallback } from "react";
+import React from "react";
 import { PositioningBackdrop } from "@/components/molecules/backdrop/PositioningBackdrop";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -34,25 +34,23 @@ const CardInner: React.FC<CardProps> = ({
     setIsUsersPickerOpen,
   } = useCardContext();
 
-  const closeEditingMode = useCallback(() => {
-    setIsEditingText(false);
-    setIsUsersPickerOpen(false);
-
+  const closeEditingMode = () => {
     if (!editableTextRef?.current) {
       return;
     }
 
-    if (saveOnDismiss) {
+    if (
+      saveOnDismiss &&
+      editableTextRef.current.getCurrentText().trim() !== ""
+    ) {
       editableTextRef.current.save();
     } else {
       editableTextRef.current.dismiss();
     }
-  }, [
-    saveOnDismiss,
-    editableTextRef?.current,
-    setIsEditingText,
-    setIsUsersPickerOpen,
-  ]);
+
+    setIsEditingText(false);
+    setIsUsersPickerOpen(false);
+  };
 
   const handleSaveClick = () => {
     if (editableTextRef?.current) {

@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useState,
@@ -20,6 +21,7 @@ export interface EditableTextProps {
 export interface EditableTextRef {
   save: () => string;
   dismiss: () => string;
+  getCurrentText: () => string;
 }
 
 export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
@@ -38,10 +40,35 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
     const { isEditingText, setIsEditingText } = useCardContext();
     const [editingText, setEditingText] = useState(text);
 
-    useImperativeHandle(ref, () => ({
-      save: () => handleSave(),
-      dismiss: () => handleDismiss(),
-    }));
+    const handleSave = useCallback(() => {
+      const trimmedText = editingText.trim();
+      onSave(trimmedText);
+      setIsEditingText(false);
+      onEditingChange?.(false);
+
+      return trimmedText;
+    }, [editingText, onEditingChange, onSave, setIsEditingText]);
+
+    const handleDismiss = useCallback(() => {
+      const trimmedText = editingText.trim();
+
+      setIsEditingText(false);
+      setEditingText(text);
+      onEditingChange?.(false);
+      onEditDismiss?.(trimmedText);
+
+      return trimmedText;
+    }, [editingText, onEditingChange, onEditDismiss, setIsEditingText, text]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        save: () => handleSave(),
+        dismiss: () => handleDismiss(),
+        getCurrentText: () => editingText,
+      }),
+      [editingText, handleSave, handleDismiss],
+    );
 
     useEffect(() => {
       setEditingText(text);
@@ -58,26 +85,6 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
         setIsEditingText(true);
         onEditingChange?.(true);
       }
-    };
-
-    const handleSave = () => {
-      const trimmedText = editingText.trim();
-      onSave(trimmedText);
-      setIsEditingText(false);
-      onEditingChange?.(false);
-
-      return trimmedText;
-    };
-
-    const handleDismiss = () => {
-      const trimmedText = editingText.trim();
-
-      setIsEditingText(false);
-      setEditingText(text);
-      onEditingChange?.(false);
-      onEditDismiss?.(trimmedText);
-
-      return trimmedText;
     };
 
     if (isEditingText) {

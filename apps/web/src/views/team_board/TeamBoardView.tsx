@@ -63,6 +63,26 @@ export const TeamBoardView: React.FC = () => {
     });
   };
 
+  const onSaveCreatedTask = (text: string, columnId: string) => {
+    if (!creatingTask) {
+      return;
+    }
+    const trimmedText = text.trim();
+
+    if (trimmedText.length === 0) {
+      setCreatingTask(undefined);
+      return;
+    }
+
+    createTask(
+      creatingTask.id,
+      trimmedText,
+      creatingTask.ownerId ?? null,
+      columnId,
+    );
+    setCreatingTask(undefined);
+  };
+
   return (
     <>
       <Navbar
@@ -130,25 +150,12 @@ export const TeamBoardView: React.FC = () => {
                     );
 
                     return (
-                      <Card
-                        id={creatingTask.id}
-                        onEditDismiss={() => {
-                          setCreatingTask(undefined);
-                        }}
-                      >
+                      <Card id={creatingTask.id}>
                         <CardContent
                           text={creatingTask.text}
                           editable
                           autoFocus
-                          onSave={(text) => {
-                            createTask(
-                              creatingTask.id,
-                              text,
-                              author?.id ?? null,
-                              column.id,
-                            );
-                            setCreatingTask(undefined);
-                          }}
+                          onSave={(text) => onSaveCreatedTask(text, column.id)}
                         />
                         <CardAuthor
                           author={

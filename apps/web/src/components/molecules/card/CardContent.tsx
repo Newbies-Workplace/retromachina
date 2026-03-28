@@ -32,8 +32,9 @@ export const CardContent: React.FC<CardContentProps> = ({
     setIsEditingText(false);
   };
 
-  const handleEditDismiss = () => {
+  const handleEditDismiss = (text: string) => {
     onEditDismiss?.();
+    onSave?.(text);
     setIsEditingText(false);
   };
 

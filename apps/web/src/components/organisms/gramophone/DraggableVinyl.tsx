@@ -1,27 +1,18 @@
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { centerUnderPointer } from "@atlaskit/pragmatic-drag-and-drop/element/center-under-pointer";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
 import React, { useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import invariant from "tiny-invariant";
 import { getVinyl } from "@/components/organisms/gramophone/dragndrop";
 import { Vinyl } from "@/components/organisms/gramophone/Vinyl";
 import { VinylDisc } from "@/components/organisms/gramophone/VinylDisc";
 import { cn } from "@/lib/utils";
 
-type State =
-  | {
-      type: "idle";
-    }
-  | {
-      type: "preview";
-      container: HTMLElement;
-    };
-
 export const DraggableVinyl: React.FC<{
   className?: string;
   data: Vinyl;
 }> = ({ className, data }) => {
-  const [state, setState] = useState<State>({ type: "idle" });
   const dragRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -38,35 +29,30 @@ export const DraggableVinyl: React.FC<{
       onGenerateDragPreview({ nativeSetDragImage }) {
         setCustomNativeDragPreview({
           render({ container }) {
-            setState({ type: "preview", container });
+            const root = createRoot(container);
+            root.render(<VinylDisc data={data} />);
 
-            return () => setState({ type: "idle" });
+            return () => {
+              root.unmount();
+            };
           },
           nativeSetDragImage,
-          getOffset: () => {
-            return { x: 96, y: 96 };
-          },
+          getOffset: centerUnderPointer,
         });
       },
     });
   }, [data]);
 
   return (
-    <>
-      <div
-        className={cn(
-          "relative size-24 min-w-24 min-h-24 transition-opacity",
-          isDragging && "opacity-0",
-          "cursor-grab active:cursor-grabbing",
-          className,
-        )}
-      >
-        <VinylDisc dragRef={dragRef} data={data} />
-      </div>
-
-      {state.type === "preview"
-        ? ReactDOM.createPortal(<VinylDisc data={data} />, state.container)
-        : null}
-    </>
+    <div
+      className={cn(
+        "relative size-24 min-w-24 min-h-24 transition-opacity",
+        isDragging && "opacity-0",
+        "cursor-grab active:cursor-grabbing",
+        className,
+      )}
+    >
+      <VinylDisc dragRef={dragRef} data={data} />
+    </div>
   );
 };

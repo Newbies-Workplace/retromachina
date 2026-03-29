@@ -1,6 +1,5 @@
 import { TrashIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardActions,
@@ -52,11 +51,14 @@ export const DiscussView = () => {
     };
   }, [value]);
 
-  const [groups, setGroups] = useState<Group[]>([]);
+  const groups: Group[] = useMemo(
+    () => groupCards(cards, votes),
+    [cards, votes],
+  );
 
-  useEffect(() => {
-    setGroups(groupCards(cards, votes));
-  }, [cards, votes]);
+  const discussedGroup = useMemo(() => {
+    return groups.find((g) => g.parentCardId === discussionCardId);
+  }, [groups, discussionCardId]);
 
   const usersWritingTasks = useMemo(() => {
     const socketUsers = activeUsers.filter((user) => user.isCreatingTask);
@@ -69,171 +71,79 @@ export const DiscussView = () => {
   }, [activeUsers, teamUsers]);
 
   return (
-    <div className={"flex justify-between flex-row h-full"}>
-      <div
-        className={
-          "hidden lg:flex flex-col gap-4 min-w-[250px] max-w-[50px] px-4 py-2 scrollbar"
-        }
-      >
-        <span className={"ml-2 text-3xl"}>Już za chwilę...</span>
-        {groups
-          .sort((a, b) => b.votes - a.votes)
-          .filter((group, groupIndex) => {
-            const discussIndex = groups.findIndex(
-              (g) => g.parentCardId === discussionCardId,
-            );
-            return discussIndex < groupIndex;
-          })
-          .map((group) => {
-            return (
-              <CardGroup
-                className={cn(group.votes === 0 && "opacity-40")}
-                columnId={"next"}
-                key={group.parentCardId}
-                parentCardId={group.parentCardId}
-              >
-                {group.cards.map((card, index) => {
-                  const author = teamUsers.find(
-                    (user) => user.id === card.authorId,
-                  );
+    <div className={"flex justify-center flex-row h-full"}>
+      {/*<UpcomingSection groups={groups} />*/}
 
-                  return (
-                    <Card
-                      id={card.id}
-                      key={card.id}
-                      style={{ marginTop: index === 0 ? 0 : -80 }}
-                    >
-                      <CardContent text={card.text} />
-                      <CardAuthor
-                        author={{
-                          avatar: author?.avatar_link || "",
-                          name: author?.nick || "",
-                          id: card.authorId,
-                        }}
-                      />
-                      {group.cards.length === index + 1 && (
-                        <CardActions>
-                          <div className={"flex justify-center grow w-8"}>
-                            <span className={"self-center"}>{group.votes}</span>
-                          </div>
-                        </CardActions>
-                      )}
-                    </Card>
-                  );
-                })}
-              </CardGroup>
+      <div className={"flex flex-col items-center w-full max-w-2xl mx-2"}>
+        {discussedGroup && (
+          <div className={"w-full grow justify-center pt-4"}>
+            <DiscussedGroup group={discussedGroup} />
+          </div>
+        )}
+
+        <div
+          className={"flex flex-col gap-2 h-full w-full py-4 px-2 scrollbar"}
+        >
+          {tasks.map((actionPoint) => {
+            const isFromCurrentlyDiscussedCard =
+              actionPoint.parentCardId === discussionCardId;
+
+            const author = teamUsers.find(
+              (teamUser) => teamUser.id === actionPoint.ownerId,
+            );
+
+            return (
+              <Card
+                id={actionPoint.id}
+                key={actionPoint.id}
+                className={cn(!isFromCurrentlyDiscussedCard && "opacity-40")}
+              >
+                <CardContent
+                  text={actionPoint.description}
+                  editable
+                  onSave={(text) => {
+                    updateTask(actionPoint.id, author?.id ?? null, text);
+                  }}
+                />
+                <CardAuthor
+                  author={
+                    author
+                      ? {
+                          avatar: author.avatar_link,
+                          name: author.nick,
+                          id: author.id,
+                        }
+                      : undefined
+                  }
+                  teamUsers={teamUsers.map((user) => ({
+                    id: user.id,
+                    name: user.nick,
+                    avatar: user.avatar_link,
+                  }))}
+                  editable
+                  onUserChange={(ownerId) => {
+                    updateTask(
+                      actionPoint.id,
+                      ownerId,
+                      actionPoint.description,
+                    );
+                  }}
+                />
+                <CardActions>
+                  <Button
+                    size={"icon"}
+                    variant={"destructive"}
+                    onClick={() => deleteTask(actionPoint.id)}
+                  >
+                    <TrashIcon className={"size-4"} />
+                  </Button>
+                </CardActions>
+              </Card>
             );
           })}
-      </div>
-
-      {discussionCardId && (
-        <div className={"grow justify-center pt-4"}>
-          {(() => {
-            const group = groups.find(
-              (g) => g.parentCardId === discussionCardId,
-            );
-            if (!group) {
-              return null;
-            }
-
-            return (
-              <div
-                className={cn(
-                  "flex flex-col mx-4 bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
-                  group.votes === 0 && "opacity-40",
-                )}
-              >
-                {group.cards.map((card) => {
-                  const author = teamUsers.find((u) => u.id === card.authorId);
-
-                  return (
-                    <div key={card.id} className={"flex gap-2 mb-4"}>
-                      <Avatar size={"sm"}>
-                        <AvatarImage src={author?.avatar_link} />
-                        <AvatarFallback>:)</AvatarFallback>
-                      </Avatar>
-
-                      {card.text}
-                    </div>
-                  );
-                })}
-
-                <span className={"flex justify-end items-end mt-auto text-sm"}>
-                  {group.votes}{" "}
-                  {pluralText(group.votes, {
-                    one: "głos",
-                    few: "głosy",
-                    other: "głosów",
-                  })}
-                </span>
-              </div>
-            );
-          })()}
-        </div>
-      )}
-      <div
-        className={
-          "flex flex-col grow p-2 min-w-75 max-w-100 my-4 rounded-l-2xl bg-card"
-        }
-      >
-        <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>
-          {tasks
-            ?.filter(
-              (actionPoint) => actionPoint.parentCardId === discussionCardId,
-            )
-            .map((actionPoint) => {
-              const author = teamUsers.find(
-                (teamUser) => teamUser.id === actionPoint.ownerId,
-              );
-
-              return (
-                <Card id={actionPoint.id} key={actionPoint.id}>
-                  <CardContent
-                    text={actionPoint.description}
-                    editable
-                    onSave={(text) => {
-                      updateTask(actionPoint.id, author?.id ?? null, text);
-                    }}
-                  />
-                  <CardAuthor
-                    author={
-                      author
-                        ? {
-                            avatar: author.avatar_link,
-                            name: author.nick,
-                            id: author.id,
-                          }
-                        : undefined
-                    }
-                    teamUsers={teamUsers.map((user) => ({
-                      id: user.id,
-                      name: user.nick,
-                      avatar: user.avatar_link,
-                    }))}
-                    editable
-                    onUserChange={(ownerId) => {
-                      updateTask(
-                        actionPoint.id,
-                        ownerId,
-                        actionPoint.description,
-                      );
-                    }}
-                  />
-                  <CardActions>
-                    <Button
-                      size={"icon"}
-                      variant={"destructive"}
-                      onClick={() => deleteTask(actionPoint.id)}
-                    >
-                      <TrashIcon className={"size-4"} />
-                    </Button>
-                  </CardActions>
-                </Card>
-              );
-            })}
         </div>
 
-        <div className={"relative mt-4"}>
+        <div className={"relative mb-4 mx-4 w-full"}>
           <div className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}>
             {usersWritingTasks.slice(0, 8).map((user) => (
               <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
@@ -245,7 +155,7 @@ export const DiscussView = () => {
 
           <Textarea
             value={value}
-            className={"resize-none min-h-20"}
+            className={"resize-none min-h-20 w-full"}
             onChange={(event) => setValue(event.target.value)}
             placeholder={"Nowy action point..."}
             onKeyDown={(e) => {
@@ -258,6 +168,107 @@ export const DiscussView = () => {
           />
         </div>
       </div>
+    </div>
+  );
+};
+
+export const DiscussedGroup: React.FC<{ group: Group }> = ({ group }) => {
+  const { teamUsers } = useRetro();
+
+  return (
+    <div
+      className={cn(
+        "flex flex-col bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
+        group.votes === 0 && "opacity-40",
+      )}
+    >
+      {group.cards.map((card) => {
+        const author = teamUsers.find((u) => u.id === card.authorId);
+
+        return (
+          <div key={card.id} className={"flex gap-2 mb-4"}>
+            <Avatar size={"sm"}>
+              <AvatarImage src={author?.avatar_link} />
+              <AvatarFallback>:)</AvatarFallback>
+            </Avatar>
+
+            {card.text}
+          </div>
+        );
+      })}
+
+      <span className={"flex justify-end items-end mt-auto text-sm"}>
+        {group.votes}{" "}
+        {pluralText(group.votes, {
+          one: "głos",
+          few: "głosy",
+          other: "głosów",
+        })}
+      </span>
+    </div>
+  );
+};
+
+export const UpcomingSection: React.FC<{
+  groups: Group[];
+}> = ({ groups }) => {
+  const { teamUsers, discussionCardId } = useRetro();
+
+  return (
+    <div
+      className={
+        "flex flex-col gap-4 min-w-[250px] max-w-[250px] px-4 py-2 scrollbar"
+      }
+    >
+      <span className={"ml-2 text-3xl"}>Już za chwilę...</span>
+      {groups
+        .sort((a, b) => b.votes - a.votes)
+        .filter((group, groupIndex) => {
+          const discussIndex = groups.findIndex(
+            (g) => g.parentCardId === discussionCardId,
+          );
+          return discussIndex < groupIndex;
+        })
+        .map((group) => {
+          return (
+            <CardGroup
+              className={cn(group.votes === 0 && "opacity-40")}
+              columnId={"next"}
+              key={group.parentCardId}
+              parentCardId={group.parentCardId}
+            >
+              {group.cards.map((card, index) => {
+                const author = teamUsers.find(
+                  (user) => user.id === card.authorId,
+                );
+
+                return (
+                  <Card
+                    id={card.id}
+                    key={card.id}
+                    style={{ marginTop: index === 0 ? 0 : -80 }}
+                  >
+                    <CardContent text={card.text} />
+                    <CardAuthor
+                      author={{
+                        avatar: author?.avatar_link || "",
+                        name: author?.nick || "",
+                        id: card.authorId,
+                      }}
+                    />
+                    {group.cards.length === index + 1 && (
+                      <CardActions>
+                        <div className={"flex justify-center grow w-8"}>
+                          <span className={"self-center"}>{group.votes}</span>
+                        </div>
+                      </CardActions>
+                    )}
+                  </Card>
+                );
+              })}
+            </CardGroup>
+          );
+        })}
     </div>
   );
 };

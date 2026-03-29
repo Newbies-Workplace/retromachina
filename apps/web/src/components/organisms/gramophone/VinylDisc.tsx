@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export const VinylDisc: React.FC<{
   className?: string;
-  dragRef: React.RefObject<HTMLDivElement | null>;
+  dragRef?: React.RefObject<HTMLDivElement | null>;
   data: Vinyl;
 }> = ({ className, dragRef, data }) => {
   return (

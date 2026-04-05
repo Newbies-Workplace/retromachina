@@ -17,39 +17,7 @@ import { pluralText } from "@/lib/pluralText";
 import { cn } from "@/lib/utils";
 
 export const DiscussView = () => {
-  const {
-    cards,
-    teamUsers,
-    activeUsers,
-    votes,
-    createTask,
-    deleteTask,
-    updateTask,
-    setCreatingTask,
-    tasks,
-    discussionCardId,
-  } = useRetro();
-  const { user } = useUser();
-  const [value, setValue] = useState("");
-
-  useEffect(() => {
-    const onStopWriting = () => {
-      setCreatingTask(false);
-    };
-
-    const isCurrentlyCreatingTask = activeUsers.find(
-      (u) => u.userId === user?.id,
-    )?.isCreatingTask;
-
-    if (value !== "" && !isCurrentlyCreatingTask) {
-      setCreatingTask(true);
-    }
-    const timeout = setTimeout(onStopWriting, 3000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [value]);
+  const { cards, votes, discussionCardId } = useRetro();
 
   const groups: Group[] = useMemo(
     () => groupCards(cards, votes),
@@ -60,114 +28,19 @@ export const DiscussView = () => {
     return groups.find((g) => g.parentCardId === discussionCardId);
   }, [groups, discussionCardId]);
 
-  const usersWritingTasks = useMemo(() => {
-    const socketUsers = activeUsers.filter((user) => user.isCreatingTask);
-
-    return teamUsers.filter((teamUser) => {
-      return socketUsers.some(
-        (socketUser) => socketUser.userId === teamUser.id,
-      );
-    });
-  }, [activeUsers, teamUsers]);
-
   return (
     <div className={"flex justify-center flex-row h-full"}>
       {/*<UpcomingSection groups={groups} />*/}
 
-      <div className={"flex flex-col items-center w-full max-w-2xl mx-2"}>
+      <div className={"flex flex-col items-center w-full mx-2"}>
         {discussedGroup && (
           <div className={"w-full grow justify-center pt-4"}>
             <DiscussedGroup group={discussedGroup} />
           </div>
         )}
-
-        <div
-          className={"flex flex-col gap-2 h-full w-full py-4 px-2 scrollbar"}
-        >
-          {tasks.map((actionPoint) => {
-            const isFromCurrentlyDiscussedCard =
-              actionPoint.parentCardId === discussionCardId;
-
-            const author = teamUsers.find(
-              (teamUser) => teamUser.id === actionPoint.ownerId,
-            );
-
-            return (
-              <Card
-                id={actionPoint.id}
-                key={actionPoint.id}
-                className={cn(!isFromCurrentlyDiscussedCard && "opacity-40")}
-              >
-                <CardContent
-                  text={actionPoint.description}
-                  editable
-                  onSave={(text) => {
-                    updateTask(actionPoint.id, author?.id ?? null, text);
-                  }}
-                />
-                <CardAuthor
-                  author={
-                    author
-                      ? {
-                          avatar: author.avatar_link,
-                          name: author.nick,
-                          id: author.id,
-                        }
-                      : undefined
-                  }
-                  teamUsers={teamUsers.map((user) => ({
-                    id: user.id,
-                    name: user.nick,
-                    avatar: user.avatar_link,
-                  }))}
-                  editable
-                  onUserChange={(ownerId) => {
-                    updateTask(
-                      actionPoint.id,
-                      ownerId,
-                      actionPoint.description,
-                    );
-                  }}
-                />
-                <CardActions>
-                  <Button
-                    size={"icon"}
-                    variant={"destructive"}
-                    onClick={() => deleteTask(actionPoint.id)}
-                  >
-                    <TrashIcon className={"size-4"} />
-                  </Button>
-                </CardActions>
-              </Card>
-            );
-          })}
-        </div>
-
-        <div className={"relative mb-4 mx-4 w-full"}>
-          <div className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}>
-            {usersWritingTasks.slice(0, 8).map((user) => (
-              <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
-                <AvatarImage src={user.avatar_link} />
-                <AvatarFallback>:)</AvatarFallback>
-              </Avatar>
-            ))}
-          </div>
-
-          <Textarea
-            value={value}
-            className={"resize-none min-h-20 w-full"}
-            onChange={(event) => setValue(event.target.value)}
-            placeholder={"Nowy action point..."}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey && !!user) {
-                e.preventDefault();
-                createTask(value, user.id);
-                setValue("");
-              }
-            }}
-          />
-        </div>
       </div>
+
+      <ActionPointsSection />
     </div>
   );
 };
@@ -205,6 +78,137 @@ export const DiscussedGroup: React.FC<{ group: Group }> = ({ group }) => {
           other: "głosów",
         })}
       </span>
+    </div>
+  );
+};
+
+export const ActionPointsSection = () => {
+  const {
+    teamUsers,
+    activeUsers,
+    createTask,
+    deleteTask,
+    updateTask,
+    setCreatingTask,
+    tasks,
+    discussionCardId,
+  } = useRetro();
+  const { user } = useUser();
+
+  // todo rename
+  const [taskText, setTaskText] = useState("");
+
+  const usersWritingTasks = useMemo(() => {
+    const socketUsers = activeUsers.filter((user) => user.isCreatingTask);
+
+    return teamUsers.filter((teamUser) => {
+      return socketUsers.some(
+        (socketUser) => socketUser.userId === teamUser.id,
+      );
+    });
+  }, [activeUsers, teamUsers]);
+
+  useEffect(() => {
+    const onStopWriting = () => {
+      setCreatingTask(false);
+    };
+
+    const isCurrentlyCreatingTask = activeUsers.find(
+      (u) => u.userId === user?.id,
+    )?.isCreatingTask;
+
+    if (taskText !== "" && !isCurrentlyCreatingTask) {
+      setCreatingTask(true);
+    }
+    const timeout = setTimeout(onStopWriting, 3000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [taskText]);
+
+  return (
+    <div className={"flex flex-col "}>
+      <div className={"flex flex-col gap-2 h-full w-full py-4 px-2 scrollbar"}>
+        {tasks.map((actionPoint) => {
+          const isFromCurrentlyDiscussedCard =
+            actionPoint.parentCardId === discussionCardId;
+
+          const author = teamUsers.find(
+            (teamUser) => teamUser.id === actionPoint.ownerId,
+          );
+
+          return (
+            <Card
+              id={actionPoint.id}
+              key={actionPoint.id}
+              className={cn(!isFromCurrentlyDiscussedCard && "opacity-40")}
+            >
+              <CardContent
+                text={actionPoint.description}
+                editable
+                onSave={(text) => {
+                  updateTask(actionPoint.id, author?.id ?? null, text);
+                }}
+              />
+              <CardAuthor
+                author={
+                  author
+                    ? {
+                        avatar: author.avatar_link,
+                        name: author.nick,
+                        id: author.id,
+                      }
+                    : undefined
+                }
+                teamUsers={teamUsers.map((user) => ({
+                  id: user.id,
+                  name: user.nick,
+                  avatar: user.avatar_link,
+                }))}
+                editable
+                onUserChange={(ownerId) => {
+                  updateTask(actionPoint.id, ownerId, actionPoint.description);
+                }}
+              />
+              <CardActions>
+                <Button
+                  size={"icon"}
+                  variant={"destructive"}
+                  onClick={() => deleteTask(actionPoint.id)}
+                >
+                  <TrashIcon className={"size-4"} />
+                </Button>
+              </CardActions>
+            </Card>
+          );
+        })}
+      </div>
+
+      <div className={"relative mb-4 mx-4 w-full"}>
+        <div className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}>
+          {usersWritingTasks.slice(0, 8).map((user) => (
+            <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
+              <AvatarImage src={user.avatar_link} />
+              <AvatarFallback>:)</AvatarFallback>
+            </Avatar>
+          ))}
+        </div>
+
+        <Textarea
+          value={taskText}
+          className={"resize-none min-h-20 w-full"}
+          onChange={(event) => setTaskText(event.target.value)}
+          placeholder={"Nowy action point..."}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey && !!user) {
+              e.preventDefault();
+              createTask(taskText, user.id);
+              setTaskText("");
+            }
+          }}
+        />
+      </div>
     </div>
   );
 };

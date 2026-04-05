@@ -16,6 +16,17 @@ interface UseAudioOptions {
   loop?: boolean;
 }
 
+const getVolumeModifierForChannel = (channel: AudioChannel) => {
+  switch (channel) {
+    case "sfx":
+      return 1;
+    case "music":
+      return 0.2;
+    default:
+      return 1;
+  }
+};
+
 export const useAudio = (): UseAudio => {
   const { volumeLevel, musicVolumeLevel } = usePreferencesStore();
   const audioChannelsRef = useRef<
@@ -24,7 +35,9 @@ export const useAudio = (): UseAudio => {
 
   const getVolumeForChannel = useCallback(
     (channel: AudioChannel): number => {
-      return channel === "music" ? musicVolumeLevel : volumeLevel;
+      const baseVolume = channel === "music" ? musicVolumeLevel : volumeLevel;
+
+      return baseVolume * getVolumeModifierForChannel(channel);
     },
     [volumeLevel, musicVolumeLevel],
   );

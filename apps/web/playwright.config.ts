@@ -12,6 +12,8 @@ export default defineConfig({
     baseURL: "http://localhost:8080",
     trace: "on-first-retry",
   },
+  // todo remove after tests fixed
+  timeout: 5000,
   projects: [
     // Setup project
     { name: "setup", testMatch: /.*\.setup\.ts/ },

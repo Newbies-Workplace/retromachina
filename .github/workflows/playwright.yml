@@ -24,6 +24,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Verify MariaDB connection
+      env:
+        PORT: ${{ job.services.mariadb.ports[3306] }}
+      run: |
+        while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+          sleep 1
+        done          
+
     - name: Setup Node.js
       uses: actions/setup-node@v6.2.0
       with:

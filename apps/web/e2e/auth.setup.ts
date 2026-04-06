@@ -18,35 +18,37 @@ import {
  * --remote-debugging-port=9222
  *
  * clear browser data before running each setup test
+ *
+ * replace page with setupBrowserPage
  */
-setup("authenticate as first user", async ({ setupBrowserPage }) => {
+setup("authenticate as first user", async ({ page }) => {
   if (fs.existsSync(firstAuthFile)) {
     return;
   }
 
   await authenticateWithCredentials(
-    setupBrowserPage,
+    page,
     process.env.E2E_FIRST_LOGIN,
     process.env.E2E_FIRST_PASSWORD,
     process.env.E2E_FIRST_OTP_SECRET,
   );
 
-  await setupBrowserPage.context().storageState({ path: firstAuthFile });
+  await page.context().storageState({ path: firstAuthFile });
 });
 
-setup("authenticate as second user", async ({ setupBrowserPage }) => {
+setup("authenticate as second user", async ({ page }) => {
   if (fs.existsSync(secondAuthFile)) {
     return;
   }
 
   await authenticateWithCredentials(
-    setupBrowserPage,
+    page,
     process.env.E2E_SECOND_LOGIN,
     process.env.E2E_SECOND_PASSWORD,
     process.env.E2E_SECOND_OTP_SECRET,
   );
 
-  await setupBrowserPage.context().storageState({ path: secondAuthFile });
+  await page.context().storageState({ path: secondAuthFile });
 });
 
 const authenticateWithCredentials = async (

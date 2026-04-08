@@ -75,6 +75,8 @@ jobs:
         E2E_INSERT_SQL: ${{ secrets.E2E_INSERT_SQL }}
 
     - name: Run Playwright tests
+      env:
+        DEBUG: "pw:webserver"
       run: npm run test
 
     - uses: actions/upload-artifact@v4

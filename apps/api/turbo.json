@@ -4,6 +4,9 @@
     "//"
   ],
   "tasks": {
+    "start": {
+      "persistent": true
+    },
     "build": {
       "outputs": [
         ".nest/**"

@@ -11,7 +11,7 @@ export default defineConfig({
   reporter: process.env.CI ? "list" : "html",
   use: {
     baseURL: "http://localhost:8080",
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
   },
   // todo remove after tests fixed
   timeout: 10000,

@@ -70,7 +70,12 @@ jobs:
       run: |
         touch insert.sql
         echo "$E2E_INSERT_SQL" > insert.sql
+        echo "=== SQL file contents ==="
+        cat insert.sql
+        echo "=== Executing SQL ==="
         mysql --host="127.0.0.1" --port=3306 --user="root" --database="retro" --password="retro" < insert.sql
+        echo "=== Verifying inserted users ==="
+        mysql --host="127.0.0.1" --port=3306 --user="root" --database="retro" --password="retro" -e "SELECT id, email, name FROM User LIMIT 10;"
       env:
         E2E_INSERT_SQL: ${{ secrets.E2E_INSERT_SQL }}
 
@@ -84,6 +89,7 @@ jobs:
       with:
         name: playwright-report
         path: | 
+          insert.sql
           apps/web/playwright-report/
           apps/web/test-results/
         retention-days: 7

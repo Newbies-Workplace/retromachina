@@ -63,6 +63,8 @@ jobs:
         touch insert.sql
         echo "$E2E_INSERT_SQL" > insert.sql
         mysql --host="127.0.0.1" --port=3306 --user="root" --database="retro" --password="retro" < insert.sql
+        echo "Inserted users:"
+        mysql --host="127.0.0.1" --port=3306 --user="root" --database="retro" --password="retro" -e "SELECT * FROM users;"
       env:
         E2E_INSERT_SQL: ${{ vars.E2E_INSERT_SQL }}
 

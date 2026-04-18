@@ -32,5 +32,6 @@ export default defineConfig({
     port: 8080,
     reuseExistingServer: !process.env.CI,
     stdout: process.env.CI ? "pipe" : "ignore",
+    stderr: "pipe",
   },
 });

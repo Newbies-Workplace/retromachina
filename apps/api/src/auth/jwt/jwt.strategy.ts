@@ -29,8 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       },
     });
 
-    if (!user)
-      throw new UnauthorizedException("User not found when validating JWT");
+    if (!user) throw new UnauthorizedException();
 
     return {
       ...user,

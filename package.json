@@ -5,7 +5,7 @@
     "dotenvx": "dotenvx",
     "dev": "dotenvx run -- turbo dev --env-mode=loose",
     "build": "dotenvx run -- turbo build --env-mode=loose",
-    "start": "dotenvx run -- turbo start --env-mode=loose",
+    "start": "turbo start --env-mode=loose",
     "test": "dotenvx run -- turbo test --env-mode=loose",
     "format": "npx @biomejs/biome check --write ./",
     "prepare": "husky"

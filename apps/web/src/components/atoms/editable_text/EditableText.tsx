@@ -3,10 +3,11 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useState,
 } from "react";
 import { useCardContext } from "@/components/molecules/card/CardContext";
-import { cn } from "@/lib/utils";
+import { cn, urlRegex } from "@/lib/utils";
 
 export interface EditableTextProps {
   text: string;
@@ -87,6 +88,28 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
       }
     };
 
+    const renderedContent = useMemo(() => {
+      const parts = text.split(urlRegex);
+      return parts.map((part, i) => {
+        if (urlRegex.test(part)) {
+          return (
+            <a
+              href={part}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={"underline"}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {part}
+            </a>
+          );
+        }
+
+        // biome-ignore lint/suspicious/noArrayIndexKey: unique text part index
+        return <React.Fragment key={i}>{part}</React.Fragment>;
+      });
+    }, [text]);
+
     if (isEditingText) {
       return (
         <textarea
@@ -123,7 +146,7 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
         )}
         onClick={onTextClick}
       >
-        {text}
+        {renderedContent}
       </span>
     );
   },

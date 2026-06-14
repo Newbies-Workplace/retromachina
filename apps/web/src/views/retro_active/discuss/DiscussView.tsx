@@ -1,5 +1,4 @@
 import { TrashIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import {
   Card,
@@ -9,6 +8,7 @@ import {
 } from "@/components/molecules/card/Card";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useRetro } from "@/context/retro/RetroContext.hook";
@@ -67,6 +67,13 @@ export const DiscussView = () => {
       );
     });
   }, [activeUsers, teamUsers]);
+
+  const hasCurrentUserVotedOnDiscussedGroup = useMemo(() => {
+    const votesOnGroup = votes.filter(
+      (vote) => vote.parentCardId === discussionCardId,
+    );
+    return votesOnGroup.some((vote) => vote.voterId === user?.id);
+  }, [votes, discussionCardId, user?.id]);
 
   return (
     <div className={"flex justify-between flex-row h-full"}>
@@ -127,7 +134,7 @@ export const DiscussView = () => {
       </div>
 
       {discussionCardId && (
-        <div className={"grow justify-center pt-4"}>
+        <div className={"grow pt-4 mx-4 gap-4 flex flex-col"}>
           {(() => {
             const group = groups.find(
               (g) => g.parentCardId === discussionCardId,
@@ -139,7 +146,7 @@ export const DiscussView = () => {
             return (
               <div
                 className={cn(
-                  "flex flex-col mx-4 bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
+                  "flex flex-col bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
                   group.votes === 0 && "opacity-40",
                 )}
               >
@@ -169,6 +176,12 @@ export const DiscussView = () => {
               </div>
             );
           })()}
+
+          <div className={"flex gap-4 justify-end"}>
+            {hasCurrentUserVotedOnDiscussedGroup && (
+              <Badge>zagłosowałeś/aś na ten temat</Badge>
+            )}
+          </div>
         </div>
       )}
       <div

@@ -10,6 +10,15 @@ import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -29,15 +38,17 @@ export const DiscussView = () => {
   }, [discussionCardId, groups]);
 
   return (
-    <div className={"flex justify-between flex-row h-full"}>
+    <SidebarProvider className={"flex flex-row justify-between"}>
       <InAMomentSection groups={groups} />
 
-      {discussedGroup && (
-        <CurrentlyDiscussedGroupSection group={discussedGroup} />
-      )}
+      <SidebarInset>
+        {discussedGroup && (
+          <CurrentlyDiscussedGroupSection group={discussedGroup} />
+        )}
+      </SidebarInset>
 
       <ActionPointsSection />
-    </div>
+    </SidebarProvider>
   );
 };
 
@@ -45,61 +56,71 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
   const { teamUsers, discussionCardId } = useRetro();
 
   return (
-    <div
+    <Sidebar
+      variant="floating"
       className={
-        "hidden lg:flex flex-col gap-4 min-w-[250px] max-w-[50px] px-4 py-2 scrollbar"
+        "flex flex-col gap-4 py-2 mt-[70px] h-[calc(100vh-70px-100px)]"
       }
     >
-      <span className={"ml-2 text-3xl"}>Już za chwilę...</span>
-      {groups
-        .sort((a, b) => b.votes - a.votes)
-        .filter((group, groupIndex) => {
-          const discussIndex = groups.findIndex(
-            (g) => g.parentCardId === discussionCardId,
-          );
-          return discussIndex < groupIndex;
-        })
-        .map((group) => {
-          return (
-            <CardGroup
-              className={cn(group.votes === 0 && "opacity-40")}
-              columnId={"next"}
-              key={group.parentCardId}
-              parentCardId={group.parentCardId}
-            >
-              {group.cards.map((card, index) => {
-                const author = teamUsers.find(
-                  (user) => user.id === card.authorId,
-                );
+      <SidebarHeader>
+        <span className={"ml-2 text-xl"}>Już za chwilę...</span>
+      </SidebarHeader>
 
-                return (
-                  <Card
-                    id={card.id}
-                    key={card.id}
-                    style={{ marginTop: index === 0 ? 0 : -80 }}
-                  >
-                    <CardContent text={card.text} />
-                    <CardAuthor
-                      author={{
-                        avatar: author?.avatar_link || "",
-                        name: author?.nick || "",
-                        id: card.authorId,
-                      }}
-                    />
-                    {group.cards.length === index + 1 && (
-                      <CardActions>
-                        <div className={"flex justify-center grow w-8"}>
-                          <span className={"self-center"}>{group.votes}</span>
-                        </div>
-                      </CardActions>
-                    )}
-                  </Card>
-                );
-              })}
-            </CardGroup>
-          );
-        })}
-    </div>
+      <SidebarContent>
+        <SidebarGroup>
+          {groups
+            .sort((a, b) => b.votes - a.votes)
+            .filter((group, groupIndex) => {
+              const discussIndex = groups.findIndex(
+                (g) => g.parentCardId === discussionCardId,
+              );
+              return discussIndex < groupIndex;
+            })
+            .map((group) => {
+              return (
+                <CardGroup
+                  className={cn(group.votes === 0 && "opacity-40")}
+                  columnId={"next"}
+                  key={group.parentCardId}
+                  parentCardId={group.parentCardId}
+                >
+                  {group.cards.map((card, index) => {
+                    const author = teamUsers.find(
+                      (user) => user.id === card.authorId,
+                    );
+
+                    return (
+                      <Card
+                        id={card.id}
+                        key={card.id}
+                        style={{ marginTop: index === 0 ? 0 : -80 }}
+                      >
+                        <CardContent text={card.text} />
+                        <CardAuthor
+                          author={{
+                            avatar: author?.avatar_link || "",
+                            name: author?.nick || "",
+                            id: card.authorId,
+                          }}
+                        />
+                        {group.cards.length === index + 1 && (
+                          <CardActions>
+                            <div className={"flex justify-center grow w-8"}>
+                              <span className={"self-center"}>
+                                {group.votes}
+                              </span>
+                            </div>
+                          </CardActions>
+                        )}
+                      </Card>
+                    );
+                  })}
+                </CardGroup>
+              );
+            })}
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 };
 
@@ -109,6 +130,7 @@ const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
   const { teamUsers, votes, discussionCardId } = useRetro();
   const { user } = useUser();
 
+  // todo fix vote for second card in group
   const hasCurrentUserVotedOnDiscussedGroup = useMemo(() => {
     const votesOnGroup = votes.filter(
       (vote) => vote.parentCardId === discussionCardId,
@@ -118,6 +140,11 @@ const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
 
   return (
     <div className={"grow pt-4 mx-4 gap-4 flex flex-col"}>
+      <div className={"flex flex-row gap-2"}>
+        <SidebarTrigger variant={"default"} />
+        <span>Aktualnie omawiany temat:</span>
+      </div>
+
       <div
         className={cn(
           "flex flex-col bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
@@ -204,7 +231,7 @@ const ActionPointsSection: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-col grow p-2 min-w-75 max-w-100 my-4 rounded-l-2xl bg-card"
+        "flex flex-col grow p-2 min-w-75 max-w-100 my-4 rounded-l-2xl bg-card h-[calc(100vh-70px-100px)]"
       }
     >
       <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>

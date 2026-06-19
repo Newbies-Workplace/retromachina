@@ -470,7 +470,9 @@ export const RetroContextProvider: React.FC<
 
   // discuss
   const changeDiscussCard = (to: "next" | "prev") => {
-    const groups = groupCards(cards, votes).sort((a, b) => b.votes - a.votes);
+    const groups = groupCards(cards, votes).sort(
+      (a, b) => b.votes.length - a.votes.length,
+    );
 
     if (!discussionCardId) {
       return false;

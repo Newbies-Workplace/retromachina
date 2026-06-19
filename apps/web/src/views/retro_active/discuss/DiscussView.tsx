@@ -41,7 +41,9 @@ export const DiscussView = () => {
     <SidebarProvider className={"flex flex-row justify-between"}>
       <InAMomentSection groups={groups} />
 
-      <SidebarInset>
+      <SidebarInset
+        className={"flex flex-row h-[calc(100vh-70px-100px)] justify-between"}
+      >
         {discussedGroup && (
           <CurrentlyDiscussedGroupSection group={discussedGroup} />
         )}
@@ -58,19 +60,20 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
   return (
     <Sidebar
       variant="floating"
-      className={
-        "flex flex-col gap-4 py-2 mt-[70px] h-[calc(100vh-70px-100px)]"
-      }
+      collapsible={"icon"}
+      className={"flex flex-col mt-[70px] h-[calc(100vh-70px-100px)]"}
     >
       <SidebarHeader>
-        <span className={"ml-2 text-xl"}>Już za chwilę...</span>
+        <span className={"text-xl overflow-hidden line-clamp-1"}>
+          Już za chwilę...
+        </span>
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className={"flex flex-col gap-2"}>
           {groups
-            .sort((a, b) => b.votes - a.votes)
-            .filter((group, groupIndex) => {
+            .sort((a, b) => b.votes.length - a.votes.length)
+            .filter((_, groupIndex) => {
               const discussIndex = groups.findIndex(
                 (g) => g.parentCardId === discussionCardId,
               );
@@ -79,7 +82,7 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
             .map((group) => {
               return (
                 <CardGroup
-                  className={cn(group.votes === 0 && "opacity-40")}
+                  className={cn(group.votes.length === 0 && "opacity-40")}
                   columnId={"next"}
                   key={group.parentCardId}
                   parentCardId={group.parentCardId}
@@ -107,7 +110,7 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
                           <CardActions>
                             <div className={"flex justify-center grow w-8"}>
                               <span className={"self-center"}>
-                                {group.votes}
+                                {group.votes.length}
                               </span>
                             </div>
                           </CardActions>
@@ -127,19 +130,21 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
 const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
   group,
 }) => {
-  const { teamUsers, votes, discussionCardId } = useRetro();
+  const { teamUsers } = useRetro();
   const { user } = useUser();
 
-  // todo fix vote for second card in group
   const hasCurrentUserVotedOnDiscussedGroup = useMemo(() => {
-    const votesOnGroup = votes.filter(
-      (vote) => vote.parentCardId === discussionCardId,
-    );
+    const votesOnGroup = group.votes;
+
     return votesOnGroup.some((vote) => vote.voterId === user?.id);
-  }, [votes, discussionCardId, user?.id]);
+  }, [group, user?.id]);
 
   return (
-    <div className={"grow pt-4 mx-4 gap-4 flex flex-col"}>
+    <div
+      className={
+        "pt-4 mx-4 gap-4 flex flex-col grow h-[calc(100vh-70px-100px)] scrollbar"
+      }
+    >
       <div className={"flex flex-row gap-2"}>
         <SidebarTrigger variant={"default"} />
         <span>Aktualnie omawiany temat:</span>
@@ -148,7 +153,7 @@ const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
       <div
         className={cn(
           "flex flex-col bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
-          group.votes === 0 && "opacity-40",
+          group.votes.length === 0 && "opacity-40",
         )}
       >
         {group.cards.map((card) => {
@@ -167,8 +172,8 @@ const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
         })}
 
         <span className={"flex justify-end items-end mt-auto text-sm"}>
-          {group.votes}{" "}
-          {pluralText(group.votes, {
+          {group.votes.length}{" "}
+          {pluralText(group.votes.length, {
             one: "głos",
             few: "głosy",
             other: "głosów",
@@ -229,92 +234,111 @@ const ActionPointsSection: React.FC = () => {
   }, [value]);
 
   return (
-    <div
-      className={
-        "flex flex-col grow p-2 min-w-75 max-w-100 my-4 rounded-l-2xl bg-card h-[calc(100vh-70px-100px)]"
-      }
-    >
-      <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>
-        {tasks
-          ?.filter(
-            (actionPoint) => actionPoint.parentCardId === discussionCardId,
-          )
-          .map((actionPoint) => {
-            const author = teamUsers.find(
-              (teamUser) => teamUser.id === actionPoint.ownerId,
-            );
+    <div className={"p-2"}>
+      <Sidebar
+        side={"right"}
+        variant="floating"
+        collapsible={"none"}
+        className={
+          "flex flex-col h-[calc(100vh-70px-100px-24px)] rounded-lg border border-sidebar-border shadow-sm"
+        }
+      >
+        <SidebarHeader>
+          <span className={"text-xl"}>Action pointy</span>
+        </SidebarHeader>
 
-            return (
-              <Card id={actionPoint.id} key={actionPoint.id}>
-                <CardContent
-                  text={actionPoint.description}
-                  editable
-                  onSave={(text) => {
-                    updateTask(actionPoint.id, author?.id ?? null, text);
-                  }}
-                />
-                <CardAuthor
-                  author={
-                    author
-                      ? {
-                          avatar: author.avatar_link,
-                          name: author.nick,
-                          id: author.id,
-                        }
-                      : undefined
-                  }
-                  teamUsers={teamUsers.map((user) => ({
-                    id: user.id,
-                    name: user.nick,
-                    avatar: user.avatar_link,
-                  }))}
-                  editable
-                  onUserChange={(ownerId) => {
-                    updateTask(
-                      actionPoint.id,
-                      ownerId,
-                      actionPoint.description,
-                    );
-                  }}
-                />
-                <CardActions>
-                  <Button
-                    size={"icon"}
-                    variant={"destructive"}
-                    onClick={() => deleteTask(actionPoint.id)}
+        <SidebarContent>
+          <SidebarGroup
+            className={"flex flex-col gap-2 mb-auto h-full scrollbar"}
+          >
+            {tasks
+              ?.filter(
+                (actionPoint) => actionPoint.parentCardId === discussionCardId,
+              )
+              .map((actionPoint) => {
+                const author = teamUsers.find(
+                  (teamUser) => teamUser.id === actionPoint.ownerId,
+                );
+
+                return (
+                  <Card id={actionPoint.id} key={actionPoint.id}>
+                    <CardContent
+                      text={actionPoint.description}
+                      editable
+                      onSave={(text) => {
+                        updateTask(actionPoint.id, author?.id ?? null, text);
+                      }}
+                    />
+                    <CardAuthor
+                      author={
+                        author
+                          ? {
+                              avatar: author.avatar_link,
+                              name: author.nick,
+                              id: author.id,
+                            }
+                          : undefined
+                      }
+                      teamUsers={teamUsers.map((user) => ({
+                        id: user.id,
+                        name: user.nick,
+                        avatar: user.avatar_link,
+                      }))}
+                      editable
+                      onUserChange={(ownerId) => {
+                        updateTask(
+                          actionPoint.id,
+                          ownerId,
+                          actionPoint.description,
+                        );
+                      }}
+                    />
+                    <CardActions>
+                      <Button
+                        size={"icon"}
+                        variant={"destructive"}
+                        onClick={() => deleteTask(actionPoint.id)}
+                      >
+                        <TrashIcon className={"size-4"} />
+                      </Button>
+                    </CardActions>
+                  </Card>
+                );
+              })}
+
+            <div className={"relative mt-4"}>
+              <div
+                className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}
+              >
+                {usersWritingTasks.slice(0, 8).map((user) => (
+                  <Avatar
+                    key={user.id}
+                    size={"sm"}
+                    className={"animate-bounce"}
                   >
-                    <TrashIcon className={"size-4"} />
-                  </Button>
-                </CardActions>
-              </Card>
-            );
-          })}
-      </div>
+                    <AvatarImage src={user.avatar_link} />
+                    <AvatarFallback>:)</AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
 
-      <div className={"relative mt-4"}>
-        <div className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}>
-          {usersWritingTasks.slice(0, 8).map((user) => (
-            <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
-              <AvatarImage src={user.avatar_link} />
-              <AvatarFallback>:)</AvatarFallback>
-            </Avatar>
-          ))}
-        </div>
-
-        <Textarea
-          value={value}
-          className={"resize-none min-h-20"}
-          onChange={(event) => setValue(event.target.value)}
-          placeholder={"Nowy action point..."}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey && !!user) {
-              e.preventDefault();
-              createTask(value, user.id);
-              setValue("");
-            }
-          }}
-        />
-      </div>
+              <Textarea
+                value={value}
+                className={"resize-none min-h-20"}
+                onChange={(event) => setValue(event.target.value)}
+                placeholder={"Nowy action point..."}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !!user) {
+                    e.preventDefault();
+                    createTask(value, user.id);
+                    setValue("");
+                  }
+                }}
+              />
+            </div>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
     </div>
   );
 };

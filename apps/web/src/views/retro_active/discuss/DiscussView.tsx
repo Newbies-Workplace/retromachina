@@ -13,9 +13,9 @@ import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
-  SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
@@ -38,16 +38,12 @@ export const DiscussView = () => {
   }, [discussionCardId, groups]);
 
   return (
-    <SidebarProvider className={"flex flex-row justify-between"}>
+    <SidebarProvider className={"h-[calc(100%-100px)]"}>
       <InAMomentSection groups={groups} />
 
-      <SidebarInset
-        className={"flex flex-row h-[calc(100vh-70px-100px)] justify-between"}
-      >
-        {discussedGroup && (
-          <CurrentlyDiscussedGroupSection group={discussedGroup} />
-        )}
-      </SidebarInset>
+      {discussedGroup && (
+        <CurrentlyDiscussedGroupSection group={discussedGroup} />
+      )}
 
       <ActionPointsSection />
     </SidebarProvider>
@@ -60,8 +56,8 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
   return (
     <Sidebar
       variant="floating"
-      collapsible={"icon"}
-      className={"flex flex-col mt-[70px] h-[calc(100vh-70px-100px)]"}
+      collapsible={"offcanvas"}
+      className={"mt-[70px] h-[calc(100%-70px-100px)]"}
     >
       <SidebarHeader>
         <span className={"text-xl overflow-hidden line-clamp-1"}>
@@ -140,11 +136,7 @@ const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
   }, [group, user?.id]);
 
   return (
-    <div
-      className={
-        "pt-4 mx-4 gap-4 flex flex-col grow h-[calc(100vh-70px-100px)] scrollbar"
-      }
-    >
+    <div className={"pt-4 mx-4 gap-4 flex flex-col grow scrollbar"}>
       <div className={"flex flex-row gap-2"}>
         <SidebarTrigger variant={"default"} />
         <span>Aktualnie omawiany temat:</span>
@@ -234,111 +226,94 @@ const ActionPointsSection: React.FC = () => {
   }, [value]);
 
   return (
-    <div className={"p-2"}>
-      <Sidebar
-        side={"right"}
-        variant="floating"
-        collapsible={"none"}
-        className={
-          "flex flex-col h-[calc(100vh-70px-100px-24px)] rounded-lg border border-sidebar-border shadow-sm"
-        }
-      >
-        <SidebarHeader>
-          <span className={"text-xl"}>Action pointy</span>
-        </SidebarHeader>
+    <Sidebar side={"right"} variant="floating" collapsible={"none"}>
+      <SidebarHeader>
+        <span className={"text-xl"}>Action pointy</span>
+      </SidebarHeader>
 
-        <SidebarContent>
-          <SidebarGroup
-            className={"flex flex-col gap-2 mb-auto h-full scrollbar"}
-          >
-            {tasks
-              ?.filter(
-                (actionPoint) => actionPoint.parentCardId === discussionCardId,
-              )
-              .map((actionPoint) => {
-                const author = teamUsers.find(
-                  (teamUser) => teamUser.id === actionPoint.ownerId,
-                );
+      <SidebarContent>
+        <SidebarGroup className={"flex flex-col gap-2"}>
+          {tasks
+            ?.filter(
+              (actionPoint) => actionPoint.parentCardId === discussionCardId,
+            )
+            .map((actionPoint) => {
+              const author = teamUsers.find(
+                (teamUser) => teamUser.id === actionPoint.ownerId,
+              );
 
-                return (
-                  <Card id={actionPoint.id} key={actionPoint.id}>
-                    <CardContent
-                      text={actionPoint.description}
-                      editable
-                      onSave={(text) => {
-                        updateTask(actionPoint.id, author?.id ?? null, text);
-                      }}
-                    />
-                    <CardAuthor
-                      author={
-                        author
-                          ? {
-                              avatar: author.avatar_link,
-                              name: author.nick,
-                              id: author.id,
-                            }
-                          : undefined
-                      }
-                      teamUsers={teamUsers.map((user) => ({
-                        id: user.id,
-                        name: user.nick,
-                        avatar: user.avatar_link,
-                      }))}
-                      editable
-                      onUserChange={(ownerId) => {
-                        updateTask(
-                          actionPoint.id,
-                          ownerId,
-                          actionPoint.description,
-                        );
-                      }}
-                    />
-                    <CardActions>
-                      <Button
-                        size={"icon"}
-                        variant={"destructive"}
-                        onClick={() => deleteTask(actionPoint.id)}
-                      >
-                        <TrashIcon className={"size-4"} />
-                      </Button>
-                    </CardActions>
-                  </Card>
-                );
-              })}
+              return (
+                <Card id={actionPoint.id} key={actionPoint.id}>
+                  <CardContent
+                    text={actionPoint.description}
+                    editable
+                    onSave={(text) => {
+                      updateTask(actionPoint.id, author?.id ?? null, text);
+                    }}
+                  />
+                  <CardAuthor
+                    author={
+                      author
+                        ? {
+                            avatar: author.avatar_link,
+                            name: author.nick,
+                            id: author.id,
+                          }
+                        : undefined
+                    }
+                    teamUsers={teamUsers.map((user) => ({
+                      id: user.id,
+                      name: user.nick,
+                      avatar: user.avatar_link,
+                    }))}
+                    editable
+                    onUserChange={(ownerId) => {
+                      updateTask(
+                        actionPoint.id,
+                        ownerId,
+                        actionPoint.description,
+                      );
+                    }}
+                  />
+                  <CardActions>
+                    <Button
+                      size={"icon"}
+                      variant={"destructive"}
+                      onClick={() => deleteTask(actionPoint.id)}
+                    >
+                      <TrashIcon className={"size-4"} />
+                    </Button>
+                  </CardActions>
+                </Card>
+              );
+            })}
+        </SidebarGroup>
+      </SidebarContent>
 
-            <div className={"relative mt-4"}>
-              <div
-                className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}
-              >
-                {usersWritingTasks.slice(0, 8).map((user) => (
-                  <Avatar
-                    key={user.id}
-                    size={"sm"}
-                    className={"animate-bounce"}
-                  >
-                    <AvatarImage src={user.avatar_link} />
-                    <AvatarFallback>:)</AvatarFallback>
-                  </Avatar>
-                ))}
-              </div>
+      <SidebarFooter className={"relative"}>
+        <div className={"absolute top-2 flex gap-1 w-full px-1 h-0 -mt-6"}>
+          {usersWritingTasks.slice(0, 8).map((user) => (
+            <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
+              <AvatarImage src={user.avatar_link} />
+              <AvatarFallback>:)</AvatarFallback>
+            </Avatar>
+          ))}
+        </div>
 
-              <Textarea
-                value={value}
-                className={"resize-none min-h-20"}
-                onChange={(event) => setValue(event.target.value)}
-                placeholder={"Nowy action point..."}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey && !!user) {
-                    e.preventDefault();
-                    createTask(value, user.id);
-                    setValue("");
-                  }
-                }}
-              />
-            </div>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-    </div>
+        <Textarea
+          value={value}
+          className={"resize-none min-h-20"}
+          onChange={(event) => setValue(event.target.value)}
+          placeholder={"Nowy action point..."}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey && !!user) {
+              e.preventDefault();
+              createTask(value, user.id);
+              setValue("");
+            }
+          }}
+        />
+      </SidebarFooter>
+    </Sidebar>
   );
 };

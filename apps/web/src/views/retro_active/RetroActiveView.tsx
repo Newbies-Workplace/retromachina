@@ -134,10 +134,7 @@ export const RetroActiveView: React.FC = () => {
         }
       />
 
-      <div
-        className={"flex flex-col h-[calc(100vh-70px-100px)] scrollbar"}
-        ref={ref}
-      >
+      <div className={"flex flex-col flex-1 overflow-y-auto"} ref={ref}>
         <Routes>
           <Route path="reflection" element={<ReflectionView />} />
           <Route path="group" element={<GroupView />} />

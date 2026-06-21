@@ -1,5 +1,5 @@
 import { TrashIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardActions,
@@ -10,6 +10,15 @@ import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -18,11 +27,165 @@ import { pluralText } from "@/lib/pluralText";
 import { cn } from "@/lib/utils";
 
 export const DiscussView = () => {
+  const { cards, votes, discussionCardId } = useRetro();
+
+  const groups = useMemo(() => {
+    return groupCards(cards, votes);
+  }, [cards, votes]);
+
+  const discussedGroup = useMemo(() => {
+    return groups.find((g) => g.parentCardId === discussionCardId);
+  }, [discussionCardId, groups]);
+
+  return (
+    <SidebarProvider className={"h-[calc(100%-100px)]"}>
+      <InAMomentSection groups={groups} />
+
+      {discussedGroup && (
+        <CurrentlyDiscussedGroupSection group={discussedGroup} />
+      )}
+
+      <ActionPointsSection />
+    </SidebarProvider>
+  );
+};
+
+const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
+  const { teamUsers, discussionCardId } = useRetro();
+
+  return (
+    <Sidebar
+      variant="floating"
+      collapsible={"offcanvas"}
+      className={"mt-[70px] h-[calc(100%-70px-100px)]"}
+    >
+      <SidebarHeader>
+        <span className={"text-xl overflow-hidden line-clamp-1"}>
+          Już za chwilę...
+        </span>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup className={"flex flex-col gap-2"}>
+          {groups
+            .sort((a, b) => b.votes.length - a.votes.length)
+            .filter((_, groupIndex) => {
+              const discussIndex = groups.findIndex(
+                (g) => g.parentCardId === discussionCardId,
+              );
+              return discussIndex < groupIndex;
+            })
+            .map((group) => {
+              return (
+                <CardGroup
+                  className={cn(group.votes.length === 0 && "opacity-40")}
+                  columnId={"next"}
+                  key={group.parentCardId}
+                  parentCardId={group.parentCardId}
+                >
+                  {group.cards.map((card, index) => {
+                    const author = teamUsers.find(
+                      (user) => user.id === card.authorId,
+                    );
+
+                    return (
+                      <Card
+                        id={card.id}
+                        key={card.id}
+                        style={{ marginTop: index === 0 ? 0 : -80 }}
+                      >
+                        <CardContent text={card.text} />
+                        <CardAuthor
+                          author={{
+                            avatar: author?.avatar_link || "",
+                            name: author?.nick || "",
+                            id: card.authorId,
+                          }}
+                        />
+                        {group.cards.length === index + 1 && (
+                          <CardActions>
+                            <div className={"flex justify-center grow w-8"}>
+                              <span className={"self-center"}>
+                                {group.votes.length}
+                              </span>
+                            </div>
+                          </CardActions>
+                        )}
+                      </Card>
+                    );
+                  })}
+                </CardGroup>
+              );
+            })}
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
+};
+
+const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
+  group,
+}) => {
+  const { teamUsers } = useRetro();
+  const { user } = useUser();
+
+  const hasCurrentUserVotedOnDiscussedGroup = useMemo(() => {
+    const votesOnGroup = group.votes;
+
+    return votesOnGroup.some((vote) => vote.voterId === user?.id);
+  }, [group, user?.id]);
+
+  return (
+    <div className={"pt-4 mx-4 gap-4 flex flex-col grow scrollbar"}>
+      <div className={"flex flex-row gap-2"}>
+        <SidebarTrigger variant={"default"} />
+        <span>Aktualnie omawiany temat:</span>
+      </div>
+
+      <div
+        className={cn(
+          "flex flex-col bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
+          group.votes.length === 0 && "opacity-40",
+        )}
+      >
+        {group.cards.map((card) => {
+          const author = teamUsers.find((u) => u.id === card.authorId);
+
+          return (
+            <div key={card.id} className={"flex gap-2 mb-4"}>
+              <Avatar size={"sm"}>
+                <AvatarImage src={author?.avatar_link} />
+                <AvatarFallback>:)</AvatarFallback>
+              </Avatar>
+
+              {card.text}
+            </div>
+          );
+        })}
+
+        <span className={"flex justify-end items-end mt-auto text-sm"}>
+          {group.votes.length}{" "}
+          {pluralText(group.votes.length, {
+            one: "głos",
+            few: "głosy",
+            other: "głosów",
+          })}
+        </span>
+      </div>
+
+      <div className={"flex gap-4 justify-end"}>
+        {hasCurrentUserVotedOnDiscussedGroup && (
+          <Badge>zagłosowałeś/aś na ten temat</Badge>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ActionPointsSection: React.FC = () => {
   const {
-    cards,
     teamUsers,
     activeUsers,
-    votes,
     createTask,
     deleteTask,
     updateTask,
@@ -32,6 +195,16 @@ export const DiscussView = () => {
   } = useRetro();
   const { user } = useUser();
   const [value, setValue] = useState("");
+
+  const usersWritingTasks = useMemo(() => {
+    const socketUsers = activeUsers.filter((user) => user.isCreatingTask);
+
+    return teamUsers.filter((teamUser) => {
+      return socketUsers.some(
+        (socketUser) => socketUser.userId === teamUser.id,
+      );
+    });
+  }, [activeUsers, teamUsers]);
 
   useEffect(() => {
     const onStopWriting = () => {
@@ -52,144 +225,14 @@ export const DiscussView = () => {
     };
   }, [value]);
 
-  const [groups, setGroups] = useState<Group[]>([]);
-
-  useEffect(() => {
-    setGroups(groupCards(cards, votes));
-  }, [cards, votes]);
-
-  const usersWritingTasks = useMemo(() => {
-    const socketUsers = activeUsers.filter((user) => user.isCreatingTask);
-
-    return teamUsers.filter((teamUser) => {
-      return socketUsers.some(
-        (socketUser) => socketUser.userId === teamUser.id,
-      );
-    });
-  }, [activeUsers, teamUsers]);
-
-  const hasCurrentUserVotedOnDiscussedGroup = useMemo(() => {
-    const votesOnGroup = votes.filter(
-      (vote) => vote.parentCardId === discussionCardId,
-    );
-    return votesOnGroup.some((vote) => vote.voterId === user?.id);
-  }, [votes, discussionCardId, user?.id]);
-
   return (
-    <div className={"flex justify-between flex-row h-full"}>
-      <div
-        className={
-          "hidden lg:flex flex-col gap-4 min-w-[250px] max-w-[50px] px-4 py-2 scrollbar"
-        }
-      >
-        <span className={"ml-2 text-3xl"}>Już za chwilę...</span>
-        {groups
-          .sort((a, b) => b.votes - a.votes)
-          .filter((group, groupIndex) => {
-            const discussIndex = groups.findIndex(
-              (g) => g.parentCardId === discussionCardId,
-            );
-            return discussIndex < groupIndex;
-          })
-          .map((group) => {
-            return (
-              <CardGroup
-                className={cn(group.votes === 0 && "opacity-40")}
-                columnId={"next"}
-                key={group.parentCardId}
-                parentCardId={group.parentCardId}
-              >
-                {group.cards.map((card, index) => {
-                  const author = teamUsers.find(
-                    (user) => user.id === card.authorId,
-                  );
+    <Sidebar side={"right"} variant="floating" collapsible={"none"}>
+      <SidebarHeader>
+        <span className={"text-xl"}>Action pointy</span>
+      </SidebarHeader>
 
-                  return (
-                    <Card
-                      id={card.id}
-                      key={card.id}
-                      style={{ marginTop: index === 0 ? 0 : -80 }}
-                    >
-                      <CardContent text={card.text} />
-                      <CardAuthor
-                        author={{
-                          avatar: author?.avatar_link || "",
-                          name: author?.nick || "",
-                          id: card.authorId,
-                        }}
-                      />
-                      {group.cards.length === index + 1 && (
-                        <CardActions>
-                          <div className={"flex justify-center grow w-8"}>
-                            <span className={"self-center"}>{group.votes}</span>
-                          </div>
-                        </CardActions>
-                      )}
-                    </Card>
-                  );
-                })}
-              </CardGroup>
-            );
-          })}
-      </div>
-
-      {discussionCardId && (
-        <div className={"grow pt-4 mx-4 gap-4 flex flex-col"}>
-          {(() => {
-            const group = groups.find(
-              (g) => g.parentCardId === discussionCardId,
-            );
-            if (!group) {
-              return null;
-            }
-
-            return (
-              <div
-                className={cn(
-                  "flex flex-col bg-card p-2.5 border rounded-2xl wrap-break-word whitespace-pre-line",
-                  group.votes === 0 && "opacity-40",
-                )}
-              >
-                {group.cards.map((card) => {
-                  const author = teamUsers.find((u) => u.id === card.authorId);
-
-                  return (
-                    <div key={card.id} className={"flex gap-2 mb-4"}>
-                      <Avatar size={"sm"}>
-                        <AvatarImage src={author?.avatar_link} />
-                        <AvatarFallback>:)</AvatarFallback>
-                      </Avatar>
-
-                      {card.text}
-                    </div>
-                  );
-                })}
-
-                <span className={"flex justify-end items-end mt-auto text-sm"}>
-                  {group.votes}{" "}
-                  {pluralText(group.votes, {
-                    one: "głos",
-                    few: "głosy",
-                    other: "głosów",
-                  })}
-                </span>
-              </div>
-            );
-          })()}
-
-          <div className={"flex gap-4 justify-end"}>
-            {hasCurrentUserVotedOnDiscussedGroup && (
-              <Badge>zagłosowałeś/aś na ten temat</Badge>
-            )}
-          </div>
-        </div>
-      )}
-      <div
-        className={
-          "flex flex-col grow p-2 min-w-75 max-w-100 my-4 rounded-l-2xl bg-card"
-        }
-      >
-        <div className={"flex flex-col gap-2 mb-auto pb-7 h-full scrollbar"}>
+      <SidebarContent>
+        <SidebarGroup className={"flex flex-col gap-2"}>
           {tasks
             ?.filter(
               (actionPoint) => actionPoint.parentCardId === discussionCardId,
@@ -244,33 +287,33 @@ export const DiscussView = () => {
                 </Card>
               );
             })}
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className={"relative"}>
+        <div className={"absolute top-2 flex gap-1 w-full px-1 h-0 -mt-6"}>
+          {usersWritingTasks.slice(0, 8).map((user) => (
+            <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
+              <AvatarImage src={user.avatar_link} />
+              <AvatarFallback>:)</AvatarFallback>
+            </Avatar>
+          ))}
         </div>
 
-        <div className={"relative mt-4"}>
-          <div className={"absolute top-0 flex gap-1 w-full px-1 h-0 -mt-6"}>
-            {usersWritingTasks.slice(0, 8).map((user) => (
-              <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
-                <AvatarImage src={user.avatar_link} />
-                <AvatarFallback>:)</AvatarFallback>
-              </Avatar>
-            ))}
-          </div>
-
-          <Textarea
-            value={value}
-            className={"resize-none min-h-20"}
-            onChange={(event) => setValue(event.target.value)}
-            placeholder={"Nowy action point..."}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey && !!user) {
-                e.preventDefault();
-                createTask(value, user.id);
-                setValue("");
-              }
-            }}
-          />
-        </div>
-      </div>
-    </div>
+        <Textarea
+          value={value}
+          className={"resize-none min-h-20"}
+          onChange={(event) => setValue(event.target.value)}
+          placeholder={"Nowy action point..."}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey && !!user) {
+              e.preventDefault();
+              createTask(value, user.id);
+              setValue("");
+            }
+          }}
+        />
+      </SidebarFooter>
+    </Sidebar>
   );
 };

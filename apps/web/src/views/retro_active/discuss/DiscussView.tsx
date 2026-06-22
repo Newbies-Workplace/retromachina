@@ -38,7 +38,7 @@ export const DiscussView = () => {
   }, [discussionCardId, groups]);
 
   return (
-    <SidebarProvider className={"h-[calc(100%-100px)]"}>
+    <SidebarProvider className={"h-full"}>
       <InAMomentSection groups={groups} />
 
       {discussedGroup && (
@@ -136,7 +136,7 @@ const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
   }, [group, user?.id]);
 
   return (
-    <div className={"pt-4 mx-4 gap-4 flex flex-col grow scrollbar"}>
+    <div className={"pt-4 mx-4 gap-4 flex flex-col grow scrollbar pb-25"}>
       <div className={"flex flex-row gap-2"}>
         <SidebarTrigger variant={"default"} />
         <span>Aktualnie omawiany temat:</span>
@@ -290,7 +290,7 @@ const ActionPointsSection: React.FC = () => {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className={"relative"}>
+      <SidebarFooter className={"relative pb-25"}>
         <div className={"absolute top-2 flex gap-1 w-full px-1 h-0 -mt-6"}>
           {usersWritingTasks.slice(0, 8).map((user) => (
             <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>

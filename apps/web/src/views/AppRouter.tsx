@@ -1,10 +1,12 @@
 import type React from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router";
+import { GramophoneContextProvider } from "@/context/gramophone/GramophoneContext";
 import { RequireAuth } from "@/context/user/RequireAuth";
 import { NotFoundView } from "@/views/404/NotFoundView";
 import { LoadingView } from "@/views/auth/loading/LoadingView";
 import { PrivacyPolicyView } from "@/views/auth/privacy_policy/PrivacyPolicyView";
 import { SignInView } from "@/views/auth/sign_in/SignInView";
+import { GramophoneView } from "@/views/gramophone/GramophoneView";
 import { HeroView } from "@/views/hero/HeroView";
 import { HomeView } from "@/views/home/HomeView";
 import { InviteView } from "@/views/invitation/InviteView";
@@ -115,6 +117,15 @@ export const AppRouter: React.FC = () => {
             <RequireAuth>
               <RetroSummaryView />
             </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/gramophone"
+          element={
+            <GramophoneContextProvider>
+              <GramophoneView />
+            </GramophoneContextProvider>
           }
         />
 

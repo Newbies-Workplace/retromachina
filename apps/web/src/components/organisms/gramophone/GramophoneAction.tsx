@@ -123,7 +123,7 @@ const GramophoneModal: React.FC<{
               key={vinyl.id}
               className={cn(
                 "flex flex-row items-center w-full p-2 gap-2",
-                index !== 0 && "-ml-17",
+                index !== 0 && "-ml-20",
               )}
             >
               <Tooltip>

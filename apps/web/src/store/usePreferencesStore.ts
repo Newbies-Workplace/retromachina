@@ -7,9 +7,11 @@ type PreferencesStore = {
   volumeLevel: number;
   musicVolumeLevel: number;
   theme: Theme;
+  autoReadyAfterVoting: boolean;
   setVolumeLevel: (volumeLevel: number) => void;
   setMusicVolumeLevel: (volumeLevel: number) => void;
   setTheme: (theme: Theme) => void;
+  setAutoReadyAfterVoting: (autoReady: boolean) => void;
 };
 
 export const usePreferencesStore = create<PreferencesStore>()(
@@ -18,10 +20,13 @@ export const usePreferencesStore = create<PreferencesStore>()(
       volumeLevel: 0.5,
       musicVolumeLevel: 0.2,
       theme: "system",
+      autoReadyAfterVoting: true,
       setVolumeLevel: (volumeLevel) => set({ volumeLevel }),
       setMusicVolumeLevel: (volumeLevel) =>
         set({ musicVolumeLevel: volumeLevel }),
       setTheme: (theme) => set({ theme }),
+      setAutoReadyAfterVoting: (autoReady) =>
+        set({ autoReadyAfterVoting: autoReady }),
     }),
     {
       name: "preferences-store",

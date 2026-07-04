@@ -42,6 +42,7 @@ import { UserService } from "@/api/User.service";
 import { CardMoveAction } from "@/components/molecules/dragndrop/dragndrop";
 import { useUser } from "@/context/user/UserContext.hook";
 import { groupCards } from "@/lib/groupCards";
+import { usePreferencesStore } from "@/store/usePreferencesStore";
 
 interface RetroContextParams {
   retroId: string;
@@ -449,7 +450,9 @@ export const RetroContextProvider: React.FC<
     const allUserVotes = votes.filter((v) => v.voterId === user?.id);
     const isLastAvailableVote = allUserVotes.length === maxVotes - 1;
 
-    if (isLastAvailableVote) {
+    const { autoReadyAfterVoting } = usePreferencesStore.getState();
+
+    if (isLastAvailableVote && autoReadyAfterVoting) {
       setReady(true);
     }
   };

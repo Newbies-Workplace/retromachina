@@ -16,6 +16,13 @@ import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+  AvatarStatus,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useBoard } from "@/context/board/BoardContext.hook";
@@ -27,6 +34,7 @@ export const TeamBoardView: React.FC = () => {
     board,
     teamId,
     teamUsers,
+    activeUsers,
     moveTask,
     createTask,
     updateTask,
@@ -87,31 +95,50 @@ export const TeamBoardView: React.FC = () => {
     <>
       <Navbar
         topContent={
-          <div className={"flex flex-row items-center gap-4"}>
-            <div
-              className={
-                "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg"
-              }
-            >
-              <span className={"text-sm"}>Tylko moje</span>
+          <>
+            <div className={"flex flex-row items-center gap-4"}>
+              <div
+                className={
+                  "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg"
+                }
+              >
+                <span className={"text-sm"}>Tylko moje</span>
 
-              <Switch
-                checked={filters.showOnlyMyTasks}
-                onCheckedChange={() => {
-                  setFilters({
-                    ...filters,
-                    showOnlyMyTasks: !filters.showOnlyMyTasks,
-                  });
-                }}
-              />
+                <Switch
+                  checked={filters.showOnlyMyTasks}
+                  onCheckedChange={() => {
+                    setFilters({
+                      ...filters,
+                      showOnlyMyTasks: !filters.showOnlyMyTasks,
+                    });
+                  }}
+                />
+              </div>
+
+              {isOwner && (
+                <Button size={"sm"} onClick={onEditClick}>
+                  Edytuj
+                </Button>
+              )}
             </div>
 
-            {isOwner && (
-              <Button size={"sm"} onClick={onEditClick}>
-                Edytuj
-              </Button>
-            )}
-          </div>
+            <AvatarGroup className={"mt-0.5"}>
+              {teamUsers
+                .filter((teamUser) => teamUser.id !== user.id)
+                .map((teamUser) =>
+                  activeUsers.find(
+                    (activeUser) => activeUser.userId === teamUser.id,
+                  ),
+                )
+                .filter((activeUser) => activeUser !== undefined)
+                .map((activeUser) => (
+                  <Avatar key={activeUser.userId}>
+                    <AvatarImage src={activeUser.avatar_link} />
+                    <AvatarFallback>:)</AvatarFallback>
+                  </Avatar>
+                ))}
+            </AvatarGroup>
+          </>
         }
       />
 

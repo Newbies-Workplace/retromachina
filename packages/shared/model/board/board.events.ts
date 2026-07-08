@@ -1,3 +1,15 @@
+import type { UserRole } from "../user/user.role";
+
+export interface ActiveBoardUser {
+  userId: string;
+  avatar_link: string;
+  role: UserRole;
+}
+
+export interface BoardSyncEvent {
+  users: ActiveBoardUser[];
+}
+
 export interface TaskCreatedEvent {
   taskId: string;
   columnId: string;

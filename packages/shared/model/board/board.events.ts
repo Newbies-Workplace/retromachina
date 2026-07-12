@@ -1,4 +1,4 @@
-import type { UserRole } from "../user/user.role";
+import type { UserRole } from "shared/model/user/user.role";
 
 export interface ActiveBoardUser {
   userId: string;

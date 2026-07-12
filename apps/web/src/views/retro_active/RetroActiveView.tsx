@@ -40,7 +40,7 @@ export const RetroActiveView: React.FC = () => {
 
   const readyUsersCount = activeUsers.filter((user) => user.isReady).length;
   const allUsersCount = activeUsers.length;
-  const prevReadyUsersCount = useRef(readyUsersCount);
+  const prevReadyUsersCount = useRef(-1);
   const prevAllUsersCount = useRef(allUsersCount);
 
   useEffect(() => {
@@ -59,24 +59,27 @@ export const RetroActiveView: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (prevAllUsersCount.current === allUsersCount) {
-      if (
-        readyUsersCount === allUsersCount &&
-        readyUsersCount > prevReadyUsersCount.current
-      ) {
+    if (
+      prevAllUsersCount.current === allUsersCount &&
+      readyUsersCount > prevReadyUsersCount.current &&
+      readyUsersCount !== 0
+    ) {
+      const everyoneVoted = readyUsersCount === allUsersCount;
+
+      if (everyoneVoted) {
         playAudio(readySingleSound)
           .then(() => new Promise((resolve) => setTimeout(resolve, 100)))
           .then(async () => await playAudio(readySingleSound))
           .then(() => new Promise((resolve) => setTimeout(resolve, 100)))
           .then(async () => await playAudio(readySingleSound));
-      } else if (readyUsersCount > prevReadyUsersCount.current) {
-        playAudio(readySingleSound);
+      } else {
+        playAudio(readySingleSound).then();
       }
     }
 
     prevReadyUsersCount.current = readyUsersCount;
     prevAllUsersCount.current = allUsersCount;
-  }, [readyUsersCount, prevAllUsersCount, playAudio]);
+  }, [readyUsersCount, playAudio, allUsersCount]);
 
   const onShareButtonClick = () => {
     if (team?.invite_key) {

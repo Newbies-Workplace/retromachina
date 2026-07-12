@@ -6,6 +6,8 @@ import type {
   TaskUpdateCommand,
 } from "shared/model/board/board.commands";
 import type {
+  ActiveBoardUser,
+  BoardSyncEvent,
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
@@ -32,6 +34,7 @@ interface BoardContext {
   board: BoardResponse | null;
   team: TeamResponse | null;
   teamUsers: UserResponse[];
+  activeUsers: ActiveBoardUser[];
   moveTask: (taskId: string, targetColumnId: string) => void;
   createTask: (
     taskId: string,
@@ -50,6 +53,7 @@ export const BoardContext = createContext<BoardContext>({
   board: null,
   team: null,
   teamUsers: [],
+  activeUsers: [],
   moveTask: () => {},
   createTask: () => {},
   updateTask: () => {},
@@ -67,6 +71,7 @@ export const BoardContextProvider: React.FC<
   const [board, setBoard] = useState<BoardResponse | null>(null);
   const [team, setTeam] = useState<TeamResponse | null>(null);
   const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
+  const [activeUsers, setActiveUsers] = useState<ActiveBoardUser[]>([]);
 
   const [filters, setFilters] = useState<BoardFilters>({
     showOnlyMyTasks: false,
@@ -152,6 +157,10 @@ export const BoardContextProvider: React.FC<
       );
     });
 
+    createdSocket.on("event_board_sync", (event: BoardSyncEvent) => {
+      setActiveUsers(event.users);
+    });
+
     createdSocket.on("error", (e) => {
       console.log(e);
       toast.error("Wystąpił błąd");
@@ -223,6 +232,7 @@ export const BoardContextProvider: React.FC<
         board: board,
         team: team,
         teamUsers: teamUsers,
+        activeUsers: activeUsers,
         moveTask: moveTask,
         createTask: createTask,
         updateTask: updateTask,

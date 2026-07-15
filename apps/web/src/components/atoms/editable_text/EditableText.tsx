@@ -72,8 +72,10 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
     );
 
     useEffect(() => {
-      setEditingText(text);
-    }, [text]);
+      if (!isEditingText) {
+        setEditingText(text);
+      }
+    }, [text, isEditingText]);
 
     useEffect(() => {
       if (autoFocus) {
@@ -90,10 +92,13 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
 
     const renderedContent = useMemo(() => {
       const parts = text.split(urlRegex);
+      let urlIndex = 0;
+
       return parts.map((part, i) => {
         if (urlRegex.test(part)) {
           return (
             <a
+              key={`url-${urlIndex++}`}
               href={part}
               target="_blank"
               rel="noopener noreferrer"
@@ -105,14 +110,15 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
           );
         }
 
-        // biome-ignore lint/suspicious/noArrayIndexKey: unique text part index
-        return <React.Fragment key={i}>{part}</React.Fragment>;
+        // biome-ignore lint/suspicious/noArrayIndexKey: Using index as key is acceptable here because the list is static and does not change order
+        return <React.Fragment key={`text-${i}`}>{part}</React.Fragment>;
       });
     }, [text]);
 
     if (isEditingText) {
       return (
         <textarea
+          aria-label="Edit text"
           ref={(el) => el?.focus()}
           className={cn(
             "word-break whitespace-pre-line w-full h-full text-sm scrollbar resize-none p-0 outline-none",
@@ -142,9 +148,18 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
       <span
         className={cn(
           "word-break whitespace-pre-line w-full h-full text-sm scrollbar",
+          editable && "cursor-pointer",
           className,
         )}
         onClick={onTextClick}
+        onKeyDown={(e) => {
+          if (editable && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            onTextClick();
+          }
+        }}
+        role={editable ? "button" : undefined}
+        tabIndex={editable ? 0 : undefined}
       >
         {renderedContent}
       </span>

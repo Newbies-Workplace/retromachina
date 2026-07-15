@@ -20,24 +20,25 @@ export const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
       }
     >
       {canPickUnassigned && (
-        <div
+        <button
           className={
             "flex flex-row items-center gap-2 w-full cursor-pointer rounded -order-1 p-0.5 hover:bg-accent/30"
           }
           onClick={() => {
             onUserPicked(null);
           }}
+          type="button"
         >
           <Avatar size={"sm"}>
             <AvatarFallback>:)</AvatarFallback>
           </Avatar>
           <span className={"text-sm"}>Nieprzypisany</span>
-        </div>
+        </button>
       )}
 
       {teamUsers.map((user) => {
         return (
-          <div
+          <button
             key={user.id}
             className={
               "flex flex-row items-center gap-2 w-full cursor-pointer rounded -order-1 p-0.5 hover:bg-accent/30"
@@ -45,6 +46,7 @@ export const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
             onClick={() => {
               onUserPicked(user.id);
             }}
+            type="button"
           >
             <Avatar size={"sm"}>
               <AvatarImage src={user.avatar} />
@@ -52,7 +54,7 @@ export const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
             </Avatar>
 
             <span className={"text-sm"}>{user.name}</span>
-          </div>
+          </button>
         );
       })}
     </div>

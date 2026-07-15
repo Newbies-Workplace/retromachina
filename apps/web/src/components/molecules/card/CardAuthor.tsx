@@ -91,6 +91,14 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
             setIsUsersPickerOpen(true);
           }
         }}
+        onKeyDown={(e) => {
+          if (editable && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            setIsUsersPickerOpen(true);
+          }
+        }}
+        role={editable ? "button" : undefined}
+        tabIndex={editable ? 0 : undefined}
       >
         <Avatar size={"sm"}>
           <AvatarImage src={author?.avatar} />

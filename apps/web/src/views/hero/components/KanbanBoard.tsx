@@ -2,7 +2,7 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, domAnimation, LazyMotion, m } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 
@@ -29,7 +29,7 @@ const Card: React.FC<{
   }, []);
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       layout
       layoutId={id}
@@ -127,59 +127,61 @@ export const KanbanBoard: React.FC = () => {
   }, [cards]);
 
   return (
-    <AnimatePresence>
-      <div
-        className={
-          "w-full h-[500px] flex xl:flex-1 flex-row bg-secondary rounded-2xl p-2 gap-4"
-        }
-      >
-        <Column
-          title={"To Do"}
-          columnId={"todo"}
-          onCardDrop={(id) => {
-            onCardDrop(id, "todo");
-          }}
+    <LazyMotion features={domAnimation}>
+      <AnimatePresence>
+        <div
+          className={
+            "w-full h-[500px] flex xl:flex-1 flex-row bg-secondary rounded-2xl p-2 gap-4"
+          }
         >
-          {cards
-            .filter((c) => c.column === "todo")
-            .map((card) => (
-              <Card key={card.id} id={card.id} columnId={"todo"} />
-            ))}
-        </Column>
+          <Column
+            title={"To Do"}
+            columnId={"todo"}
+            onCardDrop={(id) => {
+              onCardDrop(id, "todo");
+            }}
+          >
+            {cards
+              .filter((c) => c.column === "todo")
+              .map((card) => (
+                <Card key={card.id} id={card.id} columnId={"todo"} />
+              ))}
+          </Column>
 
-        <Column
-          title={"In Progress"}
-          columnId={"wip"}
-          onCardDrop={(id) => {
-            onCardDrop(id, "wip");
-          }}
-        >
-          {cards
-            .filter((c) => c.column === "wip")
-            .map((card) => (
-              <Card key={card.id} id={card.id} columnId={"wip"} />
-            ))}
-        </Column>
+          <Column
+            title={"In Progress"}
+            columnId={"wip"}
+            onCardDrop={(id) => {
+              onCardDrop(id, "wip");
+            }}
+          >
+            {cards
+              .filter((c) => c.column === "wip")
+              .map((card) => (
+                <Card key={card.id} id={card.id} columnId={"wip"} />
+              ))}
+          </Column>
 
-        <Column
-          title={"Done"}
-          columnId={"done"}
-          onCardDrop={(id) => {
-            onCardDrop(id, "done");
-          }}
-        >
-          {cards
-            .filter((c) => c.column === "done")
-            .map((card) => (
-              <Card
-                key={card.id}
-                id={card.id}
-                columnId={"done"}
-                className={"bg-primary"}
-              />
-            ))}
-        </Column>
-      </div>
-    </AnimatePresence>
+          <Column
+            title={"Done"}
+            columnId={"done"}
+            onCardDrop={(id) => {
+              onCardDrop(id, "done");
+            }}
+          >
+            {cards
+              .filter((c) => c.column === "done")
+              .map((card) => (
+                <Card
+                  key={card.id}
+                  id={card.id}
+                  columnId={"done"}
+                  className={"bg-primary"}
+                />
+              ))}
+          </Column>
+        </div>
+      </AnimatePresence>
+    </LazyMotion>
   );
 };

@@ -7,18 +7,19 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import { User } from "generated/prisma/client";
 import {
   TaskCreateCommand,
   TaskDeleteCommand,
   TaskUpdateCommand,
 } from "shared/model/board/board.commands";
 import {
+  BoardSyncEvent,
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
 } from "shared/model/board/board.events";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
+import type { UserRole } from "shared/model/user/user.role";
 import { Server, Socket } from "socket.io";
 import { PrismaService } from "../../prisma/prisma.service";
 
@@ -28,7 +29,17 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private users = new Map<string, { teamId: string; user: User }>();
+  private users = new Map<
+    string,
+    {
+      teamId: string;
+      user: {
+        id: string;
+        avatar_link: string;
+        role: UserRole;
+      };
+    }
+  >();
 
   constructor(
     private prismaService: PrismaService,
@@ -70,12 +81,20 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
+    const userRole = userQuery.TeamUsers.at(0).role;
+
     this.users.set(client.id, {
-      user: userQuery,
+      user: {
+        id: userQuery.id,
+        avatar_link: userQuery.avatar_link,
+        role: userRole,
+      },
       teamId: teamId,
     });
 
     client.join(teamId);
+
+    this.emitBoardSync(teamId);
   }
 
   @SubscribeMessage("command_create_task")
@@ -158,7 +177,34 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
+    const user = this.users.get(client.id);
+    if (!user) {
+      return;
+    }
+
     this.users.delete(client.id);
+    this.emitBoardSync(user.teamId);
+  }
+
+  private emitBoardSync(teamId: string) {
+    const activeUsersMap = new Map(
+      Array.from(this.users.values())
+        .filter((entry) => entry.teamId === teamId)
+        .map((entry) => [
+          entry.user.id,
+          {
+            userId: entry.user.id,
+            avatar_link: entry.user.avatar_link,
+            role: entry.user.role,
+          },
+        ]),
+    );
+
+    const event: BoardSyncEvent = {
+      users: Array.from(activeUsersMap.values()),
+    };
+
+    this.server.to(teamId).emit("event_board_sync", event);
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {

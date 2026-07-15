@@ -8,7 +8,8 @@
     "start": "dotenvx run -- turbo start --env-mode=loose",
     "test": "dotenvx run -- turbo test --env-mode=loose",
     "format": "npx @biomejs/biome check --write ./",
-    "prepare": "husky"
+    "prepare": "husky",
+    "doctor": "npx react-doctor@latest"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.5.0"
@@ -19,6 +20,7 @@
     "@commitlint/config-conventional": "^20.4.3",
     "husky": "9.1.7",
     "lint-staged": "^15.2.0",
+    "react-doctor": "^0.7.8",
     "turbo": "^2.0.6"
   },
   "lint-staged": {

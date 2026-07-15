@@ -1,5 +1,5 @@
-import { AnimatePresence } from "motion/react";
-import React, { createContext, FC, ReactNode, useState } from "react";
+import { AnimatePresence, domAnimation, LazyMotion } from "motion/react";
+import { createContext, FC, ReactNode, useState } from "react";
 import {
   ConfirmDialog,
   ConfirmDialogProps,
@@ -25,21 +25,23 @@ export const ConfirmProvider: FC<{ children?: ReactNode | undefined }> = (
   return (
     <ConfirmContext.Provider value={{ showConfirm }}>
       {props.children}
-      <AnimatePresence>
-        {confirmProps && (
-          <ConfirmDialog
-            {...confirmProps}
-            onConfirmed={() => {
-              confirmProps.onConfirmed?.();
-              setConfirmProps(undefined);
-            }}
-            onDismiss={() => {
-              confirmProps.onDismiss?.();
-              setConfirmProps(undefined);
-            }}
-          />
-        )}
-      </AnimatePresence>
+      <LazyMotion features={domAnimation}>
+        <AnimatePresence>
+          {confirmProps && (
+            <ConfirmDialog
+              {...confirmProps}
+              onConfirmed={() => {
+                confirmProps.onConfirmed?.();
+                setConfirmProps(undefined);
+              }}
+              onDismiss={() => {
+                confirmProps.onDismiss?.();
+                setConfirmProps(undefined);
+              }}
+            />
+          )}
+        </AnimatePresence>
+      </LazyMotion>
     </ConfirmContext.Provider>
   );
 };

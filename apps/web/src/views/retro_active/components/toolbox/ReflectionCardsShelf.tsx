@@ -4,7 +4,7 @@ import {
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { FilePlusIcon, TrashIcon } from "lucide-react";
-import { motion } from "motion/react";
+import { domAnimation, LazyMotion, m } from "motion/react";
 import React, { createRef, useEffect, useState } from "react";
 import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
@@ -112,95 +112,100 @@ export const ReflectionCardsShelf: React.FC<{
         ref={drawerRef}
         className={cn("absolute bottom-0 min-h-54 w-full z-10 overflow-hidden")}
       >
-        <motion.div
-          initial={{ bottom: -150 }}
-          animate={{ bottom: 0 }}
-          className={cn(
-            "absolute bottom-0 h-full w-full p-2 bg-secondary rounded-t-lg flex flex-col gap-2",
-            isOverDropDiv
-              ? "border-2 border-b-0 border-primary"
-              : "border-2 border-transparent",
-          )}
-        >
-          <div className={"flex justify-between"}>
-            <span
-              className={
-                "font-harlow-solid-italic text-3xl text-secondary-foreground"
-              }
-            >
-              Wrzutki
-            </span>
-
-            <Button onClick={onNewReflectionCardClick} size={"sm"}>
-              Nowa wrzutka
-              <FilePlusIcon className={"size-4"} />
-            </Button>
-          </div>
-
-          <div
-            className={
-              "flex flex-row gap-2 h-full w-full p-2 overflow-x-scroll"
-            }
+        <LazyMotion features={domAnimation}>
+          <m.div
+            initial={{ bottom: -150 }}
+            animate={{ bottom: 0 }}
+            className={cn(
+              "absolute bottom-0 h-full w-full p-2 bg-secondary rounded-t-lg flex flex-col gap-2",
+              isOverDropDiv
+                ? "border-2 border-b-0 border-primary"
+                : "border-2 border-transparent",
+            )}
           >
-            {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
-              <div
+            <div className={"flex justify-between"}>
+              <span
                 className={
-                  "flex justify-center items-center h-full w-full border-2 border-dashed rounded-xl text-center"
+                  "font-harlow-solid-italic text-3xl text-secondary-foreground"
                 }
               >
-                Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
-                zapisać ją na później!
-              </div>
-            )}
+                Wrzutki
+              </span>
 
-            {(reflectionCards.length !== 0 || isCreatingNewReflectionCard) && (
-              <div className={cn("flex flex-row gap-2 h-full w-full rounded")}>
-                {isCreatingNewReflectionCard && (
-                  <Card
-                    id="new-reflection-card"
-                    className={"w-[225px]"}
-                    // onEditDismiss={onDeleteNewReflectionCardClick}
-                    positioningBackgroundEnabled={false}
-                  >
-                    <CardContent
-                      text={newReflectionCardText}
-                      editable
-                      autoFocus
-                      onSave={onSaveNewReflectionCardClick}
+              <Button onClick={onNewReflectionCardClick} size={"sm"}>
+                Nowa wrzutka
+                <FilePlusIcon className={"size-4"} />
+              </Button>
+            </div>
+
+            <div
+              className={
+                "flex flex-row gap-2 h-full w-full p-2 overflow-x-scroll"
+              }
+            >
+              {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
+                <div
+                  className={
+                    "flex justify-center items-center h-full w-full border-2 border-dashed rounded-xl text-center"
+                  }
+                >
+                  Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
+                  zapisać ją na później!
+                </div>
+              )}
+
+              {(reflectionCards.length !== 0 ||
+                isCreatingNewReflectionCard) && (
+                <div
+                  className={cn("flex flex-row gap-2 h-full w-full rounded")}
+                >
+                  {isCreatingNewReflectionCard && (
+                    <Card
+                      id="new-reflection-card"
+                      className={"w-[225px]"}
                       // onEditDismiss={onDeleteNewReflectionCardClick}
-                    />
-                    <CardActions>
-                      <Button
-                        onClick={onDeleteNewReflectionCardClick}
-                        size={"icon"}
-                        variant={"destructive"}
-                      >
-                        <TrashIcon className={"size-4"} />
-                      </Button>
-                    </CardActions>
-                  </Card>
-                )}
+                      positioningBackgroundEnabled={false}
+                    >
+                      <CardContent
+                        text={newReflectionCardText}
+                        editable
+                        autoFocus
+                        onSave={onSaveNewReflectionCardClick}
+                        // onEditDismiss={onDeleteNewReflectionCardClick}
+                      />
+                      <CardActions>
+                        <Button
+                          onClick={onDeleteNewReflectionCardClick}
+                          size={"icon"}
+                          variant={"destructive"}
+                        >
+                          <TrashIcon className={"size-4"} />
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  )}
 
-                {reflectionCards.map((card) => {
-                  return (
-                    <DraggableReflectionCard
-                      key={card.id}
-                      id={card.id}
-                      text={card.text}
-                      enableDrag={enableDrag}
-                      onEdit={(newText) => {
-                        onReflectionCardEdit(card.id, newText);
-                      }}
-                      onDeleteClick={() => {
-                        onReflectionCardDeleteClick(card.id);
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </motion.div>
+                  {reflectionCards.map((card) => {
+                    return (
+                      <DraggableReflectionCard
+                        key={card.id}
+                        id={card.id}
+                        text={card.text}
+                        enableDrag={enableDrag}
+                        onEdit={(newText) => {
+                          onReflectionCardEdit(card.id, newText);
+                        }}
+                        onDeleteClick={() => {
+                          onReflectionCardDeleteClick(card.id);
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </m.div>
+        </LazyMotion>
       </div>
     </Portal>
   );
@@ -243,27 +248,33 @@ const DraggableReflectionCard: React.FC<{
   }, [id]);
 
   return (
-    <motion.div
-      layout
-      layoutId={`${id}-draggable`}
-      ref={cardRef}
-      className={cn(
-        enableDrag && "cursor-grab",
-        isDragging ? "opacity-25" : "opacity-100",
-      )}
-    >
-      <Card
-        className={"w-[225px]"}
-        id={id}
-        positioningBackgroundEnabled={false}
+    <LazyMotion features={domAnimation}>
+      <m.div
+        layout
+        layoutId={`${id}-draggable`}
+        ref={cardRef}
+        className={cn(
+          enableDrag && "cursor-grab",
+          isDragging ? "opacity-25" : "opacity-100",
+        )}
       >
-        <CardContent text={text} editable onSave={onEdit} />
-        <CardActions>
-          <Button onClick={onDeleteClick} size={"icon"} variant={"destructive"}>
-            <TrashIcon className={"size-4"} />
-          </Button>
-        </CardActions>
-      </Card>
-    </motion.div>
+        <Card
+          className={"w-[225px]"}
+          id={id}
+          positioningBackgroundEnabled={false}
+        >
+          <CardContent text={text} editable onSave={onEdit} />
+          <CardActions>
+            <Button
+              onClick={onDeleteClick}
+              size={"icon"}
+              variant={"destructive"}
+            >
+              <TrashIcon className={"size-4"} />
+            </Button>
+          </CardActions>
+        </Card>
+      </m.div>
+    </LazyMotion>
   );
 };

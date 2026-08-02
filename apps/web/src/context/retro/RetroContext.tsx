@@ -40,6 +40,7 @@ import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { UserService } from "@/api/User.service";
 import { CardMoveAction } from "@/components/molecules/dragndrop/dragndrop";
+import { SLOT_MACHINE_ANIMATION_DURATION } from "@/components/organisms/slot_machine/SlotMachine";
 import { useUser } from "@/context/user/UserContext.hook";
 import { groupCards } from "@/lib/groupCards";
 import { usePreferencesStore } from "@/store/usePreferencesStore";
@@ -247,6 +248,15 @@ export const RetroContextProvider: React.FC<
       "event_slot_machine_drawn",
       (event: SlotMachineDrawnEvent) => {
         setHighlightedUserId(event.highlightedUserId);
+
+        if (event.highlightedUserId === user?.id) {
+          const { autoReadyAfterDraw } = usePreferencesStore.getState();
+          if (autoReadyAfterDraw) {
+            setTimeout(() => {
+              setReady(true);
+            }, SLOT_MACHINE_ANIMATION_DURATION);
+          }
+        }
 
         for (const listener of slotMachineDrawnListeners.current) {
           listener({

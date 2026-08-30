@@ -1,7 +1,10 @@
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 import React, { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
+dayjs.extend(duration);
 
 interface TimerProps {
   onClick?: () => void;

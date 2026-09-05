@@ -40,6 +40,61 @@ export class RetroRoom {
     public retroColumns: RetroColumn[],
   ) {}
 
+  // Socket IDs, presence and typing indicators are deliberately transient.
+  getSnapshot() {
+    return {
+      version: 1,
+      retroColumns: this.retroColumns.map((column) => ({
+        ...column,
+        cards: [],
+        isWriting: false,
+        teamCardsAmount: 0,
+      })),
+      roomState: this.roomState,
+      timerEnds: this.timerEnds,
+      cards: this.cards,
+      createdDate: this.createdDate.toISOString(),
+      slotMachineVisible: this.slotMachineVisible,
+      userIdsQueue: Array.from(this.userIdsQueue),
+      highlightedUserId: this.highlightedUserId ?? null,
+      maxVotes: this.maxVotes,
+      votes: this.votes,
+      discussionCardId: this.discussionCardId,
+      tasks: this.tasks,
+    };
+  }
+
+  static restore(
+    id: string,
+    teamId: string,
+    snapshot: ReturnType<RetroRoom["getSnapshot"]>,
+  ) {
+    if (snapshot.version !== 1) {
+      throw new Error(
+        `Unsupported retrospective snapshot version: ${snapshot.version}`,
+      );
+    }
+    const room = new RetroRoom(id, teamId, snapshot.retroColumns);
+    room.roomState = snapshot.roomState;
+    room.timerEnds = snapshot.timerEnds;
+    room.cards = snapshot.cards;
+    room.createdDate = new Date(snapshot.createdDate);
+    room.slotMachineVisible = snapshot.slotMachineVisible;
+    room.userIdsQueue = new Set(snapshot.userIdsQueue);
+    room.highlightedUserId = snapshot.highlightedUserId;
+    room.maxVotes = snapshot.maxVotes;
+    room.votes = snapshot.votes;
+    room.discussionCardId = snapshot.discussionCardId;
+    room.tasks = snapshot.tasks.map((task) => ({
+      ...task,
+      created_at: new Date(task.created_at),
+      updated_at: new Date(task.updated_at),
+    }));
+    // Allow reconnecting clients a full inactivity window after startup.
+    room.lastDisconnectionDate = new Date();
+    return room;
+  }
+
   getRoomSyncData() {
     const tempUsers = Array.from(this.connectedUsers.values());
 

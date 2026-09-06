@@ -55,7 +55,9 @@ export const Toolbox: React.FC = () => {
   const { user } = useUser();
   const userVotes =
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
-  const groups = groupCards(cards, votes).sort((a, b) => b.votes - a.votes);
+  const groups = groupCards(cards, votes).sort(
+    (a, b) => b.votes.length - a.votes.length,
+  );
   const currentIndex = groups.findIndex(
     (g) => g.parentCardId === discussionCardId,
   );

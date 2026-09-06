@@ -1,5 +1,5 @@
 import { ClipboardCheckIcon, SaveIcon, TrendingUpIcon } from "lucide-react";
-import { motion } from "motion/react";
+import { domAnimation, LazyMotion, m } from "motion/react";
 import React, { useEffect, useState } from "react";
 import { cn, debounced, randomInteger } from "@/lib/utils";
 
@@ -118,30 +118,32 @@ const AnimatedIcon: React.FC = () => {
   }, []);
 
   return (
-    <motion.div
-      animate={animationState}
-      variants={iconVariants}
-      onMouseMoveCapture={animate}
-      transition={{ duration: 0.3 }}
-      className={cn(
-        "flex justify-center items-center size-32 bg-secondary/10 rounded m-2",
-      )}
-    >
-      {icon === 0 && (
-        <ClipboardCheckIcon
-          className={"dark:text-secondary-foreground opacity-30 size-8"}
-        />
-      )}
-      {icon === 1 && (
-        <SaveIcon
-          className={"dark:text-secondary-foreground opacity-30 size-8"}
-        />
-      )}
-      {icon === 2 && (
-        <TrendingUpIcon
-          className={"dark:text-secondary-foreground opacity-30 size-8"}
-        />
-      )}
-    </motion.div>
+    <LazyMotion features={domAnimation}>
+      <m.div
+        animate={animationState}
+        variants={iconVariants}
+        onMouseMoveCapture={animate}
+        transition={{ duration: 0.3 }}
+        className={cn(
+          "flex justify-center items-center size-32 bg-secondary/10 rounded m-2",
+        )}
+      >
+        {icon === 0 && (
+          <ClipboardCheckIcon
+            className={"dark:text-secondary-foreground opacity-30 size-8"}
+          />
+        )}
+        {icon === 1 && (
+          <SaveIcon
+            className={"dark:text-secondary-foreground opacity-30 size-8"}
+          />
+        )}
+        {icon === 2 && (
+          <TrendingUpIcon
+            className={"dark:text-secondary-foreground opacity-30 size-8"}
+          />
+        )}
+      </m.div>
+    </LazyMotion>
   );
 };

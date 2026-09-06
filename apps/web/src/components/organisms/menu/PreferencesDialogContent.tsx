@@ -1,4 +1,4 @@
-import { MusicIcon, SunIcon, Volume1Icon } from "lucide-react";
+import { MusicIcon, SunIcon, ThumbsUpIcon, Volume1Icon } from "lucide-react";
 import React, { useState } from "react";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -18,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { useAudio } from "@/hooks/useAudio";
 import { usePreferencesStore } from "@/store/usePreferencesStore";
 
@@ -28,8 +30,14 @@ const items = [
 ];
 
 export const PreferencesDialogContent = () => {
-  const { volumeLevel, setVolumeLevel, theme, setTheme } =
-    usePreferencesStore();
+  const {
+    volumeLevel,
+    setVolumeLevel,
+    theme,
+    setTheme,
+    autoReadyAfterVoting,
+    setAutoReadyAfterVoting,
+  } = usePreferencesStore();
   const { playAudio } = useAudio();
   const [tempVolumeLevel, setTempVolumeLevel] = useState(volumeLevel);
 
@@ -62,14 +70,14 @@ export const PreferencesDialogContent = () => {
           step={0.05}
         />
 
-        <div className={"flex flex-row gap-2 items-center"}>
+        <div className={"flex flex-row gap-2 items-center mt-4"}>
           <MusicIcon className={"size-6"} />
           Muzyka w aplikacji
         </div>
 
         <MusicPreferenceSlider />
 
-        <div className={"flex flex-row gap-2 items-center"}>
+        <div className={"flex flex-row gap-2 items-center mt-4"}>
           <SunIcon className={"size-6"} />
           Motyw
         </div>
@@ -95,6 +103,22 @@ export const PreferencesDialogContent = () => {
             </SelectGroup>
           </SelectContent>
         </Select>
+
+        <div className={"flex flex-row gap-2 items-center mt-4"}>
+          <ThumbsUpIcon className={"size-6"} />
+          Retrospektywa
+        </div>
+
+        <div className={"flex flex-row gap-2 items-center"}>
+          <Switch
+            id="auto-ready"
+            checked={autoReadyAfterVoting}
+            onCheckedChange={(checked) => setAutoReadyAfterVoting(checked)}
+          />
+          <Label htmlFor="auto-ready" className={"ml-2"}>
+            Automatyczna gotowość po zagłosowaniu na tematy
+          </Label>
+        </div>
       </div>
 
       <DialogFooter>

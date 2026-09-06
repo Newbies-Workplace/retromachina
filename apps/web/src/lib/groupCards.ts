@@ -9,8 +9,8 @@ export const groupCards = (cards: Card[], votes: Vote[]): Group[] => {
         ...cards.filter((c) => c.parentCardId === parent.id),
       ];
       const count = groupCards
-        .map((c) => votes.filter((v) => v.parentCardId === c.id).length)
-        .reduce((a, c) => a + c, 0);
+        .map((c) => votes.filter((v) => v.parentCardId === c.id))
+        .reduce((a, c) => a.concat(c), []);
 
       return {
         parentCardId: parent.id,
@@ -22,6 +22,6 @@ export const groupCards = (cards: Card[], votes: Vote[]): Group[] => {
 
 export interface Group {
   parentCardId: string;
-  votes: number;
+  votes: Vote[];
   cards: Card[];
 }

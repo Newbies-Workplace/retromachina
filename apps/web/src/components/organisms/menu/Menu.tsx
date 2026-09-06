@@ -1,5 +1,6 @@
 import {
   BugIcon,
+  Disc3Icon,
   HandshakeIcon,
   InfoIcon,
   RocketIcon,
@@ -97,6 +98,16 @@ export const Menu = () => {
         >
           <HandshakeIcon className={"size-4"} />
           Stwórz Zespół
+        </Link>
+
+        <Link
+          className={
+            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
+          }
+          to={"/gramophone"}
+        >
+          <Disc3Icon className={"size-4"} />
+          Gramofon
         </Link>
 
         <Link

@@ -29,6 +29,7 @@ export const VoteView = () => {
 
         return (
           <Column
+            className={"pb-22"}
             key={column.id}
             columnData={{
               name: column.name,

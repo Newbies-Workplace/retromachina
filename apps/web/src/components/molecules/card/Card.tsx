@@ -1,5 +1,5 @@
 import { SaveIcon } from "lucide-react";
-import { motion } from "motion/react";
+import { domAnimation, LazyMotion, m } from "motion/react";
 import React from "react";
 import { PositioningBackdrop } from "@/components/molecules/backdrop/PositioningBackdrop";
 import { Button } from "@/components/ui/button";
@@ -89,34 +89,36 @@ const CardInner: React.FC<CardProps> = ({
         positioningBackgroundEnabled && (isEditingText || isUsersPickerOpen)
       }
     >
-      <motion.div
-        layout
-        key={id}
-        style={style}
-        layoutId={id}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className={cn(
-          "relative flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white dark:bg-card border border-black/30 p-2 rounded-2xl h-full",
-          className,
-        )}
-      >
-        <div className={"flex flex-col justify-between gap-1 w-full"}>
-          {content}
-          {author}
-        </div>
-
-        <div className={"flex flex-col select-none gap-2"}>
-          {isEditingText ? (
-            <Button size={"icon"} onClick={handleSaveClick}>
-              <SaveIcon className={"size-4"} />
-            </Button>
-          ) : (
-            actions
+      <LazyMotion features={domAnimation}>
+        <m.div
+          layout
+          key={id}
+          style={style}
+          layoutId={id}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className={cn(
+            "relative flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white dark:bg-card border border-black/30 p-2 rounded-2xl h-full",
+            className,
           )}
-        </div>
-      </motion.div>
+        >
+          <div className={"flex flex-col justify-between gap-1 w-full"}>
+            {content}
+            {author}
+          </div>
+
+          <div className={"flex flex-col select-none gap-2"}>
+            {isEditingText ? (
+              <Button size={"icon"} onClick={handleSaveClick}>
+                <SaveIcon className={"size-4"} />
+              </Button>
+            ) : (
+              actions
+            )}
+          </div>
+        </m.div>
+      </LazyMotion>
     </PositioningBackdrop>
   );
 };

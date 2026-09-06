@@ -7,10 +7,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor() {
     const pool = new PrismaMariaDb({
       database: process.env.DATABASE_NAME,
-      host: process.env.DATABASE_HOST,
-      password: process.env.DATABASE_PASSWORD,
-      port: parseInt(process.env.DATABASE_PORT, 10),
-      user: process.env.DATABASE_USER,
+      host: process.env.DATABASE_HOST || "127.0.0.1",
+      password: process.env.DATABASE_PASSWORD || "retro",
+      port: parseInt(process.env.DATABASE_PORT, 10) || 3307,
+      user: process.env.DATABASE_USER || "root",
     });
     super({ adapter: pool });
   }

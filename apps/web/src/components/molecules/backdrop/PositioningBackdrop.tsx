@@ -1,4 +1,4 @@
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, domAnimation, LazyMotion } from "motion/react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Portal } from "react-portal";
@@ -55,26 +55,28 @@ export const PositioningBackdrop: React.FC<PositioningBackdropProps> = ({
 
   return (
     <>
-      <AnimatePresence>
-        {visible && pos && (
-          <Portal>
-            <Backdrop onDismiss={onDismiss}>
-              <div
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  position: "absolute",
-                  top: pos.y,
-                  left: pos.x,
-                  width: pos.width,
-                  height: pos.height,
-                }}
-              >
-                {children}
-              </div>
-            </Backdrop>
-          </Portal>
-        )}
-      </AnimatePresence>
+      <LazyMotion features={domAnimation}>
+        <AnimatePresence>
+          {visible && pos && (
+            <Portal>
+              <Backdrop onDismiss={onDismiss}>
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    position: "absolute",
+                    top: pos.y,
+                    left: pos.x,
+                    width: pos.width,
+                    height: pos.height,
+                  }}
+                >
+                  {children}
+                </div>
+              </Backdrop>
+            </Portal>
+          )}
+        </AnimatePresence>
+      </LazyMotion>
 
       <div ref={boxRef}>
         {visible && pos ? (

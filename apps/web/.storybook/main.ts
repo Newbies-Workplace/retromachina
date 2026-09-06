@@ -10,6 +10,8 @@ const config: StorybookConfig = {
   addons: [
     getAbsolutePath("@storybook/addon-links"),
     getAbsolutePath("@storybook/addon-docs"),
+    getAbsolutePath("@storybook/addon-mcp"),
+    getAbsolutePath("@storybook/addon-themes"),
   ],
 
   framework: {

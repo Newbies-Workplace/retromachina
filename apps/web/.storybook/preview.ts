@@ -1,3 +1,4 @@
+import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Preview } from "@storybook/react-vite";
 import "../src/App.css";
 import "./../src/index.css";
@@ -13,18 +14,27 @@ const preview: Preview = {
     },
     backgrounds: {
       options: {
-        light: {
-          name: "light",
-          value: "#F4F2E6",
+        background: {
+          name: "background",
+          value: "var(--background)",
         },
-
-        dark: {
-          name: "dark",
-          value: "#444444",
+        card: {
+          name: "card",
+          value: "var(--card)",
         },
       },
     },
   },
+
+  decorators: [
+    withThemeByClassName({
+      themes: {
+        light: "light",
+        dark: "dark",
+      },
+      defaultTheme: "light",
+    }),
+  ],
 
   tags: ["autodocs"],
 

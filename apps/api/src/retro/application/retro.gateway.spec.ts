@@ -75,6 +75,8 @@ describe("retrospective restart recovery", () => {
         updated_at: new Date(),
       } as any,
     ];
+    expect(typeof room.getSnapshot().tasks[0].created_at).toBe("string");
+    expect(typeof room.getSnapshot().tasks[0].updated_at).toBe("string");
     await gateway["emitRoomSync"](room.id, room);
 
     const restarted = new RetroGateway(database, {} as any);
@@ -120,5 +122,54 @@ describe("retrospective restart recovery", () => {
       "Database unavailable",
     );
     expect(emit).not.toHaveBeenCalled();
+  });
+
+  it("marks missing and corrupted snapshots as not running and restores the others", async () => {
+    const validRoom = new RetroRoom("valid", "team", columns);
+    database.retrospective.findMany.mockResolvedValueOnce([
+      { id: "missing", team_id: "team", room_state: null },
+      { id: "corrupted", team_id: "team", room_state: { version: 999 } },
+      {
+        id: "valid",
+        team_id: "team",
+        room_state: validRoom.getSnapshot(),
+      },
+    ]);
+
+    await gateway.restoreRooms();
+
+    expect(gateway["retroRooms"].has("missing")).toBe(false);
+    expect(gateway["retroRooms"].has("corrupted")).toBe(false);
+    expect(gateway["retroRooms"].has("valid")).toBe(true);
+    expect(database.retrospective.update).toHaveBeenCalledWith({
+      where: { id: "missing" },
+      data: { is_running: false },
+    });
+    expect(database.retrospective.update).toHaveBeenCalledWith({
+      where: { id: "corrupted" },
+      data: { is_running: false },
+    });
+  });
+
+  it("closes a room after its pending persistence write failed", async () => {
+    const room = new RetroRoom("retro", "team", columns);
+    gateway["retroRooms"].set(room.id, room);
+    gateway["pendingWrites"].set(
+      room.id,
+      Promise.reject(new Error("Database unavailable")),
+    );
+    const disconnectSockets = jest.fn();
+    gateway.server = {
+      to: () => ({ emit, disconnectSockets }),
+    } as any;
+
+    await gateway.closeRoom(room);
+
+    expect(database.retrospective.update).toHaveBeenCalledWith({
+      where: { id: room.id },
+      data: { is_running: false },
+    });
+    expect(gateway["retroRooms"].has(room.id)).toBe(false);
+    expect(disconnectSockets).toHaveBeenCalledWith(true);
   });
 });

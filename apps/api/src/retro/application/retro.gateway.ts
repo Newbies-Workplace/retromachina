@@ -79,14 +79,22 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       where: { is_running: true },
     });
     for (const retro of retros) {
-      // Older releases never stored room contents; they cannot be recovered.
-      if (!retro.room_state) continue;
-      const room = RetroRoom.restore(
-        retro.id,
-        retro.team_id,
-        retro.room_state as unknown as ReturnType<RetroRoom["getSnapshot"]>,
-      );
-      this.retroRooms.set(room.id, room);
+      try {
+        // Older releases never stored room contents; they cannot be recovered.
+        if (!retro.room_state)
+          throw new Error("Missing retrospective snapshot");
+        const room = RetroRoom.restore(
+          retro.id,
+          retro.team_id,
+          retro.room_state as unknown as ReturnType<RetroRoom["getSnapshot"]>,
+        );
+        this.retroRooms.set(room.id, room);
+      } catch {
+        await this.prismaService.retrospective.update({
+          where: { id: retro.id },
+          data: { is_running: false },
+        });
+      }
     }
   }
 
@@ -159,7 +167,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async closeRoom(room: RetroRoom) {
-    await this.pendingWrites.get(room.id);
+    await this.pendingWrites.get(room.id)?.catch(() => undefined);
     await this.prismaService.retrospective.update({
       where: { id: room.id },
       data: { is_running: false },

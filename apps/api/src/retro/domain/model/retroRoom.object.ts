@@ -60,7 +60,11 @@ export class RetroRoom {
       maxVotes: this.maxVotes,
       votes: this.votes,
       discussionCardId: this.discussionCardId,
-      tasks: this.tasks,
+      tasks: this.tasks.map((task) => ({
+        ...task,
+        created_at: task.created_at.toISOString(),
+        updated_at: task.updated_at.toISOString(),
+      })),
     };
   }
 

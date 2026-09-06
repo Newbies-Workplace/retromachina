@@ -21,7 +21,7 @@ export const PrivacyPolicyView = () => {
       </p>
       <p>
         Poniższa Polityka Prywatności jest integralną częścią{" "}
-        <a href="https://retro.newbies.pl/privacy">Regulaminu Serwisu</a>, który
+        <a href="https://retromachine.eu/privacy">Regulaminu Serwisu</a>, który
         określa zasady, prawa i obowiązki Użytkowników korzystających z Serwisu.
       </p>
 
@@ -30,7 +30,7 @@ export const PrivacyPolicyView = () => {
         <li>
           <p>
             <strong>Serwis</strong> - serwis internetowy "Retromachine"
-            działający pod adresem https://retro.newbies.pl
+            działający pod adresem https://retromachine.eu
           </p>
         </li>
         <li>

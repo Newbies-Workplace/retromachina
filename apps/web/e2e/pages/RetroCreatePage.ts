@@ -26,6 +26,6 @@ export class RetroCreatePage {
   }
 
   async createRetro() {
-    await this.page.getByTestId("create-retro").click();
+    await this.page.getByTestId("create-retro-confirm").click();
   }
 }

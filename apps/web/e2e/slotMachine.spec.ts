@@ -1,10 +1,15 @@
 import { v4 as uuid } from "uuid";
 import { expect, test } from "../playwright/fixtures";
 import { HomePage } from "./pages/HomePage";
+import { InvitationAcceptPage } from "./pages/InvitationAcceptPage";
 import { RetroActivePage } from "./pages/RetroActivePage";
 import { RetroCreatePage } from "./pages/RetroCreatePage";
 import { SettingsModal } from "./pages/SettingsModal";
 import { TeamCreatePage } from "./pages/team_form/TeamCreatePage";
+
+test.use({
+  permissions: ["clipboard-write", "clipboard-read"],
+});
 
 for (const autoReady of [true, false]) {
   test(
@@ -69,3 +74,50 @@ for (const autoReady of [true, false]) {
     },
   );
 }
+
+test("slot machine marks only the drawn user ready when two users are present", async ({
+  firstUser,
+  secondUser,
+}) => {
+  const teamName = uuid();
+  const teamCreatePage = new TeamCreatePage(firstUser.page);
+  await teamCreatePage.goto();
+  await teamCreatePage.fillTeamName(teamName);
+  await teamCreatePage.generateInvitationLink();
+  const invitationLink = await teamCreatePage.copyInvitationLink();
+  await teamCreatePage.saveTeam();
+
+  const invitationAcceptPage = new InvitationAcceptPage(secondUser.page);
+  await secondUser.page.goto(invitationLink);
+  await invitationAcceptPage.acceptInvitation();
+  await expect(secondUser.page).toHaveURL(/\/.*\/board/);
+
+  await new HomePage(firstUser.page).gotoCreateRetro(teamName);
+  await new RetroCreatePage(firstUser.page).createRetro();
+  await expect(firstUser.page).toHaveURL(/\/retro\/.+\/reflection/);
+
+  await new HomePage(secondUser.page).goto();
+  await new HomePage(secondUser.page).gotoCurrentRetro(teamName);
+  await expect(secondUser.page).toHaveURL(/\/retro\/.+\/reflection/);
+
+  const firstUserRetro = new RetroActivePage(firstUser.page);
+  const secondUserRetro = new RetroActivePage(secondUser.page);
+  // A card from only the first user makes the draw deterministic.
+  await firstUserRetro.createCard(`Two-user slot machine ${uuid()}`);
+  await firstUserRetro.nextStage();
+  await expect(firstUser.page).toHaveURL(/\/retro\/.+\/group/);
+  await expect(secondUser.page).toHaveURL(/\/retro\/.+\/group/);
+
+  await firstUserRetro.showSlotMachine();
+  await firstUserRetro.drawSlotMachine();
+
+  await expect(firstUserRetro.readyProgressLocator).toHaveAttribute(
+    "aria-valuenow",
+    "50",
+    { timeout: 10_000 },
+  );
+  await expect(secondUserRetro.readyProgressLocator).toHaveAttribute(
+    "aria-valuenow",
+    "50",
+  );
+});

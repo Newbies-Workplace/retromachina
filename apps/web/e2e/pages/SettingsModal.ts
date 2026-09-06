@@ -16,10 +16,18 @@ export class SettingsModal {
     );
     this.settingsButtonLocator = page.getByText("Ustawienia", { exact: true });
     this.dialogLocator = page.getByRole("dialog", { name: "Ustawienia" });
-    this.autoReadyAfterDrawLocator =
-      this.dialogLocator.locator("#auto-ready-draw");
-    this.autoReadyAfterVotingLocator =
-      this.dialogLocator.locator("#auto-ready");
+    this.autoReadyAfterDrawLocator = this.dialogLocator
+      .getByText("Automatyczna gotowość po wylosowaniu na maszynie losującej", {
+        exact: true,
+      })
+      .locator("..")
+      .getByRole("switch");
+    this.autoReadyAfterVotingLocator = this.dialogLocator
+      .getByText("Automatyczna gotowość po zagłosowaniu na tematy", {
+        exact: true,
+      })
+      .locator("..")
+      .getByRole("switch");
     this.closeButtonLocator = this.dialogLocator.getByRole("button", {
       name: "Zamknij",
       exact: true,
@@ -36,11 +44,21 @@ export class SettingsModal {
   }
 
   async setAutoReadyAfterDraw(enabled: boolean) {
-    await this.autoReadyAfterDrawLocator.setChecked(enabled);
+    if (
+      (await this.autoReadyAfterDrawLocator.getAttribute("aria-checked")) !==
+      String(enabled)
+    ) {
+      await this.autoReadyAfterDrawLocator.click();
+    }
   }
 
   async setAutoReadyAfterVoting(enabled: boolean) {
-    await this.autoReadyAfterVotingLocator.setChecked(enabled);
+    if (
+      (await this.autoReadyAfterVotingLocator.getAttribute("aria-checked")) !==
+      String(enabled)
+    ) {
+      await this.autoReadyAfterVotingLocator.click();
+    }
   }
 
   async close() {

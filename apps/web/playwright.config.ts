@@ -7,11 +7,12 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: "html",
+  reporter: process.env.CI ? "list" : "html",
   use: {
     baseURL: "http://localhost:8080",
     trace: "on-first-retry",
   },
+  timeout: 15_000,
   projects: [
     // Setup project
     { name: "setup", testMatch: /.*\.setup\.ts/ },
@@ -29,5 +30,6 @@ export default defineConfig({
     port: 8080,
     reuseExistingServer: !process.env.CI,
     stdout: process.env.CI ? "pipe" : "ignore",
+    stderr: "pipe",
   },
 });

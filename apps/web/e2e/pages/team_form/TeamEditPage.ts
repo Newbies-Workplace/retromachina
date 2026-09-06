@@ -13,6 +13,6 @@ export class TeamEditPage extends TeamFormPage {
   async removeTeam() {
     await this.removeTeamLocator.click();
 
-    await this.page.getByRole("button", { name: "Tak" }).click();
+    await this.page.getByRole("button", { name: "Tak", exact: true }).click();
   }
 }

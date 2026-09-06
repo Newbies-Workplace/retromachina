@@ -1,4 +1,4 @@
-import { test as base, chromium, type Page } from "@playwright/test";
+import { test as base, type Page } from "@playwright/test";
 
 export const firstAuthFile = "playwright/.auth/first-user.json";
 export const secondAuthFile = "playwright/.auth/second-user.json";
@@ -22,7 +22,6 @@ class SecondUserPage {
 type MyFixtures = {
   firstUser: FirstUserPage;
   secondUser: SecondUserPage;
-  setupBrowserPage: Page;
 };
 
 export * from "@playwright/test";
@@ -38,13 +37,5 @@ export const test = base.extend<MyFixtures>({
     const userPage = new SecondUserPage(await context.newPage());
     await use(userPage);
     await context.close();
-  },
-
-  setupBrowserPage: async ({ browser }, use) => {
-    const cdpBrowser = await chromium.connectOverCDP("http://localhost:9222");
-    const page = await cdpBrowser.contexts()[0].newPage();
-    await page.goto("http://localhost:8080/");
-    await use(page);
-    await cdpBrowser.close();
   },
 });

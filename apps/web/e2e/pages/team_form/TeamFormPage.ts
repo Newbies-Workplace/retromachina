@@ -62,7 +62,7 @@ export class TeamFormPage {
   async regenerateInvitationLink() {
     await this.regenerateInvitationLinkLocator.click();
 
-    await this.page.getByRole("button", { name: "Tak" }).click();
+    await this.page.getByRole("button", { name: "Tak", exact: true }).click();
   }
 
   async copyInvitationLink(): Promise<string> {
@@ -74,7 +74,7 @@ export class TeamFormPage {
   async removeInvitationLink() {
     await this.removeInvitationLinkLocator.click();
 
-    await this.page.getByRole("button", { name: "Tak" }).click();
+    await this.page.getByRole("button", { name: "Tak", exact: true }).click();
   }
 
   async saveTeam() {

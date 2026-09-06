@@ -6,6 +6,7 @@
     "dev": "nest start --watch",
     "generate": "npx prisma generate && npx prisma format",
     "migrate": "dotenvx run -f ../../.env -- npx prisma migrate dev",
+    "migrate:deploy": "dotenvx run -f ../../.env -- npx prisma migrate deploy",
     "studio": "dotenvx run -f ../../.env -- npx prisma studio",
     "build": "npm run generate && npm run build:nest",
     "build:nest": "nest build",

@@ -1,93 +1,55 @@
 import * as fs from "node:fs";
-import * as process from "node:process";
-import * as OTPAuth from "otpauth";
+import jwt from "jsonwebtoken";
 import {
   firstAuthFile,
-  Page,
   secondAuthFile,
   test as setup,
 } from "../playwright/fixtures";
 
-/**
- * Download Chrome for testing
- *
- * npx @puppeteer/browsers install chrome@stable
- *
- * Start Chrome with remote debugging enabled
- *
- * --remote-debugging-port=9222
- *
- * clear browser data before running each setup test
- */
-setup("authenticate as first user", async ({ setupBrowserPage }) => {
-  if (fs.existsSync(firstAuthFile)) {
-    return;
-  }
-
-  await authenticateWithCredentials(
-    setupBrowserPage,
-    process.env.E2E_FIRST_LOGIN,
-    process.env.E2E_FIRST_PASSWORD,
-    process.env.E2E_FIRST_OTP_SECRET,
-  );
-
-  await setupBrowserPage.context().storageState({ path: firstAuthFile });
-});
-
-setup("authenticate as second user", async ({ setupBrowserPage }) => {
-  if (fs.existsSync(secondAuthFile)) {
-    return;
-  }
-
-  await authenticateWithCredentials(
-    setupBrowserPage,
-    process.env.E2E_SECOND_LOGIN,
-    process.env.E2E_SECOND_PASSWORD,
-    process.env.E2E_SECOND_OTP_SECRET,
-  );
-
-  await setupBrowserPage.context().storageState({ path: secondAuthFile });
-});
-
-const authenticateWithCredentials = async (
-  page: Page,
-  login: string,
-  password: string,
-  otpSecret: string,
-) => {
-  await page.goto("http://localhost:8080/signin");
-  await page.getByRole("button", { name: "Sign in with Google" }).click();
-  await page.waitForSelector('input[type="email"]');
-  await page.fill('input[type="email"]', login);
-  await page.click("#identifierNext");
-  await page.waitForSelector('input[type="password"]', {
-    state: "visible",
-  });
-  await page.fill('input[type="password"]', password);
-  await page.waitForSelector("#passwordNext", {
-    state: "visible",
-  });
-  await page.click("#passwordNext");
-
-  const otpCode = generateOTP(otpSecret);
-  console.log(`Generated OTP code: ${otpCode}`);
-
-  await page.getByText("Google Authenticator", { exact: false }).click(); //waitFor({ state: "visible" });
-
-  await page.getByLabel("Enter code").fill(otpCode);
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
-
-  await page.waitForURL("http://localhost:8080/");
+type StoredAuth = {
+  cookies: unknown[];
+  origins: Array<{
+    origin: string;
+    localStorage: Array<{ name: string; value: string }>;
+  }>;
 };
 
-function generateOTP(secret: string) {
-  const totp = new OTPAuth.TOTP({
-    secret: secret,
-    digits: 6,
-    algorithm: "sha1",
-    period: 30,
-  });
+function refreshToken(file: string) {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET is required to prepare Playwright auth state");
+  }
 
-  return totp.generate();
+  if (!fs.existsSync(file)) {
+    throw new Error(`Authentication file is missing: ${file}`);
+  }
+
+  const auth = JSON.parse(fs.readFileSync(file, "utf8")) as StoredAuth;
+  const localhost = auth.origins.find(
+    ({ origin }) => origin === "http://localhost:8080",
+  );
+  const bearer = localhost?.localStorage.find(({ name }) => name === "Bearer");
+  const payload = bearer ? jwt.decode(bearer.value) : null;
+
+  if (
+    !bearer ||
+    typeof payload !== "object" ||
+    payload === null ||
+    !("user" in payload)
+  ) {
+    throw new Error(
+      `Authentication file has no valid Bearer identity: ${file}`,
+    );
+  }
+
+  bearer.value = jwt.sign({ user: payload.user }, secret);
+
+  // Google session cookies are not needed after the application JWT exists.
+  auth.cookies = [];
+  fs.writeFileSync(file, JSON.stringify(auth));
 }
+
+setup("prepare test users authentication", async () => {
+  refreshToken(firstAuthFile);
+  refreshToken(secondAuthFile);
+});

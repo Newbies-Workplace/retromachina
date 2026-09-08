@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { currentVersion, isNewerVersion, releases } from "@/changelog/releases";
+import { isNewerVersion, releases } from "@/changelog/releases";
+import { APP_VERSION } from "@/utils/version";
 
 export const VERSION_KEY = "retromachina:version";
 export const DISABLED_KEY = "retromachina:changelog-disabled";
@@ -42,10 +43,10 @@ export const useChangelogStore = create<ChangelogStore>((set, get) => ({
     if (get().initialized) return;
     const previous = read(VERSION_KEY);
     const disabled = read(DISABLED_KEY) === "true";
-    const newer = previous !== null && isNewerVersion(currentVersion, previous);
+    const newer = previous !== null && isNewerVersion(APP_VERSION, previous);
     // Preserve the highest visited version during a deployment rollback.
-    if (!previous || !isNewerVersion(previous, currentVersion)) {
-      write(VERSION_KEY, currentVersion);
+    if (!previous || !isNewerVersion(previous, APP_VERSION)) {
+      write(VERSION_KEY, APP_VERSION);
     }
     set({ initialized: true, previous, disabled, open: newer && !disabled });
   },

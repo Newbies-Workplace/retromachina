@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useChangelogStore } from "@/store/useChangelogStore";
+import { APP_VERSION } from "@/utils/version";
 
 export const Menu = () => {
   const navigate = useNavigate();
@@ -141,12 +142,14 @@ export const Menu = () => {
       </div>
 
       <Button
-        className={"mx-2 mb-2"}
+        className={"mx-2"}
         variant={"destructive"}
         onClick={onLogoutClick}
       >
         Wyloguj
       </Button>
+
+      <p className="mb-2 text-xs text-muted-foreground">Wersja {APP_VERSION}</p>
     </div>
   );
 };

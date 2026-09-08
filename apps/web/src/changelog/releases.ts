@@ -17,8 +17,6 @@ export const releases: Release[] = [
   },
 ];
 
-export const currentVersion = releases[0].version;
-
 export function isNewerVersion(current: string, previous: string): boolean {
   if (!/^\d+\.\d+\.\d+$/.test(previous)) return false;
   const next = current.split(".").map(Number);

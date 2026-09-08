@@ -1,6 +1,5 @@
 import { ClapperboardIcon } from "lucide-react";
 import { useEffect } from "react";
-import { currentVersion } from "@/changelog/releases";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +16,7 @@ import {
   getVisibleReleases,
   useChangelogStore,
 } from "@/store/useChangelogStore";
+import { APP_VERSION } from "@/utils/version";
 
 export function Changelog() {
   const { user } = useUser();
@@ -69,7 +69,7 @@ export function Changelog() {
                 <Badge variant="outline" className="font-mono">
                   v{release.version}
                 </Badge>
-                {release.version === currentVersion && <Badge>Premiera</Badge>}
+                {release.version === APP_VERSION && <Badge>Premiera</Badge>}
                 <time
                   className="ml-auto text-xs text-muted-foreground"
                   dateTime={release.date}

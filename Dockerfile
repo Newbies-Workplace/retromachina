@@ -3,11 +3,13 @@ FROM node:24.14.0 AS builder
 ARG RETRO_WEB_API_URL
 ARG RETRO_WEB_SOCKET_URL
 ARG DATABASE_URL
+ARG APP_VERSION
 
 WORKDIR /build
 COPY . ./
 
 RUN npm ci
+RUN if [ -n "$APP_VERSION" ]; then npm pkg set "version=${APP_VERSION#v}" --workspace=web; fi
 RUN npm run build
 
 FROM node:24.14.0-alpine as retro-api

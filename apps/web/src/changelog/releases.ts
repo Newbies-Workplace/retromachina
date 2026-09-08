@@ -1,6 +1,5 @@
 export interface Release {
   version: string;
-  date: string;
   title: string;
   changes: string[];
 }
@@ -8,10 +7,9 @@ export interface Release {
 // Newest first. Use stable major.minor.patch versions; see docs/changelog.md.
 export const releases: Release[] = [
   {
-    version: "1.0.0",
-    date: "2026-09-08",
-    title: "Nowości mają swój seans",
-    changes: ["Nowe wydania przywitają Cię filmowym okienkiem ze zmianami."],
+    version: "1.26.0",
+    title: "Co nowego?",
+    changes: ["Od teraz przy aktualizacjach zobaczysz co zmieniło się w retromachinie"],
   },
 ];
 

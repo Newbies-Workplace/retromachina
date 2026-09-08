@@ -39,26 +39,30 @@ export function Changelog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="top-auto bottom-4 left-4 max-h-[calc(100dvh-2rem)] translate-x-0 translate-y-0 gap-0 overflow-x-hidden overflow-y-auto p-0 sm:max-w-md">
+      <DialogContent
+        showCloseButton={false}
+        className="top-auto bottom-4 left-4 max-h-[calc(100dvh-2rem)] translate-x-0 translate-y-0 gap-0 overflow-x-hidden overflow-y-auto p-0 sm:max-w-md"
+      >
         <DialogHeader className="relative mx-0 mt-0 flex-row items-center gap-5 border-b px-6 py-7">
           <div
-            className="relative grid size-24 shrink-0 place-items-center overflow-hidden rounded-full border border-primary-foreground/60 text-primary-foreground"
+            className="relative grid size-18 shrink-0 place-items-center overflow-hidden rounded-full border border-primary-foreground/60 text-primary-foreground"
             aria-hidden="true"
           >
-            <span className="absolute inset-0 animate-spin bg-conic from-transparent to-primary-foreground/40 [animation-duration:4s] motion-reduce:animate-none" />
-            <span className="absolute inset-2 rounded-full border-2 border-primary-foreground/60" />
+            <span className="absolute inset-0 animate-changelog-reel bg-conic from-transparent to-primary-foreground/40 motion-reduce:animate-none" />
+            <span className="absolute inset-1.5 rounded-full border-2 border-primary-foreground/60" />
             <span className="absolute inset-x-0 top-1/2 h-px bg-primary-foreground/60" />
             <span className="absolute inset-y-0 left-1/2 w-px bg-primary-foreground/60" />
-            <span className="relative z-10 font-mono text-6xl font-bold">
-              5
-            </span>
+            <ClapperboardIcon
+              className="relative z-10 size-8"
+              strokeWidth={1.5}
+            />
           </div>
           <div className="min-w-0 pr-5">
             <DialogTitle className="text-2xl font-bold">Co nowego</DialogTitle>
             <DialogDescription className="mt-2">
               {history
-                ? "Archiwum naszych premier."
-                : "Nowa wersja. Czas na kolejny seans."}
+                ? "Historia zmian w aplikacji."
+                : "Zobacz, co zmieniło się w najnowszej wersji."}
             </DialogDescription>
           </div>
         </DialogHeader>
@@ -69,13 +73,7 @@ export function Changelog() {
                 <Badge variant="outline" className="font-mono">
                   v{release.version}
                 </Badge>
-                {release.version === APP_VERSION && <Badge>Premiera</Badge>}
-                <time
-                  className="ml-auto text-xs text-muted-foreground"
-                  dateTime={release.date}
-                >
-                  {release.date.split("-").reverse().join(".")}
-                </time>
+                {release.version === APP_VERSION && <Badge>Nowość</Badge>}
               </div>
               <h3 className="font-semibold">{release.title}</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">

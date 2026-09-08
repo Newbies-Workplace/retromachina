@@ -1,18 +1,18 @@
 import {
   BugIcon,
+  ClapperboardIcon,
   Disc3Icon,
   HandshakeIcon,
   InfoIcon,
-  RocketIcon,
   SettingsIcon,
 } from "lucide-react";
-import React from "react";
 import { Link, useNavigate } from "react-router";
 import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useUser } from "@/context/user/UserContext.hook";
+import { useChangelogStore } from "@/store/useChangelogStore";
 
 export const Menu = () => {
   const navigate = useNavigate();
@@ -73,6 +73,14 @@ export const Menu = () => {
       </div>
 
       <div className={"flex flex-col items-center gap-2 w-full px-2"}>
+        <button
+          type="button"
+          className="flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
+          onClick={useChangelogStore.getState().showHistory}
+        >
+          <ClapperboardIcon className="size-4" />
+          Co nowego
+        </button>
         <Dialog>
           <DialogTrigger
             render={
@@ -108,15 +116,6 @@ export const Menu = () => {
         >
           <Disc3Icon className={"size-4"} />
           Gramofon
-        </Link>
-
-        <Link
-          className={
-            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
-          }
-          to={"https://newbies.pl"}
-        >
-          <RocketIcon className={"size-4"} />O autorach
         </Link>
 
         <Link

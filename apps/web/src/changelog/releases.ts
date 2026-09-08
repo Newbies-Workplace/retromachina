@@ -9,7 +9,9 @@ export const releases: Release[] = [
   {
     version: "1.26.0",
     title: "Co nowego?",
-    changes: ["Od teraz przy aktualizacjach zobaczysz co zmieniło się w retromachinie"],
+    changes: [
+      "Od teraz przy aktualizacjach zobaczysz co zmieniło się w retromachinie",
+    ],
   },
 ];
 

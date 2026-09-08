@@ -11,9 +11,7 @@ export const releases: Release[] = [
     version: "1.0.0",
     date: "2026-09-08",
     title: "Nowości mają swój seans",
-    changes: [
-      "Nowe wydania przywitają Cię filmowym okienkiem ze zmianami.",
-    ],
+    changes: ["Nowe wydania przywitają Cię filmowym okienkiem ze zmianami."],
   },
 ];
 

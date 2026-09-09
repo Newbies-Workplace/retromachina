@@ -11,6 +11,7 @@ export const releases: Release[] = [
     title: "Co nowego?",
     changes: [
       "Od teraz przy aktualizacjach zobaczysz co zmieniło się w retromachinie",
+      "Aktywne retrospektywy są teraz odporne na restart usługi",
     ],
   },
 ];

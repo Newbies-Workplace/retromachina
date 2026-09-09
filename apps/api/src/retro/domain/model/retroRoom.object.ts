@@ -9,7 +9,30 @@ import {
 import { UserRole } from "shared/model/user/user.role";
 
 type RetroTask = Task & { parentCardId: string };
+type SerializedRetroTask = Omit<RetroTask, "created_at" | "updated_at"> & {
+  created_at: string;
+  updated_at: string;
+};
 type SocketId = string;
+
+/** Durable, JSON-safe room state. Socket presence and inactivity metadata are transient. */
+export interface RetroRoomSnapshotV1 {
+  version: 1;
+  retroColumns: RetroColumn[];
+  roomState: RoomState;
+  timerEnds: number | null;
+  cards: Card[];
+  createdDate: string;
+  slotMachineVisible: boolean;
+  userIdsQueue: string[];
+  highlightedUserId: string | null;
+  maxVotes: number;
+  votes: Vote[];
+  discussionCardId: string | null;
+  tasks: SerializedRetroTask[];
+}
+
+export type RetroRoomSnapshot = RetroRoomSnapshotV1;
 
 export class RetroRoom {
   connectedUsers: Map<SocketId, User> = new Map();
@@ -68,6 +91,61 @@ export class RetroRoom {
     const [column] = this.retroColumns.splice(fromIndex, 1);
     this.retroColumns.splice(toIndex, 0, column);
     return true;
+  }
+
+  // Socket IDs, presence and typing indicators are deliberately transient.
+  getSnapshot(): RetroRoomSnapshot {
+    return {
+      version: 1,
+      retroColumns: this.retroColumns.map((column) => ({
+        ...column,
+        cards: [],
+        isWriting: false,
+        teamCardsAmount: 0,
+      })),
+      roomState: this.roomState,
+      timerEnds: this.timerEnds,
+      cards: this.cards,
+      createdDate: this.createdDate.toISOString(),
+      slotMachineVisible: this.slotMachineVisible,
+      userIdsQueue: Array.from(this.userIdsQueue),
+      highlightedUserId: this.highlightedUserId ?? null,
+      maxVotes: this.maxVotes,
+      votes: this.votes,
+      discussionCardId: this.discussionCardId,
+      tasks: this.tasks.map((task) => ({
+        ...task,
+        created_at: task.created_at.toISOString(),
+        updated_at: task.updated_at.toISOString(),
+      })),
+    };
+  }
+
+  static restore(id: string, teamId: string, snapshot: RetroRoomSnapshot) {
+    if (snapshot.version !== 1) {
+      throw new Error(
+        `Unsupported retrospective snapshot version: ${snapshot.version}`,
+      );
+    }
+    const room = new RetroRoom(id, teamId, snapshot.retroColumns);
+    room.roomState = snapshot.roomState;
+    room.timerEnds = snapshot.timerEnds;
+    room.cards = snapshot.cards;
+    room.createdDate = new Date(snapshot.createdDate);
+    room.slotMachineVisible = snapshot.slotMachineVisible;
+    room.userIdsQueue = new Set(snapshot.userIdsQueue);
+    room.highlightedUserId = snapshot.highlightedUserId;
+    room.maxVotes = snapshot.maxVotes;
+    room.votes = snapshot.votes;
+    room.discussionCardId = snapshot.discussionCardId;
+    room.tasks = snapshot.tasks.map((task) => ({
+      ...task,
+      created_at: new Date(task.created_at),
+      updated_at: new Date(task.updated_at),
+    }));
+    // Allow reconnecting clients a full inactivity window after startup.
+    room.lastDisconnectionDate = new Date();
+    return room;
   }
 
   getRoomSyncData() {

@@ -101,6 +101,7 @@ model Retrospective {
   team_id    String
   date       DateTime
   is_running Boolean
+  room_state Json?
 
   Team Team? @relation(fields: [team_id], references: [id], onDelete: Cascade)
 

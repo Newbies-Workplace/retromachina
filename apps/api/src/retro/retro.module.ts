@@ -6,10 +6,17 @@ import { RetroController } from "./application/retro.controller";
 import { RetroGateway } from "./application/retro.gateway";
 import { RetroSchedules } from "./application/retro.schedules";
 import { RetroService } from "./domain/retro.service";
+import { RetroRoomPersistence } from "./domain/retro-room.persistence";
 
 @Module({
   imports: [AuthModule, ScheduleModule.forRoot()],
-  providers: [RetroService, RetroGateway, RetroSchedules, AuthAbilityFactory],
+  providers: [
+    RetroService,
+    RetroGateway,
+    RetroSchedules,
+    RetroRoomPersistence,
+    AuthAbilityFactory,
+  ],
   controllers: [RetroController],
   exports: [RetroGateway],
 })

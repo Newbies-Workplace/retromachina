@@ -40,6 +40,36 @@ export class RetroRoom {
     public retroColumns: RetroColumn[],
   ) {}
 
+  changeColumnName(columnId: string, name: string) {
+    const column = this.retroColumns.find((item) => item.id === columnId);
+    if (!column) return false;
+    column.name = name;
+    return true;
+  }
+
+  changeColumnDescription(columnId: string, description: string) {
+    const column = this.retroColumns.find((item) => item.id === columnId);
+    if (!column) return false;
+    column.description = description;
+    return true;
+  }
+
+  reorderColumns(fromColumnId: string, toColumnId: string) {
+    const fromIndex = this.retroColumns.findIndex(
+      (column) => column.id === fromColumnId,
+    );
+    const toIndex = this.retroColumns.findIndex(
+      (column) => column.id === toColumnId,
+    );
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+      return false;
+    }
+
+    const [column] = this.retroColumns.splice(fromIndex, 1);
+    this.retroColumns.splice(toIndex, 0, column);
+    return true;
+  }
+
   getRoomSyncData() {
     const tempUsers = Array.from(this.connectedUsers.values());
 

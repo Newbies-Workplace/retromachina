@@ -32,8 +32,8 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
         >
           <EditableColumnText
             text={header}
-            editable={editable}
-            onSave={(value) => onHeaderSave?.(value)}
+            variant="title"
+            onSave={editable ? onHeaderSave : undefined}
           />
         </div>
 
@@ -44,11 +44,8 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
         <div className={"wrap-break-word max-w-full max-h-35 scrollbar"}>
           <EditableColumnText
             text={description ?? ""}
-            editable={editable}
-            maxLength={1000}
-            multiline
-            placeholder="Dodaj opis"
-            onSave={(value) => onDescriptionSave?.(value)}
+            variant="description"
+            onSave={editable ? onDescriptionSave : undefined}
           />
         </div>
       )}

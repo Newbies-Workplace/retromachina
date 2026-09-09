@@ -157,6 +157,10 @@
     animation: timer-blink 1s infinite;
 }
 
+@utility animate-changelog-reel {
+    animation: changelog-reel 4s linear infinite;
+}
+
 @utility scrollbar {
     overflow-x: auto;
     scrollbar-gutter: stable;
@@ -195,6 +199,12 @@
         border-color: var(--color-background);
         background-color: var(--color-destructive);
         color: var(--color-background);
+    }
+}
+
+@keyframes changelog-reel {
+    to {
+        transform: rotate(360deg);
     }
 }
 

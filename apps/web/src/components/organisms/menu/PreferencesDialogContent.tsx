@@ -37,6 +37,8 @@ export const PreferencesDialogContent = () => {
     setTheme,
     autoReadyAfterVoting,
     setAutoReadyAfterVoting,
+    autoReadyAfterDraw,
+    setAutoReadyAfterDraw,
   } = usePreferencesStore();
   const { playAudio } = useAudio();
   const [tempVolumeLevel, setTempVolumeLevel] = useState(volumeLevel);
@@ -117,6 +119,17 @@ export const PreferencesDialogContent = () => {
           />
           <Label htmlFor="auto-ready" className={"ml-2"}>
             Automatyczna gotowość po zagłosowaniu na tematy
+          </Label>
+        </div>
+
+        <div className={"flex flex-row gap-2 items-center"}>
+          <Switch
+            id="auto-ready-draw"
+            checked={autoReadyAfterDraw}
+            onCheckedChange={(checked) => setAutoReadyAfterDraw(checked)}
+          />
+          <Label htmlFor="auto-ready-draw" className={"ml-2"}>
+            Automatyczna gotowość po wylosowaniu na maszynie losującej
           </Label>
         </div>
       </div>

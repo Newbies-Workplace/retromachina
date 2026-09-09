@@ -4,6 +4,7 @@ import type React from "react";
 import { UserContextProvider } from "@/context/user/UserContext";
 import { AppRouter } from "@/views/AppRouter";
 import "@/App.css";
+import { Changelog } from "@/components/organisms/changelog/Changelog";
 import { ThemeChanger } from "@/components/organisms/ThemeChanger";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ export const App: React.FC = () => {
           <Toaster />
 
           <AppRouter />
+          <Changelog />
         </UserContextProvider>
       </ConfirmProvider>
     </TooltipProvider>

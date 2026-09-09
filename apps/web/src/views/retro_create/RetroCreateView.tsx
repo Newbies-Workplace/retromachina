@@ -244,7 +244,7 @@ export const RetroCreateView: React.FC = () => {
           </BoardCreator>
 
           <Button
-            data-testid={"create-retro"}
+            data-testid={"create-retro-confirm"}
             className={"mt-4"}
             disabled={clicked}
             onClick={onCreateRetroClick}

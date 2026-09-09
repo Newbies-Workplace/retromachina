@@ -6,6 +6,7 @@ import type { UserWithTeamsResponse } from "shared/model/user/user.response";
 import { AuthService } from "@/api/Auth.service";
 import { axiosInstance } from "@/api/AxiosInstance";
 import { UserService } from "@/api/User.service";
+import { DISABLED_KEY, VERSION_KEY } from "@/store/useChangelogStore";
 
 interface UserContext {
   user: UserWithTeamsResponse | null;
@@ -80,7 +81,12 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
   };
 
   const logout = async () => {
+    const version = localStorage.getItem(VERSION_KEY);
+    const changelogDisabled = localStorage.getItem(DISABLED_KEY);
     window.localStorage.clear();
+    if (version !== null) localStorage.setItem(VERSION_KEY, version);
+    if (changelogDisabled !== null)
+      localStorage.setItem(DISABLED_KEY, changelogDisabled);
     setUser(null);
   };
 

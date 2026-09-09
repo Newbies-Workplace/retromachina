@@ -9,7 +9,30 @@ import {
 import { UserRole } from "shared/model/user/user.role";
 
 type RetroTask = Task & { parentCardId: string };
+type SerializedRetroTask = Omit<RetroTask, "created_at" | "updated_at"> & {
+  created_at: string;
+  updated_at: string;
+};
 type SocketId = string;
+
+/** Durable, JSON-safe room state. Socket presence and inactivity metadata are transient. */
+export interface RetroRoomSnapshotV1 {
+  version: 1;
+  retroColumns: RetroColumn[];
+  roomState: RoomState;
+  timerEnds: number | null;
+  cards: Card[];
+  createdDate: string;
+  slotMachineVisible: boolean;
+  userIdsQueue: string[];
+  highlightedUserId: string | null;
+  maxVotes: number;
+  votes: Vote[];
+  discussionCardId: string | null;
+  tasks: SerializedRetroTask[];
+}
+
+export type RetroRoomSnapshot = RetroRoomSnapshotV1;
 
 export class RetroRoom {
   connectedUsers: Map<SocketId, User> = new Map();
@@ -41,7 +64,7 @@ export class RetroRoom {
   ) {}
 
   // Socket IDs, presence and typing indicators are deliberately transient.
-  getSnapshot() {
+  getSnapshot(): RetroRoomSnapshot {
     return {
       version: 1,
       retroColumns: this.retroColumns.map((column) => ({
@@ -68,11 +91,7 @@ export class RetroRoom {
     };
   }
 
-  static restore(
-    id: string,
-    teamId: string,
-    snapshot: ReturnType<RetroRoom["getSnapshot"]>,
-  ) {
+  static restore(id: string, teamId: string, snapshot: RetroRoomSnapshot) {
     if (snapshot.version !== 1) {
       throw new Error(
         `Unsupported retrospective snapshot version: ${snapshot.version}`,

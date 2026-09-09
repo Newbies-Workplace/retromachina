@@ -45,6 +45,7 @@ import { v4 as uuid } from "uuid";
 import { JWTUser } from "../../auth/jwt/JWTUser";
 import { PrismaService } from "../../prisma/prisma.service";
 import { RetroRoom } from "../domain/model/retroRoom.object";
+import { RetroRoomPersistence } from "../domain/retro-room.persistence";
 import { validate as validateRoomState } from "./roomstate.validator";
 
 type SocketId = string;
@@ -60,41 +61,22 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     { roomId: string; teamId: string; user: User }
   >();
   private retroRooms = new Map<string, RetroRoom>();
-  private pendingWrites = new Map<string, Promise<void>>();
-
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private roomPersistence: RetroRoomPersistence,
   ) {}
 
   async addRetroRoom(retroId: string, teamId: string, columns: RetroColumn[]) {
     const retroRoom = new RetroRoom(retroId, teamId, columns);
-    await this.persistRoom(retroRoom);
+    await this.roomPersistence.persist(retroRoom);
     this.retroRooms.set(retroId, retroRoom);
     return retroRoom;
   }
 
   async restoreRooms() {
-    const retros = await this.prismaService.retrospective.findMany({
-      where: { is_running: true },
-    });
-    for (const retro of retros) {
-      try {
-        // Older releases never stored room contents; they cannot be recovered.
-        if (!retro.room_state)
-          throw new Error("Missing retrospective snapshot");
-        const room = RetroRoom.restore(
-          retro.id,
-          retro.team_id,
-          retro.room_state as unknown as ReturnType<RetroRoom["getSnapshot"]>,
-        );
-        this.retroRooms.set(room.id, room);
-      } catch {
-        await this.prismaService.retrospective.update({
-          where: { id: retro.id },
-          data: { is_running: false },
-        });
-      }
+    for (const room of await this.roomPersistence.recoverRunningRooms()) {
+      this.retroRooms.set(room.id, room);
     }
   }
 
@@ -167,11 +149,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async closeRoom(room: RetroRoom) {
-    await this.pendingWrites.get(room.id)?.catch(() => undefined);
-    await this.prismaService.retrospective.update({
-      where: { id: room.id },
-      data: { is_running: false },
-    });
+    await this.roomPersistence.markFinished(room.id);
 
     this.retroRooms.delete(room.id);
     this.server.to(room.id).emit("event_close_room");
@@ -272,7 +250,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       actorId: this.users.get(client.id).user.id,
     };
 
-    await this.persistRoom(room);
+    await this.roomPersistence.persist(room);
     this.server.to(roomId).emit("event_slot_machine_drawn", event);
   }
 
@@ -412,7 +390,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       timerEnds: room.timerEnds,
     };
 
-    await this.persistRoom(room);
+    await this.roomPersistence.persist(room);
     this.server.to(roomId).emit("event_timer_change", event);
   }
 
@@ -594,29 +572,8 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const data = room.getRoomSyncData();
     // Detach the emitted state from subsequent concurrent commands.
     const snapshot = JSON.parse(JSON.stringify(data));
-    await this.persistRoom(room);
+    await this.roomPersistence.persist(room);
     this.server.to(roomId).emit("event_room_sync", snapshot);
-  }
-
-  private persistRoom(room: RetroRoom): Promise<void> {
-    const snapshot = JSON.parse(JSON.stringify(room.getSnapshot()));
-    const previous = this.pendingWrites.get(room.id) ?? Promise.resolve();
-    const write = previous
-      .catch(() => undefined)
-      .then(async () => {
-        await this.prismaService.retrospective.update({
-          where: { id: room.id },
-          data: { room_state: snapshot },
-        });
-      });
-    this.pendingWrites.set(room.id, write);
-    void write
-      .finally(() => {
-        if (this.pendingWrites.get(room.id) === write)
-          this.pendingWrites.delete(room.id);
-      })
-      .catch(() => undefined);
-    return write;
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {

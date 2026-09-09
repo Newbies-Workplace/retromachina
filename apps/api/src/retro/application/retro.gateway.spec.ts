@@ -1,4 +1,5 @@
 import { RetroRoom } from "../domain/model/retroRoom.object";
+import { RetroRoomPersistence } from "../domain/retro-room.persistence";
 import { RetroGateway } from "./retro.gateway";
 
 jest.mock("../../prisma/prisma.service", () => ({ PrismaService: class {} }));
@@ -20,6 +21,7 @@ describe("retrospective restart recovery", () => {
   let saved: unknown;
   let database: any;
   let gateway: RetroGateway;
+  let persistence: RetroRoomPersistence;
   let emit: jest.Mock;
 
   beforeEach(() => {
@@ -35,7 +37,8 @@ describe("retrospective restart recovery", () => {
         ]),
       },
     };
-    gateway = new RetroGateway(database, {} as any);
+    persistence = new RetroRoomPersistence(database);
+    gateway = new RetroGateway(database, {} as any, persistence);
     emit = jest.fn();
     gateway.server = { to: () => ({ emit }) } as any;
   });
@@ -79,7 +82,11 @@ describe("retrospective restart recovery", () => {
     expect(typeof room.getSnapshot().tasks[0].updated_at).toBe("string");
     await gateway["emitRoomSync"](room.id, room);
 
-    const restarted = new RetroGateway(database, {} as any);
+    const restarted = new RetroGateway(
+      database,
+      {} as any,
+      new RetroRoomPersistence(database),
+    );
     await restarted.restoreRooms();
     const restored = restarted["retroRooms"].get("retro");
     expect(JSON.parse(JSON.stringify(restored.getSnapshot()))).toEqual(saved);
@@ -154,7 +161,7 @@ describe("retrospective restart recovery", () => {
   it("closes a room after its pending persistence write failed", async () => {
     const room = new RetroRoom("retro", "team", columns);
     gateway["retroRooms"].set(room.id, room);
-    gateway["pendingWrites"].set(
+    persistence["pendingWrites"].set(
       room.id,
       Promise.reject(new Error("Database unavailable")),
     );

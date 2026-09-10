@@ -3,6 +3,7 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { preventUnhandled } from "@atlaskit/pragmatic-drag-and-drop/prevent-unhandled";
 import { GripVerticalIcon, TrashIcon } from "lucide-react";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
@@ -147,6 +148,7 @@ export const BoardCreatorColumn: React.FC<BoardCreatorColumnProps> = ({
             rect: element.getBoundingClientRect(),
           }),
         onDragStart() {
+          preventUnhandled.start();
           setState({ type: "is-dragging" });
         },
         onDrop() {

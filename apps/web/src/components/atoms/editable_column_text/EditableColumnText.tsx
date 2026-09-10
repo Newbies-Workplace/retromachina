@@ -19,6 +19,7 @@ export const EditableColumnText = ({
   onSave,
 }: EditableColumnTextProps) => {
   const [draft, setDraft] = useState<string | null>(null);
+  const [pendingText, setPendingText] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const displayRef = useRef<HTMLSpanElement>(null);
   const caretOffsetRef = useRef<number | null>(null);
@@ -27,6 +28,7 @@ export const EditableColumnText = ({
   const editable = onSave !== undefined;
   const isEditing = editable && draft !== null;
   const placeholder = isDescription ? "Dodaj opis" : undefined;
+  const displayedText = pendingText ?? text;
 
   useLayoutEffect(() => {
     if (!isEditing) return;
@@ -66,8 +68,12 @@ export const EditableColumnText = ({
       return;
     }
     const value = isDescription ? draft.trim() : draft;
+    const hasChanged = value !== displayedText;
+    if (hasChanged) {
+      setPendingText(value);
+    }
     setDraft(null);
-    if (value !== text) onSave?.(value);
+    if (hasChanged) onSave?.(value);
   };
 
   if (isEditing) {
@@ -122,18 +128,18 @@ export const EditableColumnText = ({
         );
         caretOffsetRef.current = position?.offset ?? text.length;
       }}
-      onClick={() => editable && setDraft(text)}
+      onClick={() => editable && setDraft(displayedText)}
       onKeyDown={(event) => {
         if (editable && (event.key === "Enter" || event.key === " ")) {
           event.preventDefault();
-          caretOffsetRef.current = text.length;
-          setDraft(text);
+          caretOffsetRef.current = displayedText.length;
+          setDraft(displayedText);
         }
       }}
       role={editable ? "textbox" : undefined}
       tabIndex={editable ? 0 : undefined}
     >
-      {text || placeholder}
+      {displayedText || placeholder}
     </span>
   );
 
@@ -144,7 +150,7 @@ export const EditableColumnText = ({
       <Tooltip disabled={!isOverflowing}>
         <TooltipTrigger render={display} />
         <TooltipContent className="max-w-sm whitespace-normal">
-          {text}
+          {displayedText}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

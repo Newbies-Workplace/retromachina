@@ -5,6 +5,7 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { preserveOffsetOnSource } from "@atlaskit/pragmatic-drag-and-drop/element/preserve-offset-on-source";
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
+import { preventUnhandled } from "@atlaskit/pragmatic-drag-and-drop/prevent-unhandled";
 import { GripVerticalIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -72,7 +73,10 @@ export const DraggableColumn = ({
             },
           });
         },
-        onDragStart: () => setIsDragging(true),
+        onDragStart: () => {
+          preventUnhandled.start();
+          setIsDragging(true);
+        },
         onDrop: () => {
           setIsDragging(false);
           onDragEnd(columnId);

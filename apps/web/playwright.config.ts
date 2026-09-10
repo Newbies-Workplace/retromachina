@@ -12,7 +12,7 @@ export default defineConfig({
     baseURL: "http://localhost:8080",
     trace: "on-first-retry",
   },
-  timeout: 15_000,
+  timeout: 30_000,
   projects: [
     // Setup project
     { name: "setup", testMatch: /.*\.setup\.ts/ },

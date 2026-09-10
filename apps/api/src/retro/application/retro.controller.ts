@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   Param,
   Post,
   Query,
@@ -16,15 +17,19 @@ import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
+import { NotificationService } from "../../notification/notification.service";
 import { RetroService } from "../domain/retro.service";
 import { toRetroResponse } from "./retro.converter";
 
 @Controller("retros")
 export class RetroController {
+  private readonly logger = new Logger(RetroController.name);
+
   constructor(
     private retroService: RetroService,
     private prismaService: PrismaService,
     private abilityFactory: AuthAbilityFactory,
+    private notifications: NotificationService,
   ) {}
 
   @Get()
@@ -98,6 +103,20 @@ export class RetroController {
     await this.assertNotRunningRetro(team.id);
 
     const retro = await this.retroService.createRetro(user.id, request);
+
+    try {
+      await this.notifications.notifyTeamRetroStarted(team.id, user.id, {
+        retroId: retro.id,
+        teamId: team.id,
+        teamName: team.name,
+        startedAt: retro.date.toISOString(),
+      });
+    } catch (error) {
+      this.logger.error(
+        `Could not notify team about retrospective ${retro.id}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
 
     return toRetroResponse(retro);
   }

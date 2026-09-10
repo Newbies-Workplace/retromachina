@@ -1,10 +1,4 @@
-import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import React, { useEffect, useRef } from "react";
-import {
-  isColumnData,
-  isDraggingAColumn,
-} from "@/components/molecules/board_creator/data";
+import React, { useRef } from "react";
 import { cn } from "@/lib/utils";
 
 type ReorderCallback = (data: { fromId: string; toId: string }) => void;
@@ -22,37 +16,6 @@ export const BoardCreator: React.FC<BoardCreatorProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    return combine(
-      monitorForElements({
-        canMonitor: isDraggingAColumn,
-        onDrop({ source, location }) {
-          const dragging = source.data;
-          if (!isColumnData(dragging)) {
-            return;
-          }
-
-          const innerMost = location.current.dropTargets[0];
-          if (!innerMost) {
-            return;
-          }
-          const dropTargetData = innerMost.data;
-
-          if (!isColumnData(dropTargetData)) {
-            return;
-          }
-
-          onColumnReorder({
-            fromId: dragging.column.id,
-            toId: dropTargetData.column.id,
-          });
-
-          return;
-        },
-      }),
-    );
-  }, [onColumnReorder]);
-
   return (
     <div
       ref={ref}
@@ -61,7 +24,13 @@ export const BoardCreator: React.FC<BoardCreatorProps> = ({
         className,
       )}
     >
-      {children}
+      {React.Children.map(children, (child) =>
+        React.isValidElement<{ onPreviewReorder?: ReorderCallback }>(child)
+          ? React.cloneElement(child, {
+              onPreviewReorder: onColumnReorder,
+            })
+          : child,
+      )}
     </div>
   );
 };

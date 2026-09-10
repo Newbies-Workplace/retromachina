@@ -3,6 +3,8 @@ import { useNavigate } from "react-router";
 import type {
   AddCardToCardCommand,
   AddCardVoteCommand,
+  ChangeColumnDescriptionCommand,
+  ChangeColumnNameCommand,
   ChangeCurrentDiscussCardCommand,
   ChangeSlotMachineVisibilityCommand,
   ChangeTimerCommand,
@@ -14,6 +16,7 @@ import type {
   DrawMachineCommand,
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
+  ReorderColumnsCommand,
   UpdateCardCommand,
   UpdateCreatingTaskStateCommand,
   UpdateReadyStateCommand,
@@ -22,6 +25,9 @@ import type {
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
 import type {
+  ColumnDescriptionChangedEvent,
+  ColumnNameChangedEvent,
+  ColumnsReorderedEvent,
   RoomState,
   RoomSyncEvent,
   SlotMachineDrawnEvent,
@@ -80,6 +86,9 @@ interface RetroContext {
   createCard: (text: string, columnId: string) => void;
   updateCard: (cardId: string, text: string) => void;
   deleteCard: (cardId: string) => void;
+  changeColumnName: (columnId: string, name: string) => void;
+  changeColumnDescription: (columnId: string, description: string) => void;
+  reorderColumns: (fromColumnId: string, toColumnId: string) => void;
 
   // group
   slotMachineVisible: boolean;
@@ -136,6 +145,9 @@ export const RetroContext = createContext<RetroContext>({
   createCard: () => {},
   updateCard: () => {},
   deleteCard: () => {},
+  changeColumnName: () => {},
+  changeColumnDescription: () => {},
+  reorderColumns: () => {},
 
   // group
   slotMachineVisible: false,
@@ -243,6 +255,46 @@ export const RetroContextProvider: React.FC<
     createdSocket.on("event_timer_change", (e: TimerChangedEvent) => {
       handleTimerChanged(e.timerEnds, timeOffset.current ?? 0);
     });
+
+    createdSocket.on(
+      "event_column_name_changed",
+      ({ columnId, name }: ColumnNameChangedEvent) => {
+        setColumns((current) =>
+          current.map((column) =>
+            column.id === columnId ? { ...column, name } : column,
+          ),
+        );
+      },
+    );
+
+    createdSocket.on(
+      "event_column_description_changed",
+      ({ columnId, description }: ColumnDescriptionChangedEvent) => {
+        setColumns((current) =>
+          current.map((column) =>
+            column.id === columnId ? { ...column, description } : column,
+          ),
+        );
+      },
+    );
+
+    createdSocket.on(
+      "event_columns_reordered",
+      ({ columnIds }: ColumnsReorderedEvent) => {
+        setColumns((current) => {
+          if (
+            columnIds.length !== current.length ||
+            columnIds.some((id) => !current.some((column) => column.id === id))
+          ) {
+            return current;
+          }
+          return columnIds.flatMap((id) => {
+            const column = current.find((item) => item.id === id);
+            return column ? [column] : [];
+          });
+        });
+      },
+    );
 
     createdSocket.on(
       "event_slot_machine_drawn",
@@ -408,6 +460,21 @@ export const RetroContextProvider: React.FC<
       cardId: cardId,
     };
     socket.current?.emit("command_delete_card", command);
+  };
+
+  const changeColumnName = (columnId: string, name: string) => {
+    const command: ChangeColumnNameCommand = { columnId, name };
+    socket.current?.emit("command_change_column_name", command);
+  };
+
+  const changeColumnDescription = (columnId: string, description: string) => {
+    const command: ChangeColumnDescriptionCommand = { columnId, description };
+    socket.current?.emit("command_change_column_description", command);
+  };
+
+  const reorderColumns = (fromColumnId: string, toColumnId: string) => {
+    const command: ReorderColumnsCommand = { fromColumnId, toColumnId };
+    socket.current?.emit("command_reorder_columns", command);
   };
 
   // group
@@ -577,6 +644,9 @@ export const RetroContextProvider: React.FC<
         createCard: createCard,
         updateCard: updateCard,
         deleteCard: deleteCard,
+        changeColumnName: changeColumnName,
+        changeColumnDescription: changeColumnDescription,
+        reorderColumns: reorderColumns,
 
         // group
         slotMachineVisible: isSlotMachineVisible,

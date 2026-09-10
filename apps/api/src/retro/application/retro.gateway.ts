@@ -13,6 +13,8 @@ import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import {
   AddCardToCardCommand,
   AddCardVoteCommand,
+  ChangeColumnDescriptionCommand,
+  ChangeColumnNameCommand,
   ChangeCurrentDiscussCardCommand,
   ChangeSlotMachineVisibilityCommand,
   ChangeTimerCommand,
@@ -24,6 +26,7 @@ import {
   DrawMachineCommand,
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
+  ReorderColumnsCommand,
   UpdateCardCommand,
   UpdateCreatingTaskStateCommand,
   UpdateReadyStateCommand,
@@ -32,6 +35,9 @@ import {
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
 import {
+  ColumnDescriptionChangedEvent,
+  ColumnNameChangedEvent,
+  ColumnsReorderedEvent,
   SlotMachineDrawnEvent,
   TimerChangedEvent,
 } from "shared/model/retro/retro.events";
@@ -170,9 +176,9 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const userQuery = await this.prismaService.user.findUnique({
+    const userQuery = await this.prismaService.user.findFirst({
       where: {
-        id: user.id,
+        google_id: user.google_id,
       },
       include: {
         TeamUsers: {
@@ -187,7 +193,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.doException(
         client,
         ErrorTypes.UserNotFound,
-        `User (${user.id}) not found`,
+        `User (${user.google_id}) not found or is not a member of the retrospective team`,
       );
       return;
     }
@@ -357,6 +363,61 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     await this.emitRoomSync(roomId, room);
+  }
+
+  @SubscribeMessage("command_change_column_name")
+  handleChangeColumnName(client: Socket, payload: ChangeColumnNameCommand) {
+    const context = this.getColumnEditContext(client);
+    if (!context) return;
+
+    const name = payload.name.trim();
+    if (
+      name.length === 0 ||
+      !context.room.changeColumnName(payload.columnId, name)
+    ) {
+      return;
+    }
+
+    const event: ColumnNameChangedEvent = { columnId: payload.columnId, name };
+    this.server.to(context.roomId).emit("event_column_name_changed", event);
+  }
+
+  @SubscribeMessage("command_change_column_description")
+  handleChangeColumnDescription(
+    client: Socket,
+    payload: ChangeColumnDescriptionCommand,
+  ) {
+    const context = this.getColumnEditContext(client);
+    if (!context) return;
+
+    const description = payload.description.trim().slice(0, 1000);
+    if (!context.room.changeColumnDescription(payload.columnId, description)) {
+      return;
+    }
+
+    const event: ColumnDescriptionChangedEvent = {
+      columnId: payload.columnId,
+      description,
+    };
+    this.server
+      .to(context.roomId)
+      .emit("event_column_description_changed", event);
+  }
+
+  @SubscribeMessage("command_reorder_columns")
+  handleReorderColumns(client: Socket, payload: ReorderColumnsCommand) {
+    const context = this.getColumnEditContext(client);
+    if (!context) return;
+    if (
+      !context.room.reorderColumns(payload.fromColumnId, payload.toColumnId)
+    ) {
+      return;
+    }
+
+    const event: ColumnsReorderedEvent = {
+      columnIds: context.room.retroColumns.map((column) => column.id),
+    };
+    this.server.to(context.roomId).emit("event_columns_reordered", event);
   }
 
   @SubscribeMessage("command_room_state")
@@ -574,6 +635,22 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const snapshot = JSON.parse(JSON.stringify(data));
     await this.roomPersistence.persist(room);
     this.server.to(roomId).emit("event_room_sync", snapshot);
+  }
+
+  private getColumnEditContext(client: Socket) {
+    const userEntry = this.users.get(client.id);
+    if (!userEntry) return null;
+    const room = this.retroRooms.get(userEntry.roomId);
+    const roomUser = room?.connectedUsers.get(client.id);
+    if (
+      !room ||
+      !roomUser ||
+      room.roomState !== "reflection" ||
+      !this.hasAdminPrivileges(roomUser)
+    ) {
+      return null;
+    }
+    return { roomId: userEntry.roomId, room };
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {

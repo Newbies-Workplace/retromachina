@@ -10,6 +10,9 @@ interface ColumnProps {
     name: string;
     description: string | null;
   };
+  editable?: boolean;
+  onNameSave?: (value: string) => void;
+  onDescriptionSave?: (value: string) => void;
 }
 
 export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
@@ -18,6 +21,9 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
   headerStyle,
   headerRight,
   columnData,
+  editable,
+  onNameSave,
+  onDescriptionSave,
 }) => {
   return (
     <div
@@ -31,6 +37,9 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
           header={columnData.name}
           description={columnData.description ?? undefined}
           right={headerRight}
+          editable={editable}
+          onHeaderSave={onNameSave}
+          onDescriptionSave={onDescriptionSave}
         />
       </div>
       {children}

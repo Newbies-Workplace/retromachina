@@ -17,6 +17,20 @@ export interface SlotMachineDrawnEvent {
   actorId: string;
 }
 
+export interface ColumnNameChangedEvent {
+  columnId: string;
+  name: string;
+}
+
+export interface ColumnDescriptionChangedEvent {
+  columnId: string;
+  description: string;
+}
+
+export interface ColumnsReorderedEvent {
+  columnIds: string[];
+}
+
 export interface RoomSyncEvent {
   id: string;
   teamId: string;

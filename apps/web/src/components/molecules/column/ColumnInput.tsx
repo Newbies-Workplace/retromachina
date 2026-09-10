@@ -46,6 +46,7 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
     <>
       <Textarea
         className={"resize-none"}
+        data-testid="card-input"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {

@@ -24,6 +24,21 @@ export interface UpdateWriteStateCommand {
   columnId: string;
 }
 
+export interface ChangeColumnNameCommand {
+  columnId: string;
+  name: string;
+}
+
+export interface ChangeColumnDescriptionCommand {
+  columnId: string;
+  description: string;
+}
+
+export interface ReorderColumnsCommand {
+  fromColumnId: string;
+  toColumnId: string;
+}
+
 export interface UpdateCreatingTaskStateCommand {
   creatingTaskState: boolean;
 }

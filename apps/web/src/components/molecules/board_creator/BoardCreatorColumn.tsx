@@ -3,11 +3,7 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import {
-  attachClosestEdge,
-  Edge,
-  extractClosestEdge,
-} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import { preventUnhandled } from "@atlaskit/pragmatic-drag-and-drop/prevent-unhandled";
 import { GripVerticalIcon, TrashIcon } from "lucide-react";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
@@ -29,32 +25,10 @@ export interface BoardCreatorColumnProps {
   onDelete: () => void;
   withDescription?: boolean;
   className?: string;
+  onPreviewReorder?: (data: { fromId: string; toId: string }) => void;
 }
 
-type ColumnState =
-  | {
-      type: "idle";
-    }
-  | {
-      type: "is-dragging";
-    }
-  | {
-      type: "is-dragging-and-left-self";
-    }
-  | {
-      type: "is-over";
-      dragging: DOMRect;
-      closestEdge: Edge;
-    };
-
-const BoardColumnShadow = ({ dragging }: { dragging: DOMRect }) => {
-  return (
-    <div
-      className="flex-shrink-0 rounded-2xl bg-secondary/50"
-      style={{ width: dragging.width }}
-    />
-  );
-};
+type ColumnState = { type: "idle" } | { type: "is-dragging" };
 
 export const BoardCreatorColumnDisplay = ({
   columnProps: {
@@ -77,17 +51,7 @@ export const BoardCreatorColumnDisplay = ({
   handleRef?: RefObject<HTMLDivElement | null>;
 }) => {
   return (
-    <div
-      ref={outerRef}
-      className={cn(
-        "flex flex-shrink-0 flex-row gap-2",
-        state.type === "is-dragging-and-left-self" && "hidden",
-      )}
-    >
-      {state.type === "is-over" && state.closestEdge === "left" ? (
-        <BoardColumnShadow dragging={state.dragging} />
-      ) : null}
-
+    <div ref={outerRef} className="flex flex-shrink-0 flex-row gap-2">
       <div
         ref={innerRef}
         data-testid={"column-create"}
@@ -98,7 +62,11 @@ export const BoardCreatorColumnDisplay = ({
         )}
       >
         <div className={"flex justify-center items-center gap-2"}>
-          <div ref={handleRef} className={"cursor-grab"}>
+          <div
+            ref={handleRef}
+            className={"cursor-grab"}
+            data-testid="column-drag-handle"
+          >
             <GripVerticalIcon className={"size-6"} />
           </div>
 
@@ -139,10 +107,6 @@ export const BoardCreatorColumnDisplay = ({
           />
         )}
       </div>
-
-      {state.type === "is-over" && state.closestEdge === "right" ? (
-        <BoardColumnShadow dragging={state.dragging} />
-      ) : null}
     </div>
   );
 };
@@ -155,11 +119,17 @@ export const BoardCreatorColumn: React.FC<BoardCreatorColumnProps> = ({
   onDelete,
   withDescription = false,
   className,
+  onPreviewReorder,
 }) => {
   const outerRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<HTMLDivElement>(null);
+  const onPreviewReorderRef = useRef(onPreviewReorder);
   const [state, setState] = useState<ColumnState>({ type: "idle" });
+
+  useEffect(() => {
+    onPreviewReorderRef.current = onPreviewReorder;
+  }, [onPreviewReorder]);
 
   useEffect(() => {
     const outer = outerRef.current;
@@ -178,6 +148,7 @@ export const BoardCreatorColumn: React.FC<BoardCreatorColumnProps> = ({
             rect: element.getBoundingClientRect(),
           }),
         onDragStart() {
+          preventUnhandled.start();
           setState({ type: "is-dragging" });
         },
         onDrop() {
@@ -186,71 +157,29 @@ export const BoardCreatorColumn: React.FC<BoardCreatorColumnProps> = ({
       }),
       dropTargetForElements({
         element: outer,
-        getIsSticky: () => true,
-
-        getData: ({ element, input }) => {
-          const data = getColumnData({
+        getData: ({ element }) =>
+          getColumnData({
             column: { id, name, desc },
             rect: element.getBoundingClientRect(),
-          });
-          return attachClosestEdge(data, {
-            element,
-            input,
-            allowedEdges: ["left", "right"],
-          });
-        },
+          }),
         canDrop({ source }) {
-          return isDraggingAColumn({ source });
+          return (
+            isDraggingAColumn({ source }) &&
+            isColumnData(source.data) &&
+            source.data.column.id !== id
+          );
         },
-        onDragEnter({ source, self }) {
+        onDragEnter({ source }) {
           if (isColumnData(source.data) && source.data.column.id !== id) {
-            const closestEdge = extractClosestEdge(self.data);
-            if (!closestEdge) {
-              return;
-            }
-
-            setState({
-              type: "is-over",
-              dragging: source.data.rect,
-              closestEdge,
+            onPreviewReorderRef.current?.({
+              fromId: source.data.column.id,
+              toId: id,
             });
           }
         },
-        onDrag({ source, self }) {
-          if (!isColumnData(source.data)) {
-            return;
-          }
-          if (source.data.column.id === id) {
-            return;
-          }
-          const closestEdge = extractClosestEdge(self.data);
-          if (!closestEdge) {
-            return;
-          }
-          setState({
-            type: "is-over",
-            dragging: source.data.rect,
-            closestEdge,
-          });
-        },
-        onDragLeave({ source }) {
-          if (!isColumnData(source.data)) {
-            return;
-          }
-
-          if (source.data.column.id === id) {
-            setState({ type: "is-dragging-and-left-self" });
-            return;
-          }
-
-          setState({ type: "idle" });
-        },
-        onDrop() {
-          setState({ type: "idle" });
-        },
       }),
     );
-  }, [id]);
+  }, [desc, id, name]);
 
   return (
     <BoardCreatorColumnDisplay

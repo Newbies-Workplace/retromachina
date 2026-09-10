@@ -12,17 +12,17 @@ Read `docs/changelog.md` completely before editing. Treat it as the source of tr
 1. Determine the target stable `major.minor.patch` version from the user's request, the release/tag context, or the intended package version. Strip a leading `v` when present. If no target version can be established without guessing, ask the user for it.
 2. Review changes since the preceding release tag or changelog version using local Git history and diffs. Do not require GitHub access when the local repository contains enough evidence.
 3. Draft a short Polish title and concise, user-facing Polish change descriptions. Describe observable product changes, not commits, issue numbers, refactors, dependency bumps, or implementation details unless they materially affect users.
-4. Prepend the new object to `releases` in `apps/web/src/changelog/releases.ts`. Use the release date in `YYYY-MM-DD`, preserve every older entry, and avoid duplicating an existing version.
+4. Prepend the new object to `releases` in `apps/web/src/changelog/releases.ts`. Preserve every older entry and avoid duplicating an existing version.
 
-## Keep versions consistent
+## Preserve package metadata
 
-Inspect how `APP_VERSION` is supplied before changing package metadata. In CI release builds, the GitHub Release tag is forwarded into `apps/web/package.json` inside the Docker builder. Do not overwrite that mechanism.
+Do not update `apps/web/package.json`, `package-lock.json`, or any other package metadata when preparing release notes. In CI release builds, the GitHub Release tag supplies `APP_VERSION`; the changelog version is maintained only in `apps/web/src/changelog/releases.ts`.
 
-When preparing a versioned release in the repository and `docs/changelog.md` still requires package synchronization, update `apps/web/package.json` and the matching web workspace version in `package-lock.json` to the same normalized version. Do not use `npm version`, create a Git tag, publish a release, commit, or push unless the user explicitly requests it.
+Do not use `npm version`, create a Git tag, publish a release, commit, or push unless the user explicitly requests it.
 
 ## Verify
 
 - Confirm versions are stable SemVer and the new release is ordered newest first.
-- Run Biome on every edited source or JSON file.
-- Run the web build when the edit changes runtime code or package metadata.
+- Run Biome on every edited source file.
+- Run the web build when the edit changes runtime code.
 - Summarize the generated release copy and identify the Git range used to derive it.

@@ -1,6 +1,7 @@
 import { v4 as uuid } from "uuid";
 import { expect, test } from "../playwright/fixtures";
 import { HomePage } from "./pages/HomePage";
+import { RetroActivePage } from "./pages/RetroActivePage";
 import { RetroCreatePage } from "./pages/RetroCreatePage";
 import { TeamCreatePage } from "./pages/team_form/TeamCreatePage";
 
@@ -50,4 +51,65 @@ test("current retro button is visible", async ({ firstUser }) => {
 
   await homePage.gotoCurrentRetro(teamName);
   await expect(firstUser.page).toHaveURL(/\/retro\/.+\/reflection/);
+});
+
+test("can edit columns before creating a retro", async ({ firstUser }) => {
+  const createRetroPage = new RetroCreatePage(firstUser.page);
+  await createRetroPage.replaceColumns([
+    { name: "Start", description: "Initial description" },
+    { name: "Stop", description: "Description to clear" },
+  ]);
+
+  const columns = firstUser.page.getByTestId("column-create");
+  await columns.nth(0).getByTestId("column-name").fill("Continue");
+  await columns
+    .nth(0)
+    .getByTestId("column-description")
+    .fill("Updated description");
+  await columns.nth(1).getByTestId("column-description").fill("");
+
+  await expect
+    .poll(() => createRetroPage.getColumns())
+    .toEqual([
+      { name: "Continue", description: "Updated description" },
+      { name: "Stop", description: "" },
+    ]);
+
+  await createRetroPage.createRetro();
+  await expect(firstUser.page).toHaveURL(/\/retro\/.+\/reflection/);
+  const retro = new RetroActivePage(firstUser.page);
+  await expect
+    .poll(() => retro.getColumnTitles())
+    .toEqual(["Continue", "Stop"]);
+  await expect(
+    retro.columnsLocator.nth(0).getByTestId("column-description"),
+  ).toHaveText("Updated description");
+  await expect(
+    retro.columnsLocator.nth(1).getByTestId("column-description"),
+  ).toHaveText("Dodaj opis");
+});
+
+test("can reorder columns before creating a retro", async ({ firstUser }) => {
+  const createRetroPage = new RetroCreatePage(firstUser.page);
+  await createRetroPage.replaceColumns([
+    { name: "First" },
+    { name: "Second" },
+    { name: "Third" },
+  ]);
+
+  await createRetroPage.reorderColumn(0, 2);
+
+  await expect
+    .poll(() => createRetroPage.getColumns())
+    .toEqual([
+      { name: "Second", description: "" },
+      { name: "Third", description: "" },
+      { name: "First", description: "" },
+    ]);
+
+  await createRetroPage.createRetro();
+  await expect(firstUser.page).toHaveURL(/\/retro\/.+\/reflection/);
+  await expect
+    .poll(() => new RetroActivePage(firstUser.page).getColumnTitles())
+    .toEqual(["Second", "Third", "First"]);
 });

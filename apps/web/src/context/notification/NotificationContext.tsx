@@ -1,5 +1,5 @@
 import type React from "react";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import type { RetroStartedEvent } from "shared/model/notification/notification.events";
 import { toast } from "sonner";
@@ -30,6 +30,16 @@ export const NotificationContextProvider: React.FC<
   const { user } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
+  const pathname = useRef(location.pathname);
+  const navigateRef = useRef(navigate);
+
+  useEffect(() => {
+    pathname.current = location.pathname;
+  }, [location.pathname]);
+
+  useEffect(() => {
+    navigateRef.current = navigate;
+  }, [navigate]);
 
   useEffect(() => {
     const token = window.localStorage.getItem("Bearer");
@@ -45,8 +55,8 @@ export const NotificationContextProvider: React.FC<
 
         const retroPath = `/retro/${event.retroId}`;
         if (
-          location.pathname === retroPath ||
-          location.pathname.startsWith(`${retroPath}/`)
+          pathname.current === retroPath ||
+          pathname.current.startsWith(`${retroPath}/`)
         ) {
           return;
         }
@@ -55,7 +65,7 @@ export const NotificationContextProvider: React.FC<
           id: `retro-started-${event.retroId}`,
           action: {
             label: "Dołącz",
-            onClick: () => navigate(retroPath),
+            onClick: () => navigateRef.current(retroPath),
           },
         });
       } catch {
@@ -121,7 +131,7 @@ export const NotificationContextProvider: React.FC<
 
     void connect();
     return () => controller.abort();
-  }, [location.pathname, navigate, user]);
+  }, [user]);
 
   return (
     <NotificationContext.Provider value={null}>

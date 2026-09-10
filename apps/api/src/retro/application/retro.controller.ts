@@ -106,6 +106,7 @@ export class RetroController {
 
     try {
       await this.notifications.notifyTeamRetroStarted(team.id, user.id, {
+        type: "retro-started",
         retroId: retro.id,
         teamId: team.id,
         teamName: team.name,

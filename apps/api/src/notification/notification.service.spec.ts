@@ -6,6 +6,7 @@ jest.mock("../prisma/prisma.service", () => ({ PrismaService: class {} }));
 
 describe("NotificationService", () => {
   const event: RetroStartedEvent = {
+    type: "retro-started",
     retroId: "retro-id",
     teamId: "team-id",
     teamName: "Team",
@@ -34,11 +35,9 @@ describe("NotificationService", () => {
     await service.notifyTeamRetroStarted("team-id", "initiator", event);
 
     expect(firstSession).toHaveBeenCalledWith({
-      type: "retro-started",
       data: event,
     });
     expect(secondSession).toHaveBeenCalledWith({
-      type: "retro-started",
       data: event,
     });
   });

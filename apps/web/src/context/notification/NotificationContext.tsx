@@ -5,19 +5,7 @@ import type { RetroStartedEvent } from "shared/model/notification/notification.e
 import { toast } from "sonner";
 import { useUser } from "@/context/user/UserContext.hook";
 
-export const NotificationContext = createContext<null>(null);
-
-const isRetroStartedEvent = (value: unknown): value is RetroStartedEvent => {
-  if (!value || typeof value !== "object") return false;
-  const event = value as Record<string, unknown>;
-
-  return (
-    typeof event.retroId === "string" &&
-    typeof event.teamId === "string" &&
-    typeof event.teamName === "string" &&
-    typeof event.startedAt === "string"
-  );
-};
+const NotificationContext = createContext<null>(null);
 
 const waitForRetry = (delay: number, signal: AbortSignal) =>
   new Promise<void>((resolve) => {
@@ -50,12 +38,10 @@ export const NotificationContextProvider: React.FC<
     const controller = new AbortController();
     let retryDelay = 1_000;
 
-    const handleEvent = (eventType: string, data: string) => {
-      if (eventType !== "retro-started") return;
-
+    const handleEvent = (data: string) => {
       try {
-        const event: unknown = JSON.parse(data);
-        if (!isRetroStartedEvent(event)) return;
+        const event = JSON.parse(data) as RetroStartedEvent;
+        if (event.type !== "retro-started") return;
 
         const retroPath = `/retro/${event.retroId}`;
         if (
@@ -95,13 +81,11 @@ export const NotificationContextProvider: React.FC<
           const frame = buffer.slice(0, boundary);
           buffer = buffer.slice(boundary + 2);
 
-          let eventType = "message";
           const data: string[] = [];
           for (const line of frame.split("\n")) {
-            if (line.startsWith("event:")) eventType = line.slice(6).trim();
             if (line.startsWith("data:")) data.push(line.slice(5).trimStart());
           }
-          if (data.length > 0) handleEvent(eventType, data.join("\n"));
+          if (data.length > 0) handleEvent(data.join("\n"));
           boundary = buffer.indexOf("\n\n");
         }
 

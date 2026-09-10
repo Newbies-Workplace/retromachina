@@ -41,7 +41,7 @@ export class NotificationService {
   private publishRetroStarted(userIds: string[], event: RetroStartedEvent) {
     for (const userId of userIds) {
       for (const subscriber of this.subscribers.get(userId) ?? []) {
-        subscriber.next({ type: "retro-started", data: event });
+        subscriber.next({ data: event });
       }
     }
   }

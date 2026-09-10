@@ -11,6 +11,7 @@ export class AuthService {
   ) {}
 
   async googleAuth(user: GoogleUser) {
+    const nick = `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`;
     let queryUser = await this.prismaService.user.findFirst({
       where: {
         google_id: user.id,
@@ -20,7 +21,7 @@ export class AuthService {
     if (!queryUser) {
       queryUser = await this.prismaService.user.create({
         data: {
-          nick: `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`,
+          nick,
           email: user.email,
           avatar_link: user.picture,
           google_id: user.id,
@@ -48,6 +49,16 @@ export class AuthService {
           },
         });
       }
+    } else {
+      queryUser = await this.prismaService.user.update({
+        where: {
+          id: queryUser.id,
+        },
+        data: {
+          nick,
+          avatar_link: user.picture,
+        },
+      });
     }
 
     return this.jwtService.sign(

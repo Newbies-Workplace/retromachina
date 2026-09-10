@@ -7,6 +7,13 @@ export interface Release {
 // Newest first. Use stable major.minor.patch versions; see docs/changelog.md.
 export const releases: Release[] = [
   {
+    version: "1.27.0",
+    title: "Edycja kolumn",
+    changes: [
+      "Kolumny możesz teraz edytować także podczas trwania retrospektywy",
+    ],
+  },
+  {
     version: "1.26.0",
     title: "Co nowego?",
     changes: [

@@ -1,6 +1,7 @@
 import type React from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router";
 import { GramophoneContextProvider } from "@/context/gramophone/GramophoneContext";
+import { NotificationContextProvider } from "@/context/notification/NotificationContext";
 import { RequireAuth } from "@/context/user/RequireAuth";
 import { NotFoundView } from "@/views/404/NotFoundView";
 import { LoadingView } from "@/views/auth/loading/LoadingView";
@@ -24,114 +25,116 @@ import { TeamEditView } from "@/views/team_edit/TeamEditView";
 export const AppRouter: React.FC = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/hero" element={<HeroView />} />
+      <NotificationContextProvider>
+        <Routes>
+          <Route path="/hero" element={<HeroView />} />
 
-        <Route path="/signin" element={<SignInView />} />
-        <Route path="/loading" element={<LoadingView />} />
-        <Route path="/privacy" element={<PrivacyPolicyView />} />
+          <Route path="/signin" element={<SignInView />} />
+          <Route path="/loading" element={<LoadingView />} />
+          <Route path="/privacy" element={<PrivacyPolicyView />} />
 
-        <Route
-          path="/"
-          element={
-            <RequireAuth fallback={<Navigate to={"/hero"} />}>
-              <HomeView />
-            </RequireAuth>
-          }
-        />
+          <Route
+            path="/"
+            element={
+              <RequireAuth fallback={<Navigate to={"/hero"} />}>
+                <HomeView />
+              </RequireAuth>
+            }
+          />
 
-        <Route
-          path="/team/create"
-          element={
-            <RequireAuth>
-              <TeamCreateView />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/team/:teamId/edit"
-          element={
-            <RequireAuth>
-              <TeamEditView />
-            </RequireAuth>
-          }
-        />
+          <Route
+            path="/team/create"
+            element={
+              <RequireAuth>
+                <TeamCreateView />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/team/:teamId/edit"
+            element={
+              <RequireAuth>
+                <TeamEditView />
+              </RequireAuth>
+            }
+          />
 
-        <Route
-          path="/team/:teamId/archive"
-          element={
-            <RequireAuth>
-              <RetroArchiveView />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/team/:teamId/board"
-          element={
-            <RequireAuth>
-              <TeamBoardWrapper>
-                <TeamBoardView />
-              </TeamBoardWrapper>
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/team/:teamId/board/edit"
-          element={
-            <RequireAuth>
-              <TeamBoardEditView />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/invitation/:inviteKey"
-          element={
-            <RequireAuth>
-              <InviteView />
-            </RequireAuth>
-          }
-        />
+          <Route
+            path="/team/:teamId/archive"
+            element={
+              <RequireAuth>
+                <RetroArchiveView />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/team/:teamId/board"
+            element={
+              <RequireAuth>
+                <TeamBoardWrapper>
+                  <TeamBoardView />
+                </TeamBoardWrapper>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/team/:teamId/board/edit"
+            element={
+              <RequireAuth>
+                <TeamBoardEditView />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/invitation/:inviteKey"
+            element={
+              <RequireAuth>
+                <InviteView />
+              </RequireAuth>
+            }
+          />
 
-        <Route
-          path="/retro/create"
-          element={
-            <RequireAuth>
-              <RetroCreateView />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/retro/:retroId/*"
-          element={
-            <RequireAuth>
-              <RetroWrapper>
-                <RetroActiveView />
-              </RetroWrapper>
-            </RequireAuth>
-          }
-        />
+          <Route
+            path="/retro/create"
+            element={
+              <RequireAuth>
+                <RetroCreateView />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/retro/:retroId/*"
+            element={
+              <RequireAuth>
+                <RetroWrapper>
+                  <RetroActiveView />
+                </RetroWrapper>
+              </RequireAuth>
+            }
+          />
 
-        <Route
-          path="/retro/:retroId/summary"
-          element={
-            <RequireAuth>
-              <RetroSummaryView />
-            </RequireAuth>
-          }
-        />
+          <Route
+            path="/retro/:retroId/summary"
+            element={
+              <RequireAuth>
+                <RetroSummaryView />
+              </RequireAuth>
+            }
+          />
 
-        <Route
-          path="/gramophone"
-          element={
-            <GramophoneContextProvider>
-              <GramophoneView />
-            </GramophoneContextProvider>
-          }
-        />
+          <Route
+            path="/gramophone"
+            element={
+              <GramophoneContextProvider>
+                <GramophoneView />
+              </GramophoneContextProvider>
+            }
+          />
 
-        <Route path="*" element={<NotFoundView />} />
-        <Route path="/404" element={<NotFoundView />} />
-      </Routes>
+          <Route path="*" element={<NotFoundView />} />
+          <Route path="/404" element={<NotFoundView />} />
+        </Routes>
+      </NotificationContextProvider>
     </Router>
   );
 };

@@ -11,6 +11,7 @@ export const releases: Release[] = [
     title: "Edycja kolumn",
     changes: [
       "Kolumny możesz teraz edytować także podczas trwania retrospektywy",
+      "Gdy ktoś rozpocznie retrospektywę, pozostali członkowie zespołu zobaczą powiadomienie z możliwością szybkiego dołączenia",
     ],
   },
   {

@@ -74,6 +74,7 @@ export const EditableColumnText = ({
     return (
       <textarea
         aria-label={placeholder ?? "Edytuj tekst kolumny"}
+        data-testid={`column-${variant}-input`}
         ref={inputRef}
         className={cn(
           "w-full min-w-0 cursor-text resize-none bg-transparent p-0 outline-none [field-sizing:content]",
@@ -105,6 +106,7 @@ export const EditableColumnText = ({
 
   const display = (
     <span
+      data-testid={`column-${variant}`}
       ref={displayRef}
       className={cn(
         "w-full min-w-0 whitespace-pre-line wrap-break-word",

@@ -61,7 +61,11 @@ export const BoardCreatorColumnDisplay = ({
         )}
       >
         <div className={"flex justify-center items-center gap-2"}>
-          <div ref={handleRef} className={"cursor-grab"}>
+          <div
+            ref={handleRef}
+            className={"cursor-grab"}
+            data-testid="column-drag-handle"
+          >
             <GripVerticalIcon className={"size-6"} />
           </div>
 

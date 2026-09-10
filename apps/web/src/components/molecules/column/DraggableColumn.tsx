@@ -96,6 +96,7 @@ export const DraggableColumn = ({
     <div
       ref={handleRef}
       aria-hidden="true"
+      data-testid="column-drag-handle"
       className="flex cursor-grab items-center justify-center p-2 active:cursor-grabbing"
     >
       <GripVerticalIcon />
@@ -103,7 +104,11 @@ export const DraggableColumn = ({
   ) : null;
 
   return (
-    <div ref={outerRef} className="h-full rounded-2xl">
+    <div
+      ref={outerRef}
+      className="h-full rounded-2xl"
+      data-testid="retro-column"
+    >
       <div
         ref={columnRef}
         className={cn("h-full rounded-2xl", isDragging && "opacity-40")}

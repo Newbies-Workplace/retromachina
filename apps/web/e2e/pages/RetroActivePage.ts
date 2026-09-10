@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { dragColumn } from "../helpers/dragColumn";
 
 export class RetroActivePage {
   readonly page: Page;
@@ -9,10 +10,11 @@ export class RetroActivePage {
   readonly slotMachineToggleLocator: Locator;
   readonly slotMachineTitleLocator: Locator;
   readonly slotMachineLeverLocator: Locator;
+  readonly columnsLocator: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.cardInputsLocator = page.getByRole("textbox");
+    this.cardInputsLocator = page.getByTestId("card-input");
     this.readyProgressLocator = page.getByRole("progressbar");
     // Icon-only toolbar controls currently have no accessible names.
     const toolbar = this.readyProgressLocator.locator("..").locator("..");
@@ -26,6 +28,7 @@ export class RetroActivePage {
     this.slotMachineToggleLocator = toolbar.getByRole("button").first();
     this.slotMachineTitleLocator = page.getByText("Losowanko", { exact: true });
     this.slotMachineLeverLocator = page.locator(".lever");
+    this.columnsLocator = page.getByTestId("retro-column");
   }
 
   async createCard(text: string, columnIndex = 0) {
@@ -37,6 +40,38 @@ export class RetroActivePage {
 
   async nextStage() {
     await this.nextStageButtonLocator.click();
+  }
+
+  async getColumnTitles() {
+    return this.page.getByTestId("column-title").allTextContents();
+  }
+
+  async editColumnTitle(columnIndex: number, title: string) {
+    const column = this.columnsLocator.nth(columnIndex);
+    await column.getByTestId("column-title").click();
+    const input = column.getByTestId("column-title-input");
+    await input.fill(title);
+    await input.press("Enter");
+    await expect(column.getByTestId("column-title")).toHaveText(title);
+  }
+
+  async editColumnDescription(columnIndex: number, description: string) {
+    const column = this.columnsLocator.nth(columnIndex);
+    await column.getByTestId("column-description").click();
+    const input = column.getByTestId("column-description-input");
+    await input.fill(description);
+    await input.press("Enter");
+    await expect(column.getByTestId("column-description")).toHaveText(
+      description || "Dodaj opis",
+    );
+  }
+
+  async reorderColumn(fromIndex: number, toIndex: number) {
+    await dragColumn({
+      page: this.page,
+      source: this.columnsLocator.nth(fromIndex),
+      target: this.columnsLocator.nth(toIndex),
+    });
   }
 
   async toggleReady() {

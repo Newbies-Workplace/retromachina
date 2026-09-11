@@ -60,7 +60,7 @@ export const Menu = () => {
         </div>
 
         <div className={"flex flex-row gap-2 flex-wrap"}>
-          {user?.teams?.map((team) => (
+          {user?.teams?.slice(0, 5).map((team) => (
             <span
               key={team.id}
               className={

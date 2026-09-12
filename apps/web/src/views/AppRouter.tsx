@@ -11,6 +11,8 @@ import { GramophoneView } from "@/views/gramophone/GramophoneView";
 import { HeroView } from "@/views/hero/HeroView";
 import { HomeView } from "@/views/home/HomeView";
 import { InviteView } from "@/views/invitation/InviteView";
+import { PokerView } from "@/views/poker/PokerView";
+import { PokerWrapper } from "@/views/poker/PokerWrapper";
 import { RetroActiveView } from "@/views/retro_active/RetroActiveView";
 import { RetroWrapper } from "@/views/retro_active/RetroWrapper";
 import { RetroArchiveView } from "@/views/retro_archive/RetroArchiveView";
@@ -64,6 +66,16 @@ export const AppRouter: React.FC = () => {
             element={
               <RequireAuth>
                 <RetroArchiveView />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/:teamId/poker"
+            element={
+              <RequireAuth>
+                <PokerWrapper>
+                  <PokerView />
+                </PokerWrapper>
               </RequireAuth>
             }
           />

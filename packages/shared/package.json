@@ -4,11 +4,16 @@
   "description": "",
   "main": "dist/src/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.esm.json",
     "dev": "tsc -w"
   },
   "exports": {
-    "./*": "./.dist/*.js"
+    "./*": {
+      "types": "./.dist/*.d.ts",
+      "import": "./.dist-esm/*.js",
+      "require": "./.dist/*.js",
+      "default": "./.dist/*.js"
+    }
   },
   "keywords": [],
   "author": "",

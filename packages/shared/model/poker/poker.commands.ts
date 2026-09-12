@@ -7,3 +7,7 @@ export interface SelectPokerDeckCommand {
 export interface SelectPokerCardCommand {
   card: PokerCard | null;
 }
+
+export type RevealPokerCardsCommand = Record<string, never>;
+
+export type ClearPokerTableCommand = Record<string, never>;

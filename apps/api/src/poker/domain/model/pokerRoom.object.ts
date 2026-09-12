@@ -17,7 +17,9 @@ export type PokerRoomUser = {
 export class PokerRoom {
   connectedUsers: Map<SocketId, PokerRoomUser> = new Map();
   deckId: PokerDeckId = "standard";
+  cardsRevealed = false;
   selectedCards: Map<string, PokerCard | null> = new Map();
+  revealedCards: Map<string, PokerCard | null> = new Map();
 
   constructor(public id: string) {}
 
@@ -26,6 +28,9 @@ export class PokerRoom {
 
     if (!this.selectedCards.has(user.userId)) {
       this.selectedCards.set(user.userId, null);
+    }
+    if (!this.revealedCards.has(user.userId)) {
+      this.revealedCards.set(user.userId, null);
     }
   }
 
@@ -40,6 +45,7 @@ export class PokerRoom {
     );
     if (!hasAnotherConnection) {
       this.selectedCards.delete(user.userId);
+      this.revealedCards.delete(user.userId);
     }
   }
 
@@ -47,7 +53,9 @@ export class PokerRoom {
     if (!(deckId in POKER_DECKS)) return false;
 
     this.deckId = deckId;
+    this.cardsRevealed = false;
     this.selectedCards.clear();
+    this.revealedCards.clear();
     return true;
   }
 
@@ -64,6 +72,22 @@ export class PokerRoom {
     return true;
   }
 
+  revealCards() {
+    this.revealedCards = new Map(this.selectedCards);
+    this.cardsRevealed = true;
+  }
+
+  clearTable() {
+    this.cardsRevealed = false;
+    this.selectedCards.clear();
+    this.revealedCards.clear();
+
+    for (const user of this.connectedUsers.values()) {
+      this.selectedCards.set(user.userId, null);
+      this.revealedCards.set(user.userId, null);
+    }
+  }
+
   getRoomSyncData(): PokerSyncEvent {
     const uniqueUsers = new Map(
       Array.from(this.connectedUsers.values()).map((user) => [
@@ -74,11 +98,13 @@ export class PokerRoom {
 
     return {
       deckId: this.deckId,
+      cardsRevealed: this.cardsRevealed,
       users: Array.from(uniqueUsers.values()).map((user) => ({
         userId: user.userId,
         avatarLink: user.avatarLink,
         role: user.role,
         selectedCard: this.selectedCards.get(user.userId) ?? null,
+        revealedCard: this.revealedCards.get(user.userId) ?? null,
       })),
     };
   }

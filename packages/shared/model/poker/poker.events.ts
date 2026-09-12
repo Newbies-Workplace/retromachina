@@ -6,9 +6,11 @@ export interface ActivePokerUser {
   avatarLink: string;
   role: UserRole;
   selectedCard: PokerCard | null;
+  revealedCard: PokerCard | null;
 }
 
 export interface PokerSyncEvent {
   deckId: PokerDeckId;
+  cardsRevealed: boolean;
   users: ActivePokerUser[];
 }

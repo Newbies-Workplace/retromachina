@@ -1,11 +1,7 @@
 import { Layers3Icon } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import {
-  POKER_DECKS,
-  type PokerCard,
-  type PokerDeckId,
-} from "shared/model/poker/poker.types";
+import type { PokerDeckId } from "shared/model/poker/poker.types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,23 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-export const decks: ReadonlyArray<{
-  id: PokerDeckId;
-  name: string;
-  values: readonly PokerCard[];
-}> = [
-  {
-    id: "tshirt",
-    name: "Talia koszulkowa",
-    values: POKER_DECKS.tshirt,
-  },
-  {
-    id: "standard",
-    name: "Talia zwykła",
-    values: POKER_DECKS.standard,
-  },
-];
+import { pokerDecks } from "@/views/poker/components/pokerDecks";
 
 type DeckPickerProps = {
   selectedDeckId: PokerDeckId;
@@ -44,7 +24,7 @@ export const DeckPicker: React.FC<DeckPickerProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectedDeck =
-    decks.find((deck) => deck.id === selectedDeckId) ?? decks[1];
+    pokerDecks.find((deck) => deck.id === selectedDeckId) ?? pokerDecks[1];
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -65,7 +45,7 @@ export const DeckPicker: React.FC<DeckPickerProps> = ({
         </DialogHeader>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {decks.map((deck) => (
+          {pokerDecks.map((deck) => (
             <Button
               key={deck.id}
               data-testid={`deck-${deck.id}`}

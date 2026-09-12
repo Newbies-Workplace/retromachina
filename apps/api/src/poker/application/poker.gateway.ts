@@ -8,6 +8,8 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import type {
+  ClearPokerTableCommand,
+  RevealPokerCardsCommand,
   SelectPokerCardCommand,
   SelectPokerDeckCommand,
 } from "shared/model/poker/poker.commands";
@@ -98,6 +100,24 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (!room.selectCard(connection.userId, payload.card)) return;
 
+    this.emitSync(room);
+  }
+
+  @SubscribeMessage("command_reveal_cards")
+  handleRevealCards(client: Socket, _payload: RevealPokerCardsCommand) {
+    const room = this.getClientRoom(client);
+    if (!room) return;
+
+    room.revealCards();
+    this.emitSync(room);
+  }
+
+  @SubscribeMessage("command_clear_table")
+  handleClearTable(client: Socket, _payload: ClearPokerTableCommand) {
+    const room = this.getClientRoom(client);
+    if (!room) return;
+
+    room.clearTable();
     this.emitSync(room);
   }
 

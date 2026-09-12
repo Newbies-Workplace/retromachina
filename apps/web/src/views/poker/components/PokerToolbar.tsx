@@ -1,6 +1,5 @@
 import type React from "react";
 import type { PokerCard } from "shared/model/poker/poker.types";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type PokerToolbarProps = {
@@ -15,9 +14,9 @@ export const PokerToolbar: React.FC<PokerToolbarProps> = ({
   onCardSelect,
 }) => {
   return (
-    <div className="absolute right-2 bottom-0 left-2 flex justify-center rounded-t-2xl bg-card px-4 pt-5 pb-2 shadow-lg">
+    <div className="absolute right-2 bottom-0 left-2 flex justify-center overflow-visible rounded-t-2xl bg-card px-4 py-1 shadow-lg">
       <div
-        className="flex max-w-full items-end gap-2 overflow-x-auto px-2 pt-4"
+        className="-translate-y-6 flex max-w-full items-end gap-2 overflow-x-auto px-2 pt-4"
         role="toolbar"
         aria-label="Wybierz kartę do estymacji"
       >
@@ -25,7 +24,8 @@ export const PokerToolbar: React.FC<PokerToolbarProps> = ({
           const isSelected = selectedCard === card;
 
           return (
-            <Button
+            <button
+              type="button"
               key={card}
               data-testid={`poker-card-${card}`}
               aria-pressed={isSelected}
@@ -33,15 +33,14 @@ export const PokerToolbar: React.FC<PokerToolbarProps> = ({
                 isSelected ? `Odznacz kartę ${card}` : `Wybierz kartę ${card}`
               }
               className={cn(
-                "h-24 w-16 shrink-0 rounded-xl border-2 text-xl transition-transform duration-200 hover:-translate-y-1",
+                "flex aspect-[2/3] w-16 shrink-0 select-none items-center justify-center rounded-xl border-2 border-border bg-background font-medium text-xl shadow-sm outline-none transition-all duration-200 hover:-translate-y-1 hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
                 isSelected &&
-                  "-translate-y-3 border-accent shadow-lg hover:-translate-y-3",
+                  "-translate-y-3 border-accent bg-primary text-primary-foreground shadow-lg hover:-translate-y-3 hover:bg-primary",
               )}
-              variant={isSelected ? "default" : "outline"}
               onClick={() => onCardSelect(isSelected ? null : card)}
             >
               {card}
-            </Button>
+            </button>
           );
         })}
       </div>

@@ -99,7 +99,7 @@ const CardInner: React.FC<CardProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className={cn(
-            "relative flex justify-between gap-1 min-h-[142px] max-h-[142px] min-w-[225px] bg-white dark:bg-card border border-black/30 p-2 rounded-2xl h-full",
+            "relative flex justify-between gap-2 min-h-[142px] max-h-[142px] min-w-[225px] bg-white dark:bg-card border border-border p-3 rounded-xl h-full shadow-sm",
             className,
           )}
         >

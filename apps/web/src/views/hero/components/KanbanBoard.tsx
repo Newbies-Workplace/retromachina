@@ -34,7 +34,7 @@ const Card: React.FC<{
       layout
       layoutId={id}
       className={cn(
-        "flex flex-col gap-2 w-full h-12 bg-white border rounded-lg cursor-grab transition-colors",
+        "flex flex-col gap-2 w-full h-12 bg-background border rounded-lg cursor-grab transition-colors shadow-sm",
         className,
       )}
     />
@@ -131,7 +131,7 @@ export const KanbanBoard: React.FC = () => {
       <AnimatePresence>
         <div
           className={
-            "w-full h-[500px] flex xl:flex-1 flex-row bg-secondary rounded-2xl p-2 gap-4"
+            "w-full h-[420px] sm:h-[500px] flex xl:flex-1 flex-row bg-secondary rounded-2xl p-2 gap-2 sm:gap-4 shadow-md"
           }
         >
           <Column

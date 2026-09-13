@@ -104,6 +104,7 @@ export const RetroActiveView: React.FC = () => {
                 <NavbarAction>
                   <Button
                     size={"icon"}
+                    aria-label="Skopiuj link z zaproszeniem"
                     onClick={() => {
                       onShareButtonClick();
                     }}
@@ -137,7 +138,11 @@ export const RetroActiveView: React.FC = () => {
         }
       />
 
-      <div className={"flex flex-col flex-1 overflow-y-auto"} ref={ref}>
+      <main
+        style={{ minHeight: 0 }}
+        className={"flex min-h-0 min-w-0 flex-col flex-1 overflow-auto pb-24"}
+        ref={ref}
+      >
         <Routes>
           <Route path="reflection" element={<ReflectionView />} />
           <Route path="group" element={<GroupView />} />
@@ -145,7 +150,7 @@ export const RetroActiveView: React.FC = () => {
           <Route path="discuss" element={<DiscussView />} />
           <Route path="*" element={<Spinner className={"size-8"} />} />
         </Routes>
-      </div>
+      </main>
 
       <Toolbox />
     </>

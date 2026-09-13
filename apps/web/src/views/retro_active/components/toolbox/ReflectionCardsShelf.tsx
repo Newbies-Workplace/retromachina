@@ -110,7 +110,7 @@ export const ReflectionCardsShelf: React.FC<{
     <Portal>
       <div
         ref={drawerRef}
-        className={cn("absolute bottom-0 min-h-54 w-full z-10 overflow-hidden")}
+        className={cn("absolute bottom-0 z-40 min-h-54 w-full overflow-hidden")}
       >
         <LazyMotion features={domAnimation}>
           <m.div
@@ -140,7 +140,7 @@ export const ReflectionCardsShelf: React.FC<{
 
             <div
               className={
-                "flex flex-row gap-2 h-full w-full p-2 overflow-x-scroll"
+                "flex h-full w-full flex-row gap-2 overflow-x-auto p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               }
             >
               {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (

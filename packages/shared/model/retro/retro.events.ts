@@ -1,3 +1,4 @@
+import type { WarmupState } from "../warmup/warmup";
 import type {
   Card,
   RetroColumn,
@@ -6,7 +7,7 @@ import type {
   Vote,
 } from "./retroRoom.interface";
 
-export type RoomState = "reflection" | "group" | "vote" | "discuss";
+export type RoomState = "warmup" | "reflection" | "group" | "vote" | "discuss";
 
 export interface TimerChangedEvent {
   timerEnds: number | null; //timestamp
@@ -57,4 +58,16 @@ export interface RoomSyncEvent {
   // discuss
   discussionCardId: string | null;
   tasks: RetroTask[];
+  warmup: WarmupState | null;
+}
+
+export interface WarmupDrawStartedEvent {
+  resultId: string;
+  spinEndsAt: number;
+}
+
+export interface WarmupRoomUrlUpdatedEvent {
+  url: string;
+  revision: number;
+  actorId: string;
 }

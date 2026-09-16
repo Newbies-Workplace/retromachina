@@ -7,6 +7,7 @@ import {
   Vote,
 } from "shared/model/retro/retroRoom.interface";
 import { UserRole } from "shared/model/user/user.role";
+import type { WarmupState } from "shared/model/warmup/warmup";
 
 type RetroTask = Task & { parentCardId: string };
 type SerializedRetroTask = Omit<RetroTask, "created_at" | "updated_at"> & {
@@ -30,6 +31,7 @@ export interface RetroRoomSnapshotV1 {
   votes: Vote[];
   discussionCardId: string | null;
   tasks: SerializedRetroTask[];
+  warmup?: WarmupState | null;
 }
 
 export type RetroRoomSnapshot = RetroRoomSnapshotV1;
@@ -57,11 +59,17 @@ export class RetroRoom {
   discussionCardId = null;
   tasks: RetroTask[] = [];
 
+  warmup: WarmupState | null;
+
   constructor(
     public id: string,
     public teamId: string,
     public retroColumns: RetroColumn[],
-  ) {}
+    warmup: WarmupState | null = null,
+  ) {
+    this.warmup = warmup;
+    this.roomState = warmup ? "warmup" : "reflection";
+  }
 
   changeColumnName(columnId: string, name: string) {
     const column = this.retroColumns.find((item) => item.id === columnId);
@@ -118,6 +126,7 @@ export class RetroRoom {
         created_at: task.created_at.toISOString(),
         updated_at: task.updated_at.toISOString(),
       })),
+      warmup: this.warmup,
     };
   }
 
@@ -127,7 +136,12 @@ export class RetroRoom {
         `Unsupported retrospective snapshot version: ${snapshot.version}`,
       );
     }
-    const room = new RetroRoom(id, teamId, snapshot.retroColumns);
+    const room = new RetroRoom(
+      id,
+      teamId,
+      snapshot.retroColumns,
+      snapshot.warmup ?? null,
+    );
     room.roomState = snapshot.roomState;
     room.timerEnds = snapshot.timerEnds;
     room.cards = snapshot.cards;
@@ -143,6 +157,7 @@ export class RetroRoom {
       created_at: new Date(task.created_at),
       updated_at: new Date(task.updated_at),
     }));
+    room.revealWarmupIfFinished();
     // Allow reconnecting clients a full inactivity window after startup.
     room.lastDisconnectionDate = new Date();
     return room;
@@ -194,6 +209,7 @@ export class RetroRoom {
         };
       }),
       serverTime: new Date().valueOf(),
+      warmup: this.warmup,
     };
 
     return roomData;
@@ -447,5 +463,47 @@ export class RetroRoom {
 
   setSlotMachineVisibility(isVisible: boolean) {
     this.slotMachineVisible = isVisible;
+  }
+
+  startWarmupDraw(durationMs = 4500) {
+    if (!this.warmup || this.roomState !== "warmup") return null;
+    if (this.warmup.status !== "pending") return null;
+    const resultId =
+      this.warmup.selectedWarmupId ??
+      this.warmup.candidates[
+        Math.floor(Math.random() * this.warmup.candidates.length)
+      ]?.id;
+    const result = this.warmup.candidates.find((item) => item.id === resultId);
+    if (!result) return null;
+    this.warmup.result = result;
+    this.warmup.status = "spinning";
+    this.warmup.spinEndsAt = Date.now() + durationMs;
+    return { resultId: result.id, spinEndsAt: this.warmup.spinEndsAt };
+  }
+
+  revealWarmupIfFinished() {
+    if (
+      this.warmup?.status === "spinning" &&
+      this.warmup.spinEndsAt !== null &&
+      this.warmup.spinEndsAt <= Date.now()
+    ) {
+      this.warmup.status = "revealed";
+    }
+  }
+
+  updateWarmupRoomUrl(url: string, actorId: string) {
+    this.revealWarmupIfFinished();
+    if (!this.warmup || this.warmup.status !== "revealed") return false;
+    this.warmup.sharedRoomUrl = url;
+    this.warmup.sharedRoomUrlRevision += 1;
+    this.warmup.sharedRoomUrlUpdatedBy = actorId;
+    return true;
+  }
+
+  completeWarmup() {
+    this.revealWarmupIfFinished();
+    if (!this.warmup || this.warmup.status !== "revealed") return false;
+    this.changeState("reflection");
+    return true;
   }
 }

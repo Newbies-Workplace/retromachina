@@ -7,6 +7,10 @@ import { Navigate, useNavigate } from "react-router";
 import type { RetroCreateRequest } from "shared/model/retro/retro.request";
 import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
+import type {
+  WarmupLinkResponse,
+  WarmupSelection,
+} from "shared/model/warmup/warmup";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { RetroService } from "@/api/Retro.service";
@@ -23,6 +27,15 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useUser } from "@/context/user/UserContext.hook";
 
 export interface Column {
   id: string;
@@ -41,27 +54,44 @@ export const RetroCreateView: React.FC = () => {
   const [clicked, setClicked] = useState(false);
   const params = qs.parse(location.search);
   const teamId: string = params.teamId as string;
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const hasTeamAccess = Boolean(
+    teamId && user?.teams.some((team) => team.id === teamId),
+  );
 
   useEffect(() => {
-    TeamService.getTeamById(teamId).then((team) => setTeam(team));
+    if (!hasTeamAccess) return;
 
-    UserService.getUsersByTeamId(teamId)
-      .then((users) => setTeamUsers(users))
-      .catch(console.log);
-  }, [teamId]);
+    Promise.all([
+      TeamService.getTeamById(teamId),
+      UserService.getUsersByTeamId(teamId),
+    ])
+      .then(([team, users]) => {
+        setTeam(team);
+        setTeamUsers(users);
+      })
+      .catch(() => navigate("/", { replace: true }));
+  }, [hasTeamAccess, navigate, teamId]);
 
   const [team, setTeam] = useState<TeamResponse | null>(null);
   const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
 
   const [columns, setColumns] = useState<Array<Column>>([]);
   const [templateId, setTemplateId] = useState<number | null>(null);
-  const navigate = useNavigate();
+  const [warmups, setWarmups] = useState<WarmupLinkResponse[]>([]);
+  const [warmupChoice, setWarmupChoice] = useState("random");
 
   useEffect(() => {
     randomizeTemplate();
   }, []);
 
-  if (!teamId) {
+  useEffect(() => {
+    if (!hasTeamAccess) return;
+    TeamService.getWarmups(teamId).then(setWarmups).catch(console.log);
+  }, [hasTeamAccess, teamId]);
+
+  if (!hasTeamAccess) {
     return <Navigate to={"/"} />;
   }
 
@@ -109,9 +139,18 @@ export const RetroCreateView: React.FC = () => {
   const onCreateRetroClick = async () => {
     setClicked(true);
 
+    let warmup: WarmupSelection = { mode: "none" };
+    if (warmupChoice === "random") warmup = { mode: "deferred-random" };
+    if (warmupChoice.startsWith("selected:")) {
+      warmup = {
+        mode: "selected",
+        warmupId: warmupChoice.slice("selected:".length),
+      };
+    }
     const request: RetroCreateRequest = {
       teamId: teamId,
       columns: columns,
+      warmup,
     };
 
     RetroService.createRetro(request)
@@ -178,6 +217,40 @@ export const RetroCreateView: React.FC = () => {
               </Avatar>
             ))}
           </AvatarGroup>
+
+          <section className="flex flex-col gap-2 rounded-lg border p-4">
+            <div>
+              <h2 className="font-medium">Rozgrzewka</h2>
+              <p className="text-sm text-muted-foreground">
+                Możesz ją pominąć, wybrać teraz lub wylosować po starcie.
+              </p>
+            </div>
+            <Select
+              value={warmupChoice}
+              onValueChange={(value) => setWarmupChoice(value ?? "none")}
+              itemToStringLabel={(value) => {
+                if (value === "none") return "Bez rozgrzewki";
+                if (value === "random") return "Losuj po starcie";
+                const id = value.replace("selected:", "");
+                return warmups.find((item) => item.id === id)?.name ?? value;
+              }}
+            >
+              <SelectTrigger className="w-full" data-testid="warmup-select">
+                <SelectValue placeholder="Wybierz rozgrzewkę" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="none">Bez rozgrzewki</SelectItem>
+                  <SelectItem value="random">Losuj po starcie</SelectItem>
+                  {warmups.map((warmup) => (
+                    <SelectItem key={warmup.id} value={`selected:${warmup.id}`}>
+                      {warmup.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </section>
 
           <div className={"flex justify-between mt-4"}>
             <div className={"flex flex-row gap-2"}>

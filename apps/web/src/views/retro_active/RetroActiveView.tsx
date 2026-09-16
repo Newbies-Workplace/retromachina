@@ -28,6 +28,7 @@ import { DiscussView } from "@/views/retro_active/discuss/DiscussView";
 import { GroupView } from "@/views/retro_active/group/GroupView";
 import { ReflectionView } from "@/views/retro_active/reflection/ReflectionView";
 import { VoteView } from "@/views/retro_active/vote/VoteView";
+import { WarmupView } from "@/views/retro_active/warmup/WarmupView";
 
 export const RetroActiveView: React.FC = () => {
   const navigate = useNavigate();
@@ -139,6 +140,7 @@ export const RetroActiveView: React.FC = () => {
 
       <div className={"flex flex-col flex-1 overflow-y-auto"} ref={ref}>
         <Routes>
+          <Route path="warmup" element={<WarmupView />} />
           <Route path="reflection" element={<ReflectionView />} />
           <Route path="group" element={<GroupView />} />
           <Route path="vote" element={<VoteView />} />
@@ -147,7 +149,7 @@ export const RetroActiveView: React.FC = () => {
         </Routes>
       </div>
 
-      <Toolbox />
+      {roomState !== "warmup" && <Toolbox />}
     </>
   );
 };

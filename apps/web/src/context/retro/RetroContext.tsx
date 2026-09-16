@@ -9,6 +9,7 @@ import type {
   ChangeSlotMachineVisibilityCommand,
   ChangeTimerCommand,
   ChangeVoteAmountCommand,
+  CompleteWarmupCommand,
   CreateCardCommand,
   CreateTaskCommand,
   DeleteCardCommand,
@@ -17,11 +18,13 @@ import type {
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
   ReorderColumnsCommand,
+  StartWarmupDrawCommand,
   UpdateCardCommand,
   UpdateCreatingTaskStateCommand,
   UpdateReadyStateCommand,
   UpdateRoomStateCommand,
   UpdateTaskCommand,
+  UpdateWarmupRoomUrlCommand,
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
 import type {
@@ -32,6 +35,8 @@ import type {
   RoomSyncEvent,
   SlotMachineDrawnEvent,
   TimerChangedEvent,
+  WarmupDrawStartedEvent,
+  WarmupRoomUrlUpdatedEvent,
 } from "shared/model/retro/retro.events";
 import type {
   Card,
@@ -41,6 +46,7 @@ import type {
   Vote,
 } from "shared/model/retro/retroRoom.interface";
 import type { UserResponse } from "shared/model/user/user.response";
+import type { WarmupState } from "shared/model/warmup/warmup";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -117,6 +123,11 @@ interface RetroContext {
   ) => void;
   deleteTask: (actionPointId: string) => void;
   tasks: RetroTask[];
+
+  warmup: WarmupState | null;
+  startWarmupDraw: () => void;
+  updateWarmupRoomUrl: (url: string) => void;
+  completeWarmup: () => void;
 }
 
 export const RetroContext = createContext<RetroContext>({
@@ -172,6 +183,10 @@ export const RetroContext = createContext<RetroContext>({
   updateTask: () => {},
   deleteTask: () => {},
   tasks: [],
+  warmup: null,
+  startWarmupDraw: () => {},
+  updateWarmupRoomUrl: () => {},
+  completeWarmup: () => {},
 });
 
 export const RetroContextProvider: React.FC<
@@ -182,6 +197,7 @@ export const RetroContextProvider: React.FC<
 
   const timeOffset = useRef<number>(0);
   const socket = useRef<Socket>(undefined);
+  const pendingTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [teamId, setTeamId] = useState<string | null>(null);
   const [columns, setColumns] = useState<RetroColumn[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
@@ -206,6 +222,7 @@ export const RetroContextProvider: React.FC<
 
   const [discussionCardId, setDiscussionCardId] = useState<string | null>(null);
   const [tasks, setTasks] = useState<RetroTask[]>([]);
+  const [warmup, setWarmup] = useState<WarmupState | null>(null);
 
   useEffect(() => {
     const createdSocket = io(`${process.env.RETRO_WEB_SOCKET_URL}/retro`, {
@@ -246,6 +263,7 @@ export const RetroContextProvider: React.FC<
       setUsers(roomData.users);
       setTasks(roomData.tasks);
       setDiscussionCardId(roomData.discussionCardId);
+      setWarmup(roomData.warmup);
 
       const serverTimeOffset = roomData.serverTime - new Date().valueOf();
       timeOffset.current = serverTimeOffset;
@@ -255,6 +273,43 @@ export const RetroContextProvider: React.FC<
     createdSocket.on("event_timer_change", (e: TimerChangedEvent) => {
       handleTimerChanged(e.timerEnds, timeOffset.current ?? 0);
     });
+
+    createdSocket.on(
+      "event_warmup_draw_started",
+      ({ resultId, spinEndsAt }: WarmupDrawStartedEvent) => {
+        setWarmup((current) =>
+          current
+            ? {
+                ...current,
+                status: "spinning",
+                spinEndsAt,
+                result:
+                  current.candidates.find((item) => item.id === resultId) ??
+                  null,
+              }
+            : null,
+        );
+      },
+    );
+
+    createdSocket.on(
+      "event_warmup_room_url_updated",
+      (event: WarmupRoomUrlUpdatedEvent) => {
+        setWarmup((current) =>
+          current
+            ? {
+                ...current,
+                sharedRoomUrl: event.url,
+                sharedRoomUrlRevision: event.revision,
+                sharedRoomUrlUpdatedBy: event.actorId,
+              }
+            : null,
+        );
+        if (event.actorId !== user?.id) {
+          toast.info("Link do rozgrzewki został zaktualizowany");
+        }
+      },
+    );
 
     createdSocket.on(
       "event_column_name_changed",
@@ -304,9 +359,11 @@ export const RetroContextProvider: React.FC<
         if (event.highlightedUserId === user?.id) {
           const { autoReadyAfterDraw } = usePreferencesStore.getState();
           if (autoReadyAfterDraw) {
-            setTimeout(() => {
-              setReady(true);
-            }, SLOT_MACHINE_ANIMATION_DURATION);
+            pendingTimeouts.current.push(
+              setTimeout(() => {
+                setReady(true);
+              }, SLOT_MACHINE_ANIMATION_DURATION),
+            );
           }
         }
 
@@ -324,6 +381,8 @@ export const RetroContextProvider: React.FC<
     });
 
     return () => {
+      for (const timeout of pendingTimeouts.current) clearTimeout(timeout);
+      pendingTimeouts.current = [];
       createdSocket.removeAllListeners();
       createdSocket.disconnect();
     };
@@ -426,6 +485,21 @@ export const RetroContextProvider: React.FC<
 
   const endRetro = () => {
     socket.current?.emit("command_close_room");
+  };
+
+  const startWarmupDraw = () => {
+    const command: StartWarmupDrawCommand = {};
+    socket.current?.emit("command_start_warmup_draw", command);
+  };
+
+  const updateWarmupRoomUrl = (url: string) => {
+    const command: UpdateWarmupRoomUrlCommand = { url };
+    socket.current?.emit("command_update_warmup_room_url", command);
+  };
+
+  const completeWarmup = () => {
+    const command: CompleteWarmupCommand = {};
+    socket.current?.emit("command_complete_warmup", command);
   };
 
   // reflection
@@ -671,6 +745,10 @@ export const RetroContextProvider: React.FC<
         updateTask: updateTask,
         deleteTask: deleteTask,
         tasks: tasks,
+        warmup,
+        startWarmupDraw,
+        updateWarmupRoomUrl,
+        completeWarmup,
       }}
     >
       {children}

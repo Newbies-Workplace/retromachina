@@ -21,9 +21,24 @@ describe("warmup links", () => {
       url: "https://openguessr.com/multiplayer/host",
       source: "default",
     });
+    expect(DEFAULT_WARMUPS).toContainEqual({
+      id: "default-haxball",
+      name: "HaxBall",
+      description: "Zespołowa piłka nożna połączona z air hockeyem.",
+      url: "https://www.haxball.com/play",
+      source: "default",
+    });
+    expect(DEFAULT_WARMUPS).toContainEqual({
+      id: "default-giphy",
+      name: "GIPHY",
+      description:
+        "Jakim GIF-em dziś jesteś? Wybierz GIF opisujący Twój nastrój.",
+      url: "https://giphy.com/",
+      source: "default",
+    });
   });
 
-  test("custom links replace defaults", async () => {
+  test("custom links are appended to defaults", async () => {
     const custom = {
       id: "custom",
       team_id: "team",
@@ -37,6 +52,7 @@ describe("warmup links", () => {
 
     await expect(getEffectiveWarmups(prisma as never, "team")).resolves.toEqual(
       [
+        ...DEFAULT_WARMUPS,
         {
           id: "custom",
           name: "Custom",

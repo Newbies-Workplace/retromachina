@@ -98,7 +98,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
                 <DialogHeader>
                   <DialogTitle>Rozgrzewki</DialogTitle>
                   <DialogDescription>
-                    Własne pozycje zastępują listę domyślną zespołu.
+                    Własne pozycje są dodawane do domyślnej listy rozgrzewek.
                   </DialogDescription>
                 </DialogHeader>
                 <WarmupLinksForm teamId={team.id} />

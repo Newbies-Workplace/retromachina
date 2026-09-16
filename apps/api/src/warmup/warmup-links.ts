@@ -22,6 +22,21 @@ export const DEFAULT_WARMUPS: WarmupLinkResponse[] = [
     source: "default",
   },
   {
+    id: "default-haxball",
+    name: "HaxBall",
+    description: "Zespołowa piłka nożna połączona z air hockeyem.",
+    url: "https://www.haxball.com/play",
+    source: "default",
+  },
+  {
+    id: "default-giphy",
+    name: "GIPHY",
+    description:
+      "Jakim GIF-em dziś jesteś? Wybierz GIF opisujący Twój nastrój.",
+    url: "https://giphy.com/",
+    source: "default",
+  },
+  {
     id: "default-openguessr",
     name: "OpenGuessr",
     description: "Wspólne zgadywanie lokalizacji z całego świata.",
@@ -38,14 +53,16 @@ export async function getEffectiveWarmups(
     where: { team_id: teamId },
     orderBy: { name: "asc" },
   });
-  if (links.length === 0) return DEFAULT_WARMUPS;
-  return links.map(({ id, name, description, url }) => ({
-    id,
-    name,
-    description,
-    url,
-    source: "team" as const,
-  }));
+  return [
+    ...DEFAULT_WARMUPS,
+    ...links.map(({ id, name, description, url }) => ({
+      id,
+      name,
+      description,
+      url,
+      source: "team" as const,
+    })),
+  ];
 }
 
 export function validateWarmupLink(request: WarmupLinkRequest): WarmupLink {

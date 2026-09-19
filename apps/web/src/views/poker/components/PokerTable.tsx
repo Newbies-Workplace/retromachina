@@ -1,0 +1,94 @@
+import { XIcon } from "lucide-react";
+import type React from "react";
+import type { ActivePokerUser } from "shared/model/poker/poker.events";
+import { Button } from "@/components/ui/button";
+import { PokerPlayer } from "@/views/poker/components/PokerPlayer";
+
+type PokerTableProps = {
+  users: ActivePokerUser[];
+  currentUserId?: string;
+  cardsRevealed: boolean;
+  onRevealCards: () => void;
+  onClearTable: () => void;
+};
+
+const playerPositionRadiusX = 42;
+const playerPositionRadiusY = 34;
+
+export const PokerTable: React.FC<PokerTableProps> = ({
+  users,
+  currentUserId,
+  cardsRevealed,
+  onRevealCards,
+  onClearTable,
+}) => {
+  const otherUsers = users.filter((activeUser) => {
+    return activeUser.userId !== currentUserId;
+  });
+  const currentUser = users.find((activeUser) => {
+    return activeUser.userId === currentUserId;
+  });
+
+  return (
+    <div
+      className="relative mx-auto h-full min-h-80 max-w-4xl"
+      role="img"
+      aria-label="Stół pokera"
+    >
+      <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 flex h-36 w-64 items-center justify-center overflow-hidden rounded-xl border-2 border-border bg-card shadow-lg sm:h-44 sm:w-96">
+        <div
+          className="absolute inset-0 opacity-80 bg-card"
+          aria-hidden="true"
+        />
+        <div className="relative flex items-center gap-3">
+          <Button onClick={onRevealCards}>Odkryj karty</Button>
+          <Button variant="destructive" size="icon" onClick={onClearTable}>
+            <XIcon />
+            <span className="sr-only">Wyczyść stół</span>
+          </Button>
+        </div>
+      </div>
+
+      {otherUsers.map((activeUser, index) => {
+        const angle = getOtherPlayerAngle(index, otherUsers.length);
+        const left = 50 + Math.cos(angle) * playerPositionRadiusX;
+        const top = 50 + Math.sin(angle) * playerPositionRadiusY;
+
+        return (
+          <PokerPlayer
+            key={activeUser.userId}
+            user={activeUser}
+            cardsRevealed={cardsRevealed}
+            className="-translate-x-1/2 -translate-y-1/2 absolute"
+            style={{
+              left: `${left}%`,
+              top: `${top}%`,
+            }}
+          />
+        );
+      })}
+
+      {currentUser && (
+        <PokerPlayer
+          user={currentUser}
+          cardsRevealed={cardsRevealed}
+          className="-translate-x-1/2 -translate-y-1/2 absolute"
+          style={{
+            left: "50%",
+            top: `${50 + playerPositionRadiusY}%`,
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+const getOtherPlayerAngle = (index: number, playersCount: number) => {
+  if (playersCount <= 1) return -Math.PI / 2;
+
+  const upperArcStart = -Math.PI * 0.85;
+  const upperArcEnd = -Math.PI * 0.15;
+  const step = (upperArcEnd - upperArcStart) / (playersCount - 1);
+
+  return upperArcStart + step * index;
+};

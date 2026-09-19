@@ -41,7 +41,7 @@ export const Menu = ({ onOpenPreferences }: MenuProps) => {
     <DropdownMenuContent
       align="end"
       sideOffset={8}
-      className="w-72 origin-(--radix-dropdown-menu-content-transform-origin) rounded-2xl border-border/70 bg-popover p-2 shadow-xl duration-150 data-[state=closed]:duration-100"
+      className="w-72 origin-(--radix-dropdown-menu-content-transform-origin) rounded-2xl border-border/70 bg-popover p-2 shadow-xl transition-[opacity,transform] duration-150 data-[state=closed]:duration-100"
     >
       <DropdownMenuLabel className="flex items-center gap-3 rounded-xl bg-muted/50 px-3 py-3 font-normal">
         <Avatar size="lg">

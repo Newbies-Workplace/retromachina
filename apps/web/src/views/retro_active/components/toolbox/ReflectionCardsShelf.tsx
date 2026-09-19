@@ -110,7 +110,9 @@ export const ReflectionCardsShelf: React.FC<{
     <Portal>
       <div
         ref={drawerRef}
-        className={cn("absolute bottom-0 z-40 min-h-54 w-full overflow-hidden")}
+        className={cn(
+          "pointer-events-auto absolute bottom-0 z-40 min-h-54 w-full overflow-hidden",
+        )}
       >
         <LazyMotion features={domAnimation}>
           <m.div

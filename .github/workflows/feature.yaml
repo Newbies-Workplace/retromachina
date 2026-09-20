@@ -36,5 +36,10 @@ jobs:
       - name: Build shared package
         run: npm run build --workspace=shared
 
+      - name: Generate Prisma client
+        run: npm run generate --workspace=api
+        env:
+          DATABASE_URL: mysql://root:retro@localhost:3306/retro
+
       - name: Run backend tests
         run: npm test --workspace=api

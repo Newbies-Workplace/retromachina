@@ -4,6 +4,7 @@ import {
   FilePlusIcon,
   PencilIcon,
   PlusIcon,
+  SpadeIcon,
 } from "lucide-react";
 import React, {
   useEffect,
@@ -118,6 +119,14 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
             </Button>
           )}
           <Button
+            data-testid="retro-archive"
+            onClick={() => navigate(`/team/${teamId}/archive`)}
+            size="sm"
+          >
+            Archiwum
+            <ArchiveIcon />
+          </Button>
+          <Button
             data-testid="open-reflection-cards-shelf"
             onClick={() => openReflectionCardsShelfClick()}
             size="sm"
@@ -153,16 +162,14 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         </Button>
 
         <Button
-          data-testid="task-list"
+          data-testid="planning-poker"
           className={
             "flex-row sm:flex-col min-h-20 sm:min-h-24 bg-secondary/60 text-secondary-foreground"
           }
-          onClick={() => navigate(`/team/${teamId}/archive`)}
+          onClick={() => navigate(`/${teamId}/poker`)}
         >
-          Archiwum
-          <br />
-          Retrospekcji
-          <ArchiveIcon className={"min-size-6 size-6"} />
+          Planning Poker
+          <SpadeIcon />
         </Button>
 
         {role !== "USER" && !isAnyRetroRunning && (

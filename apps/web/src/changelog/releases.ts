@@ -7,6 +7,14 @@ export interface Release {
 // Newest first. Use stable major.minor.patch versions; see docs/changelog.md.
 export const releases: Release[] = [
   {
+    version: "1.28.0",
+    title: "Planning Poker",
+    changes: [
+      "Dodaliśmy Planning Poker do zespołów — wybierz talię kart i głosuj na estymację",
+      "Karty uczestników są synchronizowane na żywo i można je wspólnie odkryć przy stole",
+    ],
+  },
+  {
     version: "1.27.0",
     title: "Edycja kolumn",
     changes: [

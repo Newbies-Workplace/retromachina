@@ -43,22 +43,35 @@ export const Menu = ({ onOpenPreferences }: MenuProps) => {
       sideOffset={8}
       className="w-72 origin-(--radix-dropdown-menu-content-transform-origin) rounded-2xl border-border/70 bg-popover p-2 shadow-xl transition-[opacity,transform] duration-150 data-[state=closed]:duration-100"
     >
-      <DropdownMenuLabel className="flex items-center gap-3 rounded-xl bg-muted/50 px-3 py-3 font-normal">
-        <Avatar size="lg">
-          <AvatarImage src={user?.avatar_link} />
-          <AvatarFallback>:)</AvatarFallback>
-        </Avatar>
+      <DropdownMenuLabel className="rounded-xl bg-muted/50 px-3 py-3 font-normal">
+        <div className="flex items-center gap-3">
+          <Avatar size="lg">
+            <AvatarImage src={user?.avatar_link} />
+            <AvatarFallback>:)</AvatarFallback>
+          </Avatar>
 
-        <div className="flex min-w-0 flex-col gap-0.5 text-left">
-          <span className="truncate font-semibold text-foreground">
-            {user?.nick}
-          </span>
-          <span
-            className="truncate text-xs text-muted-foreground"
-            title={user?.email}
-          >
-            {user?.email}
-          </span>
+          <div className="flex min-w-0 flex-col gap-0.5 text-left">
+            <span className="truncate font-semibold text-foreground">
+              {user?.nick}
+            </span>
+            <span
+              className="truncate text-xs text-muted-foreground"
+              title={user?.email}
+            >
+              {user?.email}
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2">
+          {user?.teams?.slice(0, 5).map((team) => (
+            <span
+              key={team.id}
+              className="max-w-full truncate rounded-full bg-background px-1.5 text-sm"
+            >
+              {team.name}
+            </span>
+          ))}
         </div>
       </DropdownMenuLabel>
 

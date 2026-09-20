@@ -3,6 +3,7 @@ import { JwtModule } from "@nestjs/jwt/dist";
 import { AuthModule } from "./auth/auth.module";
 import { BoardModule } from "./board/board.module";
 import { InvitesModule } from "./invites/invites.module";
+import { PokerModule } from "./poker/poker.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { RetroModule } from "./retro/retro.module";
 import { TaskModule } from "./task/task.module";
@@ -22,6 +23,7 @@ import { UserModule } from "./user/user.module";
     BoardModule,
     RetroModule,
     InvitesModule,
+    PokerModule,
   ],
 })
 export class AppModule {}

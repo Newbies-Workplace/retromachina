@@ -6,7 +6,7 @@ import EnvironmentPlugin from "vite-plugin-environment";
 import { svgrComponent } from "vite-plugin-svgr-component";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   return {
     plugins: [
       react(),
@@ -24,6 +24,9 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: "../dist",
       sourcemap: true,
+      commonjsOptions: {
+        include: [/node_modules/, /packages\/shared/],
+      },
     },
     server: {
       host: "0.0.0.0",

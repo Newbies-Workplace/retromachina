@@ -126,7 +126,7 @@ export const ReflectionCardsShelf: React.FC<{
             <div className={"flex items-center justify-between"}>
               <span
                 className={
-                  "font-harlow-solid-italic text-3xl text-secondary-foreground"
+                  "font-harlow-solid-italic text-3xl text-secondary dark:text-secondary-foreground"
                 }
               >
                 Wrzutki

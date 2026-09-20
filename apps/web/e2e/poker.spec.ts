@@ -206,7 +206,26 @@ test.describe
       await secondUserPoker.expectRevealedCards(["8", "16"]);
     });
 
-    test("shows and hides revealed cards without clearing selected cards", async ({
+    test("keeps the revealed card visible until cards are revealed again", async ({
+      firstUser,
+    }) => {
+      const firstUserPoker = new PokerPage(firstUser.page);
+
+      await firstUserPoker.goto(sharedTeam.id);
+      await firstUserPoker.clearTable();
+      await firstUserPoker.selectCard("1");
+      await firstUserPoker.revealCards();
+
+      await firstUserPoker.expectRevealedCards(["1"]);
+
+      await firstUserPoker.selectCard("2");
+      await firstUserPoker.expectRevealedCards(["1"]);
+
+      await firstUserPoker.revealCards();
+      await firstUserPoker.expectRevealedCards(["2"]);
+    });
+
+    test("clears revealed and selected cards for everyone", async ({
       firstUser,
       secondUser,
     }) => {
@@ -229,11 +248,11 @@ test.describe
       await expect(secondUserPoker.revealedCardsLocator).toHaveCount(0);
       await expect(firstUserPoker.card("4")).toHaveAttribute(
         "aria-pressed",
-        "true",
+        "false",
       );
       await expect(secondUserPoker.card("8")).toHaveAttribute(
         "aria-pressed",
-        "true",
+        "false",
       );
     });
   });

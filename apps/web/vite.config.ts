@@ -21,6 +21,7 @@ export default defineConfig(() => {
     },
     optimizeDeps: {
       include: ["shared/**"],
+      force: true,
     },
     envDir: "../",
     root: "src",

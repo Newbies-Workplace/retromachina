@@ -1,6 +1,7 @@
 import type React from "react";
 import type { ActivePokerUser } from "shared/model/poker/poker.events";
 import type { PokerCard } from "shared/model/poker/poker.types";
+import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import { usePoker } from "@/context/poker/PokerContext.hook";
@@ -38,22 +39,24 @@ export const PokerView: React.FC = () => {
         }
       />
 
-      <div className="relative flex-1 overflow-hidden px-6 pt-8 pb-36">
-        <PokerTable
-          users={activeUsers}
-          currentUserId={user?.id}
-          cardsRevealed={cardsRevealed}
-          onRevealCards={revealCards}
-          onClearTable={clearTable}
-        />
+      <AnimatedBackground contentClassName="flex h-full w-full">
+        <div className="relative flex-1 overflow-hidden px-6 pt-8 pb-36">
+          <PokerTable
+            users={activeUsers}
+            currentUserId={user?.id}
+            cardsRevealed={cardsRevealed}
+            onRevealCards={revealCards}
+            onClearTable={clearTable}
+          />
 
-        <PokerToolbar
-          cards={selectedDeck.values}
-          selectedCard={selectedCard}
-          cardVoteCounts={cardVoteCounts}
-          onCardSelect={selectCard}
-        />
-      </div>
+          <PokerToolbar
+            cards={selectedDeck.values}
+            selectedCard={selectedCard}
+            cardVoteCounts={cardVoteCounts}
+            onCardSelect={selectCard}
+          />
+        </div>
+      </AnimatedBackground>
     </>
   );
 };

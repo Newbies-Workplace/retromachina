@@ -12,8 +12,9 @@ type PokerTableProps = {
   onClearTable: () => void;
 };
 
-const playerPositionRadiusX = 42;
-const playerPositionRadiusY = 34;
+const tableEdgeCenterY = 76;
+const playerPositionRadiusX = 43;
+const playerPositionRadiusY = 48;
 
 export const PokerTable: React.FC<PokerTableProps> = ({
   users,
@@ -31,11 +32,11 @@ export const PokerTable: React.FC<PokerTableProps> = ({
 
   return (
     <div
-      className="relative mx-auto h-full min-h-80 max-w-4xl"
+      className="relative mx-auto aspect-[4/3] h-auto max-h-full w-full max-w-3xl"
       role="img"
       aria-label="Stół pokera"
     >
-      <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 flex h-36 w-64 items-center justify-center overflow-hidden rounded-xl border-2 border-border bg-card shadow-lg sm:h-44 sm:w-96">
+      <div className="-translate-x-1/2 absolute top-[32%] left-1/2 flex h-[46%] w-[78%] items-center justify-center overflow-hidden rounded-b-xl border-2 border-border bg-card shadow-lg [border-top-left-radius:50%_100%] [border-top-right-radius:50%_100%]">
         <div
           className="absolute inset-0 opacity-80 bg-card"
           aria-hidden="true"
@@ -52,13 +53,14 @@ export const PokerTable: React.FC<PokerTableProps> = ({
       {otherUsers.map((activeUser, index) => {
         const angle = getOtherPlayerAngle(index, otherUsers.length);
         const left = 50 + Math.cos(angle) * playerPositionRadiusX;
-        const top = 50 + Math.sin(angle) * playerPositionRadiusY;
+        const top = tableEdgeCenterY + Math.sin(angle) * playerPositionRadiusY;
 
         return (
           <PokerPlayer
             key={activeUser.userId}
             user={activeUser}
             cardsRevealed={cardsRevealed}
+            cardSide={left < 50 ? "left" : "right"}
             className="-translate-x-1/2 -translate-y-1/2 absolute"
             style={{
               left: `${left}%`,
@@ -75,7 +77,7 @@ export const PokerTable: React.FC<PokerTableProps> = ({
           className="-translate-x-1/2 -translate-y-1/2 absolute"
           style={{
             left: "50%",
-            top: `${50 + playerPositionRadiusY}%`,
+            top: "84%",
           }}
         />
       )}
@@ -86,8 +88,8 @@ export const PokerTable: React.FC<PokerTableProps> = ({
 const getOtherPlayerAngle = (index: number, playersCount: number) => {
   if (playersCount <= 1) return -Math.PI / 2;
 
-  const upperArcStart = -Math.PI * 0.85;
-  const upperArcEnd = -Math.PI * 0.15;
+  const upperArcStart = -Math.PI * 0.9;
+  const upperArcEnd = -Math.PI * 0.1;
   const step = (upperArcEnd - upperArcStart) / (playersCount - 1);
 
   return upperArcStart + step * index;

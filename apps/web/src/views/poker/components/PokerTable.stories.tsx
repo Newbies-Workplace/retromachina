@@ -1,16 +1,62 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { ComponentProps } from "react";
 import type { ActivePokerUser } from "shared/model/poker/poker.events";
 import type { PokerCard } from "shared/model/poker/poker.types";
+import { useArgs } from "storybook/preview-api";
+import { fn } from "storybook/test";
 import { PokerTable } from "@/views/poker/components/PokerTable";
+
+type PokerTableArgs = ComponentProps<typeof PokerTable>;
+
+const InteractivePokerTableStory = () => {
+  const [args, updateArgs] = useArgs<PokerTableArgs>();
+
+  const revealCards = () => {
+    args.onRevealCards();
+    updateArgs({
+      cardsRevealed: true,
+      users: args.users.map((user, index) => {
+        const card = user.selectedCard ?? cards[index % cards.length];
+
+        return {
+          ...user,
+          selectedCard: card,
+          revealedCard: card,
+        };
+      }),
+    });
+  };
+
+  const clearTable = () => {
+    args.onClearTable();
+    updateArgs({
+      cardsRevealed: false,
+      users: args.users.map((user) => ({
+        ...user,
+        selectedCard: null,
+        revealedCard: null,
+      })),
+    });
+  };
+
+  return (
+    <PokerTable
+      {...args}
+      onRevealCards={revealCards}
+      onClearTable={clearTable}
+    />
+  );
+};
 
 const meta = {
   title: "views/poker/PokerTable",
   component: PokerTable,
+  render: InteractivePokerTableStory,
   args: {
     currentUserId: "user-1",
     cardsRevealed: true,
-    onRevealCards: () => {},
-    onClearTable: () => {},
+    onRevealCards: fn(),
+    onClearTable: fn(),
   },
   decorators: [
     (Story) => (

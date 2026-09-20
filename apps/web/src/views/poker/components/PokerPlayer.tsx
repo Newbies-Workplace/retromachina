@@ -7,10 +7,12 @@ import {
   AvatarImage,
   AvatarStatus,
 } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 type PokerPlayerProps = {
   user: ActivePokerUser;
   cardsRevealed: boolean;
+  cardSide?: "left" | "right";
   className?: string;
   style?: React.CSSProperties;
 };
@@ -18,14 +20,15 @@ type PokerPlayerProps = {
 export const PokerPlayer: React.FC<PokerPlayerProps> = ({
   user,
   cardsRevealed,
+  cardSide = "right",
   className,
   style,
 }) => {
-  const revealedCardRotation = getCardRotation(user.userId);
+  const revealedCardRotation = getCardRotation(user.userId, cardSide);
 
   return (
     <div className={className} style={style}>
-      <Avatar size="lg" className="shadow-md">
+      <Avatar size="lg" className="relative z-10 shadow-md">
         <AvatarImage src={user.avatarLink} />
         <AvatarFallback>:)</AvatarFallback>
         {user.selectedCard !== null && <AvatarStatus />}
@@ -35,7 +38,12 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
           {cardsRevealed && user.revealedCard !== null && (
             <m.div
               key={`${user.userId}-${user.revealedCard}`}
-              className="-right-10 -top-5 absolute flex aspect-[2/3] w-8 origin-bottom-left items-center justify-center rounded-lg border-2 border-border bg-card font-semibold text-card-foreground shadow-md"
+              className={cn(
+                "-top-5 absolute flex aspect-[2/3] w-8 items-center justify-center rounded-lg border-2 border-border bg-card font-semibold text-card-foreground shadow-md",
+                cardSide === "left"
+                  ? "-left-6 origin-bottom-right"
+                  : "-right-6 origin-bottom-left",
+              )}
               initial={{ opacity: 0, x: -24, y: 24, scale: 0.25, rotate: -18 }}
               animate={{
                 opacity: 1,
@@ -64,10 +72,11 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
   );
 };
 
-const getCardRotation = (value: string) => {
+const getCardRotation = (value: string, side: "left" | "right") => {
   const hash = value.split("").reduce((result, char) => {
     return result + char.charCodeAt(0);
   }, 0);
+  const rotation = 5 + (hash % 6);
 
-  return (hash % 21) - 10;
+  return side === "left" ? -rotation : rotation;
 };

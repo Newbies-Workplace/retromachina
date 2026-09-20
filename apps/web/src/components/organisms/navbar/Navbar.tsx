@@ -66,6 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({
               <button
                 type="button"
                 aria-label="Otwórz menu konta"
+                data-testid="user-menu-trigger"
                 className="z-20 flex size-9 cursor-pointer items-center justify-center rounded-full bg-background outline-none transition-transform duration-150 active:scale-[0.97] focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <AvatarGroup>

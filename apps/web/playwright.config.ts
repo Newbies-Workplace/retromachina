@@ -15,7 +15,10 @@ export default defineConfig({
   timeout: 30_000,
   projects: [
     // Setup project
-    { name: "setup", testMatch: /.*\.setup\.ts/ },
+    { name: "setup", testMatch: /.*\.setup\.ts/, teardown: "cleanup" },
+
+    // Cleanup project
+    { name: "cleanup", testMatch: /.*\.cleanup\.ts/ },
 
     {
       name: "chromium",

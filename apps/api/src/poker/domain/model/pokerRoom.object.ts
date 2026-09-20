@@ -79,11 +79,9 @@ export class PokerRoom {
 
   clearTable() {
     this.cardsRevealed = false;
-    this.selectedCards.clear();
     this.revealedCards.clear();
 
     for (const user of this.connectedUsers.values()) {
-      this.selectedCards.set(user.userId, null);
       this.revealedCards.set(user.userId, null);
     }
   }

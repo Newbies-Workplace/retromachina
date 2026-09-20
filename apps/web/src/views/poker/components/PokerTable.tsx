@@ -31,9 +31,8 @@ export const PokerTable: React.FC<PokerTableProps> = ({
   });
 
   return (
-    <div
+    <section
       className="relative mx-auto aspect-[4/3] h-auto max-h-full w-full max-w-3xl"
-      role="img"
       aria-label="Stół pokera"
     >
       <div className="-translate-x-1/2 absolute top-[32%] left-1/2 flex h-[46%] w-[78%] items-center justify-center overflow-hidden rounded-b-xl border-2 border-border bg-card shadow-lg [border-top-left-radius:50%_100%] [border-top-right-radius:50%_100%]">
@@ -81,7 +80,7 @@ export const PokerTable: React.FC<PokerTableProps> = ({
           }}
         />
       )}
-    </div>
+    </section>
   );
 };
 

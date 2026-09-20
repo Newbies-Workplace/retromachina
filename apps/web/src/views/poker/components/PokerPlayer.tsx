@@ -27,7 +27,7 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
   const revealedCardRotation = getCardRotation(user.userId, cardSide);
 
   return (
-    <div className={className} style={style}>
+    <div className={className} style={style} data-testid="poker-player">
       <Avatar size="lg" className="relative z-10 shadow-md">
         <AvatarImage src={user.avatarLink} />
         <AvatarFallback>:)</AvatarFallback>
@@ -38,6 +38,7 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
           {cardsRevealed && user.revealedCard !== null && (
             <m.div
               key={`${user.userId}-${user.revealedCard}`}
+              data-testid="poker-player-revealed-card"
               className={cn(
                 "-top-5 absolute flex aspect-[2/3] w-8 items-center justify-center rounded-lg border-2 border-border bg-card font-semibold text-card-foreground shadow-md",
                 cardSide === "left"

@@ -15,9 +15,9 @@ export default defineConfig({
   timeout: 30_000,
   projects: [
     // Setup project
-    { name: "setup", testMatch: /.*\.setup\.ts/, teardown: "cleanup" },
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
 
-    // Cleanup project
+    // Cleanup project (manual usage)
     { name: "cleanup", testMatch: /.*\.cleanup\.ts/ },
 
     {

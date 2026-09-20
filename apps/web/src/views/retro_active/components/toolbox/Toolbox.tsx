@@ -149,7 +149,7 @@ export const Toolbox: React.FC = () => {
 
       <div
         className={
-          "relative flex items-center justify-center gap-2 w-full max-w-3xl mx-auto p-2 bg-card/95 border border-b-0 border-border rounded-t-2xl shadow-lg backdrop-blur-sm pointer-events-auto"
+          "relative flex items-center justify-center gap-2 w-full max-w-3xl mx-auto p-2 bg-card border border-b-0 border-border rounded-t-2xl shadow-lg pointer-events-auto"
         }
       >
         {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}

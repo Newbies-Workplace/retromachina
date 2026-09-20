@@ -111,7 +111,7 @@ export const ReflectionCardsShelf: React.FC<{
       <div
         ref={drawerRef}
         className={cn(
-          "pointer-events-auto absolute bottom-0 z-40 min-h-54 w-full overflow-hidden",
+          "pointer-events-auto absolute right-2 bottom-0 left-2 z-40 min-h-54 overflow-hidden",
         )}
       >
         <LazyMotion features={domAnimation}>
@@ -119,13 +119,11 @@ export const ReflectionCardsShelf: React.FC<{
             initial={{ bottom: -150 }}
             animate={{ bottom: 0 }}
             className={cn(
-              "absolute bottom-0 h-full w-full p-2 bg-secondary rounded-t-lg flex flex-col gap-2",
-              isOverDropDiv
-                ? "border-2 border-b-0 border-primary"
-                : "border-2 border-transparent",
+              "absolute bottom-0 flex h-full w-full flex-col gap-2 rounded-t-2xl border border-b-0 bg-card px-4 pt-3 pb-0 shadow-lg",
+              isOverDropDiv ? "border-primary" : "border-border/70",
             )}
           >
-            <div className={"flex justify-between"}>
+            <div className={"flex items-center justify-between"}>
               <span
                 className={
                   "font-harlow-solid-italic text-3xl text-secondary-foreground"
@@ -142,7 +140,7 @@ export const ReflectionCardsShelf: React.FC<{
 
             <div
               className={
-                "flex h-full w-full flex-row gap-2 overflow-x-auto p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                "flex h-full w-full flex-row gap-2 overflow-x-auto px-2 pt-2 pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               }
             >
               {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (

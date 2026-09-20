@@ -111,7 +111,7 @@ export const ReflectionView: React.FC = () => {
   return (
     <div
       className={
-        "grid min-h-full grid-flow-col [grid-auto-columns:minmax(280px,1fr)] gap-0 px-3 py-1 sm:[grid-auto-columns:minmax(310px,1fr)]"
+        "grid h-full grid-flow-col [grid-auto-columns:minmax(300px,1fr)] gap-0"
       }
     >
       {displayedColumns.map((column) => {

@@ -4,6 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
 import { toast } from "sonner";
 import invariant from "tiny-invariant";
+import { v4 as uuidv4 } from "uuid";
+import { TeamService } from "@/api/Team.service";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import { GramophoneAction } from "@/components/organisms/gramophone/GramophoneAction";
 import Navbar from "@/components/organisms/navbar/Navbar";
@@ -42,6 +44,7 @@ export const RetroActiveView: React.FC = () => {
   const allUsersCount = activeUsers.length;
   const prevReadyUsersCount = useRef(-1);
   const prevAllUsersCount = useRef(allUsersCount);
+  const generatedInviteKey = useRef<string | null>(null);
 
   useEffect(() => {
     navigate(`/retro/${retroId}/${roomState}`);
@@ -81,14 +84,37 @@ export const RetroActiveView: React.FC = () => {
     prevAllUsersCount.current = allUsersCount;
   }, [readyUsersCount, playAudio, allUsersCount]);
 
-  const onShareButtonClick = () => {
-    if (team?.invite_key) {
-      navigator.clipboard
-        .writeText(`${window.location.origin}/invitation/${team.invite_key}`)
-        .then(() => {
-          toast.success("Link skopiowano do schowka");
-        });
+  const onShareButtonClick = async () => {
+    if (!team) {
+      toast.error("Nie udało się przygotować linku z zaproszeniem");
+      return;
     }
+
+    let inviteKey = team.invite_key ?? generatedInviteKey.current;
+
+    try {
+      if (!inviteKey) {
+        inviteKey = uuidv4();
+        await TeamService.editTeamInvitation(team.id, {
+          invite_key: inviteKey,
+        });
+        generatedInviteKey.current = inviteKey;
+      }
+    } catch {
+      toast.error("Nie udało się przygotować linku z zaproszeniem");
+      return;
+    }
+
+    const invitationUrl = `${window.location.origin}/invitation/${inviteKey}`;
+
+    try {
+      await navigator.clipboard.writeText(invitationUrl);
+    } catch {
+      toast.error("Nie udało się skopiować linku do schowka");
+      return;
+    }
+
+    toast.success("Link skopiowano do schowka");
   };
 
   return (

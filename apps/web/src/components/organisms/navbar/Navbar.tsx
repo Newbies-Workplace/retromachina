@@ -37,12 +37,12 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <header
       className={
-        "sticky top-0 left-0 z-30 flex shrink-0 flex-col gap-2 w-full pb-1 bg-secondary shadow-sm"
+        "sticky top-0 left-0 z-30 flex w-full shrink-0 flex-col bg-secondary pb-1 shadow-sm"
       }
     >
       <div
         className={
-          "flex h-[58px] min-h-[58px] w-full flex-row items-center gap-3 px-3 sm:px-4"
+          "flex h-10 min-h-13 w-full flex-row items-center gap-3 px-3 sm:px-4"
         }
       >
         <button

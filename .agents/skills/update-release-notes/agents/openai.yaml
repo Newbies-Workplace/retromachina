@@ -1,0 +1,4 @@
+interface:
+  display_name: "Update release notes"
+  short_description: "Aktualizuje changelog aplikacji przed wydaniem"
+  default_prompt: "Użyj $update-release-notes, aby przygotować wpis changelogu dla nowego wydania."

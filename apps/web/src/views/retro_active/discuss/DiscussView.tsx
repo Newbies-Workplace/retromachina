@@ -80,7 +80,7 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
                 <CardGroup
                   className={cn(group.votes.length === 0 && "opacity-40")}
                   columnId={"next"}
-                  key={group.parentCardId}
+                  key={`${group.parentCardId}-in-a-moment`}
                   parentCardId={group.parentCardId}
                 >
                   {group.cards.map((card, index) => {
@@ -91,7 +91,7 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
                     return (
                       <Card
                         id={card.id}
-                        key={card.id}
+                        key={`${card.id}-in-a-moment`}
                         style={{ marginTop: index === 0 ? 0 : -80 }}
                       >
                         <CardContent text={card.text} />

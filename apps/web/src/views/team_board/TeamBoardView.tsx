@@ -15,13 +15,9 @@ import {
 import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import Navbar from "@/components/organisms/navbar/Navbar";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -140,10 +136,10 @@ export const TeamBoardView: React.FC = () => {
                     <Tooltip key={activeUser.userId}>
                       <TooltipTrigger
                         render={
-                          <Avatar>
-                            <AvatarImage src={activeUser.avatar_link} />
-                            <AvatarFallback>:)</AvatarFallback>
-                          </Avatar>
+                          <UserAvatar
+                            avatarUrl={activeUser.avatar_link}
+                            name={teamUser.nick}
+                          />
                         }
                       />
                       <TooltipContent>{teamUser.nick}</TooltipContent>

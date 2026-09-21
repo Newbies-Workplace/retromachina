@@ -13,6 +13,7 @@ export const ToolboxSlotMachine: React.FC = () => {
     teamId,
     roomState,
     activeUsers,
+    teamUsers,
     drawMachine,
     highlightedUserId,
     slotMachineVisible,
@@ -51,6 +52,7 @@ export const ToolboxSlotMachine: React.FC = () => {
       highlightedUserId={highlightedUserId}
       userPool={activeUsers.map((u) => ({
         id: u.userId,
+        nick: teamUsers.find((teamUser) => teamUser.id === u.userId)?.nick,
         avatar_link: u.avatar_link,
       }))}
     />

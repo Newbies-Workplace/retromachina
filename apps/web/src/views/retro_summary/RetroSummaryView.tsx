@@ -8,9 +8,9 @@ import { RetroService } from "@/api/Retro.service";
 import { TaskService } from "@/api/Task.service";
 import { UserService } from "@/api/User.service";
 import { Card, CardContent } from "@/components/molecules/card/Card";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export const RetroSummaryView = () => {
@@ -86,10 +86,7 @@ export const RetroSummaryView = () => {
                       "flex flex-row justify-center items-center gap-4"
                     }
                   >
-                    <Avatar>
-                      <AvatarImage src={user.avatar_link} />
-                      <AvatarFallback>:)</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar avatarUrl={user.avatar_link} name={user.nick} />
 
                     {user.nick}
                   </div>
@@ -148,10 +145,10 @@ export const RetroSummaryView = () => {
                         }
                         key={user.id}
                       >
-                        <Avatar>
-                          <AvatarImage src={user.avatar_link} />
-                          <AvatarFallback>:)</AvatarFallback>
-                        </Avatar>
+                        <UserAvatar
+                          avatarUrl={user.avatar_link}
+                          name={user.nick}
+                        />
 
                         {user.nick}
                       </div>

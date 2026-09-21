@@ -7,16 +7,11 @@ import invariant from "tiny-invariant";
 import { v4 as uuidv4 } from "uuid";
 import { TeamService } from "@/api/Team.service";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { GramophoneAction } from "@/components/organisms/gramophone/GramophoneAction";
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+import { AvatarGroup, AvatarStatus } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -164,11 +159,12 @@ export const RetroActiveView: React.FC = () => {
                     <Tooltip key={activeUser.userId}>
                       <TooltipTrigger
                         render={
-                          <Avatar>
-                            <AvatarImage src={activeUser.avatar_link} />
-                            <AvatarFallback>:)</AvatarFallback>
+                          <UserAvatar
+                            avatarUrl={activeUser.avatar_link}
+                            name={teamUser.nick}
+                          >
                             {activeUser.isReady && <AvatarStatus />}
-                          </Avatar>
+                          </UserAvatar>
                         }
                       />
                       <TooltipContent>{teamUser.nick}</TooltipContent>

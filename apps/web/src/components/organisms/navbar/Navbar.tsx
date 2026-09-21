@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import lineSvg from "@/assets/images/line.svg?inline";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { Menu } from "@/components/organisms/menu/Menu";
 import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+import { AvatarGroup, AvatarStatus } from "@/components/ui/avatar";
 import { Dialog } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -70,11 +65,9 @@ const Navbar: React.FC<NavbarProps> = ({
                 className="z-20 flex size-9 cursor-pointer items-center justify-center rounded-full bg-background outline-none transition-transform duration-150 active:scale-[0.97] focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <AvatarGroup>
-                  <Avatar>
-                    <AvatarImage src={user?.avatar_link} />
-                    <AvatarFallback>:)</AvatarFallback>
+                  <UserAvatar avatarUrl={user?.avatar_link} name={user?.nick}>
                     {avatarProps?.isReady && <AvatarStatus />}
-                  </Avatar>
+                  </UserAvatar>
                 </AvatarGroup>
               </button>
             </DropdownMenuTrigger>

@@ -15,14 +15,10 @@ import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export interface Column {
@@ -174,10 +170,11 @@ export const RetroCreateView: React.FC = () => {
 
             <AvatarGroup>
               {teamUsers.map((user) => (
-                <Avatar key={user.id}>
-                  <AvatarImage src={user.avatar_link} />
-                  <AvatarFallback>:)</AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  key={user.id}
+                  avatarUrl={user.avatar_link}
+                  name={user.nick}
+                />
               ))}
             </AvatarGroup>
 

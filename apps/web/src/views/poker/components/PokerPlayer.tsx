@@ -1,12 +1,8 @@
 import { AnimatePresence, domAnimation, LazyMotion, m } from "motion/react";
 import type React from "react";
 import type { ActivePokerUser } from "shared/model/poker/poker.events";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
+import { AvatarStatus } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -36,11 +32,14 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
       <Tooltip>
         <TooltipTrigger
           render={
-            <Avatar size="lg" className="relative z-10 shadow-md">
-              <AvatarImage src={user.avatarLink} />
-              <AvatarFallback>:)</AvatarFallback>
+            <UserAvatar
+              size="lg"
+              className="relative z-10 shadow-md"
+              avatarUrl={user.avatarLink}
+              name={user.nick}
+            >
               {user.selectedCard !== null && <AvatarStatus />}
-            </Avatar>
+            </UserAvatar>
           }
         />
         <TooltipContent>{user.nick}</TooltipContent>

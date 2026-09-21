@@ -8,7 +8,7 @@ import {
   SettingsIcon,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -45,10 +45,11 @@ export const Menu = ({ onOpenPreferences }: MenuProps) => {
     >
       <DropdownMenuLabel className="rounded-xl bg-muted/50 px-3 py-3 font-normal">
         <div className="flex items-center gap-3">
-          <Avatar size="lg">
-            <AvatarImage src={user?.avatar_link} />
-            <AvatarFallback>:)</AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            size="lg"
+            avatarUrl={user?.avatar_link}
+            name={user?.nick}
+          />
 
           <div className="flex min-w-0 flex-col gap-0.5 text-left">
             <span className="truncate font-semibold text-foreground">

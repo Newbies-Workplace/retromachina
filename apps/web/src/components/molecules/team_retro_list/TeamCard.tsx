@@ -19,18 +19,13 @@ import { UserInTeamResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { UserService } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import {
   SLOT_MACHINE_ANIMATION_DURATION,
   SlotMachine,
   SlotMachineRef,
 } from "@/components/organisms/slot_machine/SlotMachine";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+import { AvatarGroup, AvatarStatus } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -106,10 +101,10 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
                 <Tooltip key={user.id}>
                   <TooltipTrigger
                     render={
-                      <Avatar>
-                        <AvatarImage src={user.avatar_link} />
-                        <AvatarFallback>:)</AvatarFallback>
-                      </Avatar>
+                      <UserAvatar
+                        avatarUrl={user.avatar_link}
+                        name={user.nick}
+                      />
                     }
                   />
                   <TooltipContent>{user.nick}</TooltipContent>
@@ -286,10 +281,11 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
       >
         {delayedHighlightedUser && (
           <div className={"flex flex-row gap-2 justify-center items-center"}>
-            <Avatar size={"lg"}>
-              <AvatarImage src={delayedHighlightedUser.avatar_link} />
-              <AvatarFallback>??</AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              size={"lg"}
+              avatarUrl={delayedHighlightedUser.avatar_link}
+              name={delayedHighlightedUser.nick}
+            />
 
             <div>{delayedHighlightedUser.nick}</div>
           </div>
@@ -324,11 +320,13 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
                   });
                 }}
               >
-                <Avatar size={"lg"}>
-                  <AvatarImage src={user.avatar_link} />
-                  <AvatarFallback>??</AvatarFallback>
+                <UserAvatar
+                  size={"lg"}
+                  avatarUrl={user.avatar_link}
+                  name={user.nick}
+                >
                   {teamUsersInPool.includes(user.id) && <AvatarStatus />}
-                </Avatar>
+                </UserAvatar>
               </div>
             );
           })}

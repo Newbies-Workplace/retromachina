@@ -37,6 +37,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useUser } from "@/context/user/UserContext.hook";
 
 export interface Column {
@@ -212,13 +217,19 @@ export const RetroCreateView: React.FC = () => {
           <PageCardHeader>Retrospektywa zespołu {team.name}</PageCardHeader>
 
           <PageCardContent>
-            <AvatarGroup>
+            <AvatarGroup className="mb-2 sm:mb-4">
               {teamUsers.map((user) => (
-                <UserAvatar
-                  key={user.id}
-                  avatarUrl={user.avatar_link}
-                  name={user.nick}
-                />
+                <Tooltip key={user.id}>
+                  <TooltipTrigger
+                    render={
+                      <UserAvatar
+                        avatarUrl={user.avatar_link}
+                        name={user.nick}
+                      />
+                    }
+                  />
+                  <TooltipContent>{user.nick}</TooltipContent>
+                </Tooltip>
               ))}
             </AvatarGroup>
 
@@ -259,10 +270,10 @@ export const RetroCreateView: React.FC = () => {
               </Select>
             </section>
 
-            <div className={"flex justify-between mt-4"}>
-              <div className={"flex flex-row gap-2"}>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-between">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <Button
-                  className={"grow-0"}
+                  className="w-full sm:w-auto"
                   data-testid={"randomize-template"}
                   onClick={() => randomizeTemplate()}
                 >
@@ -271,7 +282,7 @@ export const RetroCreateView: React.FC = () => {
                 </Button>
 
                 <Button
-                  className={"grow-0"}
+                  className="w-full sm:w-auto"
                   data-testid={"clear-template"}
                   onClick={() => clearTemplate()}
                   variant={"destructive"}
@@ -282,6 +293,7 @@ export const RetroCreateView: React.FC = () => {
               </div>
 
               <Button
+                className="w-full sm:w-auto"
                 disabled={columns.length >= MAX_COLUMNS}
                 onClick={onAddColumn}
               >

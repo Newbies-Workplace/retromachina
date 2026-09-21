@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { WarmupLink, WarmupStatus } from "shared/model/warmup/warmup";
 
 const FULL_TURNS = 5;
-const POINTER_ANGLE = -90;
+const POINTER_ANGLE = 0;
 
 function normalizeRotation(rotation: number) {
   return ((rotation % 360) + 360) % 360;
@@ -51,7 +51,7 @@ export function WarmupWheel({
 
   return (
     <div className="relative aspect-square w-full max-w-96 shrink-0 rounded-full shadow-xl [container-type:inline-size]">
-      <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-2 border-x-[12px] border-t-[20px] border-x-transparent border-t-foreground" />
+      <div className="absolute right-0 top-1/2 z-10 translate-x-2 -translate-y-1/2 border-y-[12px] border-r-[20px] border-y-transparent border-r-foreground" />
       <div
         aria-label="Koło losujące rozgrzewkę"
         role="img"

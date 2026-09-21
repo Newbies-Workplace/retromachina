@@ -75,6 +75,7 @@ export function WarmupView() {
         {warmup.status === "pending" && isAdmin && (
           <Button
             size="lg"
+            variant="secondary"
             onClick={startWarmupDraw}
             data-testid="start-warmup-draw"
           >
@@ -97,7 +98,7 @@ export function WarmupView() {
           <Card
             className={cn(
               "w-full transition-shadow",
-              highlight && "animate-pulse ring-4 ring-primary",
+              highlight && "animate-pulse ring-4 ring-secondary",
             )}
             data-testid="warmup-result"
           >
@@ -125,6 +126,7 @@ export function WarmupView() {
                   />
                   <Button
                     disabled={saving || !roomUrl.trim()}
+                    variant="secondary"
                     onClick={() => {
                       setSaving(true);
                       updateWarmupRoomUrl(roomUrl.trim());
@@ -145,6 +147,7 @@ export function WarmupView() {
             </CardContent>
             <CardFooter className="flex flex-wrap justify-between gap-2">
               <Button
+                variant="secondary"
                 onClick={() =>
                   window.open(activeUrl, "_blank", "noopener,noreferrer")
                 }
@@ -153,7 +156,7 @@ export function WarmupView() {
                 Otwórz rozgrzewkę
               </Button>
               {isAdmin && (
-                <Button variant="outline" onClick={completeWarmup}>
+                <Button onClick={completeWarmup}>
                   Przejdź do retrospektywy
                   <ArrowRightIcon data-icon="inline-end" />
                 </Button>

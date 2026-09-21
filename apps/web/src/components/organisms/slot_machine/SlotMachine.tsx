@@ -152,9 +152,9 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
       {slotMachineVisible && (
         <motion.div
           ref={leverRef}
-          initial={{ opacity: 0, bottom: 0 }}
-          animate={{ opacity: 1, bottom: 110 }}
-          exit={{ opacity: 0, bottom: 0 }}
+          initial={{ opacity: 0, y: 110 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 110 }}
           transition={{ duration: 0.2 }}
           className={cn("flex flex-row items-center", className)}
         >

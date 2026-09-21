@@ -5,7 +5,13 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { FilePlusIcon, TrashIcon } from "lucide-react";
 import { domAnimation, LazyMotion, m } from "motion/react";
-import React, { createRef, useEffect, useState } from "react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Portal } from "react-portal";
 import invariant from "tiny-invariant";
 import cardDropSound from "@/assets/sounds/card-drop.wav";
@@ -31,7 +37,7 @@ export const ReflectionCardsShelf: React.FC<{
   enableDrag?: boolean;
   onDismiss: () => void;
 }> = ({ teamId, onCardDrop, enableDrag = false, onDismiss }) => {
-  const drawerRef = createRef<HTMLDivElement>();
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   const [isCreatingNewReflectionCard, setIsCreatingNewReflectionCard] =
     useState(false);
@@ -45,6 +51,11 @@ export const ReflectionCardsShelf: React.FC<{
     addReflectionCard,
     reflectionCards,
   } = useReflectionCardStore();
+
+  const closeDrawer = useCallback(() => {
+    onDismiss();
+    setIsOverDropDiv(false);
+  }, [onDismiss]);
 
   useEffect(() => {
     const drawerElement = drawerRef.current;
@@ -65,16 +76,9 @@ export const ReflectionCardsShelf: React.FC<{
         onDragLeave: () => closeDrawer(),
       }),
     );
-  }, [onCardDrop]);
+  }, [closeDrawer, onCardDrop]);
 
-  useClickOutside(drawerRef, () => {
-    closeDrawer();
-  });
-
-  const closeDrawer = () => {
-    onDismiss();
-    setIsOverDropDiv(false);
-  };
+  useClickOutside(drawerRef, closeDrawer);
 
   const onReflectionCardDeleteClick = (reflectionCardId: string) => {
     deleteReflectionCard(teamId, reflectionCardId).then();
@@ -116,8 +120,9 @@ export const ReflectionCardsShelf: React.FC<{
       >
         <LazyMotion features={domAnimation}>
           <m.div
-            initial={{ bottom: -150 }}
-            animate={{ bottom: 0 }}
+            initial={{ y: 150 }}
+            animate={{ y: 0 }}
+            transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
             className={cn(
               "absolute bottom-0 flex h-full w-full flex-col gap-2 rounded-t-2xl border border-b-0 bg-card px-4 pt-3 pb-0 shadow-lg",
               isOverDropDiv ? "border-primary" : "border-border/70",

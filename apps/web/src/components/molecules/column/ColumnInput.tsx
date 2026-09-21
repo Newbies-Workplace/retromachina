@@ -40,6 +40,13 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
       clearTimeout(timerRef.current);
     }
     timerRef.current = setTimeout(onStopWriting, 3000);
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
   }, [value]);
 
   return (

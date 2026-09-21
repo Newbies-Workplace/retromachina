@@ -16,18 +16,19 @@ import { useTeamData } from "@/hooks/useTeamData";
 export const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const { user, refreshUser } = useUser();
-  if (!teamId || !user) {
-    return <Navigate to={"/"} />;
-  }
   const navigate = useNavigate();
   const { showConfirm } = useConfirm();
-  const { team: initialTeam } = useTeamData(teamId);
+  const { team: initialTeam } = useTeamData(teamId ?? "");
 
   const [team, setTeam] = useState<TeamResponse | null>(null);
 
   useEffect(() => {
     setTeam(initialTeam);
   }, [initialTeam]);
+
+  if (!teamId || !user) {
+    return <Navigate to={"/"} />;
+  }
 
   const onSubmit = (team: TeamRequest) => {
     TeamService.editTeam(teamId, team)

@@ -42,6 +42,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useTeamRole } from "@/hooks/useTeamRole";
 
@@ -98,10 +103,17 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           {teamUsers && (
             <AvatarGroup>
               {teamUsers.map((user) => (
-                <Avatar key={user.id}>
-                  <AvatarImage src={user.avatar_link} />
-                  <AvatarFallback>:)</AvatarFallback>
-                </Avatar>
+                <Tooltip key={user.id}>
+                  <TooltipTrigger
+                    render={
+                      <Avatar>
+                        <AvatarImage src={user.avatar_link} />
+                        <AvatarFallback>:)</AvatarFallback>
+                      </Avatar>
+                    }
+                  />
+                  <TooltipContent>{user.nick}</TooltipContent>
+                </Tooltip>
               ))}
             </AvatarGroup>
           )}

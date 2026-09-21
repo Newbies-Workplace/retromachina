@@ -3,6 +3,7 @@ import type { PokerCard, PokerDeckId } from "./poker.types";
 
 export interface ActivePokerUser {
   userId: string;
+  nick: string;
   avatarLink: string;
   role: UserRole;
   selectedCard: PokerCard | null;

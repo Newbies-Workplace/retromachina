@@ -19,6 +19,11 @@ import {
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useAudio } from "@/hooks/useAudio";
@@ -148,17 +153,28 @@ export const RetroActiveView: React.FC = () => {
             <AvatarGroup className={"mt-0.5"}>
               {teamUsers
                 .filter((u) => u.id !== user?.id)
-                .map((u) =>
-                  activeUsers.find((socketUser) => socketUser.userId === u.id),
-                )
-                .filter((u) => u !== undefined)
-                .map((user) => (
-                  <Avatar key={user?.userId}>
-                    <AvatarImage src={user.avatar_link} />
-                    <AvatarFallback>:)</AvatarFallback>
-                    {user?.isReady && <AvatarStatus />}
-                  </Avatar>
-                ))}
+                .map((teamUser) => {
+                  const activeUser = activeUsers.find(
+                    (user) => user.userId === teamUser.id,
+                  );
+
+                  if (!activeUser) return null;
+
+                  return (
+                    <Tooltip key={activeUser.userId}>
+                      <TooltipTrigger
+                        render={
+                          <Avatar>
+                            <AvatarImage src={activeUser.avatar_link} />
+                            <AvatarFallback>:)</AvatarFallback>
+                            {activeUser.isReady && <AvatarStatus />}
+                          </Avatar>
+                        }
+                      />
+                      <TooltipContent>{teamUser.nick}</TooltipContent>
+                    </Tooltip>
+                  );
+                })}
             </AvatarGroup>
           </>
         }

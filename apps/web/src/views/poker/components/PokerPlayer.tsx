@@ -7,6 +7,11 @@ import {
   AvatarImage,
   AvatarStatus,
 } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 type PokerPlayerProps = {
@@ -28,11 +33,18 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
 
   return (
     <div className={className} style={style} data-testid="poker-player">
-      <Avatar size="lg" className="relative z-10 shadow-md">
-        <AvatarImage src={user.avatarLink} />
-        <AvatarFallback>:)</AvatarFallback>
-        {user.selectedCard !== null && <AvatarStatus />}
-      </Avatar>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Avatar size="lg" className="relative z-10 shadow-md">
+              <AvatarImage src={user.avatarLink} />
+              <AvatarFallback>:)</AvatarFallback>
+              {user.selectedCard !== null && <AvatarStatus />}
+            </Avatar>
+          }
+        />
+        <TooltipContent>{user.nick}</TooltipContent>
+      </Tooltip>
       <LazyMotion features={domAnimation}>
         <AnimatePresence>
           {cardsRevealed && user.revealedCard !== null && (

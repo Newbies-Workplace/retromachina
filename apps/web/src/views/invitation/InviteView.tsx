@@ -12,14 +12,13 @@ import { Button } from "@/components/ui/button";
 export const InviteView: React.FC = () => {
   const { inviteKey } = useParams<{ inviteKey: string }>();
   const navigate = useNavigate();
-
-  if (!inviteKey) {
-    return <Navigate to={"/"} />;
-  }
-
   const [team, setTeam] = useState<TeamResponse>();
 
   useEffect(() => {
+    if (!inviteKey) {
+      return;
+    }
+
     TeamService.getTeamByInviteKey(inviteKey)
       .then((team) => {
         setTeam(team);
@@ -31,7 +30,11 @@ export const InviteView: React.FC = () => {
           navigate("/404");
         }
       });
-  }, []);
+  }, [inviteKey, navigate]);
+
+  if (!inviteKey) {
+    return <Navigate to={"/"} />;
+  }
 
   const onJoinTeamPress = () => {
     if (!inviteKey || !team) return;

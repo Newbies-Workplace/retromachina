@@ -12,6 +12,7 @@ export const releases: Release[] = [
     changes: [
       "Dodaliśmy Planning Poker do zespołów — wybierz talię kart i głosuj na estymację",
       "Karty uczestników są synchronizowane na żywo i można je wspólnie odkryć przy stole",
+      "Odświeżyliśmy wygląd zespołów i retrospektyw",
     ],
   },
   {

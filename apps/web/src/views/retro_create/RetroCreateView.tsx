@@ -15,13 +15,15 @@ import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
-import Navbar from "@/components/organisms/navbar/Navbar";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-} from "@/components/ui/avatar";
+  PageCard,
+  PageCardContent,
+  PageCardHeader,
+} from "@/components/molecules/page_card/PageCard";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
+import Navbar from "@/components/organisms/navbar/Navbar";
+import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
+import { AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export interface Column {
@@ -166,97 +168,100 @@ export const RetroCreateView: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className={"flex p-2 m-4 bg-card rounded-xl"}>
-        <div className={"p-2 w-full rounded-lg flex flex-col gap-2"}>
-          <span>Retrospektywa zespołu {team.name}</span>
+      <ResponsivePageLayout>
+        <PageCard>
+          <PageCardHeader>Retrospektywa zespołu {team.name}</PageCardHeader>
 
-          <AvatarGroup>
-            {teamUsers.map((user) => (
-              <Avatar key={user.id}>
-                <AvatarImage src={user.avatar_link} />
-                <AvatarFallback>:)</AvatarFallback>
-              </Avatar>
-            ))}
-          </AvatarGroup>
+          <PageCardContent>
+            <AvatarGroup>
+              {teamUsers.map((user) => (
+                <UserAvatar
+                  key={user.id}
+                  avatarUrl={user.avatar_link}
+                  name={user.nick}
+                />
+              ))}
+            </AvatarGroup>
 
-          <div className={"flex justify-between mt-4"}>
-            <div className={"flex flex-row gap-2"}>
+            <div className={"flex justify-between mt-4"}>
+              <div className={"flex flex-row gap-2"}>
+                <Button
+                  className={"grow-0"}
+                  data-testid={"randomize-template"}
+                  onClick={() => randomizeTemplate()}
+                >
+                  <RefreshCwIcon />
+                  Losuj szablon
+                </Button>
+
+                <Button
+                  className={"grow-0"}
+                  data-testid={"clear-template"}
+                  onClick={() => clearTemplate()}
+                  variant={"destructive"}
+                >
+                  <EraserIcon />
+                  Wyczyść szablon
+                </Button>
+              </div>
+
               <Button
-                className={"grow-0"}
-                data-testid={"randomize-template"}
-                onClick={() => randomizeTemplate()}
+                disabled={columns.length >= MAX_COLUMNS}
+                onClick={onAddColumn}
               >
-                <RefreshCwIcon />
-                Losuj szablon
-              </Button>
-
-              <Button
-                className={"grow-0"}
-                data-testid={"clear-template"}
-                onClick={() => clearTemplate()}
-                variant={"destructive"}
-              >
-                <EraserIcon />
-                Wyczyść szablon
+                <PlusIcon />
+                Nowa kolumna
               </Button>
             </div>
 
-            <Button
-              disabled={columns.length >= MAX_COLUMNS}
-              onClick={onAddColumn}
+            <BoardCreator
+              className={"min-h-20"}
+              onColumnReorder={({ fromId, toId }) => {
+                const fromIndex = columns.findIndex((c) => c.id === fromId);
+                const toIndex = columns.findIndex((c) => c.id === toId);
+                if (fromIndex === -1 || toIndex === -1) return;
+                if (fromIndex === toIndex) return;
+
+                setColumns(
+                  reorder({
+                    list: columns,
+                    startIndex: fromIndex,
+                    finishIndex: toIndex,
+                  }),
+                );
+                setTemplateId(null);
+              }}
             >
-              <PlusIcon />
-              Nowa kolumna
+              {columns.map((column) => (
+                <BoardCreatorColumn
+                  id={column.id}
+                  key={column.id}
+                  onChange={({ name, desc }) =>
+                    onChangeColumn(column.id, { name, desc })
+                  }
+                  onDelete={() => onDeleteColumn(column.id)}
+                  name={column.name}
+                  desc={column.desc ?? ""}
+                  withDescription
+                />
+              ))}
+            </BoardCreator>
+
+            <Button
+              data-testid={"create-retro-confirm"}
+              className={"mt-4"}
+              disabled={clicked}
+              onClick={onCreateRetroClick}
+            >
+              <Share2Icon />
+              Rozpocznij retrospektywę
             </Button>
-          </div>
-
-          <BoardCreator
-            className={"min-h-20"}
-            onColumnReorder={({ fromId, toId }) => {
-              const fromIndex = columns.findIndex((c) => c.id === fromId);
-              const toIndex = columns.findIndex((c) => c.id === toId);
-              if (fromIndex === -1 || toIndex === -1) return;
-              if (fromIndex === toIndex) return;
-
-              setColumns(
-                reorder({
-                  list: columns,
-                  startIndex: fromIndex,
-                  finishIndex: toIndex,
-                }),
-              );
-              setTemplateId(null);
-            }}
-          >
-            {columns.map((column) => (
-              <BoardCreatorColumn
-                id={column.id}
-                key={column.id}
-                onChange={({ name, desc }) =>
-                  onChangeColumn(column.id, { name, desc })
-                }
-                onDelete={() => onDeleteColumn(column.id)}
-                name={column.name}
-                desc={column.desc ?? ""}
-                withDescription
-              />
-            ))}
-          </BoardCreator>
-
-          <Button
-            data-testid={"create-retro-confirm"}
-            className={"mt-4"}
-            disabled={clicked}
-            onClick={onCreateRetroClick}
-          >
-            <Share2Icon />
-            Rozpocznij retrospektywę
-          </Button>
-          <span className={"text-sm mx-auto"}>
-            (link zostanie skopiowany do schowka)
-          </span>
-        </div>
-      </div>
+            <span className={"text-sm mx-auto"}>
+              (link zostanie skopiowany do schowka)
+            </span>
+          </PageCardContent>
+        </PageCard>
+      </ResponsivePageLayout>
     </>
   );
 };

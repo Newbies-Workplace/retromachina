@@ -10,6 +10,7 @@ type SocketId = string;
 
 export type PokerRoomUser = {
   userId: string;
+  nick: string;
   avatarLink: string;
   role: UserRole;
 };
@@ -101,6 +102,7 @@ export class PokerRoom {
       cardsRevealed: this.cardsRevealed,
       users: Array.from(uniqueUsers.values()).map((user) => ({
         userId: user.userId,
+        nick: user.nick,
         avatarLink: user.avatarLink,
         role: user.role,
         selectedCard: this.selectedCards.get(user.userId) ?? null,

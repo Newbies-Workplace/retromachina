@@ -17,6 +17,9 @@ export default defineConfig({
     // Setup project
     { name: "setup", testMatch: /.*\.setup\.ts/ },
 
+    // Cleanup project (manual usage)
+    { name: "cleanup", testMatch: /.*\.cleanup\.ts/ },
+
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },

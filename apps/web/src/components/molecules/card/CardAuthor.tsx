@@ -2,7 +2,7 @@ import { computePosition, flip } from "@floating-ui/dom";
 import { PencilIcon } from "lucide-react";
 import React, { createRef, useCallback, useEffect } from "react";
 import { TeamUserPicker } from "@/components/molecules/card/user_picker/TeamUserPicker";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
 import { useCardContext } from "./CardContext";
@@ -100,10 +100,11 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
         role={editable ? "button" : undefined}
         tabIndex={editable ? 0 : undefined}
       >
-        <Avatar size={"sm"}>
-          <AvatarImage src={author?.avatar} />
-          <AvatarFallback>:)</AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          size={"sm"}
+          avatarUrl={author?.avatar}
+          name={author?.name}
+        />
 
         <span className={"text-sm"}>
           {author ? author.name : "Nieprzypisany"}

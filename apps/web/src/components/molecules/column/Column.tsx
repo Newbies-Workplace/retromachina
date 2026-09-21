@@ -28,11 +28,11 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
   return (
     <div
       className={cn(
-        "flex flex-col items-stretch gap-2 min-w-[300px] px-2 py-4 h-full",
+        "flex flex-col items-stretch gap-3 min-w-[280px] px-1 py-3 h-full",
         className,
       )}
     >
-      <div className={cn("flex items-end mb-4", headerStyle)}>
+      <div className={cn("flex items-end", headerStyle)}>
         <ColumnHeader
           header={columnData.name}
           description={columnData.description ?? undefined}

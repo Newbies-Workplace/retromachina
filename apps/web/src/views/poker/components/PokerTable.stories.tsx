@@ -78,6 +78,7 @@ const createPokerUsers = (count: number): ActivePokerUser[] => {
 
     return {
       userId: `user-${index + 1}`,
+      nick: `Użytkownik ${index + 1}`,
       avatarLink: "",
       role: "USER",
       selectedCard: card,

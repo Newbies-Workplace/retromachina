@@ -4,18 +4,30 @@ import {
   Disc3Icon,
   HandshakeIcon,
   InfoIcon,
+  LogOutIcon,
   SettingsIcon,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
+import {
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useChangelogStore } from "@/store/useChangelogStore";
 import { APP_VERSION } from "@/utils/version";
 
-export const Menu = () => {
+interface MenuProps {
+  onOpenPreferences: () => void;
+}
+
+const menuItemClassName =
+  "h-9 cursor-pointer gap-3 rounded-lg px-3 text-[13px] font-medium transition-colors [&_svg]:text-current";
+
+export const Menu = ({ onOpenPreferences }: MenuProps) => {
   const navigate = useNavigate();
   const { user, logout } = useUser();
 
@@ -26,130 +38,108 @@ export const Menu = () => {
   };
 
   return (
-    <div
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-      className={
-        "absolute top-12 right-4 z-50 flex flex-col gap-4 text-center w-70 bg-card rounded-xl shadow-lg "
-      }
+    <DropdownMenuContent
+      align="end"
+      sideOffset={8}
+      className="w-72 origin-(--radix-dropdown-menu-content-transform-origin) rounded-2xl border-border/70 bg-popover p-2 shadow-xl transition-[opacity,transform] duration-150 data-[state=closed]:duration-100"
     >
-      <div className={"flex flex-col gap-3 rounded-t-xl p-2 bg-primary"}>
-        <div className={"flex flex-row items-center gap-2"}>
-          <Avatar>
-            <AvatarImage src={user?.avatar_link} />
-            <AvatarFallback>:)</AvatarFallback>
-          </Avatar>
+      <DropdownMenuLabel className="rounded-xl bg-muted/50 px-3 py-3 font-normal">
+        <div className="flex items-center gap-3">
+          <UserAvatar
+            size="lg"
+            avatarUrl={user?.avatar_link}
+            name={user?.nick}
+          />
 
-          <div className={"flex flex-col gap-1 overflow-hidden"}>
-            <span
-              className={
-                "text-start overflow-ellipsis whitespace-nowrap overflow-hidden font-bold text-xl"
-              }
-            >
+          <div className="flex min-w-0 flex-col gap-0.5 text-left">
+            <span className="truncate font-semibold text-foreground">
               {user?.nick}
             </span>
             <span
-              className={
-                "text-start overflow-ellipsis whitespace-nowrap overflow-hidden text-lg"
-              }
+              className="truncate text-xs text-muted-foreground"
+              title={user?.email}
             >
               {user?.email}
             </span>
           </div>
         </div>
 
-        <div className={"flex flex-row gap-2 flex-wrap"}>
+        <div className="mt-3 flex flex-wrap gap-2">
           {user?.teams?.slice(0, 5).map((team) => (
             <span
               key={team.id}
-              className={
-                "px-1.5 text-sm rounded-full bg-background text-ellipsis line-clamp-1"
-              }
+              className="max-w-full truncate rounded-full bg-background px-1.5 text-sm"
             >
               {team.name}
             </span>
           ))}
         </div>
-      </div>
+      </DropdownMenuLabel>
 
-      <div className={"flex flex-col items-center gap-2 w-full px-2"}>
-        <button
-          type="button"
-          className="flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
+      <DropdownMenuSeparator className="mx-1 my-2" />
+
+      <DropdownMenuGroup className="space-y-0.5">
+        <DropdownMenuItem
+          className={menuItemClassName}
           onClick={useChangelogStore.getState().showHistory}
         >
-          <ClapperboardIcon className="size-4" />
+          <ClapperboardIcon className="text-current" />
           Co nowego
-        </button>
-        <Dialog>
-          <DialogTrigger
-            render={
-              <div
-                className={
-                  "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
-                }
-              >
-                <SettingsIcon className={"size-4"} />
-                Ustawienia
-              </div>
-            }
-          />
-
-          <PreferencesDialogContent />
-        </Dialog>
-
-        <Link
-          className={
-            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
-          }
-          to={"/team/create"}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className={menuItemClassName}
+          onSelect={onOpenPreferences}
         >
-          <HandshakeIcon className={"size-4"} />
-          Stwórz Zespół
-        </Link>
+          <SettingsIcon className="text-current" />
+          Ustawienia
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
 
-        <Link
-          className={
-            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
-          }
-          to={"/gramophone"}
-        >
-          <Disc3Icon className={"size-4"} />
-          Gramofon
-        </Link>
+      <DropdownMenuSeparator className="mx-1 my-2" />
 
-        <Link
-          className={
-            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
-          }
-          to={"/hero"}
-        >
-          <InfoIcon className={"size-4"} />O aplikacji
-        </Link>
+      <DropdownMenuGroup className="space-y-0.5">
+        <DropdownMenuItem className={menuItemClassName} asChild>
+          <Link to="/team/create">
+            <HandshakeIcon className="text-current" />
+            Stwórz Zespół
+          </Link>
+        </DropdownMenuItem>
 
-        <Link
-          className={
-            "flex flex-row items-center gap-2 w-full cursor-pointer p-2 rounded-xl bg-background"
-          }
-          to={
-            "mailto:newbies@rst.com.pl?subject=Bug retromachine&body=Opis błędu:"
-          }
-        >
-          <BugIcon className={"size-4"} />
-          Zgłoś błąd
-        </Link>
-      </div>
+        <DropdownMenuItem className={menuItemClassName} asChild>
+          <Link to="/gramophone">
+            <Disc3Icon className="text-current" />
+            Gramofon
+          </Link>
+        </DropdownMenuItem>
 
-      <Button
-        className={"mx-2"}
-        variant={"destructive"}
-        onClick={onLogoutClick}
+        <DropdownMenuItem className={menuItemClassName} asChild>
+          <Link to="/hero">
+            <InfoIcon className="text-current" />O aplikacji
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem className={menuItemClassName} asChild>
+          <Link to="mailto:newbies@rst.com.pl?subject=Bug retromachine&body=Opis błędu:">
+            <BugIcon className="text-current" />
+            Zgłoś błąd
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
+
+      <DropdownMenuSeparator className="mx-1 my-2" />
+
+      <DropdownMenuItem
+        className={menuItemClassName}
+        variant="destructive"
+        onSelect={onLogoutClick}
       >
+        <LogOutIcon className="text-current" />
         Wyloguj
-      </Button>
+      </DropdownMenuItem>
 
-      <p className="mb-2 text-xs text-muted-foreground">Wersja {APP_VERSION}</p>
-    </div>
+      <p className="px-2 pb-0.5 pt-2.5 text-center text-[10px] font-medium tracking-wide text-muted-foreground">
+        Wersja {APP_VERSION}
+      </p>
+    </DropdownMenuContent>
   );
 };

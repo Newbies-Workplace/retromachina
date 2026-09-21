@@ -19,18 +19,13 @@ import { UserInTeamResponse } from "shared/model/user/user.response";
 import { RetroService } from "@/api/Retro.service";
 import { UserService } from "@/api/User.service";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import {
   SLOT_MACHINE_ANIMATION_DURATION,
   SlotMachine,
   SlotMachineRef,
 } from "@/components/organisms/slot_machine/SlotMachine";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+import { AvatarGroup, AvatarStatus } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,6 +37,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useTeamRole } from "@/hooks/useTeamRole";
 
@@ -79,9 +79,15 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
   return (
     <div
       data-testid={`team-${teamName}`}
-      className={"flex flex-col w-full p-4 gap-4 bg-card rounded-lg"}
+      className={
+        "flex flex-col w-full p-4 sm:p-5 gap-4 bg-card rounded-xl border border-border/70 shadow-sm"
+      }
     >
-      <div className={"flex gap-2 justify-between rounded-t-lg"}>
+      <div
+        className={
+          "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+        }
+      >
         <div
           className={
             "flex flex-row flex-wrap gap-2 font-bold text-xl items-center"
@@ -92,16 +98,23 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           {teamUsers && (
             <AvatarGroup>
               {teamUsers.map((user) => (
-                <Avatar key={user.id}>
-                  <AvatarImage src={user.avatar_link} />
-                  <AvatarFallback>:)</AvatarFallback>
-                </Avatar>
+                <Tooltip key={user.id}>
+                  <TooltipTrigger
+                    render={
+                      <UserAvatar
+                        avatarUrl={user.avatar_link}
+                        name={user.nick}
+                      />
+                    }
+                  />
+                  <TooltipContent>{user.nick}</TooltipContent>
+                </Tooltip>
               ))}
             </AvatarGroup>
           )}
         </div>
 
-        <div className={"flex gap-2"}>
+        <div className={"flex flex-wrap gap-2"}>
           {role !== "USER" && (
             <Button
               data-testid="edit-team"
@@ -134,6 +147,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
               <DialogTrigger
                 render={
                   <Button data-testid="open-slot-machine" size="icon">
+                    <span className="sr-only">Wylosuj osobę</span>
                     <SlotMachineIcon className={"size-4"} />
                   </Button>
                 }
@@ -144,10 +158,10 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         </div>
       </div>
 
-      <div className={"flex flex-col sm:flex-row gap-2"}>
+      <div className={"grid grid-cols-1 gap-2 sm:grid-cols-3"}>
         <Button
           data-testid="task-list"
-          className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar"}
+          className={"flex-row sm:flex-col min-h-20 sm:min-h-24"}
           onClick={() => navigate(`/team/${teamId}/board`)}
         >
           Lista zadań
@@ -157,7 +171,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
         <Button
           data-testid="planning-poker"
           className={
-            "flex-1 flex-row sm:flex-col min-w-32 min-h-24 scrollbar bg-secondary/50 text-secondary-foreground"
+            "flex-row sm:flex-col min-h-20 sm:min-h-24 bg-secondary/60 text-secondary-foreground"
           }
           onClick={() => navigate(`/${teamId}/poker`)}
         >
@@ -169,7 +183,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           <Button
             data-testid="create-retro"
             variant={"destructive"}
-            className={"flex-1 flex-row sm:flex-col min-w-32 min-h-24"}
+            className={"flex-row sm:flex-col min-h-20 sm:min-h-24"}
             onClick={() => navigate(`/retro/create?teamId=${teamId}`)}
           >
             Nowe Retro
@@ -184,7 +198,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
                 data-testid="current-retro"
                 key={retro.id}
                 className={
-                  "flex-1 flex-row sm:flex-col min-w-32 min-h-24 bg-background text-on-background border-4 border-destructive"
+                  "flex-row sm:flex-col min-h-20 sm:min-h-24 bg-background text-foreground border-2 border-destructive"
                 }
                 onClick={() => navigate(`/retro/${retro.id}/reflection`)}
               >
@@ -267,10 +281,11 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
       >
         {delayedHighlightedUser && (
           <div className={"flex flex-row gap-2 justify-center items-center"}>
-            <Avatar size={"lg"}>
-              <AvatarImage src={delayedHighlightedUser.avatar_link} />
-              <AvatarFallback>??</AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              size={"lg"}
+              avatarUrl={delayedHighlightedUser.avatar_link}
+              name={delayedHighlightedUser.nick}
+            />
 
             <div>{delayedHighlightedUser.nick}</div>
           </div>
@@ -305,11 +320,13 @@ const SlotMachineDialogContent: React.FC<SlotMachineDialogContentProps> = ({
                   });
                 }}
               >
-                <Avatar size={"lg"}>
-                  <AvatarImage src={user.avatar_link} />
-                  <AvatarFallback>??</AvatarFallback>
+                <UserAvatar
+                  size={"lg"}
+                  avatarUrl={user.avatar_link}
+                  name={user.nick}
+                >
                   {teamUsersInPool.includes(user.id) && <AvatarStatus />}
-                </Avatar>
+                </UserAvatar>
               </div>
             );
           })}

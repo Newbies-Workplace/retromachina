@@ -324,7 +324,7 @@ export const RetroContextProvider: React.FC<
     });
 
     return () => {
-      createdSocket.removeAllListeners();
+      createdSocket.off();
       createdSocket.disconnect();
     };
   }, []);

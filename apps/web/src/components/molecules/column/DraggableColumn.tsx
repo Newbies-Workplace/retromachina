@@ -101,7 +101,7 @@ export const DraggableColumn = ({
       ref={handleRef}
       aria-hidden="true"
       data-testid="column-drag-handle"
-      className="flex cursor-grab items-center justify-center p-2 active:cursor-grabbing"
+      className="flex size-7 shrink-0 cursor-grab items-center justify-center active:cursor-grabbing"
     >
       <GripVerticalIcon />
     </div>

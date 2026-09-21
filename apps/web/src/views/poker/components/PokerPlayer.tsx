@@ -1,12 +1,13 @@
 import { AnimatePresence, domAnimation, LazyMotion, m } from "motion/react";
 import type React from "react";
 import type { ActivePokerUser } from "shared/model/poker/poker.events";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
+import { AvatarStatus } from "@/components/ui/avatar";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 type PokerPlayerProps = {
@@ -28,11 +29,21 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
 
   return (
     <div className={className} style={style} data-testid="poker-player">
-      <Avatar size="lg" className="relative z-10 shadow-md">
-        <AvatarImage src={user.avatarLink} />
-        <AvatarFallback>:)</AvatarFallback>
-        {user.selectedCard !== null && <AvatarStatus />}
-      </Avatar>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <UserAvatar
+              size="lg"
+              className="relative z-10 shadow-md"
+              avatarUrl={user.avatarLink}
+              name={user.nick}
+            >
+              {user.selectedCard !== null && <AvatarStatus />}
+            </UserAvatar>
+          }
+        />
+        <TooltipContent>{user.nick}</TooltipContent>
+      </Tooltip>
       <LazyMotion features={domAnimation}>
         <AnimatePresence>
           {cardsRevealed && user.revealedCard !== null && (

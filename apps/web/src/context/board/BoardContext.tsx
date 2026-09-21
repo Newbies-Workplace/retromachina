@@ -167,7 +167,7 @@ export const BoardContextProvider: React.FC<
     });
 
     return () => {
-      createdSocket.removeAllListeners();
+      createdSocket.off();
       createdSocket.disconnect();
     };
   }, []);

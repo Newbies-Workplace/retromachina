@@ -36,65 +36,67 @@ export const VoteView = () => {
               description: column.description,
             }}
           >
-            {columnCards
-              .filter((c) => c.parentCardId === null)
-              .map((group) => {
-                const groupCards = [
-                  group,
-                  ...cards.filter((c) => c.parentCardId === group.id),
-                ];
-                return (
-                  <CardGroup
-                    key={group.id}
-                    columnId={column.id}
-                    parentCardId={group.id}
-                  >
-                    {groupCards.map((card, index) => {
-                      const author = teamUsers.find(
-                        (user) => user.id === card.authorId,
-                      );
-                      const userVotes = votes.filter(
-                        (vote) =>
-                          user?.id === vote.voterId &&
-                          (vote.parentCardId === card.id ||
-                            vote.parentCardId === card.parentCardId),
-                      ).length;
+            <div className="flex flex-col gap-2">
+              {columnCards
+                .filter((c) => c.parentCardId === null)
+                .map((group) => {
+                  const groupCards = [
+                    group,
+                    ...cards.filter((c) => c.parentCardId === group.id),
+                  ];
+                  return (
+                    <CardGroup
+                      key={group.id}
+                      columnId={column.id}
+                      parentCardId={group.id}
+                    >
+                      {groupCards.map((card, index) => {
+                        const author = teamUsers.find(
+                          (user) => user.id === card.authorId,
+                        );
+                        const userVotes = votes.filter(
+                          (vote) =>
+                            user?.id === vote.voterId &&
+                            (vote.parentCardId === card.id ||
+                              vote.parentCardId === card.parentCardId),
+                        ).length;
 
-                      return (
-                        <Card
-                          id={card.id}
-                          key={card.id}
-                          style={{ marginTop: index === 0 ? 0 : -80 }}
-                        >
-                          <CardContent text={card.text} />
-                          <CardAuthor
-                            author={{
-                              avatar: author?.avatar_link || "",
-                              name: author?.nick || "",
-                              id: card.authorId,
-                            }}
-                          />
-                          {groupCards.length === index + 1 && (
-                            <CardActions>
-                              <CardVotesCounter
-                                className={"h-full"}
-                                canIncrement={votesLeft > 0}
-                                count={userVotes}
-                                onIncrement={() => {
-                                  addVote(card.id);
-                                }}
-                                onDecrement={() => {
-                                  removeVote(card.id);
-                                }}
-                              />
-                            </CardActions>
-                          )}
-                        </Card>
-                      );
-                    })}
-                  </CardGroup>
-                );
-              })}
+                        return (
+                          <Card
+                            id={card.id}
+                            key={card.id}
+                            style={{ marginTop: index === 0 ? 0 : -80 }}
+                          >
+                            <CardContent text={card.text} />
+                            <CardAuthor
+                              author={{
+                                avatar: author?.avatar_link || "",
+                                name: author?.nick || "",
+                                id: card.authorId,
+                              }}
+                            />
+                            {groupCards.length === index + 1 && (
+                              <CardActions>
+                                <CardVotesCounter
+                                  className={"h-full"}
+                                  canIncrement={votesLeft > 0}
+                                  count={userVotes}
+                                  onIncrement={() => {
+                                    addVote(card.id);
+                                  }}
+                                  onDecrement={() => {
+                                    removeVote(card.id);
+                                  }}
+                                />
+                              </CardActions>
+                            )}
+                          </Card>
+                        );
+                      })}
+                    </CardGroup>
+                  );
+                })}
+            </div>
           </Column>
         );
       })}

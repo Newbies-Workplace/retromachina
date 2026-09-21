@@ -75,6 +75,7 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.rooms.set(teamId, room);
     room.addUser(client.id, {
       userId: userQuery.id,
+      nick: userQuery.nick,
       avatarLink: userQuery.avatar_link,
       role: membership.role,
     });

@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import { Portal } from "react-portal";
 import { useNavigate } from "react-router";
 import lineSvg from "@/assets/images/line.svg?inline";
-import { Backdrop } from "@/components/molecules/backdrop/Backdrop";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { Menu } from "@/components/organisms/menu/Menu";
+import { PreferencesDialogContent } from "@/components/organisms/menu/PreferencesDialogContent";
+import { AvatarGroup, AvatarStatus } from "@/components/ui/avatar";
+import { Dialog } from "@/components/ui/dialog";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useUser } from "@/context/user/UserContext.hook";
 import { cn } from "@/lib/utils";
 
@@ -29,50 +28,55 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [preferencesOpen, setPreferencesOpen] = useState(false);
   return (
-    <div className={"flex flex-col gap-2 w-full pb-1 bg-secondary"}>
-      <div className={"flex flex-row items-center gap-4 w-full h-[50px]"}>
-        <span
+    <header
+      className={
+        "sticky top-0 left-0 z-30 flex w-full shrink-0 flex-col bg-secondary pb-1 shadow-sm"
+      }
+    >
+      <div
+        className={
+          "flex h-10 min-h-13 w-full flex-row items-center gap-3 px-3 sm:px-4"
+        }
+      >
+        <button
+          type="button"
+          aria-label="Przejdź do strony głównej"
           onClick={() => navigate("/")}
           className={
-            "font-harlow-solid-italic text-3xl text-secondary-foreground cursor-pointer ml-4 mt-1 mr-auto"
+            "font-harlow-solid-italic text-3xl text-secondary-foreground cursor-pointer mr-auto focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
           }
         >
           Retromachine
-        </span>
+        </button>
 
-        <div className={"flex justify-end items-center gap-4"}>
-          <div className={"flex flex-row justify-end items-start gap-4"}>
+        <div className={"flex h-full items-center justify-end gap-4"}>
+          <div className={"flex h-full flex-row items-start justify-end gap-4"}>
             {topContent}
           </div>
 
-          <div
-            className={
-              "flex justify-center items-center size-8 bg-white rounded-full mr-4 z-20"
-            }
-          >
-            <AvatarGroup onClick={() => setIsMenuOpen((value) => !value)}>
-              <Avatar className={"cursor-pointer"}>
-                <AvatarImage src={user?.avatar_link} />
-                <AvatarFallback>:)</AvatarFallback>
-                {avatarProps?.isReady && <AvatarStatus />}
-              </Avatar>
-            </AvatarGroup>
-            <Portal>
-              {isMenuOpen && (
-                <Backdrop
-                  hasDarkBackground={false}
-                  onDismiss={() => {
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <Menu />
-                </Backdrop>
-              )}
-            </Portal>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label="Otwórz menu konta"
+                data-testid="user-menu-trigger"
+                className="z-20 flex size-9 cursor-pointer items-center justify-center rounded-full bg-background outline-none transition-transform duration-150 active:scale-[0.97] focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                <AvatarGroup>
+                  <UserAvatar avatarUrl={user?.avatar_link} name={user?.nick}>
+                    {avatarProps?.isReady && <AvatarStatus />}
+                  </UserAvatar>
+                </AvatarGroup>
+              </button>
+            </DropdownMenuTrigger>
+            <Menu onOpenPreferences={() => setPreferencesOpen(true)} />
+          </DropdownMenu>
+
+          <Dialog open={preferencesOpen} onOpenChange={setPreferencesOpen}>
+            <PreferencesDialogContent />
+          </Dialog>
         </div>
       </div>
 
@@ -90,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({
           backgroundImage: `url("${lineSvg}")`,
         }}
       />
-    </div>
+    </header>
   );
 };
 

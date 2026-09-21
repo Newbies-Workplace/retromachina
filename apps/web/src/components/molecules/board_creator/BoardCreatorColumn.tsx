@@ -56,18 +56,20 @@ export const BoardCreatorColumnDisplay = ({
         ref={innerRef}
         data-testid={"column-create"}
         className={cn(
-          "flex flex-col gap-2 min-w-[300px] max-w-[300px] bg-secondary p-2 rounded-xl",
+          "flex min-w-[300px] max-w-[300px] flex-col gap-3 rounded-xl border border-border/80 bg-background p-3",
           state.type === "is-dragging" && "opacity-40",
           className,
         )}
       >
-        <div className={"flex justify-center items-center gap-2"}>
+        <div className={"flex items-center gap-2"}>
           <div
             ref={handleRef}
-            className={"cursor-grab"}
+            className={
+              "flex size-8 shrink-0 cursor-grab items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground active:cursor-grabbing"
+            }
             data-testid="column-drag-handle"
           >
-            <GripVerticalIcon className={"size-6"} />
+            <GripVerticalIcon className={"size-5"} />
           </div>
 
           <Input
@@ -104,6 +106,7 @@ export const BoardCreatorColumnDisplay = ({
               })
             }
             placeholder="Opis"
+            className="min-h-20 resize-none"
           />
         )}
       </div>

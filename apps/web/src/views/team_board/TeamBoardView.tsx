@@ -15,16 +15,16 @@ import {
 import { Column } from "@/components/molecules/column/Column";
 import { ColumnCards } from "@/components/molecules/dragndrop/ColumnCards";
 import { DraggableCard } from "@/components/molecules/dragndrop/DraggableCard";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import Navbar from "@/components/organisms/navbar/Navbar";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+import { AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useTeamRole } from "@/hooks/useTeamRole";
@@ -125,18 +125,27 @@ export const TeamBoardView: React.FC = () => {
             <AvatarGroup className={"mt-0.5"}>
               {teamUsers
                 .filter((teamUser) => teamUser.id !== user.id)
-                .map((teamUser) =>
-                  activeUsers.find(
-                    (activeUser) => activeUser.userId === teamUser.id,
-                  ),
-                )
-                .filter((activeUser) => activeUser !== undefined)
-                .map((activeUser) => (
-                  <Avatar key={activeUser.userId}>
-                    <AvatarImage src={activeUser.avatar_link} />
-                    <AvatarFallback>:)</AvatarFallback>
-                  </Avatar>
-                ))}
+                .map((teamUser) => {
+                  const activeUser = activeUsers.find(
+                    (user) => user.userId === teamUser.id,
+                  );
+
+                  if (!activeUser) return null;
+
+                  return (
+                    <Tooltip key={activeUser.userId}>
+                      <TooltipTrigger
+                        render={
+                          <UserAvatar
+                            avatarUrl={activeUser.avatar_link}
+                            name={teamUser.nick}
+                          />
+                        }
+                      />
+                      <TooltipContent>{teamUser.nick}</TooltipContent>
+                    </Tooltip>
+                  );
+                })}
             </AvatarGroup>
           </>
         }

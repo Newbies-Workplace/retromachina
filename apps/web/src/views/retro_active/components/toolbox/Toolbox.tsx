@@ -132,7 +132,9 @@ export const Toolbox: React.FC = () => {
 
   return (
     <div
-      className={"flex flex-row gap-2 mx-2 absolute bottom-0 left-0 right-0"}
+      className={
+        "z-30 flex flex-row gap-2 px-2 fixed bottom-0 left-0 right-0 pointer-events-none"
+      }
     >
       <ToolboxSlotMachine />
 
@@ -147,7 +149,7 @@ export const Toolbox: React.FC = () => {
 
       <div
         className={
-          "relative flex items-center justify-center gap-2 w-full p-2 bg-card rounded-t-2xl"
+          "relative flex items-center justify-center gap-2 w-full max-w-3xl mx-auto p-2 bg-card border border-b-0 border-border rounded-t-2xl shadow-lg pointer-events-auto"
         }
       >
         {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}
@@ -250,6 +252,7 @@ export const Toolbox: React.FC = () => {
         <div className={cn("flex flex-col justify-center gap-2 w-24 h-16")}>
           <Button
             className={cn("grow w-full")}
+            aria-label={ready ? "Cofnij gotowość" : "Oznacz jako gotowy"}
             onClick={() => setReady(!ready)}
           >
             <CheckIcon className={"size-6"} />
@@ -285,6 +288,7 @@ export const Toolbox: React.FC = () => {
             <Button
               className={"h-full grow p-0"}
               size={"sm"}
+              aria-label="Poprzedni etap"
               disabled={prevDisabled}
               onClick={prevRoomState}
             >
@@ -293,6 +297,7 @@ export const Toolbox: React.FC = () => {
 
             <Button
               className={"h-full grow p-0"}
+              aria-label="Następny etap"
               disabled={nextDisabled}
               onClick={nextRoomState}
             >
@@ -306,6 +311,7 @@ export const Toolbox: React.FC = () => {
             <Button
               variant={"destructive"}
               className={"size-full"}
+              aria-label="Zakończ retrospektywę"
               onClick={onFinishRetroPress}
             >
               <FlagIcon className={"size-6"} />

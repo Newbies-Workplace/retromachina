@@ -18,7 +18,7 @@ import React, {
 import ConfettiExplosion from "react-confetti-explosion";
 import slotMachineSound from "@/assets/sounds/slot-machine.wav";
 import slotMachineOpenSound from "@/assets/sounds/slot-machine-open.wav";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { useAudio } from "@/hooks/useAudio";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -56,6 +56,7 @@ export type SlotMachineRef = {
 
 type SlotUser = {
   id: string;
+  nick?: string;
   avatar_link?: string;
 };
 
@@ -152,9 +153,9 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
       {slotMachineVisible && (
         <motion.div
           ref={leverRef}
-          initial={{ opacity: 0, bottom: 0 }}
-          animate={{ opacity: 1, bottom: 110 }}
-          exit={{ opacity: 0, bottom: 0 }}
+          initial={{ opacity: 0, y: 110 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 110 }}
           transition={{ duration: 0.2 }}
           className={cn("flex flex-row items-center", className)}
         >
@@ -201,17 +202,20 @@ export const SlotMachine: React.FC<SlotMachineProps> = ({
                   transition={transition}
                 >
                   {randomUsers[i].map((user, index) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: users are randomized
-                    <Avatar size={"xl"} key={index}>
-                      <AvatarImage src={user.avatar_link} />
-                      <AvatarFallback>??</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                      size={"xl"}
+                      key={`${user.id}-${index}`}
+                      avatarUrl={user.avatar_link}
+                      name={user.nick}
+                    />
                   ))}
                   {delayedHighlightedUser !== undefined && (
-                    <Avatar size={"xl"} key={delayedHighlightedUser.id}>
-                      <AvatarImage src={delayedHighlightedUser.avatar_link} />
-                      <AvatarFallback>??</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                      size={"xl"}
+                      key={delayedHighlightedUser.id}
+                      avatarUrl={delayedHighlightedUser.avatar_link}
+                      name={delayedHighlightedUser.nick}
+                    />
                   )}
                 </motion.div>
               ))}

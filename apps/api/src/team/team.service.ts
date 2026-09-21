@@ -198,7 +198,7 @@ export class TeamService {
     team: Team,
     request: EditTeamInviteRequest,
   ): Promise<Team> {
-    await this.prismaService.team.update({
+    return this.prismaService.team.update({
       where: {
         id: team.id,
       },
@@ -206,8 +206,6 @@ export class TeamService {
         invite_key: request.invite_key || null,
       },
     });
-
-    return team;
   }
 
   async addUserToTeam(userId: string, teamId: string, role: Role) {

@@ -146,7 +146,7 @@ export const RetroActiveView: React.FC = () => {
               <GramophoneAction />
             </div>
 
-            <AvatarGroup className={"mt-0.5"}>
+            <AvatarGroup className="pt-2">
               {teamUsers
                 .filter((u) => u.id !== user?.id)
                 .map((teamUser) => {

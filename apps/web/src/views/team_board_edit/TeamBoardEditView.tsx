@@ -10,7 +10,13 @@ import { v4 as uuidv4 } from "uuid";
 import { BoardService } from "@/api/Board.service";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
+import {
+  PageCard,
+  PageCardContent,
+  PageCardHeader,
+} from "@/components/molecules/page_card/PageCard";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
 import { Button } from "@/components/ui/button";
 
 const MAX_COLUMNS = 6;
@@ -89,69 +95,72 @@ export const TeamBoardEditView: React.FC = () => {
     <>
       <Navbar />
 
-      <div className={"m-4 flex rounded-xl bg-card p-2"}>
-        <div className={"flex w-full flex-col gap-2 rounded-lg p-2"}>
-          <div className={"flex justify-between"}>
-            <span>Edycja tablicy</span>
-            <Button
-              disabled={board.columns.length >= MAX_COLUMNS}
-              onClick={onAddColumn}
+      <ResponsivePageLayout>
+        <PageCard>
+          <PageCardHeader>Edycja tablicy</PageCardHeader>
+
+          <PageCardContent>
+            <div className={"flex justify-end"}>
+              <Button
+                disabled={board.columns.length >= MAX_COLUMNS}
+                onClick={onAddColumn}
+              >
+                <PlusIcon />
+                Nowa Kolumna
+              </Button>
+            </div>
+
+            <BoardCreator
+              onColumnReorder={({ fromId, toId }) => {
+                const columns = board?.columns ?? [];
+                const fromIndex = columns.findIndex((c) => c.id === fromId);
+                const toIndex = columns.findIndex((c) => c.id === toId);
+                if (fromIndex === -1 || toIndex === -1) return;
+                if (fromIndex === toIndex) return;
+
+                const reorderedColumns = reorder({
+                  list: columns,
+                  startIndex: fromIndex,
+                  finishIndex: toIndex,
+                }).map((column, i) => ({
+                  ...column,
+                  order: i,
+                }));
+
+                setBoard({
+                  ...board,
+                  columns: reorderedColumns,
+                });
+              }}
             >
-              <PlusIcon />
-              Nowa Kolumna
+              {board.columns
+                .sort((a, b) => a.order - b.order)
+                .map((col, index) => (
+                  <BoardCreatorColumn
+                    id={col.id}
+                    key={col.id}
+                    name={col.name}
+                    desc={""}
+                    className={index === 0 ? "ring-primary ring-2" : undefined}
+                    onChange={({ name }) =>
+                      onChangeColumn(col.id, {
+                        id: col.id,
+                        name: name,
+                        order: col.order,
+                      })
+                    }
+                    onDelete={() => onDeleteColumn(col.id)}
+                  />
+                ))}
+            </BoardCreator>
+
+            <Button className={"mt-4"} onClick={saveBoard}>
+              <SaveIcon />
+              Zapisz tablicę
             </Button>
-          </div>
-
-          <BoardCreator
-            onColumnReorder={({ fromId, toId }) => {
-              const columns = board?.columns ?? [];
-              const fromIndex = columns.findIndex((c) => c.id === fromId);
-              const toIndex = columns.findIndex((c) => c.id === toId);
-              if (fromIndex === -1 || toIndex === -1) return;
-              if (fromIndex === toIndex) return;
-
-              const reorderedColumns = reorder({
-                list: columns,
-                startIndex: fromIndex,
-                finishIndex: toIndex,
-              }).map((column, i) => ({
-                ...column,
-                order: i,
-              }));
-
-              setBoard({
-                ...board,
-                columns: reorderedColumns,
-              });
-            }}
-          >
-            {board.columns
-              .sort((a, b) => a.order - b.order)
-              .map((col, index) => (
-                <BoardCreatorColumn
-                  id={col.id}
-                  key={col.id}
-                  name={col.name}
-                  desc={""}
-                  className={index === 0 ? "ring-primary ring-2" : undefined}
-                  onChange={({ name }) =>
-                    onChangeColumn(col.id, {
-                      id: col.id,
-                      name: name,
-                      order: col.order,
-                    })
-                  }
-                  onDelete={() => onDeleteColumn(col.id)}
-                />
-              ))}
-          </BoardCreator>
-
-          <Button className={"mt-4"} onClick={saveBoard}>
-            <SaveIcon />
-            Zapisz tablicę
-          </Button>
-        </div>
-      </div>
+          </PageCardContent>
+        </PageCard>
+      </ResponsivePageLayout>
     </>
   );
 };

@@ -40,12 +40,21 @@ export const ColumnInput: React.FC<ColumnInputProps> = ({
       clearTimeout(timerRef.current);
     }
     timerRef.current = setTimeout(onStopWriting, 3000);
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
   }, [value]);
 
   return (
     <>
       <Textarea
-        className={"resize-none"}
+        aria-label={`Dodaj kartę do kolumny ${columnData.name}`}
+        placeholder="Zapisz obserwację…"
+        className={"min-h-24 resize-none bg-background/80"}
         data-testid="card-input"
         value={value}
         onChange={(e) => setValue(e.target.value)}

@@ -4,19 +4,21 @@ import React, { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
 import { toast } from "sonner";
 import invariant from "tiny-invariant";
+import { v4 as uuidv4 } from "uuid";
+import { TeamService } from "@/api/Team.service";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { GramophoneAction } from "@/components/organisms/gramophone/GramophoneAction";
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-  AvatarStatus,
-} from "@/components/ui/avatar";
+import { AvatarGroup, AvatarStatus } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useAudio } from "@/hooks/useAudio";
@@ -43,6 +45,7 @@ export const RetroActiveView: React.FC = () => {
   const allUsersCount = activeUsers.length;
   const prevReadyUsersCount = useRef(-1);
   const prevAllUsersCount = useRef(allUsersCount);
+  const generatedInviteKey = useRef<string | null>(null);
 
   useEffect(() => {
     navigate(`/retro/${retroId}/${roomState}`);
@@ -82,14 +85,37 @@ export const RetroActiveView: React.FC = () => {
     prevAllUsersCount.current = allUsersCount;
   }, [readyUsersCount, playAudio, allUsersCount]);
 
-  const onShareButtonClick = () => {
-    if (team?.invite_key) {
-      navigator.clipboard
-        .writeText(`${window.location.origin}/invitation/${team.invite_key}`)
-        .then(() => {
-          toast.success("Link skopiowano do schowka");
-        });
+  const onShareButtonClick = async () => {
+    if (!team) {
+      toast.error("Nie udało się przygotować linku z zaproszeniem");
+      return;
     }
+
+    let inviteKey = team.invite_key ?? generatedInviteKey.current;
+
+    try {
+      if (!inviteKey) {
+        inviteKey = uuidv4();
+        await TeamService.editTeamInvitation(team.id, {
+          invite_key: inviteKey,
+        });
+        generatedInviteKey.current = inviteKey;
+      }
+    } catch {
+      toast.error("Nie udało się przygotować linku z zaproszeniem");
+      return;
+    }
+
+    const invitationUrl = `${window.location.origin}/invitation/${inviteKey}`;
+
+    try {
+      await navigator.clipboard.writeText(invitationUrl);
+    } catch {
+      toast.error("Nie udało się skopiować linku do schowka");
+      return;
+    }
+
+    toast.success("Link skopiowano do schowka");
   };
 
   return (
@@ -105,6 +131,7 @@ export const RetroActiveView: React.FC = () => {
                 <NavbarAction>
                   <Button
                     size={"icon"}
+                    aria-label="Skopiuj link z zaproszeniem"
                     onClick={() => {
                       onShareButtonClick();
                     }}
@@ -122,23 +149,39 @@ export const RetroActiveView: React.FC = () => {
             <AvatarGroup className={"mt-0.5"}>
               {teamUsers
                 .filter((u) => u.id !== user?.id)
-                .map((u) =>
-                  activeUsers.find((socketUser) => socketUser.userId === u.id),
-                )
-                .filter((u) => u !== undefined)
-                .map((user) => (
-                  <Avatar key={user?.userId}>
-                    <AvatarImage src={user.avatar_link} />
-                    <AvatarFallback>:)</AvatarFallback>
-                    {user?.isReady && <AvatarStatus />}
-                  </Avatar>
-                ))}
+                .map((teamUser) => {
+                  const activeUser = activeUsers.find(
+                    (user) => user.userId === teamUser.id,
+                  );
+
+                  if (!activeUser) return null;
+
+                  return (
+                    <Tooltip key={activeUser.userId}>
+                      <TooltipTrigger
+                        render={
+                          <UserAvatar
+                            avatarUrl={activeUser.avatar_link}
+                            name={teamUser.nick}
+                          >
+                            {activeUser.isReady && <AvatarStatus />}
+                          </UserAvatar>
+                        }
+                      />
+                      <TooltipContent>{teamUser.nick}</TooltipContent>
+                    </Tooltip>
+                  );
+                })}
             </AvatarGroup>
           </>
         }
       />
 
-      <div className={"flex flex-col flex-1 overflow-y-auto"} ref={ref}>
+      <main
+        style={{ minHeight: 0 }}
+        className={"flex min-h-0 min-w-0 flex-col flex-1 overflow-auto pb-24"}
+        ref={ref}
+      >
         <Routes>
           <Route path="warmup" element={<WarmupView />} />
           <Route path="reflection" element={<ReflectionView />} />
@@ -147,7 +190,7 @@ export const RetroActiveView: React.FC = () => {
           <Route path="discuss" element={<DiscussView />} />
           <Route path="*" element={<Spinner className={"size-8"} />} />
         </Routes>
-      </div>
+      </main>
 
       {roomState !== "warmup" && <Toolbox />}
     </>

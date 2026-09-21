@@ -85,7 +85,7 @@ export const EditableColumnText = ({
         className={cn(
           "w-full min-w-0 cursor-text resize-none bg-transparent p-0 outline-none [field-sizing:content]",
           isDescription
-            ? "min-h-5 overflow-hidden text-sm"
+            ? "relative top-0.5 min-h-5 overflow-hidden text-sm leading-5"
             : "min-h-7 max-h-14 overflow-y-auto text-lg leading-7 font-bold",
           !draft && "text-muted-foreground",
         )}
@@ -116,7 +116,7 @@ export const EditableColumnText = ({
       ref={displayRef}
       className={cn(
         "w-full min-w-0 whitespace-pre-line wrap-break-word",
-        isDescription ? "text-sm" : "line-clamp-2 text-lg font-bold",
+        isDescription ? "text-sm leading-5" : "line-clamp-2 text-lg font-bold",
         editable && "cursor-text",
         !text && "text-muted-foreground",
       )}

@@ -19,13 +19,15 @@ import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
-import Navbar from "@/components/organisms/navbar/Navbar";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarGroup,
-  AvatarImage,
-} from "@/components/ui/avatar";
+  PageCard,
+  PageCardContent,
+  PageCardHeader,
+} from "@/components/molecules/page_card/PageCard";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
+import Navbar from "@/components/organisms/navbar/Navbar";
+import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
+import { AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -205,131 +207,137 @@ export const RetroCreateView: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className={"flex p-2 m-4 bg-card rounded-xl"}>
-        <div className={"p-2 w-full rounded-lg flex flex-col gap-2"}>
-          <span>Retrospektywa zespołu {team.name}</span>
+      <ResponsivePageLayout>
+        <PageCard>
+          <PageCardHeader>Retrospektywa zespołu {team.name}</PageCardHeader>
 
-          <AvatarGroup>
-            {teamUsers.map((user) => (
-              <Avatar key={user.id}>
-                <AvatarImage src={user.avatar_link} />
-                <AvatarFallback>:)</AvatarFallback>
-              </Avatar>
-            ))}
-          </AvatarGroup>
+          <PageCardContent>
+            <AvatarGroup>
+              {teamUsers.map((user) => (
+                <UserAvatar
+                  key={user.id}
+                  avatarUrl={user.avatar_link}
+                  name={user.nick}
+                />
+              ))}
+            </AvatarGroup>
 
-          <section className="flex flex-col gap-2 rounded-lg border p-4">
-            <div>
-              <h2 className="font-medium">Rozgrzewka</h2>
-              <p className="text-sm text-muted-foreground">
-                Możesz ją pominąć, wybrać teraz lub wylosować po starcie.
-              </p>
+            <section className="flex flex-col gap-2 rounded-lg border p-4">
+              <div>
+                <h2 className="font-medium">Rozgrzewka</h2>
+                <p className="text-sm text-muted-foreground">
+                  Możesz ją pominąć, wybrać teraz lub wylosować po starcie.
+                </p>
+              </div>
+              <Select
+                value={warmupChoice}
+                onValueChange={(value) => setWarmupChoice(value ?? "none")}
+                itemToStringLabel={(value) => {
+                  if (value === "none") return "Bez rozgrzewki";
+                  if (value === "random") return "Losuj po starcie";
+                  const id = value.replace("selected:", "");
+                  return warmups.find((item) => item.id === id)?.name ?? value;
+                }}
+              >
+                <SelectTrigger className="w-full" data-testid="warmup-select">
+                  <SelectValue placeholder="Wybierz rozgrzewkę" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="none">Bez rozgrzewki</SelectItem>
+                    <SelectItem value="random">Losuj po starcie</SelectItem>
+                    {warmups.map((warmup) => (
+                      <SelectItem
+                        key={warmup.id}
+                        value={`selected:${warmup.id}`}
+                      >
+                        {warmup.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </section>
+
+            <div className={"flex justify-between mt-4"}>
+              <div className={"flex flex-row gap-2"}>
+                <Button
+                  className={"grow-0"}
+                  data-testid={"randomize-template"}
+                  onClick={() => randomizeTemplate()}
+                >
+                  <RefreshCwIcon />
+                  Losuj szablon
+                </Button>
+
+                <Button
+                  className={"grow-0"}
+                  data-testid={"clear-template"}
+                  onClick={() => clearTemplate()}
+                  variant={"destructive"}
+                >
+                  <EraserIcon />
+                  Wyczyść szablon
+                </Button>
+              </div>
+
+              <Button
+                disabled={columns.length >= MAX_COLUMNS}
+                onClick={onAddColumn}
+              >
+                <PlusIcon />
+                Nowa kolumna
+              </Button>
             </div>
-            <Select
-              value={warmupChoice}
-              onValueChange={(value) => setWarmupChoice(value ?? "none")}
-              itemToStringLabel={(value) => {
-                if (value === "none") return "Bez rozgrzewki";
-                if (value === "random") return "Losuj po starcie";
-                const id = value.replace("selected:", "");
-                return warmups.find((item) => item.id === id)?.name ?? value;
+
+            <BoardCreator
+              className={"min-h-20"}
+              onColumnReorder={({ fromId, toId }) => {
+                const fromIndex = columns.findIndex((c) => c.id === fromId);
+                const toIndex = columns.findIndex((c) => c.id === toId);
+                if (fromIndex === -1 || toIndex === -1) return;
+                if (fromIndex === toIndex) return;
+
+                setColumns(
+                  reorder({
+                    list: columns,
+                    startIndex: fromIndex,
+                    finishIndex: toIndex,
+                  }),
+                );
+                setTemplateId(null);
               }}
             >
-              <SelectTrigger className="w-full" data-testid="warmup-select">
-                <SelectValue placeholder="Wybierz rozgrzewkę" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="none">Bez rozgrzewki</SelectItem>
-                  <SelectItem value="random">Losuj po starcie</SelectItem>
-                  {warmups.map((warmup) => (
-                    <SelectItem key={warmup.id} value={`selected:${warmup.id}`}>
-                      {warmup.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </section>
-
-          <div className={"flex justify-between mt-4"}>
-            <div className={"flex flex-row gap-2"}>
-              <Button
-                className={"grow-0"}
-                data-testid={"randomize-template"}
-                onClick={() => randomizeTemplate()}
-              >
-                <RefreshCwIcon />
-                Losuj szablon
-              </Button>
-
-              <Button
-                className={"grow-0"}
-                data-testid={"clear-template"}
-                onClick={() => clearTemplate()}
-                variant={"destructive"}
-              >
-                <EraserIcon />
-                Wyczyść szablon
-              </Button>
-            </div>
+              {columns.map((column) => (
+                <BoardCreatorColumn
+                  id={column.id}
+                  key={column.id}
+                  onChange={({ name, desc }) =>
+                    onChangeColumn(column.id, { name, desc })
+                  }
+                  onDelete={() => onDeleteColumn(column.id)}
+                  name={column.name}
+                  desc={column.desc ?? ""}
+                  withDescription
+                />
+              ))}
+            </BoardCreator>
 
             <Button
-              disabled={columns.length >= MAX_COLUMNS}
-              onClick={onAddColumn}
+              data-testid={"create-retro-confirm"}
+              className={"mt-4"}
+              disabled={clicked}
+              onClick={onCreateRetroClick}
             >
-              <PlusIcon />
-              Nowa kolumna
+              <Share2Icon />
+              Rozpocznij retrospektywę
             </Button>
-          </div>
-
-          <BoardCreator
-            className={"min-h-20"}
-            onColumnReorder={({ fromId, toId }) => {
-              const fromIndex = columns.findIndex((c) => c.id === fromId);
-              const toIndex = columns.findIndex((c) => c.id === toId);
-              if (fromIndex === -1 || toIndex === -1) return;
-              if (fromIndex === toIndex) return;
-
-              setColumns(
-                reorder({
-                  list: columns,
-                  startIndex: fromIndex,
-                  finishIndex: toIndex,
-                }),
-              );
-              setTemplateId(null);
-            }}
-          >
-            {columns.map((column) => (
-              <BoardCreatorColumn
-                id={column.id}
-                key={column.id}
-                onChange={({ name, desc }) =>
-                  onChangeColumn(column.id, { name, desc })
-                }
-                onDelete={() => onDeleteColumn(column.id)}
-                name={column.name}
-                desc={column.desc ?? ""}
-                withDescription
-              />
-            ))}
-          </BoardCreator>
-
-          <Button
-            data-testid={"create-retro-confirm"}
-            className={"mt-4"}
-            disabled={clicked}
-            onClick={onCreateRetroClick}
-          >
-            <Share2Icon />
-            Rozpocznij retrospektywę
-          </Button>
-          <span className={"text-sm mx-auto"}>
-            (link zostanie skopiowany do schowka)
-          </span>
-        </div>
-      </div>
+            <span className={"text-sm mx-auto"}>
+              (link zostanie skopiowany do schowka)
+            </span>
+          </PageCardContent>
+        </PageCard>
+      </ResponsivePageLayout>
     </>
   );
 };

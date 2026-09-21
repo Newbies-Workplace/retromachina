@@ -25,7 +25,7 @@ export const Backdrop: React.FC<BackdropProps> = ({
           exit={{ backgroundColor: "#00000000", opacity: 0 }}
           transition={{ duration: 0.15 }}
           className={
-            "absolute z-10 top-0 flex justify-center items-center h-screen w-screen bg-black"
+            "fixed inset-0 z-40 flex justify-center items-center h-dvh w-screen bg-black"
           }
           onClick={onDismiss}
           onKeyDown={(e) => {

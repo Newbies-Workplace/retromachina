@@ -13,7 +13,7 @@ export const NavbarAction: React.FC<NavbarActionProps> = ({
   return (
     <div
       className={cn(
-        "flex flex-row items-center gap-2 bg-card h-11 -mt-2 p-2 rounded-b-lg",
+        "flex h-11 flex-row items-center gap-2 rounded-b-lg bg-card p-2",
         className,
       )}
     >

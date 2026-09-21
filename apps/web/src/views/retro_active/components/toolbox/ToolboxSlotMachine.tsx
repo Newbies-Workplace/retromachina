@@ -13,6 +13,7 @@ export const ToolboxSlotMachine: React.FC = () => {
     teamId,
     roomState,
     activeUsers,
+    teamUsers,
     drawMachine,
     highlightedUserId,
     slotMachineVisible,
@@ -41,7 +42,9 @@ export const ToolboxSlotMachine: React.FC = () => {
   return (
     <SlotMachine
       ref={slotMachineRef}
-      className={"m-auto absolute left-0 right-0 bottom-16 w-96"}
+      className={
+        "pointer-events-auto m-auto absolute left-0 right-0 bottom-16 w-96"
+      }
       visible={roomState === "group" && slotMachineVisible}
       hideMachineEnabled={isAdmin}
       onHideMachine={() => setSlotMachineVisible(false)}
@@ -49,6 +52,7 @@ export const ToolboxSlotMachine: React.FC = () => {
       highlightedUserId={highlightedUserId}
       userPool={activeUsers.map((u) => ({
         id: u.userId,
+        nick: teamUsers.find((teamUser) => teamUser.id === u.userId)?.nick,
         avatar_link: u.avatar_link,
       }))}
     />

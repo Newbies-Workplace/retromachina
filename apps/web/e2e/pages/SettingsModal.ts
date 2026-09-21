@@ -11,9 +11,7 @@ export class SettingsModal {
 
   constructor(page: Page) {
     this.page = page;
-    this.userMenuLocator = page.locator(
-      '[data-slot="avatar-group"]:has([data-slot="avatar"].cursor-pointer)',
-    );
+    this.userMenuLocator = page.getByTestId("user-menu-trigger");
     this.settingsButtonLocator = page.getByText("Ustawienia", { exact: true });
     this.dialogLocator = page.getByRole("dialog", { name: "Ustawienia" });
     this.autoReadyAfterDrawLocator = this.dialogLocator

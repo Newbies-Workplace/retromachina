@@ -5,9 +5,10 @@ import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { toast } from "sonner";
 import { TeamService } from "@/api/Team.service";
-import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
+import { PageCard } from "@/components/molecules/page_card/PageCard";
 import { TeamForm } from "@/components/organisms/forms/TeamForm";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
 import { Spinner } from "@/components/ui/spinner";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
@@ -16,18 +17,19 @@ import { useTeamData } from "@/hooks/useTeamData";
 export const TeamEditView: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const { user, refreshUser } = useUser();
-  if (!teamId || !user) {
-    return <Navigate to={"/"} />;
-  }
   const navigate = useNavigate();
   const { showConfirm } = useConfirm();
-  const { team: initialTeam } = useTeamData(teamId);
+  const { team: initialTeam } = useTeamData(teamId ?? "");
 
   const [team, setTeam] = useState<TeamResponse | null>(null);
 
   useEffect(() => {
     setTeam(initialTeam);
   }, [initialTeam]);
+
+  if (!teamId || !user) {
+    return <Navigate to={"/"} />;
+  }
 
   const onSubmit = (team: TeamRequest) => {
     TeamService.editTeam(teamId, team)
@@ -71,22 +73,24 @@ export const TeamEditView: React.FC = () => {
     <>
       <Navbar />
 
-      <AnimatedBackground>
-        {!team && (
-          <div className={"flex items-center justify-center"}>
-            <Spinner className={"size-10"} />
-          </div>
-        )}
+      <ResponsivePageLayout>
+        <PageCard className="max-w-2xl">
+          {!team && (
+            <div className={"flex items-center justify-center"}>
+              <Spinner className={"size-10"} />
+            </div>
+          )}
 
-        {team && (
-          <TeamForm
-            onSubmit={onSubmit}
-            onDelete={onDeleteTeamPress}
-            team={team}
-            deletable
-          />
-        )}
-      </AnimatedBackground>
+          {team && (
+            <TeamForm
+              onSubmit={onSubmit}
+              onDelete={onDeleteTeamPress}
+              team={team}
+              deletable
+            />
+          )}
+        </PageCard>
+      </ResponsivePageLayout>
     </>
   );
 };

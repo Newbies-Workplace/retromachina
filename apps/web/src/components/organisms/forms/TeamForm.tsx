@@ -4,6 +4,10 @@ import { InviteResponse } from "shared/model/invite/Invite.response";
 import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
+import {
+  PageCardContent,
+  PageCardHeader,
+} from "@/components/molecules/page_card/PageCard";
 import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 import { TeamInviteLinkInput } from "@/components/organisms/forms/TeamInviteLinkInput";
 import { WarmupLinksForm } from "@/components/organisms/forms/WarmupLinksForm";
@@ -46,18 +50,12 @@ export const TeamForm: React.FC<TeamFormProps> = ({
   };
 
   return (
-    <div
-      className={
-        "flex flex-col gap-2 w-[600px] min-h-[700px] h-fit bg-card m-8 rounded-lg"
-      }
-    >
-      <div className={"bg-primary p-4 pb-2 rounded-t-lg font-bold text-lg"}>
+    <>
+      <PageCardHeader>
         {team ? "Zarządzanie zespołem" : "Stworz nowy zespół"}
-      </div>
+      </PageCardHeader>
 
-      <div
-        className={"flex grow flex-col justify-between gap-2 w-full h-full p-4"}
-      >
+      <PageCardContent className={"grow justify-between"}>
         <div className={"flex flex-col"}>
           <h1>Team</h1>
           <Input
@@ -124,7 +122,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             Zapisz
           </Button>
         </div>
-      </div>
-    </div>
+      </PageCardContent>
+    </>
   );
 };

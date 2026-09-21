@@ -21,7 +21,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   return (
     <div
       className={
-        "flex flex-col justify-center items-start gap-1 w-full bg-card border border-black/30 p-2 rounded-lg"
+        "flex flex-col justify-center items-start gap-1 w-full bg-card border border-border p-3 rounded-xl shadow-sm"
       }
     >
       <div className={"flex w-full min-w-0 gap-2"}>

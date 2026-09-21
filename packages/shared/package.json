@@ -2,12 +2,13 @@
   "name": "shared",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/src/index.js",
+  "main": "./.dist/index.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w"
   },
   "exports": {
+    ".": "./.dist/index.js",
     "./*": "./.dist/*.js"
   },
   "keywords": [],

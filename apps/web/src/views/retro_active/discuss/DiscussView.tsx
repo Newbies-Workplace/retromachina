@@ -7,7 +7,7 @@ import {
   CardContent,
 } from "@/components/molecules/card/Card";
 import { CardGroup } from "@/components/molecules/dragndrop/CardGroup";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,7 +80,7 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
                 <CardGroup
                   className={cn(group.votes.length === 0 && "opacity-40")}
                   columnId={"next"}
-                  key={group.parentCardId}
+                  key={`${group.parentCardId}-in-a-moment`}
                   parentCardId={group.parentCardId}
                 >
                   {group.cards.map((card, index) => {
@@ -91,7 +91,7 @@ const InAMomentSection: React.FC<{ groups: Group[] }> = ({ groups }) => {
                     return (
                       <Card
                         id={card.id}
-                        key={card.id}
+                        key={`${card.id}-in-a-moment`}
                         style={{ marginTop: index === 0 ? 0 : -80 }}
                       >
                         <CardContent text={card.text} />
@@ -153,10 +153,11 @@ const CurrentlyDiscussedGroupSection: React.FC<{ group: Group }> = ({
 
           return (
             <div key={card.id} className={"flex gap-2 mb-4"}>
-              <Avatar size={"sm"}>
-                <AvatarImage src={author?.avatar_link} />
-                <AvatarFallback>:)</AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                size={"sm"}
+                avatarUrl={author?.avatar_link}
+                name={author?.nick}
+              />
 
               {card.text}
             </div>
@@ -293,10 +294,13 @@ const ActionPointsSection: React.FC = () => {
       <SidebarFooter className={"relative pb-25"}>
         <div className={"absolute top-2 flex gap-1 w-full px-1 h-0 -mt-6"}>
           {usersWritingTasks.slice(0, 8).map((user) => (
-            <Avatar key={user.id} size={"sm"} className={"animate-bounce"}>
-              <AvatarImage src={user.avatar_link} />
-              <AvatarFallback>:)</AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              key={user.id}
+              size={"sm"}
+              className={"animate-bounce"}
+              avatarUrl={user.avatar_link}
+              name={user.nick}
+            />
           ))}
         </div>
 

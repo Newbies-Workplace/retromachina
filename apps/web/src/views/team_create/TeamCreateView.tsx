@@ -3,9 +3,10 @@ import { useNavigate } from "react-router";
 import type { TeamRequest } from "shared/model/team/team.request";
 import { toast } from "sonner";
 import { TeamService } from "@/api/Team.service";
-import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
+import { PageCard } from "@/components/molecules/page_card/PageCard";
 import { TeamForm } from "@/components/organisms/forms/TeamForm";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
 import { useUser } from "@/context/user/UserContext.hook";
 
 export const TeamCreateView: React.FC = () => {
@@ -32,9 +33,11 @@ export const TeamCreateView: React.FC = () => {
     <>
       <Navbar />
 
-      <AnimatedBackground>
-        <TeamForm onSubmit={onSubmit} team={null} />
-      </AnimatedBackground>
+      <ResponsivePageLayout>
+        <PageCard className="max-w-2xl">
+          <TeamForm onSubmit={onSubmit} team={null} />
+        </PageCard>
+      </ResponsivePageLayout>
     </>
   );
 };

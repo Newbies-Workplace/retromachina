@@ -15,9 +15,14 @@ import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
+import {
+  PageCard,
+  PageCardContent,
+  PageCardHeader,
+} from "@/components/molecules/page_card/PageCard";
 import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
-import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
 import { AvatarGroup } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
@@ -163,11 +168,11 @@ export const RetroCreateView: React.FC = () => {
   return (
     <>
       <Navbar />
-      <AnimatedBackground contentClassName="w-full max-w-7xl p-4">
-        <div className="flex w-full rounded-xl border border-border/70 bg-card p-2 shadow-sm">
-          <div className={"flex w-full flex-col gap-2 rounded-lg p-2"}>
-            <span>Retrospektywa zespołu {team.name}</span>
+      <ResponsivePageLayout>
+        <PageCard>
+          <PageCardHeader>Retrospektywa zespołu {team.name}</PageCardHeader>
 
+          <PageCardContent>
             <AvatarGroup>
               {teamUsers.map((user) => (
                 <UserAvatar
@@ -254,9 +259,9 @@ export const RetroCreateView: React.FC = () => {
             <span className={"text-sm mx-auto"}>
               (link zostanie skopiowany do schowka)
             </span>
-          </div>
-        </div>
-      </AnimatedBackground>
+          </PageCardContent>
+        </PageCard>
+      </ResponsivePageLayout>
     </>
   );
 };

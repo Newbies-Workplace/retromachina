@@ -8,9 +8,14 @@ import { RetroService } from "@/api/Retro.service";
 import { TaskService } from "@/api/Task.service";
 import { UserService } from "@/api/User.service";
 import { Card, CardContent } from "@/components/molecules/card/Card";
+import {
+  PageCard,
+  PageCardContent,
+  PageCardHeader,
+} from "@/components/molecules/page_card/PageCard";
 import { UserAvatar } from "@/components/molecules/user_avatar/UserAvatar";
-import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import Navbar from "@/components/organisms/navbar/Navbar";
+import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
 import { Button } from "@/components/ui/button";
 
 export const RetroSummaryView = () => {
@@ -59,21 +64,13 @@ export const RetroSummaryView = () => {
     <>
       <Navbar />
 
-      <AnimatedBackground>
-        <div
-          className={
-            "flex flex-col gap-2 min-w-[500px] max-w-[1200px] min-h-[700px] h-fit bg-card m-8 rounded-lg"
-          }
-        >
-          <div className={"bg-primary p-4 pb-2 rounded-t-lg font-bold text-lg"}>
+      <ResponsivePageLayout>
+        <PageCard className="max-w-6xl">
+          <PageCardHeader>
             Retro {dayjs(retro?.date).format("DD.MM.YYYY")}
-          </div>
+          </PageCardHeader>
 
-          <div
-            className={
-              "flex grow flex-col justify-between gap-2 w-full h-full p-4"
-            }
-          >
+          <PageCardContent className={"grow justify-between"}>
             {userWithTasks.map((user) => {
               const userTasks = tasks.filter(
                 (task) => task.ownerId === user.id,
@@ -168,9 +165,9 @@ export const RetroSummaryView = () => {
             >
               Powrót do listy zadań
             </Button>
-          </div>
-        </div>
-      </AnimatedBackground>
+          </PageCardContent>
+        </PageCard>
+      </ResponsivePageLayout>
     </>
   );
 };

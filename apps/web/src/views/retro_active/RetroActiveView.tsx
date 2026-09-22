@@ -30,6 +30,7 @@ import { DiscussView } from "@/views/retro_active/discuss/DiscussView";
 import { GroupView } from "@/views/retro_active/group/GroupView";
 import { ReflectionView } from "@/views/retro_active/reflection/ReflectionView";
 import { VoteView } from "@/views/retro_active/vote/VoteView";
+import { WarmupView } from "@/views/retro_active/warmup/WarmupView";
 
 export const RetroActiveView: React.FC = () => {
   const navigate = useNavigate();
@@ -145,7 +146,7 @@ export const RetroActiveView: React.FC = () => {
               <GramophoneAction />
             </div>
 
-            <AvatarGroup className={"mt-0.5"}>
+            <AvatarGroup className="pt-2">
               {teamUsers
                 .filter((u) => u.id !== user?.id)
                 .map((teamUser) => {
@@ -182,6 +183,7 @@ export const RetroActiveView: React.FC = () => {
         ref={ref}
       >
         <Routes>
+          <Route path="warmup" element={<WarmupView />} />
           <Route path="reflection" element={<ReflectionView />} />
           <Route path="group" element={<GroupView />} />
           <Route path="vote" element={<VoteView />} />
@@ -190,7 +192,7 @@ export const RetroActiveView: React.FC = () => {
         </Routes>
       </main>
 
-      <Toolbox />
+      {roomState !== "warmup" && <Toolbox />}
     </>
   );
 };

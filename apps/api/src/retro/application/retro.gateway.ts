@@ -19,6 +19,7 @@ import {
   ChangeSlotMachineVisibilityCommand,
   ChangeTimerCommand,
   ChangeVoteAmountCommand,
+  CompleteWarmupCommand,
   CreateCardCommand,
   CreateTaskCommand,
   DeleteCardCommand,
@@ -27,11 +28,13 @@ import {
   MoveCardToColumnCommand,
   RemoveCardVoteCommand,
   ReorderColumnsCommand,
+  StartWarmupDrawCommand,
   UpdateCardCommand,
   UpdateCreatingTaskStateCommand,
   UpdateReadyStateCommand,
   UpdateRoomStateCommand,
   UpdateTaskCommand,
+  UpdateWarmupRoomUrlCommand,
   UpdateWriteStateCommand,
 } from "shared/model/retro/retro.commands";
 import {
@@ -40,16 +43,20 @@ import {
   ColumnsReorderedEvent,
   SlotMachineDrawnEvent,
   TimerChangedEvent,
+  WarmupDrawStartedEvent,
+  WarmupRoomUrlUpdatedEvent,
 } from "shared/model/retro/retro.events";
 import {
   Card,
   RetroColumn,
   User as SocketUser,
 } from "shared/model/retro/retroRoom.interface";
+import type { WarmupState } from "shared/model/warmup/warmup";
 import { Server, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
 import { JWTUser } from "../../auth/jwt/JWTUser";
 import { PrismaService } from "../../prisma/prisma.service";
+import { validateWarmupLink } from "../../warmup/warmup-links";
 import { RetroRoom } from "../domain/model/retroRoom.object";
 import { RetroRoomPersistence } from "../domain/retro-room.persistence";
 import { validate as validateRoomState } from "./roomstate.validator";
@@ -73,8 +80,13 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private roomPersistence: RetroRoomPersistence,
   ) {}
 
-  async addRetroRoom(retroId: string, teamId: string, columns: RetroColumn[]) {
-    const retroRoom = new RetroRoom(retroId, teamId, columns);
+  async addRetroRoom(
+    retroId: string,
+    teamId: string,
+    columns: RetroColumn[],
+    warmup: WarmupState | null = null,
+  ) {
+    const retroRoom = new RetroRoom(retroId, teamId, columns, warmup);
     await this.roomPersistence.persist(retroRoom);
     this.retroRooms.set(retroId, retroRoom);
     return retroRoom;
@@ -224,6 +236,64 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       await this.emitRoomSync(roomId, room);
     }
+  }
+
+  @SubscribeMessage("command_start_warmup_draw")
+  async handleStartWarmupDraw(client: Socket, _: StartWarmupDrawCommand) {
+    const roomId = this.users.get(client.id)?.roomId;
+    const room = this.retroRooms.get(roomId);
+    const roomUser = room?.connectedUsers.get(client.id);
+    if (!room || !roomUser || !this.hasAdminPrivileges(roomUser)) return;
+
+    const draw = room.startWarmupDraw();
+    if (!draw) return;
+    const event: WarmupDrawStartedEvent = draw;
+    await this.roomPersistence.persist(room);
+    this.server.to(roomId).emit("event_warmup_draw_started", event);
+
+    setTimeout(
+      async () => {
+        const currentRoom = this.retroRooms.get(roomId);
+        if (!currentRoom) return;
+        currentRoom.revealWarmupIfFinished();
+        await this.emitRoomSync(roomId, currentRoom);
+      },
+      Math.max(0, draw.spinEndsAt - Date.now()),
+    );
+  }
+
+  @SubscribeMessage("command_update_warmup_room_url")
+  async handleUpdateWarmupRoomUrl(
+    client: Socket,
+    payload: UpdateWarmupRoomUrlCommand,
+  ) {
+    const roomId = this.users.get(client.id)?.roomId;
+    const room = this.retroRooms.get(roomId);
+    const roomUser = room?.connectedUsers.get(client.id);
+    const actorId = this.users.get(client.id)?.user.id;
+    if (!room || !roomUser || !actorId || !this.hasAdminPrivileges(roomUser)) {
+      return;
+    }
+
+    const url = validateWarmupLink({ name: "room", url: payload.url }).url;
+    if (!room.updateWarmupRoomUrl(url, actorId)) return;
+    await this.roomPersistence.persist(room);
+    const event: WarmupRoomUrlUpdatedEvent = {
+      url,
+      revision: room.warmup.sharedRoomUrlRevision,
+      actorId,
+    };
+    this.server.to(roomId).emit("event_warmup_room_url_updated", event);
+  }
+
+  @SubscribeMessage("command_complete_warmup")
+  async handleCompleteWarmup(client: Socket, _: CompleteWarmupCommand) {
+    const roomId = this.users.get(client.id)?.roomId;
+    const room = this.retroRooms.get(roomId);
+    const roomUser = room?.connectedUsers.get(client.id);
+    if (!room || !roomUser || !this.hasAdminPrivileges(roomUser)) return;
+    if (!room.completeWarmup()) return;
+    await this.emitRoomSync(roomId, room);
   }
 
   @SubscribeMessage("command_change_slot_machine_visibility")

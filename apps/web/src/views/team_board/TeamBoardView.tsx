@@ -122,7 +122,7 @@ export const TeamBoardView: React.FC = () => {
               )}
             </div>
 
-            <AvatarGroup className={"mt-0.5"}>
+            <AvatarGroup className="pt-2">
               {teamUsers
                 .filter((teamUser) => teamUser.id !== user.id)
                 .map((teamUser) => {

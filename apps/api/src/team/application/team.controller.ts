@@ -23,11 +23,19 @@ import {
   TeamUserRequest,
 } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
+import type {
+  WarmupLinkRequest,
+  WarmupLinkResponse,
+} from "shared/model/warmup/warmup";
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { PrismaService } from "../../prisma/prisma.service";
+import {
+  getEffectiveWarmups,
+  validateWarmupLink,
+} from "../../warmup/warmup-links";
 import { TeamService } from "../team.service";
 import { toReflectionCardResponse } from "./reflectionCard.converter";
 import { toTeamResponse } from "./team.converter";
@@ -39,6 +47,99 @@ export class TeamController {
     private prismaService: PrismaService,
     private abilityFactory: AuthAbilityFactory,
   ) {}
+
+  @UseGuards(JwtGuard)
+  @Get(":id/warmups")
+  async getWarmups(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+  ): Promise<WarmupLinkResponse[]> {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: { id: teamId },
+    });
+    ForbiddenError.from(this.abilityFactory.create(user)).throwUnlessCan(
+      "read",
+      subject("Team", team),
+    );
+    return getEffectiveWarmups(this.prismaService, teamId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(":id/warmups")
+  async createWarmup(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Body() request: WarmupLinkRequest,
+  ): Promise<WarmupLinkResponse> {
+    const team = await this.getEditableTeam(user, teamId);
+    const data = validateWarmupLink(request);
+    const created = await this.prismaService.warmupLink.create({
+      data: {
+        team_id: team.id,
+        name: data.name,
+        description: data.description,
+        url: data.url,
+      },
+    });
+    return {
+      id: created.id,
+      name: created.name,
+      description: created.description,
+      url: created.url,
+      source: "team",
+    };
+  }
+
+  @UseGuards(JwtGuard)
+  @Put(":id/warmups/:warmupId")
+  async updateWarmup(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Param("warmupId") warmupId: string,
+    @Body() request: WarmupLinkRequest,
+  ): Promise<WarmupLinkResponse> {
+    await this.getEditableTeam(user, teamId);
+    const data = validateWarmupLink(request);
+    const updated = await this.prismaService.warmupLink.update({
+      where: { id: warmupId, team_id: teamId },
+      data: {
+        name: data.name,
+        description: data.description,
+        url: data.url,
+      },
+    });
+    return {
+      id: updated.id,
+      name: updated.name,
+      description: updated.description,
+      url: updated.url,
+      source: "team",
+    };
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(":id/warmups/:warmupId")
+  async deleteWarmup(
+    @User() user: JWTUser,
+    @Param("id") teamId: string,
+    @Param("warmupId") warmupId: string,
+  ): Promise<void> {
+    await this.getEditableTeam(user, teamId);
+    await this.prismaService.warmupLink.delete({
+      where: { id: warmupId, team_id: teamId },
+    });
+  }
+
+  private async getEditableTeam(user: JWTUser, teamId: string) {
+    const team = await this.prismaService.team.findUniqueOrThrow({
+      where: { id: teamId },
+    });
+    ForbiddenError.from(this.abilityFactory.create(user)).throwUnlessCan(
+      "update",
+      subject("Team", team),
+    );
+    return team;
+  }
 
   @UseGuards(JwtGuard)
   @Post()

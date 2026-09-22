@@ -98,3 +98,13 @@ export interface DrawMachineCommand {}
 export interface ChangeCurrentDiscussCardCommand {
   cardId: string;
 }
+
+// biome-ignore lint/suspicious/noEmptyInterface: socket command marker
+export interface StartWarmupDrawCommand {}
+
+export interface UpdateWarmupRoomUrlCommand {
+  url: string;
+}
+
+// biome-ignore lint/suspicious/noEmptyInterface: socket command marker
+export interface CompleteWarmupCommand {}

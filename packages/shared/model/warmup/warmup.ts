@@ -3,10 +3,13 @@ export interface WarmupLink {
   name: string;
   description: string | null;
   url: string;
+  /** Older persisted warmups may not have this flag; treat them as requiring a room. */
+  shouldWaitForRoomCreation?: boolean;
 }
 
 export interface WarmupLinkResponse extends WarmupLink {
   source: "default" | "team";
+  shouldWaitForRoomCreation: boolean;
 }
 
 export interface WarmupLinkRequest {

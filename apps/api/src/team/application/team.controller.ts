@@ -87,6 +87,7 @@ export class TeamController {
       description: created.description,
       url: created.url,
       source: "team",
+      shouldWaitForRoomCreation: true,
     };
   }
 
@@ -114,6 +115,7 @@ export class TeamController {
       description: updated.description,
       url: updated.url,
       source: "team",
+      shouldWaitForRoomCreation: true,
     };
   }
 

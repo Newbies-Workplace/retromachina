@@ -286,6 +286,7 @@ export const RetroContextProvider: React.FC<
                 result:
                   current.candidates.find((item) => item.id === resultId) ??
                   null,
+                sharedRoomUrl: null,
               }
             : null,
         );
@@ -461,7 +462,9 @@ export const RetroContextProvider: React.FC<
     let state: RoomState;
     switch (roomState) {
       case "reflection":
-        return;
+        if (!warmup) return;
+        state = "warmup";
+        break;
       case "group":
         state = "reflection";
         break;

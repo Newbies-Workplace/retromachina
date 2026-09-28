@@ -20,6 +20,7 @@ describe("warmup links", () => {
       description: "Wspólne zgadywanie lokalizacji z całego świata.",
       url: "https://openguessr.com/multiplayer/host",
       source: "default",
+      shouldWaitForRoomCreation: true,
     });
     expect(DEFAULT_WARMUPS).toContainEqual({
       id: "default-haxball",
@@ -27,6 +28,7 @@ describe("warmup links", () => {
       description: "Zespołowa piłka nożna połączona z air hockeyem.",
       url: "https://www.haxball.com/play",
       source: "default",
+      shouldWaitForRoomCreation: true,
     });
     expect(DEFAULT_WARMUPS).toContainEqual({
       id: "default-giphy",
@@ -35,6 +37,7 @@ describe("warmup links", () => {
         "Jakim GIF-em dziś jesteś? Wybierz GIF opisujący Twój nastrój.",
       url: "https://giphy.com/",
       source: "default",
+      shouldWaitForRoomCreation: false,
     });
   });
 
@@ -59,6 +62,7 @@ describe("warmup links", () => {
           description: null,
           url: "https://example.com/",
           source: "team",
+          shouldWaitForRoomCreation: true,
         },
       ],
     );

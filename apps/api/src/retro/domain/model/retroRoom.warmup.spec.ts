@@ -42,11 +42,13 @@ describe("RetroRoom warmup", () => {
 
     room.startWarmupDraw(0);
     room.revealWarmupIfFinished();
+    room.updateWarmupRoomUrl("https://room.test", "admin");
     const draw = room.startWarmupDraw(0);
 
     expect(draw.resultId).toBe("one");
     expect(room.warmup.status).toBe("spinning");
     expect(room.warmup.result.id).toBe("one");
+    expect(room.warmup.sharedRoomUrl).toBeNull();
   });
 
   test("allows a room link only after the result is revealed", () => {

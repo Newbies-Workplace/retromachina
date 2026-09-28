@@ -14,7 +14,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { toast } from "sonner";
 import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
 import { isCard } from "@/components/molecules/dragndrop/dragndrop";
@@ -101,14 +100,29 @@ export const Toolbox: React.FC = () => {
   const nextDisabled =
     (roomState === "discuss" && targetIndex >= groups.length) ||
     cards.length <= 0;
-  const prevDisabled = roomState === "reflection";
+  const prevDisabled = roomState === "reflection" && !warmup;
   const isVotingVisible = roomState === "vote";
   const isWarmup = roomState === "warmup";
   const isWarmupDrawAction =
     isWarmup &&
     isAdmin &&
     (warmup?.status === "pending" || warmup?.status === "revealed");
-  const warmupUrl = warmup?.sharedRoomUrl ?? warmup?.result?.url;
+  const selectedWarmup =
+    warmup?.result ??
+    warmup?.candidates.find(
+      (candidate) => candidate.id === warmup?.selectedWarmupId,
+    );
+  const shouldWaitForRoomCreation = selectedWarmup
+    ? (selectedWarmup.shouldWaitForRoomCreation ??
+      selectedWarmup.id !== "default-giphy")
+    : true;
+  const warmupUrl = selectedWarmup
+    ? shouldWaitForRoomCreation
+      ? warmup?.status === "revealed"
+        ? (warmup.sharedRoomUrl ?? undefined)
+        : undefined
+      : selectedWarmup.url
+    : undefined;
 
   const [isVoteOpen, setOpenVote] = useState(false);
 
@@ -160,15 +174,10 @@ export const Toolbox: React.FC = () => {
     });
   };
 
-  const onCopyWarmupLink = async () => {
+  const onOpenWarmupLink = () => {
     if (!warmupUrl) return;
 
-    try {
-      await navigator.clipboard.writeText(warmupUrl);
-      toast.success("Link do rozgrzewki skopiowano do schowka");
-    } catch {
-      toast.error("Nie udało się skopiować linku do rozgrzewki");
-    }
+    window.open(warmupUrl, "_blank", "noopener,noreferrer");
   };
 
   const onCardDrop = async (cardId: string) => {
@@ -220,9 +229,10 @@ export const Toolbox: React.FC = () => {
   if (isWarmup) {
     toolbarSlots[TOOLBAR_SLOT.secondaryAction] = (
       <WarmupToolbarActions
-        action="copy"
+        action="open"
+        destination={warmupUrl}
         enabled={Boolean(warmupUrl)}
-        onClick={onCopyWarmupLink}
+        onClick={onOpenWarmupLink}
       />
     );
   } else if (roomState === "reflection") {
@@ -331,9 +341,54 @@ export const Toolbox: React.FC = () => {
   }
 
   if (isWarmup) {
-    if (isAdmin && warmup?.status === "revealed") {
+    if (isAdmin) {
+      const canContinueWarmup =
+        warmup?.status === "pending" || warmup?.status === "revealed";
+      const continueWarmup = () => {
+        if (warmup?.status === "pending") {
+          startWarmupDraw();
+        } else if (warmup?.status === "revealed") {
+          completeWarmup();
+        }
+      };
+      const continueWarmupLabel =
+        warmup?.status === "pending"
+          ? "Rozpocznij losowanie"
+          : "Przejdź do retrospektywy";
+
       toolbarSlots[TOOLBAR_SLOT.navigation] = (
-        <WarmupToolbarActions action="complete" onClick={completeWarmup} />
+        <div className="flex h-full justify-between gap-2">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  className="h-full grow p-0"
+                  size="sm"
+                  aria-label="Poprzedni etap"
+                  disabled
+                />
+              }
+            >
+              <ArrowLeftIcon className="size-6" />
+            </TooltipTrigger>
+            <TooltipContent>Poprzedni etap</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  className="h-full grow p-0"
+                  aria-label={continueWarmupLabel}
+                  disabled={!canContinueWarmup}
+                  onClick={continueWarmup}
+                />
+              }
+            >
+              <ArrowRightIcon className="size-6" />
+            </TooltipTrigger>
+            <TooltipContent>{continueWarmupLabel}</TooltipContent>
+          </Tooltip>
+        </div>
       );
     }
   } else if (isAdmin) {

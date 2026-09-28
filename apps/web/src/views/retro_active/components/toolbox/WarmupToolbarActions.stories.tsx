@@ -23,14 +23,10 @@ type Story = StoryObj<typeof meta>;
 
 export const StartDraw: Story = {};
 
-export const CopyLink: Story = {
-  args: { action: "copy", enabled: true },
+export const OpenLink: Story = {
+  args: { action: "open", enabled: true },
 };
 
-export const CopyLinkDisabled: Story = {
-  args: { action: "copy", enabled: false },
-};
-
-export const CompleteWarmup: Story = {
-  args: { action: "complete" },
+export const OpenLinkDisabled: Story = {
+  args: { action: "open", enabled: false },
 };

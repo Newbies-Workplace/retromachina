@@ -13,6 +13,7 @@ export const DEFAULT_WARMUPS: WarmupLinkResponse[] = [
     description: "Rysunkowy głuchy telefon dla całego zespołu.",
     url: "https://garticphone.com/",
     source: "default",
+    shouldWaitForRoomCreation: true,
   },
   {
     id: "default-skribbl",
@@ -20,6 +21,7 @@ export const DEFAULT_WARMUPS: WarmupLinkResponse[] = [
     description: "Wspólne rysowanie i zgadywanie haseł.",
     url: "https://skribbl.io/",
     source: "default",
+    shouldWaitForRoomCreation: true,
   },
   {
     id: "default-haxball",
@@ -27,6 +29,7 @@ export const DEFAULT_WARMUPS: WarmupLinkResponse[] = [
     description: "Zespołowa piłka nożna połączona z air hockeyem.",
     url: "https://www.haxball.com/play",
     source: "default",
+    shouldWaitForRoomCreation: true,
   },
   {
     id: "default-giphy",
@@ -35,6 +38,7 @@ export const DEFAULT_WARMUPS: WarmupLinkResponse[] = [
       "Jakim GIF-em dziś jesteś? Wybierz GIF opisujący Twój nastrój.",
     url: "https://giphy.com/",
     source: "default",
+    shouldWaitForRoomCreation: false,
   },
   {
     id: "default-openguessr",
@@ -42,6 +46,7 @@ export const DEFAULT_WARMUPS: WarmupLinkResponse[] = [
     description: "Wspólne zgadywanie lokalizacji z całego świata.",
     url: "https://openguessr.com/multiplayer/host",
     source: "default",
+    shouldWaitForRoomCreation: true,
   },
 ];
 
@@ -61,6 +66,7 @@ export async function getEffectiveWarmups(
       description,
       url,
       source: "team" as const,
+      shouldWaitForRoomCreation: true,
     })),
   ];
 }

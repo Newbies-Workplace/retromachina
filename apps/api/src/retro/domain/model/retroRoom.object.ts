@@ -485,6 +485,7 @@ export class RetroRoom {
     this.warmup.result = result;
     this.warmup.status = "spinning";
     this.warmup.spinEndsAt = Date.now() + durationMs;
+    this.warmup.sharedRoomUrl = null;
     return { resultId: result.id, spinEndsAt: this.warmup.spinEndsAt };
   }
 

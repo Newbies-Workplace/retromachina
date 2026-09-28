@@ -192,7 +192,7 @@ export const RetroActiveView: React.FC = () => {
         </Routes>
       </main>
 
-      {roomState !== "warmup" && <Toolbox />}
+      <Toolbox />
     </>
   );
 };

@@ -37,6 +37,18 @@ describe("RetroRoom warmup", () => {
     expect(room.getSnapshot().warmup.result.id).toBe("two");
   });
 
+  test("allows rerolling a revealed result", () => {
+    const room = new RetroRoom("retro", "team", [], warmup());
+
+    room.startWarmupDraw(0);
+    room.revealWarmupIfFinished();
+    const draw = room.startWarmupDraw(0);
+
+    expect(draw.resultId).toBe("one");
+    expect(room.warmup.status).toBe("spinning");
+    expect(room.warmup.result.id).toBe("one");
+  });
+
   test("allows a room link only after the result is revealed", () => {
     const room = new RetroRoom("retro", "team", [], warmup());
 

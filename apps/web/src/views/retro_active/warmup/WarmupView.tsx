@@ -1,9 +1,4 @@
-import {
-  ArrowRightIcon,
-  ExternalLinkIcon,
-  LinkIcon,
-  SparklesIcon,
-} from "lucide-react";
+import { ExternalLinkIcon, LinkIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { WarmupWheel } from "@/components/organisms/warmup_wheel/WarmupWheel";
 import { Button } from "@/components/ui/button";
@@ -23,13 +18,7 @@ import { useTeamRole } from "@/hooks/useTeamRole";
 import { cn } from "@/lib/utils";
 
 export function WarmupView() {
-  const {
-    teamId,
-    warmup,
-    startWarmupDraw,
-    updateWarmupRoomUrl,
-    completeWarmup,
-  } = useRetro();
+  const { teamId, warmup, updateWarmupRoomUrl } = useRetro();
   const { user } = useUser();
   const { isAdmin } = useTeamRole(teamId ?? "");
   const [roomUrl, setRoomUrl] = useState("");
@@ -72,17 +61,6 @@ export function WarmupView() {
           spinEndsAt={warmup.spinEndsAt}
         />
 
-        {warmup.status === "pending" && isAdmin && (
-          <Button
-            size="lg"
-            variant="secondary"
-            onClick={startWarmupDraw}
-            data-testid="start-warmup-draw"
-          >
-            <SparklesIcon data-icon="inline-start" />
-            Rozpocznij losowanie
-          </Button>
-        )}
         {warmup.status === "pending" && !isAdmin && (
           <p className="text-muted-foreground">
             Prowadzący zaraz uruchomi koło…
@@ -155,12 +133,6 @@ export function WarmupView() {
                 <ExternalLinkIcon data-icon="inline-start" />
                 Otwórz rozgrzewkę
               </Button>
-              {isAdmin && (
-                <Button onClick={completeWarmup}>
-                  Przejdź do retrospektywy
-                  <ArrowRightIcon data-icon="inline-end" />
-                </Button>
-              )}
             </CardFooter>
           </Card>
         )}

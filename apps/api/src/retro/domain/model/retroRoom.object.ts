@@ -467,12 +467,19 @@ export class RetroRoom {
 
   startWarmupDraw(durationMs = 4500) {
     if (!this.warmup || this.roomState !== "warmup") return null;
-    if (this.warmup.status !== "pending") return null;
-    const resultId =
-      this.warmup.selectedWarmupId ??
-      this.warmup.candidates[
-        Math.floor(Math.random() * this.warmup.candidates.length)
-      ]?.id;
+    const isReroll = this.warmup.status === "revealed";
+    if (this.warmup.status !== "pending" && !isReroll) return null;
+    const rerollCandidates = isReroll
+      ? this.warmup.candidates.filter(
+          (candidate) => candidate.id !== this.warmup?.result?.id,
+        )
+      : this.warmup.candidates;
+    const candidates =
+      rerollCandidates.length > 0 ? rerollCandidates : this.warmup.candidates;
+    const resultId = isReroll
+      ? candidates[Math.floor(Math.random() * candidates.length)]?.id
+      : (this.warmup.selectedWarmupId ??
+        candidates[Math.floor(Math.random() * candidates.length)]?.id);
     const result = this.warmup.candidates.find((item) => item.id === resultId);
     if (!result) return null;
     this.warmup.result = result;

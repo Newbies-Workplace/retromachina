@@ -144,7 +144,7 @@ export function WarmupView() {
           </div>
         </div>
 
-        <div className="flex min-h-0 w-full flex-1 items-center justify-center p-4 py-6">
+        <div className="flex min-h-0 w-full flex-1 -translate-y-4 items-center justify-center p-4 py-6">
           <WarmupWheel
             candidates={warmup.candidates}
             status={warmup.status}

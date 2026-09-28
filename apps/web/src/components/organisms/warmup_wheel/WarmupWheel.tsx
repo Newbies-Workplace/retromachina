@@ -3,6 +3,8 @@ import type { WarmupLink, WarmupStatus } from "shared/model/warmup/warmup";
 
 const FULL_TURNS = 5;
 const POINTER_ANGLE = 0;
+const LAMP_COUNT = 28;
+const PEG_COUNT = 24;
 
 function normalizeRotation(rotation: number) {
   return ((rotation % 360) + 360) % 360;
@@ -30,6 +32,28 @@ export function WarmupWheel({
   const [rotation, setRotation] = useState(() =>
     status === "revealed" ? resultRotation : 0,
   );
+  const [pointerTick, setPointerTick] = useState(0);
+  const lamps = Array.from({ length: LAMP_COUNT }, (_, index) => {
+    const angle = (index / LAMP_COUNT) * Math.PI * 2 - Math.PI / 2;
+    const radius = 44;
+
+    return {
+      id: index,
+      left: `${50 + Math.cos(angle) * radius}%`,
+      top: `${50 + Math.sin(angle) * radius}%`,
+      isError: index % 2 === 1,
+    };
+  });
+  const pegs = Array.from({ length: PEG_COUNT }, (_, index) => {
+    const angle = (index / PEG_COUNT) * Math.PI * 2;
+    const radius = 47;
+
+    return {
+      id: index,
+      left: `${50 + Math.cos(angle) * radius}%`,
+      top: `${50 + Math.sin(angle) * radius}%`,
+    };
+  });
 
   useEffect(() => {
     if (status === "revealed") {
@@ -49,13 +73,68 @@ export function WarmupWheel({
     return () => cancelAnimationFrame(animationFrame);
   }, [resultIndex, resultRotation, status]);
 
+  useEffect(() => {
+    if (status !== "spinning" || spinEndsAt === null) {
+      return;
+    }
+
+    const startedAt = Date.now();
+    const duration = Math.max(1, spinEndsAt - startedAt);
+    let timeout: ReturnType<typeof setTimeout>;
+    let cancelled = false;
+
+    const tick = () => {
+      const remaining = spinEndsAt - Date.now();
+      if (cancelled || remaining <= 0) {
+        return;
+      }
+
+      setPointerTick((current) => current + 1);
+      const progress = Math.min(1, 1 - remaining / duration);
+      const interval = 70 + 650 * progress ** 3;
+      timeout = setTimeout(tick, interval);
+    };
+
+    timeout = setTimeout(tick, 70);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [spinEndsAt, status]);
+
   return (
     <div className="relative aspect-square w-full max-w-96 shrink-0 rounded-full shadow-xl [container-type:inline-size]">
-      <div className="absolute right-0 top-1/2 z-10 translate-x-2 -translate-y-1/2 border-y-[12px] border-r-[20px] border-y-transparent border-r-foreground" />
+      <div className="absolute inset-0 rounded-full border-2 border-foreground bg-secondary" />
+      {lamps.map((lamp) => (
+        <span
+          aria-hidden="true"
+          className={`absolute size-[4%] -translate-x-1/2 -translate-y-1/2 rounded-full ${
+            lamp.isError ? "bg-destructive" : "bg-white"
+          } animate-[warmup-lamp-flicker_1.6s_ease-in-out_infinite] motion-reduce:animate-none`}
+          key={lamp.id}
+          style={{
+            left: lamp.left,
+            top: lamp.top,
+            animationDelay: `${lamp.id % 2 === 0 ? 0 : 0.8}s`,
+            boxShadow: lamp.isError
+              ? "0 0 5px 2px color-mix(in srgb, var(--destructive) 70%, transparent)"
+              : "0 0 5px 2px rgb(255 255 255 / 85%)",
+          }}
+        />
+      ))}
+      <div
+        className={`absolute right-[6%] top-1/2 z-10 translate-x-8 -translate-y-1/2 border-y-[18px] border-r-[64px] border-y-transparent border-r-destructive origin-right ${
+          status === "spinning"
+            ? "animate-[warmup-pointer-tick_120ms_cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:animate-none"
+            : ""
+        }`}
+        key={pointerTick}
+        style={{ filter: "drop-shadow(0 0 1.5px var(--foreground))" }}
+      />
       <div
         aria-label="Koło losujące rozgrzewkę"
         role="img"
-        className="relative aspect-square w-full overflow-hidden rounded-full border-4 border-foreground bg-card transition-transform ease-out"
+        className="absolute inset-[12%] aspect-square overflow-hidden rounded-full border-2 border-foreground bg-card transition-transform ease-out"
         style={{
           transform: `rotate(${rotation}deg)`,
           transitionDuration:
@@ -81,6 +160,14 @@ export function WarmupWheel({
               <span className="w-full truncate text-center">{item.name}</span>
             </div>
           </div>
+        ))}
+        {pegs.map((peg) => (
+          <span
+            aria-hidden="true"
+            className="absolute size-[3%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-card bg-foreground shadow-sm"
+            key={peg.id}
+            style={{ left: peg.left, top: peg.top }}
+          />
         ))}
       </div>
     </div>

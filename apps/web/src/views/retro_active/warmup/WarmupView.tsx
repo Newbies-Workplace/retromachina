@@ -46,6 +46,9 @@ export function WarmupView() {
   const selectedWarmup = warmup.candidates.find(
     (candidate) => candidate.id === warmup.selectedWarmupId,
   );
+  const shouldWaitForRoomCreation = result
+    ? (result.shouldWaitForRoomCreation ?? result.id !== "default-giphy")
+    : true;
   const sidebarTitle =
     warmup.status === "revealed"
       ? (result?.name ?? "Nie wybrano rozgrzewki")
@@ -99,41 +102,38 @@ export function WarmupView() {
             </SidebarGroup>
           )}
         </SidebarContent>
-        {warmup.status === "revealed" && result && (
-          <SidebarFooter className="mt-auto gap-2">
-            {isAdmin && (
-              <>
-                <Textarea
-                  aria-label="Link do pokoju"
-                  placeholder="Wklej link do utworzonego pokoju"
-                  rows={2}
-                  className="resize-none"
-                  value={roomUrl}
-                  onChange={(event) => setRoomUrl(event.target.value)}
-                />
-                <Button
-                  className="w-full"
-                  disabled={saving || !roomUrl.trim()}
-                  variant="secondary"
-                  onClick={() => {
-                    setSaving(true);
-                    updateWarmupRoomUrl(roomUrl.trim());
-                    setTimeout(() => setSaving(false), 500);
-                  }}
-                >
-                  {saving ? (
-                    <Spinner data-icon="inline-start" />
-                  ) : (
-                    <LinkIcon data-icon="inline-start" />
-                  )}
-                  {warmup.sharedRoomUrl
-                    ? "Zaktualizuj link"
-                    : "Udostępnij link"}
-                </Button>
-              </>
-            )}
-          </SidebarFooter>
-        )}
+        {warmup.status === "revealed" &&
+          result &&
+          isAdmin &&
+          shouldWaitForRoomCreation && (
+            <SidebarFooter className="mt-auto gap-2">
+              <Textarea
+                aria-label="Link do pokoju"
+                placeholder="Wklej link do utworzonego pokoju"
+                rows={2}
+                className="resize-none"
+                value={roomUrl}
+                onChange={(event) => setRoomUrl(event.target.value)}
+              />
+              <Button
+                className="w-full"
+                disabled={saving || !roomUrl.trim()}
+                variant="secondary"
+                onClick={() => {
+                  setSaving(true);
+                  updateWarmupRoomUrl(roomUrl.trim());
+                  setTimeout(() => setSaving(false), 500);
+                }}
+              >
+                {saving ? (
+                  <Spinner data-icon="inline-start" />
+                ) : (
+                  <LinkIcon data-icon="inline-start" />
+                )}
+                {warmup.sharedRoomUrl ? "Zaktualizuj link" : "Udostępnij link"}
+              </Button>
+            </SidebarFooter>
+          )}
       </Sidebar>
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto pb-24">

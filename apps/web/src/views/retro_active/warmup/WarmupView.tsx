@@ -64,7 +64,10 @@ export function WarmupView() {
         className="mt-[70px] h-[calc(100%-70px-100px)]"
       >
         <SidebarHeader>
-          <span className="line-clamp-2 overflow-hidden text-xl">
+          <span
+            className="line-clamp-2 overflow-hidden text-xl"
+            data-testid="warmup-sidebar-title"
+          >
             {sidebarTitle}
           </span>
         </SidebarHeader>
@@ -75,7 +78,10 @@ export function WarmupView() {
             </div>
           )}
           {warmup.status === "spinning" && (
-            <div className="flex items-center gap-2 p-4 text-sm text-muted-foreground">
+            <div
+              className="flex items-center gap-2 p-4 text-sm text-muted-foreground"
+              data-testid="warmup-spinning"
+            >
               <Spinner /> Losowanie trwa…
             </div>
           )}
@@ -106,7 +112,10 @@ export function WarmupView() {
           result &&
           isAdmin &&
           shouldWaitForRoomCreation && (
-            <SidebarFooter className="mt-auto gap-2">
+            <SidebarFooter
+              className="mt-auto gap-2"
+              data-testid="warmup-room-form"
+            >
               <Textarea
                 aria-label="Link do pokoju"
                 placeholder="Wklej link do utworzonego pokoju"

@@ -54,7 +54,23 @@ export class RetroCreatePage {
     });
   }
 
-  async createRetro() {
+  async createRetro({ skipWarmup = true }: { skipWarmup?: boolean } = {}) {
+    if (skipWarmup) {
+      await this.chooseNoWarmup();
+    }
     await this.page.getByTestId("create-retro-confirm").click();
+  }
+
+  async chooseNoWarmup() {
+    await this.page.getByTestId("warmup-choice-none").click();
+  }
+
+  async chooseRandomWarmup() {
+    await this.page.getByTestId("warmup-choice-random").click();
+  }
+
+  async chooseWarmup(name: string) {
+    await this.page.getByTestId("warmup-select").click();
+    await this.page.getByRole("option", { name, exact: true }).click();
   }
 }

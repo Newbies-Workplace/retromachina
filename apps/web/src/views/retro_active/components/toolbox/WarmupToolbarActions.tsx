@@ -98,6 +98,7 @@ export function WarmupToolbarActions({
           <Button
             className="size-full flex-col gap-1 px-1 text-xs"
             aria-label={label}
+            data-testid={`warmup-action-${action}`}
             disabled
           >
             {content}
@@ -109,6 +110,7 @@ export function WarmupToolbarActions({
             <Button
               className="size-full flex-col gap-1 px-1 text-xs"
               aria-label={label}
+              data-testid={`warmup-action-${action}`}
               disabled={!enabled}
               onClick={onClick}
             />

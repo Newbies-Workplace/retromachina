@@ -240,6 +240,7 @@ export const RetroCreateView: React.FC = () => {
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                 <Button
                   type="button"
+                  data-testid="warmup-choice-none"
                   variant={warmupChoice === "none" ? "default" : "outline"}
                   aria-pressed={warmupChoice === "none"}
                   className="h-full min-h-16 flex-col items-start gap-1 whitespace-normal p-3 text-left"
@@ -251,6 +252,7 @@ export const RetroCreateView: React.FC = () => {
 
                 <Button
                   type="button"
+                  data-testid="warmup-choice-random"
                   variant={warmupChoice === "random" ? "default" : "outline"}
                   aria-pressed={warmupChoice === "random"}
                   className="h-full min-h-16 flex-col items-start gap-1 whitespace-normal p-3 text-left"

@@ -186,7 +186,7 @@ export function ToolboxVoteControl({
       </Tooltip>
       {isVoteOpen && (
         <div
-          className="absolute bottom-[calc(100%+8px)] flex flex-col rounded-xl bg-card p-2 shadow-md"
+          className="absolute bottom-[calc(100%+1.5rem)] flex flex-col rounded-xl bg-card p-2 shadow-md"
           ref={votePopover}
         >
           <div className="text-center text-sm">

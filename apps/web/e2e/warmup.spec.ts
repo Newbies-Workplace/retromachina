@@ -92,6 +92,32 @@ test("can draw the default random warmup after creating a retro", async ({
   );
 });
 
+test("toolbar contains its controls with enlarged browser text", async ({
+  firstUser,
+}) => {
+  const page = firstUser.page;
+  const createRetro = await createTeamAndOpenRetroCreate(page);
+  await createRetro.chooseRandomWarmup();
+  await createRetro.createRetro({ skipWarmup: false });
+  await expect(page).toHaveURL(/\/retro\/.+\/warmup/);
+  await page.addStyleTag({ content: "html { font-size: 20px !important; }" });
+
+  const toolbar = page.getByTestId("retro-toolbar");
+  await expect(toolbar).toBeVisible();
+  const controlsFit = await toolbar.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return Array.from(element.querySelectorAll("button")).every((button) => {
+      const control = button.getBoundingClientRect();
+      return (
+        control.top >= bounds.top &&
+        control.bottom <= bounds.bottom &&
+        control.bottom <= window.innerHeight
+      );
+    });
+  });
+  expect(controlsFit).toBe(true);
+});
+
 test("warmup wheel has an accessible name", async ({ firstUser }) => {
   const createRetro = await createTeamAndOpenRetroCreate(firstUser.page);
   await createRetro.chooseWarmup("Gartic Phone");

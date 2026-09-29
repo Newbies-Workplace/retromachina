@@ -43,7 +43,7 @@ export const ToolboxSlotMachine: React.FC = () => {
     <SlotMachine
       ref={slotMachineRef}
       className={
-        "pointer-events-auto m-auto absolute left-0 right-0 bottom-16 w-96"
+        "pointer-events-auto m-auto absolute left-0 right-0 bottom-[calc(100%+2rem)] w-96"
       }
       visible={roomState === "group" && slotMachineVisible}
       hideMachineEnabled={isAdmin}

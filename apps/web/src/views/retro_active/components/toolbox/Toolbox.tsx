@@ -327,7 +327,10 @@ export const Toolbox: React.FC = () => {
       )}
 
       <TooltipProvider delay={700}>
-        <div className="relative mx-auto grid h-[80px] w-full max-w-3xl grid-cols-7 gap-2 rounded-t-2xl border border-b-0 border-border bg-card p-2 shadow-lg pointer-events-auto">
+        <div
+          data-testid="retro-toolbar"
+          className="relative mx-auto grid w-full max-w-3xl grid-cols-7 gap-2 rounded-t-2xl border border-b-0 border-border bg-card p-2 shadow-lg pointer-events-auto"
+        >
           {toolbarSlotKeys.map((slotKey, index) => {
             if (isWarmupDrawAction && index === TOOLBAR_SLOT.roomAction) {
               return null;

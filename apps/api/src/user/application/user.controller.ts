@@ -62,7 +62,7 @@ export class UserController {
     @Query("team_id") teamId: string,
   ): Promise<UserInTeamResponse[]> {
     if (!teamId || teamId.trim().length === 0) throw new NotFoundException();
-    const team = await this.prismaService.team.findUniqueOrThrow({
+    const team = await this.prismaService.team.findUnique({
       where: {
         id: teamId,
       },
@@ -74,6 +74,7 @@ export class UserController {
         },
       },
     });
+    if (!team) throw new NotFoundException("Team not found");
 
     const ability = this.abilityFactory.create(user);
 

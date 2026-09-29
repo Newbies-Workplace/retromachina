@@ -140,6 +140,57 @@ describe("retrospective restart recovery", () => {
     expect((saved as any).maxVotes).toBe(6);
   });
 
+  it("finishes and persists a draw restored before its deadline", async () => {
+    const scheduled = jest.spyOn(global, "setTimeout");
+    let now = Date.now();
+    const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
+    try {
+      const candidate = {
+        id: "warmup",
+        name: "Warmup",
+        description: null,
+        url: "https://example.com/",
+      };
+      const room = new RetroRoom("retro", "team", columns, {
+        candidates: [candidate],
+        status: "pending",
+        selectedWarmupId: candidate.id,
+        result: null,
+        spinEndsAt: null,
+        sharedRoomUrl: null,
+        sharedRoomUrlRevision: 0,
+        sharedRoomUrlUpdatedBy: null,
+      });
+      room.startWarmupDraw(4500);
+      await persistence.persist(room);
+      now += 1000;
+      await gateway.restoreRooms();
+      expect(scheduled).toHaveBeenCalledWith(expect.any(Function), 3500);
+      const restored = gateway["retroRooms"].get(room.id);
+      expect(restored.warmup.status).toBe("spinning");
+      now += 3499;
+      expect(emit).not.toHaveBeenCalled();
+      now += 1;
+      clearTimeout(scheduled.mock.results[0].value);
+      await scheduled.mock.calls[0][0]();
+      expect(restored.warmup.status).toBe("revealed");
+      expect(emit).toHaveBeenCalledWith(
+        "event_room_sync",
+        expect.objectContaining({
+          warmup: expect.objectContaining({ status: "revealed" }),
+        }),
+      );
+      expect(
+        (saved as ReturnType<RetroRoom["getSnapshot"]>).warmup.status,
+      ).toBe("revealed");
+      expect(restored.startWarmupDraw()).not.toBeNull();
+    } finally {
+      clock.mockRestore();
+      for (const timer of scheduled.mock.results) clearTimeout(timer.value);
+      scheduled.mockRestore();
+    }
+  });
+
   it("does not broadcast when saving fails", async () => {
     const room = new RetroRoom("retro", "team", columns);
     database.retrospective.update.mockRejectedValueOnce(

@@ -18,14 +18,15 @@ export class RetroActivePage {
     this.readyProgressLocator = page.getByRole("progressbar");
     // Icon-only toolbar controls currently have no accessible names.
     const toolbar = this.readyProgressLocator.locator("..").locator("..");
-    this.nextStageButtonLocator = toolbar.getByRole("button").filter({
-      has: page.locator(".lucide-arrow-right"),
+    this.nextStageButtonLocator = page.getByRole("button", {
+      name: "Następny etap",
     });
     this.readyButtonLocator = toolbar.getByRole("button").filter({
       has: page.locator(".lucide-check"),
     });
-    // In the grouping stage, the slot machine toggle is the first control.
-    this.slotMachineToggleLocator = toolbar.getByRole("button").first();
+    this.slotMachineToggleLocator = page.getByRole("button", {
+      name: "Otwórz losowanie",
+    });
     this.slotMachineTitleLocator = page.getByText("Losowanko", { exact: true });
     this.slotMachineLeverLocator = page.locator(".lever");
     this.columnsLocator = page.getByTestId("retro-column");

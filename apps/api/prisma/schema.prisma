@@ -21,6 +21,17 @@ model Team {
   Invite         Invite[]
   Board          Board?
   ReflectionCard ReflectionCard[]
+  WarmupLink     WarmupLink[]
+}
+
+model WarmupLink {
+  id          String  @id @default(uuid())
+  team_id     String
+  name        String
+  description String? @db.Text
+  url         String  @db.Text
+
+  Team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
 }
 
 model TeamUsers {

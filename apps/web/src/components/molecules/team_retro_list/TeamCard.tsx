@@ -114,7 +114,7 @@ export const TeamCard: React.FC<TeamRetroListProps> = ({
           )}
         </div>
 
-        <div className={"flex flex-wrap gap-2"}>
+        <div className={"flex flex-wrap justify-end gap-2"}>
           {role !== "USER" && (
             <Button
               data-testid="edit-team"

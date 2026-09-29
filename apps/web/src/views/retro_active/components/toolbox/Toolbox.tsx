@@ -1,29 +1,99 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CheckIcon,
-  FlagIcon,
-  ThumbsUpIcon,
-} from "lucide-react";
-import React, { createRef, useCallback, useEffect, useState } from "react";
+import { FlagIcon } from "lucide-react";
+import React, { type ReactNode, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
 import { isCard } from "@/components/molecules/dragndrop/dragndrop";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
-import useClickOutside from "@/hooks/useClickOutside";
 import { useTeamRole } from "@/hooks/useTeamRole";
 import { groupCards } from "@/lib/groupCards";
 import { pluralText } from "@/lib/pluralText";
-import { cn } from "@/lib/utils";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
 import { ToolboxSlotMachine } from "@/views/retro_active/components/toolbox/ToolboxSlotMachine";
+import { WarmupToolbarActions } from "@/views/retro_active/components/toolbox/WarmupToolbarActions";
+import {
+  ToolboxNavigation,
+  ToolboxReadyControl,
+  ToolboxSecondaryAction,
+} from "./ToolboxControls";
+
+const TOOLBAR_SLOT = {
+  leading: 0,
+  roomAction: 1,
+  secondaryAction: 2,
+  ready: 3,
+  summary: 4,
+  navigation: 5,
+  finish: 6,
+} as const;
+
+const toolbarSlotKeys = [
+  "leading",
+  "roomAction",
+  "secondaryAction",
+  "ready",
+  "summary",
+  "navigation",
+  "finish",
+] as const;
+
+function getWarmupToolbarState(
+  warmup: ReturnType<typeof useRetro>["warmup"],
+  isWarmup: boolean,
+  isAdmin: boolean,
+) {
+  const isWarmupDrawAction =
+    isWarmup &&
+    isAdmin &&
+    (warmup?.status === "pending" || warmup?.status === "revealed");
+  const selectedWarmup =
+    warmup?.result ??
+    warmup?.candidates.find(
+      (candidate) => candidate.id === warmup?.selectedWarmupId,
+    );
+  const shouldWaitForRoomCreation = selectedWarmup
+    ? (selectedWarmup.shouldWaitForRoomCreation ??
+      selectedWarmup.id !== "default-giphy")
+    : true;
+  const warmupUrl = selectedWarmup
+    ? shouldWaitForRoomCreation
+      ? warmup?.status === "revealed"
+        ? (warmup.sharedRoomUrl ?? undefined)
+        : undefined
+      : selectedWarmup.url
+    : undefined;
+  return { isWarmupDrawAction, warmupUrl };
+}
+
+function isNextStageDisabled(
+  cards: ReturnType<typeof useRetro>["cards"],
+  votes: ReturnType<typeof useRetro>["votes"],
+  discussionCardId: string | null,
+  roomState: ReturnType<typeof useRetro>["roomState"],
+) {
+  const groups = groupCards(cards, votes).sort(
+    (a, b) => b.votes.length - a.votes.length,
+  );
+  const currentIndex = groups.findIndex(
+    (g) => g.parentCardId === discussionCardId,
+  );
+  const targetIndex = currentIndex + 1;
+  const nextDisabled =
+    (roomState === "discuss" && targetIndex >= groups.length) ||
+    cards.length <= 0;
+  return nextDisabled;
+}
 
 export const Toolbox: React.FC = () => {
   const { showConfirm } = useConfirm();
@@ -44,9 +114,12 @@ export const Toolbox: React.FC = () => {
     slotMachineVisible,
     setSlotMachineVisible,
     deleteCard,
+    warmup,
+    startWarmupDraw,
+    completeWarmup,
   } = useRetro();
 
-  const { isAdmin } = useTeamRole(teamId!);
+  const { isAdmin } = useTeamRole(teamId ?? "");
   const { addReflectionCard, fetchReflectionCards } = useReflectionCardStore();
   const hasReflectionCards = useReflectionCardStore(
     (state) => state.reflectionCards.length > 0,
@@ -55,26 +128,22 @@ export const Toolbox: React.FC = () => {
   const { user } = useUser();
   const userVotes =
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
-  const groups = groupCards(cards, votes).sort(
-    (a, b) => b.votes.length - a.votes.length,
+  const nextDisabled = isNextStageDisabled(
+    cards,
+    votes,
+    discussionCardId,
+    roomState,
   );
-  const currentIndex = groups.findIndex(
-    (g) => g.parentCardId === discussionCardId,
-  );
-  const targetIndex = currentIndex + 1;
-  const nextDisabled =
-    (roomState === "discuss" && targetIndex >= groups.length) ||
-    cards.length <= 0;
-  const prevDisabled = roomState === "reflection";
+  const prevDisabled = roomState === "reflection" && !warmup;
   const isVotingVisible = roomState === "vote";
+  const isWarmup = roomState === "warmup";
+  const { isWarmupDrawAction, warmupUrl } = getWarmupToolbarState(
+    warmup,
+    isWarmup,
+    isAdmin,
+  );
 
-  const [isVoteOpen, setOpenVote] = useState(false);
-
-  const votePopover = createRef<HTMLDivElement>();
-  const closeVote = useCallback(() => setOpenVote(false), []);
-  useClickOutside(votePopover, closeVote);
-
-  const reflectionCardsShelfButtonRef = createRef<HTMLButtonElement>();
+  const reflectionCardsShelfButtonRef = useRef<HTMLButtonElement>(null);
   const [isReflectionCardsShelfOpen, setIsReflectionCardsShelfOpen] =
     useState(false);
 
@@ -118,6 +187,12 @@ export const Toolbox: React.FC = () => {
     });
   };
 
+  const onOpenWarmupLink = () => {
+    if (!warmupUrl) return;
+
+    window.open(warmupUrl, "_blank", "noopener,noreferrer");
+  };
+
   const onCardDrop = async (cardId: string) => {
     const card = cards.find((card) => card.id === cardId);
 
@@ -129,6 +204,110 @@ export const Toolbox: React.FC = () => {
       deleteCard(cardId);
     });
   };
+
+  const toolbarSlots: ReactNode[] = Array.from(
+    { length: toolbarSlotKeys.length },
+    () => null,
+  );
+
+  if (isWarmupDrawAction) {
+    toolbarSlots[TOOLBAR_SLOT.leading] = (
+      <WarmupToolbarActions
+        action={warmup?.status === "pending" ? "start" : "reroll"}
+        onClick={startWarmupDraw}
+      />
+    );
+  }
+
+  if (isAdmin && roomState === "group") {
+    toolbarSlots[TOOLBAR_SLOT.roomAction] = (
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              className="size-full"
+              aria-label="Otwórz losowanie"
+              onClick={() => setSlotMachineVisible(!slotMachineVisible)}
+            />
+          }
+        >
+          <SlotMachineIcon className="size-7" />
+        </TooltipTrigger>
+        <TooltipContent>Otwórz losowanie</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  toolbarSlots[TOOLBAR_SLOT.secondaryAction] = (
+    <ToolboxSecondaryAction
+      isWarmup={isWarmup}
+      roomState={roomState}
+      isAdmin={isAdmin}
+      warmupUrl={warmupUrl}
+      onOpenWarmupLink={onOpenWarmupLink}
+      shelfButtonRef={reflectionCardsShelfButtonRef}
+      onOpenShelf={() => setIsReflectionCardsShelfOpen(true)}
+      hasReflectionCards={hasReflectionCards}
+      maxVotes={maxVotes}
+      setMaxVotesAmount={setMaxVotesAmount}
+    />
+  );
+
+  toolbarSlots[TOOLBAR_SLOT.ready] = (
+    <ToolboxReadyControl
+      ready={ready}
+      setReady={setReady}
+      readyPercentage={readyPercentage}
+    />
+  );
+
+  if (isVotingVisible) {
+    toolbarSlots[TOOLBAR_SLOT.summary] = (
+      <div className="flex size-full items-center justify-center rounded bg-background text-center wrap-break-word">
+        {`${userVotes}/${maxVotes}`}
+        <br />
+        {pluralText(maxVotes, {
+          one: "głos",
+          few: "głosy",
+          other: "głosów",
+        })}
+      </div>
+    );
+  }
+
+  toolbarSlots[TOOLBAR_SLOT.navigation] = (
+    <ToolboxNavigation
+      isAdmin={isAdmin}
+      isWarmup={isWarmup}
+      warmup={warmup}
+      startWarmupDraw={startWarmupDraw}
+      completeWarmup={completeWarmup}
+      nextRoomState={nextRoomState}
+      prevRoomState={prevRoomState}
+      nextDisabled={nextDisabled}
+      prevDisabled={prevDisabled}
+    />
+  );
+
+  if (isAdmin) {
+    toolbarSlots[TOOLBAR_SLOT.finish] = (
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="destructive"
+              className="size-full"
+              aria-label="Zakończ retrospektywę"
+              onClick={onFinishRetroPress}
+            />
+          }
+        >
+          <FlagIcon className="size-6" />
+        </TooltipTrigger>
+        <TooltipContent>Zakończ retrospektywę</TooltipContent>
+      </Tooltip>
+    );
+  }
 
   return (
     <div
@@ -147,178 +326,29 @@ export const Toolbox: React.FC = () => {
         />
       )}
 
-      <div
-        className={
-          "relative flex items-center justify-center gap-2 w-full max-w-3xl mx-auto p-2 bg-card border border-b-0 border-border rounded-t-2xl shadow-lg pointer-events-auto"
-        }
-      >
-        {isAdmin && <div className={"flex justify-center gap-2 w-24 h-16"} />}
-        {isAdmin && roomState !== "reflection" && roomState !== "group" && (
-          <div className={"flex justify-center gap-2 w-24 h-16"} />
-        )}
+      <TooltipProvider delay={700}>
+        <div className="relative mx-auto grid h-[80px] w-full max-w-3xl grid-cols-7 gap-2 rounded-t-2xl border border-b-0 border-border bg-card p-2 shadow-lg pointer-events-auto">
+          {toolbarSlotKeys.map((slotKey, index) => {
+            if (isWarmupDrawAction && index === TOOLBAR_SLOT.roomAction) {
+              return null;
+            }
 
-        {isAdmin && roomState === "group" && (
-          <div className={"flex justify-center gap-2 w-24 h-16"}>
-            <Button
-              className={"w-full h-full"}
-              onClick={() => setSlotMachineVisible(!slotMachineVisible)}
-            >
-              <SlotMachineIcon className={"size-7"} />
-            </Button>
-          </div>
-        )}
-
-        {roomState === "reflection" && (
-          <div className={"relative w-24 h-16 group"}>
-            <Button
-              ref={reflectionCardsShelfButtonRef}
-              className={cn(
-                "relative flex flex-col justify-center items-center gap-4 size-full bg-background text-foreground border-2 border-primary border-dashed",
-              )}
-              onClick={() => {
-                setIsReflectionCardsShelfOpen(true);
-              }}
-            >
-              Wrzutki
-              {hasReflectionCards && (
-                <div
-                  className={
-                    "absolute rounded-full bg-destructive left-4 right-4 h-2 bottom-1 animate-pulse "
-                  }
-                />
-              )}
-            </Button>
-          </div>
-        )}
-
-        <div className={"flex justify-center gap-2 w-24 h-16"}>
-          {isVotingVisible && isAdmin && (
-            <>
-              <Button className={"size-full"} onClick={() => setOpenVote(true)}>
-                <ThumbsUpIcon />
-              </Button>
-
-              {isVoteOpen && (
-                <div
-                  className={
-                    "flex flex-col absolute bottom-[86px] bg-card rounded-xl p-2 shadow-md"
-                  }
-                  ref={votePopover}
-                >
-                  <div className={"text-sm text-center"}>
-                    {pluralText(maxVotes, {
-                      one: "głos",
-                      few: "głosy",
-                      other: "głosów",
-                    })}{" "}
-                    na osobę
-                  </div>
-
-                  <div
-                    className={
-                      "flex justify-between gap-2 h-[30px] w-full pt-1 bg-card"
-                    }
-                  >
-                    <Button
-                      className={"grow"}
-                      size={"sm"}
-                      onClick={() =>
-                        maxVotes > 0 && setMaxVotesAmount(maxVotes - 1)
-                      }
-                    >
-                      -
-                    </Button>
-                    <div
-                      className={
-                        "flex justify-center items-center bg-background h-[30px] min-w-[50px] rounded"
-                      }
-                    >
-                      {maxVotes}
-                    </div>
-                    <Button
-                      className={"grow"}
-                      size={"sm"}
-                      onClick={() => setMaxVotesAmount(maxVotes + 1)}
-                    >
-                      +
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+            return (
+              <div
+                className="relative h-16 min-w-0"
+                key={slotKey}
+                style={{
+                  gridColumn: `${index + 1} / span ${
+                    isWarmupDrawAction && index === TOOLBAR_SLOT.leading ? 2 : 1
+                  }`,
+                }}
+              >
+                {toolbarSlots[index]}
+              </div>
+            );
+          })}
         </div>
-
-        <div className={cn("flex flex-col justify-center gap-2 w-24 h-16")}>
-          <Button
-            className={cn("grow w-full")}
-            aria-label={ready ? "Cofnij gotowość" : "Oznacz jako gotowy"}
-            onClick={() => setReady(!ready)}
-          >
-            <CheckIcon className={"size-6"} />
-          </Button>
-
-          <Progress value={readyPercentage} />
-        </div>
-
-        <div className={"flex justify-center gap-2 w-24 h-16"}>
-          {isVotingVisible && (
-            <div
-              className={
-                "flex justify-center items-center relative w-full h-full rounded bg-background text-center wrap-break-word"
-              }
-            >
-              {`${userVotes}/${maxVotes}`}
-              <br />
-              {pluralText(maxVotes, {
-                one: "głos",
-                few: "głosy",
-                other: "głosów",
-              })}
-            </div>
-          )}
-        </div>
-
-        {!isAdmin && roomState === "reflection" && (
-          <div className={"flex justify-center gap-2 w-24 h-16"} />
-        )}
-
-        {isAdmin && (
-          <div className={"flex justify-between gap-2 w-24 h-16"}>
-            <Button
-              className={"h-full grow p-0"}
-              size={"sm"}
-              aria-label="Poprzedni etap"
-              disabled={prevDisabled}
-              onClick={prevRoomState}
-            >
-              <ArrowLeftIcon className={"size-6"} />
-            </Button>
-
-            <Button
-              className={"h-full grow p-0"}
-              aria-label="Następny etap"
-              disabled={nextDisabled}
-              onClick={nextRoomState}
-            >
-              <ArrowRightIcon className={"size-6"} />
-            </Button>
-          </div>
-        )}
-
-        <div className={"flex justify-center gap-2 w-24 h-16"}>
-          {isAdmin && (
-            <Button
-              variant={"destructive"}
-              className={"size-full"}
-              aria-label="Zakończ retrospektywę"
-              onClick={onFinishRetroPress}
-            >
-              <FlagIcon className={"size-6"} />
-            </Button>
-          )}
-        </div>
-      </div>
+      </TooltipProvider>
     </div>
   );
 };

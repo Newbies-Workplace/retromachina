@@ -52,7 +52,7 @@ export const RetroArchiveView = () => {
                     data-testid="current-retro"
                     key={retro.id}
                     className={
-                      "self-stretch min-h-[126px] flex-col bg-secondary/50 text-secondary-foreground border-4 border-destructive"
+                      "flex-row sm:flex-col min-h-20 sm:min-h-24 bg-background text-foreground border-2 border-destructive"
                     }
                     onClick={() => navigate(`/retro/${retro.id}/reflection`)}
                   >
@@ -65,7 +65,7 @@ export const RetroArchiveView = () => {
                   data-testid="retro"
                   key={retro.id}
                   className={
-                    "self-stretch min-h-[126px] flex-col bg-secondary/50 text-secondary-foreground"
+                    "flex-row sm:flex-col min-h-20 sm:min-h-24 bg-secondary/50 text-secondary-foreground"
                   }
                   onClick={() => navigate(`/retro/${retro.id}/summary`)}
                 >

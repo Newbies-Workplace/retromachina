@@ -5,6 +5,10 @@ import {
   TeamUserRequest,
 } from "shared/model/team/team.request";
 import type { TeamResponse } from "shared/model/team/team.response";
+import type {
+  WarmupLinkRequest,
+  WarmupLinkResponse,
+} from "shared/model/warmup/warmup";
 import { axiosInstance } from "@/api/AxiosInstance";
 
 const getTeamById = async (teamId: string): Promise<TeamResponse> => {
@@ -69,6 +73,27 @@ const deleteTeam = async (teamId: string): Promise<void> => {
   return axiosInstance.delete(`teams/${teamId}`);
 };
 
+const getWarmups = async (teamId: string): Promise<WarmupLinkResponse[]> =>
+  axiosInstance.get(`teams/${teamId}/warmups`).then((res) => res.data);
+
+const createWarmup = async (
+  teamId: string,
+  warmup: WarmupLinkRequest,
+): Promise<WarmupLinkResponse> =>
+  axiosInstance.post(`teams/${teamId}/warmups`, warmup).then((res) => res.data);
+
+const updateWarmup = async (
+  teamId: string,
+  warmupId: string,
+  warmup: WarmupLinkRequest,
+): Promise<WarmupLinkResponse> =>
+  axiosInstance
+    .put(`teams/${teamId}/warmups/${warmupId}`, warmup)
+    .then((res) => res.data);
+
+const deleteWarmup = async (teamId: string, warmupId: string): Promise<void> =>
+  axiosInstance.delete(`teams/${teamId}/warmups/${warmupId}`);
+
 export const TeamService = {
   getTeamById,
   getTeamByInviteKey,
@@ -80,4 +105,8 @@ export const TeamService = {
   editTeam,
   editTeamInvitation,
   deleteTeam,
+  getWarmups,
+  createWarmup,
+  updateWarmup,
+  deleteWarmup,
 };

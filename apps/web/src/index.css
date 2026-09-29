@@ -203,6 +203,29 @@
     }
 }
 
+@keyframes warmup-pointer-tick {
+    0% {
+        transform: rotate(0deg);
+    }
+    35% {
+        transform: rotate(-14deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes warmup-lamp-flicker {
+    0%, 100% {
+        opacity: 0.82;
+        filter: brightness(0.92);
+    }
+    50% {
+        opacity: 1;
+        filter: brightness(1.12);
+    }
+}
+
 @keyframes changelog-reel {
     to {
         transform: rotate(360deg);

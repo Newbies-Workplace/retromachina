@@ -10,7 +10,16 @@ import {
 } from "@/components/molecules/page_card/PageCard";
 import { TeamMemberPicker } from "@/components/molecules/team_member_picker/TeamMemberPicker";
 import { TeamInviteLinkInput } from "@/components/organisms/forms/TeamInviteLinkInput";
+import { WarmupLinksForm } from "@/components/organisms/forms/WarmupLinksForm";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
 interface TeamFormProps {
@@ -70,11 +79,30 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         )}
 
         {team && (
-          <div className={"flex flex-col"}>
-            <h1>Członkowie</h1>
-
-            <TeamMemberPicker teamId={team.id} />
-          </div>
+          <>
+            <div className={"flex flex-col"}>
+              <h1>Członkowie</h1>
+              <TeamMemberPicker teamId={team.id} />
+            </div>
+            <Dialog>
+              <DialogTrigger
+                render={
+                  <Button type="button" variant="outline">
+                    Zarządzaj rozgrzewkami
+                  </Button>
+                }
+              />
+              <DialogContent className="max-h-[calc(100vh-2rem)] overflow-y-auto sm:max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Rozgrzewki</DialogTitle>
+                  <DialogDescription>
+                    Własne pozycje są dodawane do domyślnej listy rozgrzewek.
+                  </DialogDescription>
+                </DialogHeader>
+                <WarmupLinksForm teamId={team.id} />
+              </DialogContent>
+            </Dialog>
+          </>
         )}
 
         <div className={"flex justify-between gap-2 mt-auto w-full"}>

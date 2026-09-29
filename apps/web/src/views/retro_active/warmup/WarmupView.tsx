@@ -145,7 +145,7 @@ export function WarmupView() {
           )}
       </Sidebar>
 
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto pb-24">
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto">
         <div className="pt-4 mx-4 gap-4 flex flex-row">
           <SidebarTrigger variant="default" />
           <div>
@@ -153,7 +153,7 @@ export function WarmupView() {
           </div>
         </div>
 
-        <div className="pointer-events-none flex min-h-0 w-full flex-1 -translate-y-4 items-center justify-center p-4 py-6">
+        <div className="pointer-events-none flex min-h-0 w-full flex-1 items-center justify-center p-4 pt-6 pb-24">
           <WarmupWheel
             candidates={warmup.candidates}
             status={warmup.status}

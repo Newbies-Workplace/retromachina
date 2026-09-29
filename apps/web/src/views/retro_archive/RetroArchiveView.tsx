@@ -62,11 +62,11 @@ export const RetroArchiveView = () => {
               }
               return (
                 <Button
-                    data-testid="retro"
-                    key={retro.id}
-                    className={
-                      "flex-row sm:flex-col min-h-20 sm:min-h-24 bg-secondary/50 text-secondary-foreground"
-                    }
+                  data-testid="retro"
+                  key={retro.id}
+                  className={
+                    "flex-row sm:flex-col min-h-20 sm:min-h-24 bg-secondary/50 text-secondary-foreground"
+                  }
                   onClick={() => navigate(`/retro/${retro.id}/summary`)}
                 >
                   Retro {dayjs(retro.date).format("DD.MM.YYYY")}

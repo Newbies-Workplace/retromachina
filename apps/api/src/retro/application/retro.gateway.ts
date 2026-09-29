@@ -95,7 +95,23 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async restoreRooms() {
     for (const room of await this.roomPersistence.recoverRunningRooms()) {
       this.retroRooms.set(room.id, room);
+      if (room.warmup?.status === "spinning") {
+        this.scheduleWarmupReveal(room.id, room.warmup.spinEndsAt);
+      }
     }
+  }
+
+  private scheduleWarmupReveal(roomId: string, spinEndsAt: number | null) {
+    if (spinEndsAt === null) return;
+    setTimeout(
+      async () => {
+        const room = this.retroRooms.get(roomId);
+        if (!room || room.warmup?.spinEndsAt !== spinEndsAt) return;
+        room.revealWarmupIfFinished();
+        await this.emitRoomSync(roomId, room);
+      },
+      Math.max(0, spinEndsAt - Date.now()),
+    );
   }
 
   async handleTeamUserAdded(teamId: string, userId: string) {
@@ -251,15 +267,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     await this.roomPersistence.persist(room);
     this.server.to(roomId).emit("event_warmup_draw_started", event);
 
-    setTimeout(
-      async () => {
-        const currentRoom = this.retroRooms.get(roomId);
-        if (!currentRoom) return;
-        currentRoom.revealWarmupIfFinished();
-        await this.emitRoomSync(roomId, currentRoom);
-      },
-      Math.max(0, draw.spinEndsAt - Date.now()),
-    );
+    this.scheduleWarmupReveal(roomId, draw.spinEndsAt);
   }
 
   @SubscribeMessage("command_update_warmup_room_url")

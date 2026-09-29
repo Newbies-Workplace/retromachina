@@ -1,24 +1,11 @@
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CheckIcon,
-  FlagIcon,
-  ThumbsUpIcon,
-} from "lucide-react";
-import React, {
-  createRef,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { FlagIcon } from "lucide-react";
+import React, { type ReactNode, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import SlotMachineIcon from "@/assets/icons/slot-machine-icon.svg";
 import { isCard } from "@/components/molecules/dragndrop/dragndrop";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
   TooltipContent,
@@ -28,7 +15,6 @@ import {
 import { useConfirm } from "@/context/confirm/ConfirmContext.hook";
 import { useRetro } from "@/context/retro/RetroContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
-import useClickOutside from "@/hooks/useClickOutside";
 import { useTeamRole } from "@/hooks/useTeamRole";
 import { groupCards } from "@/lib/groupCards";
 import { pluralText } from "@/lib/pluralText";
@@ -36,6 +22,11 @@ import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
 import { ToolboxSlotMachine } from "@/views/retro_active/components/toolbox/ToolboxSlotMachine";
 import { WarmupToolbarActions } from "@/views/retro_active/components/toolbox/WarmupToolbarActions";
+import {
+  ToolboxNavigation,
+  ToolboxReadyControl,
+  ToolboxSecondaryAction,
+} from "./ToolboxControls";
 
 const TOOLBAR_SLOT = {
   leading: 0,
@@ -56,6 +47,53 @@ const toolbarSlotKeys = [
   "navigation",
   "finish",
 ] as const;
+
+function getWarmupToolbarState(
+  warmup: ReturnType<typeof useRetro>["warmup"],
+  isWarmup: boolean,
+  isAdmin: boolean,
+) {
+  const isWarmupDrawAction =
+    isWarmup &&
+    isAdmin &&
+    (warmup?.status === "pending" || warmup?.status === "revealed");
+  const selectedWarmup =
+    warmup?.result ??
+    warmup?.candidates.find(
+      (candidate) => candidate.id === warmup?.selectedWarmupId,
+    );
+  const shouldWaitForRoomCreation = selectedWarmup
+    ? (selectedWarmup.shouldWaitForRoomCreation ??
+      selectedWarmup.id !== "default-giphy")
+    : true;
+  const warmupUrl = selectedWarmup
+    ? shouldWaitForRoomCreation
+      ? warmup?.status === "revealed"
+        ? (warmup.sharedRoomUrl ?? undefined)
+        : undefined
+      : selectedWarmup.url
+    : undefined;
+  return { isWarmupDrawAction, warmupUrl };
+}
+
+function isNextStageDisabled(
+  cards: ReturnType<typeof useRetro>["cards"],
+  votes: ReturnType<typeof useRetro>["votes"],
+  discussionCardId: string | null,
+  roomState: ReturnType<typeof useRetro>["roomState"],
+) {
+  const groups = groupCards(cards, votes).sort(
+    (a, b) => b.votes.length - a.votes.length,
+  );
+  const currentIndex = groups.findIndex(
+    (g) => g.parentCardId === discussionCardId,
+  );
+  const targetIndex = currentIndex + 1;
+  const nextDisabled =
+    (roomState === "discuss" && targetIndex >= groups.length) ||
+    cards.length <= 0;
+  return nextDisabled;
+}
 
 export const Toolbox: React.FC = () => {
   const { showConfirm } = useConfirm();
@@ -81,7 +119,7 @@ export const Toolbox: React.FC = () => {
     completeWarmup,
   } = useRetro();
 
-  const { isAdmin } = useTeamRole(teamId!);
+  const { isAdmin } = useTeamRole(teamId ?? "");
   const { addReflectionCard, fetchReflectionCards } = useReflectionCardStore();
   const hasReflectionCards = useReflectionCardStore(
     (state) => state.reflectionCards.length > 0,
@@ -90,47 +128,22 @@ export const Toolbox: React.FC = () => {
   const { user } = useUser();
   const userVotes =
     maxVotes - votes.filter((vote) => user?.id === vote.voterId).length;
-  const groups = groupCards(cards, votes).sort(
-    (a, b) => b.votes.length - a.votes.length,
+  const nextDisabled = isNextStageDisabled(
+    cards,
+    votes,
+    discussionCardId,
+    roomState,
   );
-  const currentIndex = groups.findIndex(
-    (g) => g.parentCardId === discussionCardId,
-  );
-  const targetIndex = currentIndex + 1;
-  const nextDisabled =
-    (roomState === "discuss" && targetIndex >= groups.length) ||
-    cards.length <= 0;
   const prevDisabled = roomState === "reflection" && !warmup;
   const isVotingVisible = roomState === "vote";
   const isWarmup = roomState === "warmup";
-  const isWarmupDrawAction =
-    isWarmup &&
-    isAdmin &&
-    (warmup?.status === "pending" || warmup?.status === "revealed");
-  const selectedWarmup =
-    warmup?.result ??
-    warmup?.candidates.find(
-      (candidate) => candidate.id === warmup?.selectedWarmupId,
-    );
-  const shouldWaitForRoomCreation = selectedWarmup
-    ? (selectedWarmup.shouldWaitForRoomCreation ??
-      selectedWarmup.id !== "default-giphy")
-    : true;
-  const warmupUrl = selectedWarmup
-    ? shouldWaitForRoomCreation
-      ? warmup?.status === "revealed"
-        ? (warmup.sharedRoomUrl ?? undefined)
-        : undefined
-      : selectedWarmup.url
-    : undefined;
+  const { isWarmupDrawAction, warmupUrl } = getWarmupToolbarState(
+    warmup,
+    isWarmup,
+    isAdmin,
+  );
 
-  const [isVoteOpen, setOpenVote] = useState(false);
-
-  const votePopover = createRef<HTMLDivElement>();
-  const closeVote = useCallback(() => setOpenVote(false), []);
-  useClickOutside(votePopover, closeVote);
-
-  const reflectionCardsShelfButtonRef = createRef<HTMLButtonElement>();
+  const reflectionCardsShelfButtonRef = useRef<HTMLButtonElement>(null);
   const [isReflectionCardsShelfOpen, setIsReflectionCardsShelfOpen] =
     useState(false);
 
@@ -197,13 +210,12 @@ export const Toolbox: React.FC = () => {
     () => null,
   );
 
-  if (isWarmup && isAdmin && warmup?.status === "pending") {
+  if (isWarmupDrawAction) {
     toolbarSlots[TOOLBAR_SLOT.leading] = (
-      <WarmupToolbarActions action="start" onClick={startWarmupDraw} />
-    );
-  } else if (isWarmup && isAdmin && warmup?.status === "revealed") {
-    toolbarSlots[TOOLBAR_SLOT.leading] = (
-      <WarmupToolbarActions action="reroll" onClick={startWarmupDraw} />
+      <WarmupToolbarActions
+        action={warmup?.status === "pending" ? "start" : "reroll"}
+        onClick={startWarmupDraw}
+      />
     );
   }
 
@@ -226,104 +238,27 @@ export const Toolbox: React.FC = () => {
     );
   }
 
-  if (isWarmup) {
-    toolbarSlots[TOOLBAR_SLOT.secondaryAction] = (
-      <WarmupToolbarActions
-        action="open"
-        destination={warmupUrl}
-        enabled={Boolean(warmupUrl)}
-        onClick={onOpenWarmupLink}
-      />
-    );
-  } else if (roomState === "reflection") {
-    toolbarSlots[TOOLBAR_SLOT.secondaryAction] = (
-      <Button
-        ref={reflectionCardsShelfButtonRef}
-        className="relative flex size-full flex-col items-center justify-center gap-4 border-2 border-primary border-dashed bg-background text-foreground"
-        aria-label="Otwórz wrzutki"
-        onClick={() => setIsReflectionCardsShelfOpen(true)}
-      >
-        Wrzutki
-        {hasReflectionCards && (
-          <div className="absolute bottom-1 left-4 right-4 h-2 animate-pulse rounded-full bg-destructive" />
-        )}
-      </Button>
-    );
-  } else if (isVotingVisible && isAdmin) {
-    toolbarSlots[TOOLBAR_SLOT.secondaryAction] = (
-      <>
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                className="size-full"
-                aria-label="Ustaw liczbę głosów"
-                onClick={() => setOpenVote(true)}
-              />
-            }
-          >
-            <ThumbsUpIcon />
-          </TooltipTrigger>
-          <TooltipContent>Ustaw liczbę głosów</TooltipContent>
-        </Tooltip>
-        {isVoteOpen && (
-          <div
-            className="absolute bottom-[calc(100%+8px)] flex flex-col rounded-xl bg-card p-2 shadow-md"
-            ref={votePopover}
-          >
-            <div className="text-center text-sm">
-              {pluralText(maxVotes, {
-                one: "głos",
-                few: "głosy",
-                other: "głosów",
-              })}{" "}
-              na osobę
-            </div>
-            <div className="flex h-[30px] w-full justify-between gap-2 bg-card pt-1">
-              <Button
-                className="grow"
-                size="sm"
-                onClick={() => maxVotes > 0 && setMaxVotesAmount(maxVotes - 1)}
-              >
-                -
-              </Button>
-              <div className="flex h-[30px] min-w-[50px] items-center justify-center rounded bg-background">
-                {maxVotes}
-              </div>
-              <Button
-                className="grow"
-                size="sm"
-                onClick={() => setMaxVotesAmount(maxVotes + 1)}
-              >
-                +
-              </Button>
-            </div>
-          </div>
-        )}
-      </>
-    );
-  }
+  toolbarSlots[TOOLBAR_SLOT.secondaryAction] = (
+    <ToolboxSecondaryAction
+      isWarmup={isWarmup}
+      roomState={roomState}
+      isAdmin={isAdmin}
+      warmupUrl={warmupUrl}
+      onOpenWarmupLink={onOpenWarmupLink}
+      shelfButtonRef={reflectionCardsShelfButtonRef}
+      onOpenShelf={() => setIsReflectionCardsShelfOpen(true)}
+      hasReflectionCards={hasReflectionCards}
+      maxVotes={maxVotes}
+      setMaxVotesAmount={setMaxVotesAmount}
+    />
+  );
 
   toolbarSlots[TOOLBAR_SLOT.ready] = (
-    <div className="flex h-full flex-col justify-center gap-2">
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Button
-              className="grow w-full"
-              aria-label={ready ? "Cofnij gotowość" : "Oznacz jako gotowy"}
-              onClick={() => setReady(!ready)}
-            />
-          }
-        >
-          <CheckIcon className="size-6" />
-        </TooltipTrigger>
-        <TooltipContent>
-          {ready ? "Cofnij gotowość" : "Oznacz jako gotowy"}
-        </TooltipContent>
-      </Tooltip>
-      <Progress value={readyPercentage} />
-    </div>
+    <ToolboxReadyControl
+      ready={ready}
+      setReady={setReady}
+      readyPercentage={readyPercentage}
+    />
   );
 
   if (isVotingVisible) {
@@ -340,94 +275,19 @@ export const Toolbox: React.FC = () => {
     );
   }
 
-  if (isWarmup) {
-    if (isAdmin) {
-      const canContinueWarmup =
-        warmup?.status === "pending" || warmup?.status === "revealed";
-      const continueWarmup = () => {
-        if (warmup?.status === "pending") {
-          startWarmupDraw();
-        } else if (warmup?.status === "revealed") {
-          completeWarmup();
-        }
-      };
-      const continueWarmupLabel =
-        warmup?.status === "pending"
-          ? "Rozpocznij losowanie"
-          : "Przejdź do retrospektywy";
-
-      toolbarSlots[TOOLBAR_SLOT.navigation] = (
-        <div className="flex h-full justify-between gap-2">
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  className="h-full grow p-0"
-                  size="sm"
-                  aria-label="Poprzedni etap"
-                  disabled
-                />
-              }
-            >
-              <ArrowLeftIcon className="size-6" />
-            </TooltipTrigger>
-            <TooltipContent>Poprzedni etap</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  className="h-full grow p-0"
-                  aria-label={continueWarmupLabel}
-                  disabled={!canContinueWarmup}
-                  onClick={continueWarmup}
-                />
-              }
-            >
-              <ArrowRightIcon className="size-6" />
-            </TooltipTrigger>
-            <TooltipContent>{continueWarmupLabel}</TooltipContent>
-          </Tooltip>
-        </div>
-      );
-    }
-  } else if (isAdmin) {
-    toolbarSlots[TOOLBAR_SLOT.navigation] = (
-      <div className="flex h-full justify-between gap-2">
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                className="h-full grow p-0"
-                size="sm"
-                aria-label="Poprzedni etap"
-                disabled={prevDisabled}
-                onClick={prevRoomState}
-              />
-            }
-          >
-            <ArrowLeftIcon className="size-6" />
-          </TooltipTrigger>
-          <TooltipContent>Poprzedni etap</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button
-                className="h-full grow p-0"
-                aria-label="Następny etap"
-                disabled={nextDisabled}
-                onClick={nextRoomState}
-              />
-            }
-          >
-            <ArrowRightIcon className="size-6" />
-          </TooltipTrigger>
-          <TooltipContent>Następny etap</TooltipContent>
-        </Tooltip>
-      </div>
-    );
-  }
+  toolbarSlots[TOOLBAR_SLOT.navigation] = (
+    <ToolboxNavigation
+      isAdmin={isAdmin}
+      isWarmup={isWarmup}
+      warmup={warmup}
+      startWarmupDraw={startWarmupDraw}
+      completeWarmup={completeWarmup}
+      nextRoomState={nextRoomState}
+      prevRoomState={prevRoomState}
+      nextDisabled={nextDisabled}
+      prevDisabled={prevDisabled}
+    />
+  );
 
   if (isAdmin) {
     toolbarSlots[TOOLBAR_SLOT.finish] = (
@@ -469,12 +329,7 @@ export const Toolbox: React.FC = () => {
       <TooltipProvider delay={700}>
         <div className="relative mx-auto grid h-[80px] w-full max-w-3xl grid-cols-7 gap-2 rounded-t-2xl border border-b-0 border-border bg-card p-2 shadow-lg pointer-events-auto">
           {toolbarSlotKeys.map((slotKey, index) => {
-            if (
-              isWarmup &&
-              isAdmin &&
-              isWarmupDrawAction &&
-              index === TOOLBAR_SLOT.roomAction
-            ) {
+            if (isWarmupDrawAction && index === TOOLBAR_SLOT.roomAction) {
               return null;
             }
 

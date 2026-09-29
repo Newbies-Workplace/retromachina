@@ -1,4 +1,11 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate } from "react-router";
 import type {
   AddCardToCardCommand,
@@ -197,7 +204,6 @@ export const RetroContextProvider: React.FC<
 
   const timeOffset = useRef<number>(0);
   const socket = useRef<Socket>(undefined);
-  const pendingTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [teamId, setTeamId] = useState<string | null>(null);
   const [columns, setColumns] = useState<RetroColumn[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
@@ -223,6 +229,30 @@ export const RetroContextProvider: React.FC<
   const [discussionCardId, setDiscussionCardId] = useState<string | null>(null);
   const [tasks, setTasks] = useState<RetroTask[]>([]);
   const [warmup, setWarmup] = useState<WarmupState | null>(null);
+  const [autoReadyDraw, setAutoReadyDraw] = useState(0);
+
+  const setReady = useCallback((ready: boolean) => {
+    const command: UpdateReadyStateCommand = {
+      readyState: ready,
+    };
+    socket.current?.emit("command_ready", command);
+    setIsReady(ready);
+  }, []);
+
+  const handleTimerChanged = useCallback(
+    (time: number | null, serverOffset: number) => {
+      const timerEnds = time ? time - serverOffset : null;
+      const roundedTime = timerEnds ? Math.round(timerEnds / 100) * 100 : null;
+
+      setTimerEnds(roundedTime);
+    },
+    [],
+  );
+
+  const fetchTeamUsers = useCallback(async (teamId: string) => {
+    const users = await UserService.getUsersByTeamId(teamId);
+    setTeamUsers(users);
+  }, []);
 
   useEffect(() => {
     const createdSocket = io(`${process.env.RETRO_WEB_SOCKET_URL}/retro`, {
@@ -265,7 +295,7 @@ export const RetroContextProvider: React.FC<
       setDiscussionCardId(roomData.discussionCardId);
       setWarmup(roomData.warmup);
 
-      const serverTimeOffset = roomData.serverTime - new Date().valueOf();
+      const serverTimeOffset = roomData.serverTime - Date.now();
       timeOffset.current = serverTimeOffset;
       handleTimerChanged(roomData.timerEnds, serverTimeOffset);
     });
@@ -360,11 +390,7 @@ export const RetroContextProvider: React.FC<
         if (event.highlightedUserId === user?.id) {
           const { autoReadyAfterDraw } = usePreferencesStore.getState();
           if (autoReadyAfterDraw) {
-            pendingTimeouts.current.push(
-              setTimeout(() => {
-                setReady(true);
-              }, SLOT_MACHINE_ANIMATION_DURATION),
-            );
+            setAutoReadyDraw((draw) => draw + 1);
           }
         }
 
@@ -382,12 +408,27 @@ export const RetroContextProvider: React.FC<
     });
 
     return () => {
-      for (const timeout of pendingTimeouts.current) clearTimeout(timeout);
-      pendingTimeouts.current = [];
-      createdSocket.removeAllListeners();
+      createdSocket.off("error");
+      createdSocket.off("event_room_sync");
+      createdSocket.off("event_timer_change");
+      createdSocket.off("event_warmup_draw_started");
+      createdSocket.off("event_warmup_room_url_updated");
+      createdSocket.off("event_column_name_changed");
+      createdSocket.off("event_column_description_changed");
+      createdSocket.off("event_columns_reordered");
+      createdSocket.off("event_slot_machine_drawn");
+      createdSocket.off("event_close_room");
       createdSocket.disconnect();
     };
-  }, []);
+  }, [retroId, user?.id, navigate, handleTimerChanged]);
+
+  useEffect(() => {
+    if (autoReadyDraw === 0) return;
+    const timeout = setTimeout(() => {
+      setReady(true);
+    }, SLOT_MACHINE_ANIMATION_DURATION);
+    return () => clearTimeout(timeout);
+  }, [autoReadyDraw, setReady]);
 
   useEffect(() => {
     const listener = () => {
@@ -396,44 +437,64 @@ export const RetroContextProvider: React.FC<
       fetchTeamUsers(teamId);
     };
 
-    socket.current?.on("event_team_users_change", listener);
+    const activeSocket = socket.current;
+    activeSocket?.on("event_team_users_change", listener);
 
     return () => {
-      socket.current?.off("event_team_users_change", listener);
+      activeSocket?.off("event_team_users_change", listener);
     };
-  }, [teamId]);
+  }, [teamId, fetchTeamUsers]);
 
   useEffect(() => {
     if (!teamId) return;
 
     fetchTeamUsers(teamId);
-  }, [teamId]);
+  }, [teamId, fetchTeamUsers]);
 
   // common
-  const setReady = (ready: boolean) => {
-    const command: UpdateReadyStateCommand = {
-      readyState: ready,
-    };
-    socket.current?.emit("command_ready", command);
-    setIsReady(ready);
-  };
 
-  const setTimer = (time: number | null) => {
+  const setTimer = useCallback((time: number | null) => {
     setTimerEnds(time);
     const command: ChangeTimerCommand = {
       timestamp: time ? time + (timeOffset.current ?? 0) : null,
     };
     socket.current?.emit("command_timer_change", command);
-  };
+  }, []);
 
-  const handleTimerChanged = (time: number | null, serverOffset: number) => {
-    const timerEnds = time ? time - serverOffset : null;
-    const roundedTime = timerEnds ? Math.round(timerEnds / 100) * 100 : null;
+  const changeDiscussCard = useCallback(
+    (to: "next" | "prev") => {
+      const groups = groupCards(cards, votes).sort(
+        (a, b) => b.votes.length - a.votes.length,
+      );
 
-    setTimerEnds(roundedTime);
-  };
+      if (!discussionCardId) {
+        return false;
+      }
+      const currentIndex = groups.findIndex(
+        (g) => g.parentCardId === discussionCardId,
+      );
+      const targetIndex = to === "next" ? currentIndex + 1 : currentIndex - 1;
 
-  const nextRoomState = () => {
+      if (to === "next" && targetIndex >= groups.length) {
+        return true;
+      }
+      if (to === "prev" && targetIndex < 0) {
+        return true;
+      }
+
+      const targetCardId = groups[targetIndex]?.parentCardId;
+
+      const command: ChangeCurrentDiscussCardCommand = {
+        cardId: targetCardId,
+      };
+      socket.current?.emit("command_change_discussion_card", command);
+
+      return false;
+    },
+    [cards, votes, discussionCardId],
+  );
+
+  const nextRoomState = useCallback(() => {
     let state: RoomState;
 
     switch (roomState) {
@@ -449,6 +510,8 @@ export const RetroContextProvider: React.FC<
       case "discuss":
         changeDiscussCard("next");
         return;
+      default:
+        return;
     }
 
     const command: UpdateRoomStateCommand = {
@@ -456,9 +519,9 @@ export const RetroContextProvider: React.FC<
     };
 
     socket.current?.emit("command_room_state", command);
-  };
+  }, [roomState, changeDiscussCard]);
 
-  const prevRoomState = () => {
+  const prevRoomState = useCallback(() => {
     let state: RoomState;
     switch (roomState) {
       case "reflection":
@@ -478,107 +541,122 @@ export const RetroContextProvider: React.FC<
         }
 
         return;
+      default:
+        return;
     }
 
     const command: UpdateRoomStateCommand = {
       roomState: state,
     };
     socket.current?.emit("command_room_state", command);
-  };
+  }, [roomState, warmup, changeDiscussCard]);
 
-  const endRetro = () => {
+  const endRetro = useCallback(() => {
     socket.current?.emit("command_close_room");
-  };
+  }, []);
 
-  const startWarmupDraw = () => {
+  const startWarmupDraw = useCallback(() => {
     const command: StartWarmupDrawCommand = {};
     socket.current?.emit("command_start_warmup_draw", command);
-  };
+  }, []);
 
-  const updateWarmupRoomUrl = (url: string) => {
+  const updateWarmupRoomUrl = useCallback((url: string) => {
     const command: UpdateWarmupRoomUrlCommand = { url };
     socket.current?.emit("command_update_warmup_room_url", command);
-  };
+  }, []);
 
-  const completeWarmup = () => {
+  const completeWarmup = useCallback(() => {
     const command: CompleteWarmupCommand = {};
     socket.current?.emit("command_complete_warmup", command);
-  };
+  }, []);
 
   // reflection
-  const setWriting = (value: boolean, columnId: string) => {
+  const setWriting = useCallback((value: boolean, columnId: string) => {
     const command: UpdateWriteStateCommand = {
       columnId: columnId,
       writeState: value,
     };
     socket.current?.emit("command_write_state", command);
-  };
+  }, []);
 
-  const createCard = (text: string, columnId: string) => {
-    const command: CreateCardCommand = {
-      id: uuidv4(),
-      text: text,
-      columnId: columnId,
-    };
-    socket.current?.emit("command_create_card", command);
-    setWriting(false, columnId);
-  };
+  const createCard = useCallback(
+    (text: string, columnId: string) => {
+      const command: CreateCardCommand = {
+        id: uuidv4(),
+        text: text,
+        columnId: columnId,
+      };
+      socket.current?.emit("command_create_card", command);
+      setWriting(false, columnId);
+    },
+    [setWriting],
+  );
 
-  const updateCard = (cardId: string, text: string) => {
+  const updateCard = useCallback((cardId: string, text: string) => {
     const command: UpdateCardCommand = {
       cardId: cardId,
       text: text,
     };
     socket.current?.emit("command_update_card", command);
-  };
+  }, []);
 
-  const deleteCard = (cardId: string) => {
+  const deleteCard = useCallback((cardId: string) => {
     const command: DeleteCardCommand = {
       cardId: cardId,
     };
     socket.current?.emit("command_delete_card", command);
-  };
+  }, []);
 
-  const changeColumnName = (columnId: string, name: string) => {
+  const changeColumnName = useCallback((columnId: string, name: string) => {
     const command: ChangeColumnNameCommand = { columnId, name };
     socket.current?.emit("command_change_column_name", command);
-  };
+  }, []);
 
-  const changeColumnDescription = (columnId: string, description: string) => {
-    const command: ChangeColumnDescriptionCommand = { columnId, description };
-    socket.current?.emit("command_change_column_description", command);
-  };
+  const changeColumnDescription = useCallback(
+    (columnId: string, description: string) => {
+      const command: ChangeColumnDescriptionCommand = { columnId, description };
+      socket.current?.emit("command_change_column_description", command);
+    },
+    [],
+  );
 
-  const reorderColumns = (fromColumnId: string, toColumnId: string) => {
-    const command: ReorderColumnsCommand = { fromColumnId, toColumnId };
-    socket.current?.emit("command_reorder_columns", command);
-  };
+  const reorderColumns = useCallback(
+    (fromColumnId: string, toColumnId: string) => {
+      const command: ReorderColumnsCommand = { fromColumnId, toColumnId };
+      socket.current?.emit("command_reorder_columns", command);
+    },
+    [],
+  );
 
   // group
-  const drawMachine = () => {
+  const drawMachine = useCallback(() => {
     const command: DrawMachineCommand = {};
     socket.current?.emit("command_draw_slot_machine", command);
-  };
+  }, []);
 
-  const setSlotMachineVisible = (visible: boolean) => {
+  const setSlotMachineVisible = useCallback((visible: boolean) => {
     const command: ChangeSlotMachineVisibilityCommand = {
       isVisible: visible,
     };
     socket.current?.emit("command_change_slot_machine_visibility", command);
-  };
+  }, []);
 
-  const addDrawSlotMachineListener = (listener: SlotMachineDrawnListener) => {
-    slotMachineDrawnListeners.current.push(listener);
-  };
+  const addDrawSlotMachineListener = useCallback(
+    (listener: SlotMachineDrawnListener) => {
+      slotMachineDrawnListeners.current.push(listener);
+    },
+    [],
+  );
 
-  const removeDrawSlotMachineListener = (
-    listener: SlotMachineDrawnListener,
-  ) => {
-    slotMachineDrawnListeners.current =
-      slotMachineDrawnListeners.current.filter((l) => l !== listener);
-  };
+  const removeDrawSlotMachineListener = useCallback(
+    (listener: SlotMachineDrawnListener) => {
+      slotMachineDrawnListeners.current =
+        slotMachineDrawnListeners.current.filter((l) => l !== listener);
+    },
+    [],
+  );
 
-  const moveCard = (move: CardMoveAction) => {
+  const moveCard = useCallback((move: CardMoveAction) => {
     if (move.targetType === "column") {
       const command: MoveCardToColumnCommand = {
         cardId: move.cardId,
@@ -592,168 +670,191 @@ export const RetroContextProvider: React.FC<
       };
       socket.current?.emit("command_card_add_to_card", command);
     }
-  };
+  }, []);
 
   // vote
-  const addVote = (parentCardId: string) => {
-    const command: AddCardVoteCommand = {
-      parentCardId: parentCardId,
-    };
-    socket.current?.emit("command_vote_on_card", command);
+  const addVote = useCallback(
+    (parentCardId: string) => {
+      const command: AddCardVoteCommand = {
+        parentCardId: parentCardId,
+      };
+      socket.current?.emit("command_vote_on_card", command);
 
-    const allUserVotes = votes.filter((v) => v.voterId === user?.id);
-    const isLastAvailableVote = allUserVotes.length === maxVotes - 1;
+      const allUserVotes = votes.filter((v) => v.voterId === user?.id);
+      const isLastAvailableVote = allUserVotes.length === maxVotes - 1;
 
-    const { autoReadyAfterVoting } = usePreferencesStore.getState();
+      const { autoReadyAfterVoting } = usePreferencesStore.getState();
 
-    if (isLastAvailableVote && autoReadyAfterVoting) {
-      setReady(true);
-    }
-  };
+      if (isLastAvailableVote && autoReadyAfterVoting) {
+        setReady(true);
+      }
+    },
+    [votes, user?.id, maxVotes, setReady],
+  );
 
-  const removeVote = (parentCardId: string) => {
+  const removeVote = useCallback((parentCardId: string) => {
     const command: RemoveCardVoteCommand = {
       parentCardId: parentCardId,
     };
     socket.current?.emit("command_remove_vote_on_card", command);
-  };
+  }, []);
 
-  const setMaxVotesAmount = (amount: number) => {
+  const setMaxVotesAmount = useCallback((amount: number) => {
     const command: ChangeVoteAmountCommand = {
       votesAmount: amount,
     };
     socket.current?.emit("command_change_vote_amount", command);
-  };
+  }, []);
 
   // discuss
-  const changeDiscussCard = (to: "next" | "prev") => {
-    const groups = groupCards(cards, votes).sort(
-      (a, b) => b.votes.length - a.votes.length,
-    );
 
-    if (!discussionCardId) {
-      return false;
-    }
-    const currentIndex = groups.findIndex(
-      (g) => g.parentCardId === discussionCardId,
-    );
-    const targetIndex = to === "next" ? currentIndex + 1 : currentIndex - 1;
-
-    if (to === "next" && targetIndex >= groups.length) {
-      return true;
-    }
-    if (to === "prev" && targetIndex < 0) {
-      return true;
-    }
-
-    const targetCardId = groups[targetIndex]?.parentCardId;
-
-    const command: ChangeCurrentDiscussCardCommand = {
-      cardId: targetCardId,
-    };
-    socket.current?.emit("command_change_discussion_card", command);
-
-    return false;
-  };
-
-  const setCreatingTask = (creatingTask: boolean) => {
+  const setCreatingTask = useCallback((creatingTask: boolean) => {
     const command: UpdateCreatingTaskStateCommand = {
       creatingTaskState: creatingTask,
     };
     socket.current?.emit("command_creating_task_state", command);
-  };
+  }, []);
 
-  const createTask = (text: string, ownerId: string) => {
-    const command: CreateTaskCommand = {
-      description: text,
-      ownerId: ownerId,
-    };
-    socket.current?.emit("command_create_action_point", command);
-    setCreatingTask(false);
-  };
+  const createTask = useCallback(
+    (text: string, ownerId: string) => {
+      const command: CreateTaskCommand = {
+        description: text,
+        ownerId: ownerId,
+      };
+      socket.current?.emit("command_create_action_point", command);
+      setCreatingTask(false);
+    },
+    [setCreatingTask],
+  );
 
-  const updateTask = (taskId: string, userId: string | null, text: string) => {
-    const command: UpdateTaskCommand = {
-      taskId: taskId,
-      ownerId: userId,
-      description: text,
-    };
-    socket.current?.emit("command_update_action_point", command);
-  };
+  const updateTask = useCallback(
+    (taskId: string, userId: string | null, text: string) => {
+      const command: UpdateTaskCommand = {
+        taskId: taskId,
+        ownerId: userId,
+        description: text,
+      };
+      socket.current?.emit("command_update_action_point", command);
+    },
+    [],
+  );
 
-  const deleteTask = (taskId: string) => {
+  const deleteTask = useCallback((taskId: string) => {
     const command: DeleteTaskCommand = {
       taskId: taskId,
     };
 
     socket.current?.emit("command_delete_action_point", command);
-  };
+  }, []);
 
-  const fetchTeamUsers = async (teamId: string) => {
-    const users = await UserService.getUsersByTeamId(teamId);
-    setTeamUsers(users);
-  };
+  const contextValue = useMemo(
+    () => ({
+      retroId: retroId,
+      teamId: teamId,
+      columns: columns,
+      cards: cards,
+      teamUsers: teamUsers,
+      activeUsers: users,
+
+      roomState: roomState,
+      nextRoomState: nextRoomState,
+      prevRoomState: prevRoomState,
+      endRetro: endRetro,
+
+      timerEnds: timerEnds,
+      setTimer: setTimer,
+
+      ready: isReady,
+      setReady: setReady,
+      readyPercentage: readyPercentage,
+
+      // reflection
+      setWriting: setWriting,
+      createCard: createCard,
+      updateCard: updateCard,
+      deleteCard: deleteCard,
+      changeColumnName: changeColumnName,
+      changeColumnDescription: changeColumnDescription,
+      reorderColumns: reorderColumns,
+
+      // group
+      slotMachineVisible: isSlotMachineVisible,
+      setSlotMachineVisible: setSlotMachineVisible,
+      drawMachine: drawMachine,
+      highlightedUserId: highlightedUserId,
+      addDrawSlotMachineListener: addDrawSlotMachineListener,
+      removeDrawSlotMachineListener: removeDrawSlotMachineListener,
+      moveCard: moveCard,
+
+      // vote
+      removeVote: removeVote,
+      addVote: addVote,
+      votes: votes,
+      maxVotes: maxVotes,
+      setMaxVotesAmount: setMaxVotesAmount,
+
+      // discuss
+      discussionCardId: discussionCardId,
+      setCreatingTask: setCreatingTask,
+      createTask: createTask,
+      updateTask: updateTask,
+      deleteTask: deleteTask,
+      tasks: tasks,
+      warmup,
+      startWarmupDraw,
+      updateWarmupRoomUrl,
+      completeWarmup,
+    }),
+    [
+      retroId,
+      teamId,
+      columns,
+      cards,
+      teamUsers,
+      users,
+      roomState,
+      nextRoomState,
+      prevRoomState,
+      endRetro,
+      timerEnds,
+      setTimer,
+      isReady,
+      setReady,
+      readyPercentage,
+      setWriting,
+      createCard,
+      updateCard,
+      deleteCard,
+      changeColumnName,
+      changeColumnDescription,
+      reorderColumns,
+      isSlotMachineVisible,
+      setSlotMachineVisible,
+      drawMachine,
+      highlightedUserId,
+      addDrawSlotMachineListener,
+      removeDrawSlotMachineListener,
+      moveCard,
+      removeVote,
+      addVote,
+      votes,
+      maxVotes,
+      setMaxVotesAmount,
+      discussionCardId,
+      setCreatingTask,
+      createTask,
+      updateTask,
+      deleteTask,
+      tasks,
+      warmup,
+      startWarmupDraw,
+      updateWarmupRoomUrl,
+      completeWarmup,
+    ],
+  );
 
   return (
-    <RetroContext.Provider
-      value={{
-        retroId: retroId,
-        teamId: teamId,
-        columns: columns,
-        cards: cards,
-        teamUsers: teamUsers,
-        activeUsers: users,
-
-        roomState: roomState,
-        nextRoomState: nextRoomState,
-        prevRoomState: prevRoomState,
-        endRetro: endRetro,
-
-        timerEnds: timerEnds,
-        setTimer: setTimer,
-
-        ready: isReady,
-        setReady: setReady,
-        readyPercentage: readyPercentage,
-
-        // reflection
-        setWriting: setWriting,
-        createCard: createCard,
-        updateCard: updateCard,
-        deleteCard: deleteCard,
-        changeColumnName: changeColumnName,
-        changeColumnDescription: changeColumnDescription,
-        reorderColumns: reorderColumns,
-
-        // group
-        slotMachineVisible: isSlotMachineVisible,
-        setSlotMachineVisible: setSlotMachineVisible,
-        drawMachine: drawMachine,
-        highlightedUserId: highlightedUserId,
-        addDrawSlotMachineListener: addDrawSlotMachineListener,
-        removeDrawSlotMachineListener: removeDrawSlotMachineListener,
-        moveCard: moveCard,
-
-        // vote
-        removeVote: removeVote,
-        addVote: addVote,
-        votes: votes,
-        maxVotes: maxVotes,
-        setMaxVotesAmount: setMaxVotesAmount,
-
-        // discuss
-        discussionCardId: discussionCardId,
-        setCreatingTask: setCreatingTask,
-        createTask: createTask,
-        updateTask: updateTask,
-        deleteTask: deleteTask,
-        tasks: tasks,
-        warmup,
-        startWarmupDraw,
-        updateWarmupRoomUrl,
-        completeWarmup,
-      }}
-    >
+    <RetroContext.Provider value={contextValue}>
       {children}
     </RetroContext.Provider>
   );

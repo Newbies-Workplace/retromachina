@@ -119,6 +119,7 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!room) return;
 
     room.clearTable();
+    this.server.to(room.id).emit("event_poker_table_cleared");
     this.emitSync(room);
   }
 

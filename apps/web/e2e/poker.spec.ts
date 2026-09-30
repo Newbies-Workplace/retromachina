@@ -102,6 +102,37 @@ test.describe
       await acceptTeamInvite(secondUserToken, getInviteKey(sharedTeam));
     });
 
+    test("plays readiness sound once per player until the table is cleared", async ({
+      firstUser,
+      secondUser,
+    }) => {
+      await firstUser.page.addInitScript(() => {
+        let plays = 0;
+        HTMLMediaElement.prototype.play = async function () {
+          if (this.src.includes("ready-single")) {
+            document.documentElement.dataset.readySoundPlays = String(++plays);
+          }
+        };
+      });
+      const poker = new PokerPage(firstUser.page);
+      const otherPoker = new PokerPage(secondUser.page);
+      await poker.goto(sharedTeam.id);
+      await otherPoker.goto(sharedTeam.id);
+      await poker.clearTable();
+
+      const soundCount = firstUser.page.locator("html");
+      await otherPoker.selectCard("1");
+      await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "1");
+      await otherPoker.selectCard("2");
+      await otherPoker.revealCards();
+      await poker.expectRevealedCards(["2"]);
+      await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "1");
+
+      await otherPoker.clearTable();
+      await otherPoker.selectCard("4");
+      await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "2");
+    });
+
     test("opens and dismisses the gramophone from the navbar", async ({
       firstUser,
     }) => {

@@ -13,11 +13,13 @@ import type {
 import type { PokerCard, PokerDeckId } from "shared/model/poker/poker.types";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
+import readySingleSound from "@/assets/sounds/ready-single.wav";
 import {
   PokerContext,
   type PokerContextValue,
 } from "@/context/poker/PokerContext.context";
 import { useUser } from "@/context/user/UserContext.hook";
+import { useAudio } from "@/hooks/useAudio";
 
 type PokerContextParams = {
   teamId: string;
@@ -27,6 +29,11 @@ export const PokerContextProvider: React.FC<
   React.PropsWithChildren<PokerContextParams>
 > = ({ children, teamId }) => {
   const { user } = useUser();
+  const { playAudio } = useAudio();
+  const playAudioRef = useRef(playAudio);
+  useEffect(() => {
+    playAudioRef.current = playAudio;
+  }, [playAudio]);
   const socket = useRef<Socket>(undefined);
   const [deckId, setDeckId] = useState<PokerDeckId>("standard");
   const [cardsRevealed, setCardsRevealed] = useState(false);
@@ -48,7 +55,27 @@ export const PokerContextProvider: React.FC<
     });
     socket.current = createdSocket;
 
+    let hasSynced = false;
+    const playersWithSelection = new Set<string>();
+    const handleTableCleared = () => {
+      playersWithSelection.clear();
+    };
+
     const handlePokerSync = (event: PokerSyncEvent) => {
+      let shouldPlaySound = false;
+      for (const activeUser of event.users) {
+        if (activeUser.selectedCard === null) continue;
+        if (!playersWithSelection.has(activeUser.userId)) {
+          playersWithSelection.add(activeUser.userId);
+          shouldPlaySound = hasSynced;
+        }
+      }
+      hasSynced = true;
+      if (shouldPlaySound) {
+        void playAudioRef.current(readySingleSound).catch(() => {
+          // Browsers can block audio until the user interacts with the page.
+        });
+      }
       setDeckId(event.deckId);
       setCardsRevealed(event.cardsRevealed);
       setActiveUsers(event.users);
@@ -64,10 +91,12 @@ export const PokerContextProvider: React.FC<
     };
 
     createdSocket.on("event_poker_sync", handlePokerSync);
+    createdSocket.on("event_poker_table_cleared", handleTableCleared);
     createdSocket.on("error", handleSocketError);
 
     return () => {
       createdSocket.off("event_poker_sync", handlePokerSync);
+      createdSocket.off("event_poker_table_cleared", handleTableCleared);
       createdSocket.off("error", handleSocketError);
       createdSocket.disconnect();
     };

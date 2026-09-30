@@ -102,6 +102,26 @@ test.describe
       await acceptTeamInvite(secondUserToken, getInviteKey(sharedTeam));
     });
 
+    test("opens and dismisses the gramophone from the navbar", async ({
+      firstUser,
+    }) => {
+      await new PokerPage(firstUser.page).goto(sharedTeam.id);
+
+      await firstUser.page
+        .getByRole("button", { name: "Otwórz gramofon" })
+        .click();
+      await expect(
+        firstUser.page.getByText("Gramofon", { exact: true }),
+      ).toBeVisible();
+
+      await firstUser.page
+        .getByRole("banner")
+        .click({ position: { x: 5, y: 5 } });
+      await expect(
+        firstUser.page.getByText("Gramofon", { exact: true }),
+      ).not.toBeVisible();
+    });
+
     test("updates instantly on both sides when a user joins team and enters poker view", async ({
       firstUser,
       secondUser,

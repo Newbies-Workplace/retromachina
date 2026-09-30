@@ -21,6 +21,7 @@ export const GramophoneAction: React.FC = () => {
     <NavbarAction>
       <Button
         size={"icon"}
+        aria-label="Otwórz gramofon"
         onClick={() => {
           setIsOpen(true);
         }}

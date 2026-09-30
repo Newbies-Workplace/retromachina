@@ -47,7 +47,7 @@ export const PokerView: React.FC = () => {
         variant="subtle"
         contentClassName="pointer-events-none flex h-full w-full"
       >
-        <div className="pointer-events-none relative flex-1 overflow-hidden px-6 pt-8 pb-36 [&>*]:pointer-events-auto">
+        <div className="pointer-events-none relative flex-1 overflow-hidden px-6 pt-8 pb-36">
           <PokerTable
             users={activeUsers}
             currentUserId={user?.id}

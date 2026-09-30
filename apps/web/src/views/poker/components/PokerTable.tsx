@@ -32,7 +32,7 @@ export const PokerTable: React.FC<PokerTableProps> = ({
 
   return (
     <section
-      className="relative mx-auto aspect-[4/3] h-auto max-h-full w-full max-w-3xl"
+      className="pointer-events-none relative mx-auto aspect-[4/3] h-auto max-h-full w-full max-w-3xl"
       aria-label="Stół pokera"
     >
       <div className="-translate-x-1/2 absolute top-[32%] left-1/2 flex h-[46%] w-[78%] items-center justify-center overflow-hidden rounded-b-xl border-2 border-border bg-card shadow-lg [border-top-left-radius:50%_100%] [border-top-right-radius:50%_100%]">
@@ -41,8 +41,15 @@ export const PokerTable: React.FC<PokerTableProps> = ({
           aria-hidden="true"
         />
         <div className="relative flex items-center gap-3">
-          <Button onClick={onRevealCards}>Odkryj karty</Button>
-          <Button variant="destructive" size="icon" onClick={onClearTable}>
+          <Button className="pointer-events-auto" onClick={onRevealCards}>
+            Odkryj karty
+          </Button>
+          <Button
+            className="pointer-events-auto"
+            variant="destructive"
+            size="icon"
+            onClick={onClearTable}
+          >
             <XIcon />
             <span className="sr-only">Wyczyść stół</span>
           </Button>

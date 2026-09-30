@@ -34,7 +34,7 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
           render={
             <UserAvatar
               size="lg"
-              className="relative z-10 shadow-md"
+              className="pointer-events-auto relative z-10 shadow-md"
               avatarUrl={user.avatarLink}
               name={user.nick}
             >

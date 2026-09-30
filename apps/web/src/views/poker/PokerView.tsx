@@ -43,7 +43,10 @@ export const PokerView: React.FC = () => {
         }
       />
 
-      <AnimatedBackground contentClassName="pointer-events-none flex h-full w-full">
+      <AnimatedBackground
+        variant="subtle"
+        contentClassName="pointer-events-none flex h-full w-full"
+      >
         <div className="pointer-events-none relative flex-1 overflow-hidden px-6 pt-8 pb-36 [&>*]:pointer-events-auto">
           <PokerTable
             users={activeUsers}

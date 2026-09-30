@@ -7,6 +7,7 @@ interface AnimatedBackgroundProps {
   children: React.ReactNode;
   className?: string;
   contentClassName?: string;
+  variant?: "default" | "subtle";
 }
 
 const iconSize = 128 + 16;
@@ -15,6 +16,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   children,
   className,
   contentClassName,
+  variant = "default",
 }) => {
   const [columns, setColumns] = useState(0);
   const [rows, setRows] = useState(0);
@@ -64,6 +66,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
               {Array.from({ length: rows }).map((_, j) => {
                 return (
                   <AnimatedIcon
+                    variant={variant}
                     key={`row-${i}-col-${
                       // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                       j
@@ -79,7 +82,9 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   );
 };
 
-const AnimatedIcon: React.FC = () => {
+const AnimatedIcon: React.FC<{
+  variant: NonNullable<AnimatedBackgroundProps["variant"]>;
+}> = ({ variant }) => {
   const [icon, setIcon] = useState(Math.floor(Math.random() * 3));
   const [animationState, setAnimationState] = useState("visible");
   const iconVariants = {
@@ -125,22 +130,32 @@ const AnimatedIcon: React.FC = () => {
         onMouseMoveCapture={animate}
         transition={{ duration: 0.3 }}
         className={cn(
-          "flex justify-center items-center size-32 bg-secondary/10 rounded m-2",
+          "flex justify-center items-center size-32 rounded m-2",
+          variant === "subtle" ? "bg-secondary/3" : "bg-secondary/10",
         )}
       >
         {icon === 0 && (
           <ClipboardCheckIcon
-            className={"dark:text-secondary-foreground opacity-30 size-8"}
+            className={cn(
+              "dark:text-secondary-foreground size-8",
+              variant === "subtle" ? "opacity-10" : "opacity-30",
+            )}
           />
         )}
         {icon === 1 && (
           <SaveIcon
-            className={"dark:text-secondary-foreground opacity-30 size-8"}
+            className={cn(
+              "dark:text-secondary-foreground size-8",
+              variant === "subtle" ? "opacity-10" : "opacity-30",
+            )}
           />
         )}
         {icon === 2 && (
           <TrendingUpIcon
-            className={"dark:text-secondary-foreground opacity-30 size-8"}
+            className={cn(
+              "dark:text-secondary-foreground size-8",
+              variant === "subtle" ? "opacity-10" : "opacity-30",
+            )}
           />
         )}
       </m.div>

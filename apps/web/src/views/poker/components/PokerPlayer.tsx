@@ -51,10 +51,10 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
               key={`${user.userId}-${user.revealedCard}`}
               data-testid="poker-player-revealed-card"
               className={cn(
-                "-top-5 absolute flex aspect-[2/3] w-8 items-center justify-center rounded-lg border-2 border-border bg-card font-semibold text-card-foreground shadow-md",
+                "-top-5 md:-top-8 absolute flex aspect-[2/3] w-8 items-center justify-center rounded-lg border-2 border-border bg-card font-semibold text-card-foreground shadow-md md:w-12 md:text-xl",
                 cardSide === "left"
-                  ? "-left-6 origin-bottom-right"
-                  : "-right-6 origin-bottom-left",
+                  ? "-left-6 md:-left-8 origin-bottom-right"
+                  : "-right-6 md:-right-8 origin-bottom-left",
               )}
               initial={{ opacity: 0, x: -24, y: 24, scale: 0.25, rotate: -18 }}
               animate={{

@@ -131,6 +131,19 @@ test.describe
       await otherPoker.clearTable();
       await otherPoker.selectCard("4");
       await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "2");
+
+      await poker.selectCard("8");
+      await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "5");
+      await poker.selectCard("16");
+      await poker.revealCards();
+      await poker.expectRevealedCards(["4", "16"]);
+      await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "5");
+
+      await otherPoker.clearTable();
+      await otherPoker.selectCard("1");
+      await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "6");
+      await poker.selectCard("2");
+      await expect(soundCount).toHaveAttribute("data-ready-sound-plays", "9");
     });
 
     test("opens and dismisses the gramophone from the navbar", async ({

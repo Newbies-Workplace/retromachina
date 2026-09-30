@@ -72,7 +72,19 @@ export const PokerContextProvider: React.FC<
       }
       hasSynced = true;
       if (shouldPlaySound) {
-        void playAudioRef.current(readySingleSound).catch(() => {
+        const everyoneSelected = event.users.every(
+          (activeUser) => activeUser.selectedCard !== null,
+        );
+        const playReadinessSound = async () => {
+          const repetitions = everyoneSelected ? 3 : 1;
+          for (let index = 0; index < repetitions; index++) {
+            if (index > 0) {
+              await new Promise((resolve) => setTimeout(resolve, 100));
+            }
+            await playAudioRef.current(readySingleSound);
+          }
+        };
+        void playReadinessSound().catch(() => {
           // Browsers can block audio until the user interacts with the page.
         });
       }

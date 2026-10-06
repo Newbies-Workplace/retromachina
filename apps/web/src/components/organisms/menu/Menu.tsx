@@ -1,5 +1,6 @@
 import {
   BugIcon,
+  Building2Icon,
   ClapperboardIcon,
   Disc3Icon,
   HandshakeIcon,
@@ -19,6 +20,7 @@ import {
 import { useUser } from "@/context/user/UserContext.hook";
 import { useChangelogStore } from "@/store/useChangelogStore";
 import { APP_VERSION } from "@/utils/version";
+import { MenuOrganizations } from "./MenuOrganizations";
 
 interface MenuProps {
   onOpenPreferences: () => void;
@@ -78,6 +80,8 @@ export const Menu = ({ onOpenPreferences }: MenuProps) => {
 
       <DropdownMenuSeparator className="mx-1 my-2" />
 
+      <MenuOrganizations organizations={user?.organizations ?? []} />
+
       <DropdownMenuGroup className="space-y-0.5">
         <DropdownMenuItem
           className={menuItemClassName}
@@ -98,6 +102,12 @@ export const Menu = ({ onOpenPreferences }: MenuProps) => {
       <DropdownMenuSeparator className="mx-1 my-2" />
 
       <DropdownMenuGroup className="space-y-0.5">
+        <DropdownMenuItem className={menuItemClassName} asChild>
+          <Link to="/organizations/create">
+            <Building2Icon />
+            Stwórz organizację
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem className={menuItemClassName} asChild>
           <Link to="/team/create">
             <HandshakeIcon className="text-current" />

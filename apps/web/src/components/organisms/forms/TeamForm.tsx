@@ -1,6 +1,7 @@
 import type React from "react";
 import { useState } from "react";
 import { InviteResponse } from "shared/model/invite/Invite.response";
+import type { OrganizationMembershipResponse } from "shared/model/organization/organization.response";
 import type { TeamRequest } from "shared/model/team/team.request";
 import { TeamResponse } from "shared/model/team/team.response";
 import { UserInTeamResponse } from "shared/model/user/user.response";
@@ -21,6 +22,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { TeamOrganizationPicker } from "./TeamOrganizationPicker";
 
 interface TeamFormProps {
   team: TeamResponse | null;
@@ -29,14 +31,25 @@ interface TeamFormProps {
   onSubmit: (team: TeamRequest) => void;
   onDelete?: () => void;
   deletable?: boolean;
+  organizations?: OrganizationMembershipResponse[];
+  initialOrganizationId?: string | null;
+  canMove?: boolean;
 }
+
+const EMPTY_ORGANIZATIONS: OrganizationMembershipResponse[] = [];
 
 export const TeamForm: React.FC<TeamFormProps> = ({
   team,
   onSubmit,
   onDelete,
   deletable,
+  organizations = EMPTY_ORGANIZATIONS,
+  initialOrganizationId = null,
+  canMove = true,
 }) => {
+  const [organizationId, setOrganizationId] = useState<string | null>(
+    team?.organization_id ?? initialOrganizationId,
+  );
   const [name, setName] = useState<string>(team?.name || "");
   const [inviteKey, setInviteKey] = useState<string | undefined>(
     team?.invite_key || "",
@@ -45,6 +58,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
   const onSubmitClick = () => {
     onSubmit({
       name: name,
+      organization_id: organizationId,
       invite_key: inviteKey && inviteKey.length > 0 ? inviteKey : undefined,
     });
   };
@@ -55,7 +69,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({
         {team ? "Zarządzanie zespołem" : "Stworz nowy zespół"}
       </PageCardHeader>
 
-      <PageCardContent className={"grow justify-between"}>
+      <PageCardContent className={"grow justify-between gap-5"}>
         <div className={"flex flex-col"}>
           <h1>Team</h1>
           <Input
@@ -65,6 +79,18 @@ export const TeamForm: React.FC<TeamFormProps> = ({
             placeholder={"Nazwa zespołu"}
           />
         </div>
+
+        <TeamOrganizationPicker
+          organizations={organizations}
+          organizationId={organizationId}
+          onChange={setOrganizationId}
+          disabled={!!team && !canMove}
+        />
+        {team && (
+          <p className="break-all text-xs text-muted-foreground">
+            Slug zespołu: {team.slug}. Zmiana nazwy nie zmienia adresu.
+          </p>
+        )}
 
         <TeamInviteLinkInput
           inviteKey={inviteKey}

@@ -2,6 +2,7 @@ FROM node:24.14.0 AS builder
 
 ARG RETRO_WEB_API_URL
 ARG RETRO_WEB_SOCKET_URL
+ARG RETRO_WEB_ROOT_DOMAIN
 ARG DATABASE_URL
 ARG APP_VERSION
 
@@ -13,6 +14,8 @@ RUN if [ -n "$APP_VERSION" ]; then npm pkg set "version=${APP_VERSION#v}" --work
 RUN npm run build
 
 FROM node:24.14.0-alpine as retro-api
+
+ENV NODE_ENV=production
 
 COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/apps/api/package*.json ./

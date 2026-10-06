@@ -2,6 +2,9 @@ import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 import type { UserRole } from "../user/user.role";
 
 export class TeamRequest {
+  @IsOptional()
+  @IsUUID()
+  organization_id?: string | null;
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -13,6 +16,9 @@ export class TeamRequest {
 }
 
 export class EditTeamRequest {
+  @IsOptional()
+  @IsUUID()
+  organization_id?: string | null;
   @IsString()
   name: string;
 

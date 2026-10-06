@@ -86,7 +86,15 @@ export const TeamEditView: React.FC = () => {
               onSubmit={onSubmit}
               onDelete={onDeleteTeamPress}
               team={team}
-              deletable
+              organizations={user.organizations}
+              canMove={user.teams.some(
+                (membership) =>
+                  membership.id === teamId && membership.role === "OWNER",
+              )}
+              deletable={user.teams.some(
+                (membership) =>
+                  membership.id === teamId && membership.role === "OWNER",
+              )}
             />
           )}
         </PageCard>

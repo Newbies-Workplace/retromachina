@@ -57,6 +57,7 @@ import type { WarmupState } from "shared/model/warmup/warmup";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { getAccessToken } from "@/api/session-token";
 import { UserService } from "@/api/User.service";
 import { CardMoveAction } from "@/components/molecules/dragndrop/dragndrop";
 import { SLOT_MACHINE_ANIMATION_DURATION } from "@/components/organisms/slot_machine/SlotMachine";
@@ -260,8 +261,7 @@ export const RetroContextProvider: React.FC<
         retro_id: retroId,
       },
       extraHeaders: {
-        //@ts-expect-error
-        Authorization: window.localStorage.getItem("Bearer"),
+        Authorization: getAccessToken(),
       },
       forceNew: true,
       reconnection: true,

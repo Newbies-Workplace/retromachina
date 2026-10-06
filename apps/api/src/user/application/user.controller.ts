@@ -10,10 +10,10 @@ import {
   UserInTeamResponse,
   UserWithTeamsResponse,
 } from "shared/model/user/user.response";
-import { JWTUser } from "src/auth/jwt/JWTUser";
-import { JwtGuard } from "src/auth/jwt/jwt.guard";
-import { User } from "src/auth/jwt/jwtuser.decorator";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
+import { JWTUser } from "../../auth/jwt/JWTUser";
+import { JwtGuard } from "../../auth/jwt/jwt.guard";
+import { User } from "../../auth/jwt/jwtuser.decorator";
 import { PrismaService } from "../../prisma/prisma.service";
 import { toTeamResponse } from "../../team/application/team.converter";
 import { toUserInTeamResponse, toUserResponse } from "./user.converter";
@@ -33,6 +33,10 @@ export class UserController {
         google_id: user.google_id,
       },
       include: {
+        OrganizationUsers: {
+          include: { Organization: true },
+          orderBy: { Organization: { name: "asc" } },
+        },
         TeamUsers: {
           include: {
             Team: true,
@@ -52,6 +56,14 @@ export class UserController {
     return {
       ...toUserResponse(userWithTeams),
       teams: await Promise.all(teams),
+      organizations: userWithTeams.OrganizationUsers.map(
+        ({ Organization, role }) => ({
+          id: Organization.id,
+          name: Organization.name,
+          slug: Organization.slug,
+          role,
+        }),
+      ),
     };
   }
 

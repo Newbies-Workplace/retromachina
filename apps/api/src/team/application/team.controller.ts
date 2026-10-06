@@ -6,6 +6,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -47,6 +48,24 @@ export class TeamController {
     private prismaService: PrismaService,
     private abilityFactory: AuthAbilityFactory,
   ) {}
+
+  @UseGuards(JwtGuard)
+  @Get("resolve/:organizationSlug/:teamSlug")
+  async resolveTeam(
+    @User() user: JWTUser,
+    @Param("organizationSlug") organizationSlug: string,
+    @Param("teamSlug") slug: string,
+  ): Promise<TeamResponse> {
+    const team = await this.prismaService.team.findFirst({
+      where: { slug, Organization: { slug: organizationSlug } },
+    });
+    if (!team) throw new NotFoundException("Team not found");
+    ForbiddenError.from(this.abilityFactory.create(user)).throwUnlessCan(
+      "read",
+      subject("Team", team),
+    );
+    return toTeamResponse(team);
+  }
 
   @UseGuards(JwtGuard)
   @Get(":id/warmups")
@@ -181,7 +200,6 @@ export class TeamController {
 
   @UseGuards(JwtGuard)
   @Put(":id")
-  @HttpCode(204)
   async editTeam(
     @User() user: JWTUser,
     @Body() request: EditTeamRequest,

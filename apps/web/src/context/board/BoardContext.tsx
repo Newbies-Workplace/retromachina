@@ -18,6 +18,7 @@ import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { BoardService } from "@/api/Board.service";
+import { getAccessToken } from "@/api/session-token";
 import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
 
@@ -93,8 +94,7 @@ export const BoardContextProvider: React.FC<
         team_id: teamId,
       },
       extraHeaders: {
-        //@ts-expect-error
-        Authorization: window.localStorage.getItem("Bearer"),
+        Authorization: getAccessToken(),
       },
       reconnection: true,
       reconnectionAttempts: Number.POSITIVE_INFINITY,
@@ -170,7 +170,7 @@ export const BoardContextProvider: React.FC<
       createdSocket.off();
       createdSocket.disconnect();
     };
-  }, []);
+  }, [teamId]);
 
   const moveTask = (taskId: string, targetColumnId: string) => {
     const command: TaskUpdateCommand = {

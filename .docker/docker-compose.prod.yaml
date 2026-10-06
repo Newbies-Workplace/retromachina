@@ -39,6 +39,7 @@ services:
     environment:
       - RETRO_WEB_API_URL
       - RETRO_WEB_SOCKET_URL
+      - RETRO_WEB_ROOT_DOMAIN
     container_name: retro-web
     ports:
       - "80:8080"
@@ -54,6 +55,9 @@ services:
       - JWT_SECRET
       - DATABASE_URL
       - CALLBACK_URL
+      - RETRO_ROOT_DOMAIN
+      - RETRO_ALLOWED_ORIGINS
+      - RETRO_SESSION_SECURE=true
     ports:
       - "3000:3000"
       - "3001:3001"

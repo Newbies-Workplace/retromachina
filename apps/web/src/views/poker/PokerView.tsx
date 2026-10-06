@@ -2,6 +2,7 @@ import type React from "react";
 import type { ActivePokerUser } from "shared/model/poker/poker.events";
 import type { PokerCard } from "shared/model/poker/poker.types";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
+import { GramophoneAction } from "@/components/organisms/gramophone/GramophoneAction";
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { NavbarAction } from "@/components/organisms/navbar/NavbarAction";
 import { usePoker } from "@/context/poker/PokerContext.hook";
@@ -33,14 +34,20 @@ export const PokerView: React.FC = () => {
     <>
       <Navbar
         topContent={
-          <NavbarAction>
-            <DeckPicker selectedDeckId={deckId} onDeckChange={selectDeck} />
-          </NavbarAction>
+          <>
+            <NavbarAction>
+              <DeckPicker selectedDeckId={deckId} onDeckChange={selectDeck} />
+            </NavbarAction>
+            <GramophoneAction />
+          </>
         }
       />
 
-      <AnimatedBackground contentClassName="pointer-events-none flex h-full w-full">
-        <div className="pointer-events-none relative flex-1 overflow-hidden px-6 pt-8 pb-36 [&>*]:pointer-events-auto">
+      <AnimatedBackground
+        variant="subtle"
+        contentClassName="pointer-events-none flex h-full w-full"
+      >
+        <div className="pointer-events-none relative flex-1 overflow-hidden px-6 pt-8 pb-36">
           <PokerTable
             users={activeUsers}
             currentUserId={user?.id}

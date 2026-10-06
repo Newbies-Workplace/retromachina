@@ -17,3 +17,10 @@ export const Default: Story = {
     ),
   },
 };
+
+export const Subtle: Story = {
+  args: {
+    ...Default.args,
+    variant: "subtle",
+  },
+};

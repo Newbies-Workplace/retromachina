@@ -1,5 +1,6 @@
 import type React from "react";
 import { Navigate, useParams } from "react-router";
+import { GramophoneContextProvider } from "@/context/gramophone/GramophoneContext";
 import { PokerContextProvider } from "@/context/poker/PokerContext";
 
 export const PokerWrapper: React.FC<React.PropsWithChildren> = ({
@@ -10,6 +11,8 @@ export const PokerWrapper: React.FC<React.PropsWithChildren> = ({
   if (!teamId) return <Navigate to="/" />;
 
   return (
-    <PokerContextProvider teamId={teamId}>{children}</PokerContextProvider>
+    <GramophoneContextProvider>
+      <PokerContextProvider teamId={teamId}>{children}</PokerContextProvider>
+    </GramophoneContextProvider>
   );
 };

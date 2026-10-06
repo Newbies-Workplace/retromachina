@@ -48,7 +48,13 @@ export const useChangelogStore = create<ChangelogStore>((set, get) => ({
     if (!previous || !isNewerVersion(previous, APP_VERSION)) {
       write(VERSION_KEY, APP_VERSION);
     }
-    set({ initialized: true, previous, disabled, open: newer && !disabled });
+    const hasNewReleases = getVisibleReleases(false, previous).length > 0;
+    set({
+      initialized: true,
+      previous,
+      disabled,
+      open: newer && !disabled && hasNewReleases,
+    });
   },
   showHistory: () => set({ open: true, history: true }),
   setOpen: (open) => set({ open }),

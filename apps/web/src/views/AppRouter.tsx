@@ -3,6 +3,7 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router";
 import { GramophoneContextProvider } from "@/context/gramophone/GramophoneContext";
 import { NotificationContextProvider } from "@/context/notification/NotificationContext";
 import { RequireAuth } from "@/context/user/RequireAuth";
+import { organizationSubdomain } from "@/utils/organization-url";
 import { NotFoundView } from "@/views/404/NotFoundView";
 import { LoadingView } from "@/views/auth/loading/LoadingView";
 import { PrivacyPolicyView } from "@/views/auth/privacy_policy/PrivacyPolicyView";
@@ -11,6 +12,9 @@ import { GramophoneView } from "@/views/gramophone/GramophoneView";
 import { HeroView } from "@/views/hero/HeroView";
 import { HomeView } from "@/views/home/HomeView";
 import { InviteView } from "@/views/invitation/InviteView";
+import { OrganizationCreateView } from "@/views/organization/OrganizationCreateView";
+import { OrganizationTeamRoute } from "@/views/organization/OrganizationTeamRoute";
+import { OrganizationView } from "@/views/organization/OrganizationView";
 import { PokerView } from "@/views/poker/PokerView";
 import { PokerWrapper } from "@/views/poker/PokerWrapper";
 import { RetroActiveView } from "@/views/retro_active/RetroActiveView";
@@ -38,8 +42,39 @@ export const AppRouter: React.FC = () => {
           <Route
             path="/"
             element={
-              <RequireAuth fallback={<Navigate to={"/hero"} />}>
-                <HomeView />
+              <RequireAuth
+                fallback={
+                  organizationSubdomain() ? undefined : (
+                    <Navigate to={"/hero"} />
+                  )
+                }
+              >
+                {organizationSubdomain() ? <OrganizationView /> : <HomeView />}
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/organizations/create"
+            element={
+              <RequireAuth>
+                <OrganizationCreateView />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/organizations/:organizationId"
+            element={
+              <RequireAuth>
+                <OrganizationView />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/:teamSlug"
+            element={
+              <RequireAuth>
+                <OrganizationTeamRoute />
               </RequireAuth>
             }
           />

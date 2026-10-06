@@ -1,3 +1,4 @@
+import type { OrganizationMembershipResponse } from "../organization/organization.response";
 import type { TeamResponse } from "../team/team.response";
 import type { UserRole } from "./user.role";
 
@@ -10,6 +11,7 @@ export interface UserResponse {
 
 export interface UserWithTeamsResponse extends UserResponse {
   teams: (TeamResponse & { role: UserRole })[];
+  organizations: OrganizationMembershipResponse[];
 }
 
 export interface UserInTeamResponse extends UserResponse {

@@ -1,11 +1,18 @@
 import type React from "react";
 import GoogleButton from "react-google-button";
-import { Navigate } from "react-router";
+import { Navigate, useSearchParams } from "react-router";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import { useUser } from "@/context/user/UserContext.hook";
+import { getRedirectPath, setRedirectPath } from "@/hooks/useRedirect";
+import { organizationSubdomain } from "@/utils/organization-url";
 
 export const SignInView: React.FC = () => {
-  const href = `${process.env.RETRO_WEB_API_URL}google/redirect`;
+  const [params] = useSearchParams();
+  const isLocalOrganization =
+    organizationSubdomain() && window.location.hostname.endsWith(".localhost");
+  const href = isLocalOrganization
+    ? `http://localhost:${window.location.port}/signin?returnTo=${encodeURIComponent(getRedirectPath() ?? `${window.location.origin}/`)}`
+    : `${process.env.RETRO_WEB_API_URL}google/redirect`;
   const { user } = useUser();
 
   if (user) {
@@ -39,7 +46,14 @@ export const SignInView: React.FC = () => {
             "flex flex-col justify-center items-center gap-5 text-center"
           }
         >
-          <a href={href} className={"rounded-full overflow-hidden shadow-lg"}>
+          <a
+            href={href}
+            className={"rounded-full overflow-hidden shadow-lg"}
+            onClick={() => {
+              const returnTo = params.get("returnTo");
+              if (returnTo && !isLocalOrganization) setRedirectPath(returnTo);
+            }}
+          >
             <GoogleButton type={"light"} />
           </a>
 

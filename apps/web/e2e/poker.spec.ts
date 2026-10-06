@@ -10,6 +10,7 @@ import { InvitationAcceptPage } from "./pages/InvitationAcceptPage";
 import { PokerPage } from "./pages/PokerPage";
 
 type StoredAuth = {
+  cookies?: Array<{ name: string; value: string }>;
   origins: Array<{
     origin: string;
     localStorage: Array<{ name: string; value: string }>;
@@ -30,7 +31,9 @@ const apiUrl = (
 const getBearer = (authFile: string) => {
   const auth = JSON.parse(fs.readFileSync(authFile, "utf8")) as StoredAuth;
   const origin = auth.origins.find(({ origin }) => origin === appOrigin);
-  const bearer = origin?.localStorage.find(({ name }) => name === "Bearer");
+  const bearer =
+    auth.cookies?.find(({ name }) => name === "retro_session") ??
+    origin?.localStorage.find(({ name }) => name === "Bearer");
 
   if (!bearer) {
     throw new Error(`Bearer token not found in ${authFile}`);

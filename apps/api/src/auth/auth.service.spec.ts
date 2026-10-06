@@ -64,7 +64,7 @@ describe("AuthService", () => {
           google_id: googleUser.id,
         },
       },
-      { secret: process.env.JWT_SECRET },
+      { secret: process.env.JWT_SECRET, expiresIn: "30d" },
     );
   });
 });

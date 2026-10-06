@@ -58,7 +58,10 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
     const user = this.getUserFromJWT(client);
-    if (!user?.id) return;
+    if (typeof user?.id !== "string" || user.id.trim().length === 0) {
+      this.doException(client, ErrorTypes.JwtError, "Invalid token user");
+      return;
+    }
 
     const userQuery = await this.prismaService.user.findUnique({
       where: {

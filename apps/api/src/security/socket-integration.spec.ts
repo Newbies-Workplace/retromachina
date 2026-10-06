@@ -16,7 +16,7 @@ jest.mock("shared/model/retro/ErrorTypes", () => ({ ErrorTypes: {} }), {
   virtual: true,
 });
 
-type Role = "ADMIN" | "USER";
+type Role = "ADMIN" | "USER" | "OWNER";
 const once = <T>(socket: Socket, event: string): Promise<T> =>
   new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
@@ -118,7 +118,24 @@ describe("team authorization through real Socket.IO gateways", () => {
     app = module.createNestApplication();
     app.useLogger(false);
     access = app.get(TeamSocketAccessService);
-    await app.get(RetroGateway).addRetroRoom("retro-a", "team-a", []);
+    await app.get(RetroGateway).addRetroRoom("retro-a", "team-a", [
+      {
+        id: "one",
+        name: "One",
+        description: "",
+        cards: [],
+        teamCardsAmount: 0,
+        isWriting: false,
+      },
+      {
+        id: "two",
+        name: "Two",
+        description: "",
+        cards: [],
+        teamCardsAmount: 0,
+        isWriting: false,
+      },
+    ]);
     await app.listen(0, "127.0.0.1");
     baseUrl = await app.getUrl();
   });
@@ -235,5 +252,188 @@ describe("team authorization through real Socket.IO gateways", () => {
     poker.emit("command_select_card", { card: "1" });
     expect((await synced).users[0].selectedCard).toBe("1");
     expect(poker.connected).toBe(true);
+  });
+  const room = () => app.get(RetroGateway)["retroRooms"].get("retro-a");
+  const seedCards = () => {
+    room().cards = [
+      {
+        id: "a",
+        text: "A",
+        authorId: "user-a",
+        columnId: "one",
+        parentCardId: null,
+      },
+      {
+        id: "b",
+        text: "B",
+        authorId: "user-a",
+        columnId: "one",
+        parentCardId: null,
+      },
+    ];
+  };
+  const barrier = async (socket: Socket) => {
+    const synced = once(socket, "event_room_sync");
+    socket.emit("command_ready", {
+      readyState: !room().connectedUsers.get(socket.id).isReady,
+    });
+    await synced;
+  };
+
+  it("rejects USER stage/timer changes and skipped stages without changing persistent state", async () => {
+    seedCards();
+    const socket = await connect("retro");
+    const before = JSON.stringify(room().getSnapshot());
+    memberships.set("team-a:user-a", "USER");
+    socket.emit("command_room_state", { roomState: "group" });
+    socket.emit("command_timer_change", { timestamp: Date.now() + 60000 });
+    await barrier(socket);
+    expect(JSON.stringify(room().getSnapshot())).toBe(before);
+    memberships.set("team-a:user-a", "ADMIN");
+    socket.emit("command_room_state", { roomState: "summary" });
+    socket.emit("command_room_state", { roomState: "discuss" });
+    await barrier(socket);
+    expect(JSON.stringify(room().getSnapshot())).toBe(before);
+  });
+
+  it.each([
+    "ADMIN",
+    "OWNER",
+  ] as const)("allows adjacent stages and timer start/clear for %s", async (role) => {
+    seedCards();
+    memberships.set("team-a:user-a", role);
+    const socket = await connect("retro");
+    let synced = once<{ roomState: string }>(socket, "event_room_sync");
+    socket.emit("command_room_state", { roomState: "group" });
+    expect((await synced).roomState).toBe("group");
+    const timestamp = Date.now() + 60000;
+    let timer = once<{ timerEnds: number | null }>(
+      socket,
+      "event_timer_change",
+    );
+    socket.emit("command_timer_change", { timestamp });
+    expect((await timer).timerEnds).toBe(timestamp);
+    timer = once(socket, "event_timer_change");
+    socket.emit("command_timer_change", { timestamp: null });
+    expect((await timer).timerEnds).toBeNull();
+    synced = once(socket, "event_room_sync");
+    socket.emit("command_room_state", { roomState: "reflection" });
+    expect((await synced).roomState).toBe("reflection");
+  });
+
+  it.each([
+    ["command_create_card", null],
+    ["command_ready", { readyState: "yes" }],
+    ["command_timer_change", { timestamp: -1 }],
+    ["command_timer_change", { timestamp: "tomorrow" }],
+    ["command_change_vote_amount", { votesAmount: 2.5 }],
+    ["command_change_column_name", { columnId: "one", name: {} }],
+    ["command_change_discussion_card", { cardId: [] }],
+    ["command_creating_task_state", []],
+  ])("rejects malformed %s with safe errors and no state change", async (command, payload) => {
+    seedCards();
+    const socket = await connect("retro");
+    const before = JSON.stringify(room().getSnapshot());
+    const rejected = once<{ status: string; message: string }>(
+      socket,
+      "exception",
+    );
+    socket.emit(command as string, payload);
+    expect(await rejected).toEqual({
+      status: "error",
+      message: "Command rejected",
+    });
+    expect(JSON.stringify(room().getSnapshot())).toBe(before);
+    expect(socket.connected).toBe(true);
+    await barrier(socket);
+  });
+
+  it("rejects unknown cards/columns and invalid grouping relations without mutation", async () => {
+    seedCards();
+    const socket = await connect("retro");
+    const before = JSON.stringify(room().getSnapshot());
+    socket.emit("command_move_card_to_column", {
+      cardId: "missing",
+      columnId: "one",
+    });
+    socket.emit("command_move_card_to_column", {
+      cardId: "a",
+      columnId: "missing",
+    });
+    socket.emit("command_card_add_to_card", {
+      cardId: "a",
+      parentCardId: "missing",
+    });
+    socket.emit("command_card_add_to_card", { cardId: "a", parentCardId: "a" });
+    socket.emit("command_change_discussion_card", { cardId: "missing" });
+    await barrier(socket);
+    expect(JSON.stringify(room().getSnapshot())).toBe(before);
+    const grouped = once(socket, "event_room_sync");
+    socket.emit("command_card_add_to_card", { cardId: "b", parentCardId: "a" });
+    await grouped;
+    expect(room().cards.find((card) => card.id === "b").parentCardId).toBe("a");
+    const moved = once(socket, "event_room_sync");
+    socket.emit("command_move_card_to_column", {
+      cardId: "a",
+      columnId: "two",
+    });
+    await moved;
+    expect(room().cards.every((card) => card.columnId === "two")).toBe(true);
+  });
+
+  it("copies only trusted card fields and allows clearing a column description", async () => {
+    const socket = await connect("retro");
+    const created = once(socket, "event_room_sync");
+    socket.emit("command_create_card", {
+      id: "client-id",
+      columnId: "one",
+      text: "Card",
+      authorId: "other",
+      parentCardId: "missing",
+      dangerous: true,
+    });
+    await created;
+    expect(room().cards[0]).toEqual({
+      id: expect.any(String),
+      columnId: "one",
+      text: "Card",
+      authorId: "user-a",
+      parentCardId: null,
+    });
+    expect(room().cards[0].id).not.toBe("client-id");
+    const changed = once(socket, "event_column_description_changed");
+    socket.emit("command_change_column_description", {
+      columnId: "one",
+      description: "",
+    });
+    await changed;
+    expect(room().retroColumns[0].description).toBe("");
+  });
+  it("preserves clearing an action-point description and updating its owner afterward", async () => {
+    const socket = await connect("retro");
+    const stored = { ...task, retro_id: "retro-a", parentCardId: null };
+    room().tasks = [stored];
+    prisma.task.update.mockResolvedValueOnce({ ...stored, description: "" });
+    let synced = once(socket, "event_room_sync");
+    socket.emit("command_update_action_point", {
+      taskId: task.id,
+      description: "",
+      ownerId: null,
+    });
+    await synced;
+    expect(room().tasks[0].description).toBe("");
+    prisma.task.update.mockResolvedValueOnce({
+      ...stored,
+      description: "",
+      owner_id: "user-a",
+    });
+    synced = once(socket, "event_room_sync");
+    socket.emit("command_update_action_point", {
+      taskId: task.id,
+      description: "",
+      ownerId: "user-a",
+    });
+    await synced;
+    expect(room().tasks[0].owner_id).toBe("user-a");
   });
 });

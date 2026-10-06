@@ -435,6 +435,10 @@ describe("RetroGateway action point authorization", () => {
       createAccessService() as any,
     );
     room = new RetroRoom("retro-id", "team-id", [createColumn("column-id")]);
+    room.connectedUsers.set(client.id, {
+      ...createRoomUser("USER"),
+      userId: "actor-id",
+    });
     (gateway as any).retroRooms.set(room.id, room);
     (gateway as any).users.set(client.id, {
       user: { id: "actor-id" },

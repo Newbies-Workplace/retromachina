@@ -53,7 +53,10 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     const user = this.getUserFromJWT(client);
 
-    if (!user) return;
+    if (typeof user?.id !== "string" || user.id.trim().length === 0) {
+      this.doException(client, ErrorTypes.JwtError, "Invalid token user");
+      return;
+    }
 
     const userQuery = await this.prismaService.user.findUnique({
       where: { id: user.id },

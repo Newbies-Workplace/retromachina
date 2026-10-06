@@ -1,19 +1,51 @@
 import { WsException } from "@nestjs/websockets";
 import type { Socket } from "socket.io";
+import {
+  AccessTokenService,
+  validateAccessClaims,
+} from "../auth/session/access-token.service";
 import { TeamSocketAccessService } from "./team-socket-access.service";
 
 jest.mock("../prisma/prisma.service", () => ({ PrismaService: class {} }));
 
 const createClient = () =>
-  ({ connected: true, disconnect: jest.fn() }) as unknown as Socket;
+  ({
+    connected: true,
+    data: {
+      authClaims: {
+        exp: Math.floor(Date.now() / 1000) + 900,
+        sid: "session",
+        user: { id: "user-a", google_id: "google-a" },
+      },
+    },
+    disconnect: jest.fn(),
+  }) as unknown as Socket;
 
 describe("TeamSocketAccessService", () => {
+  afterEach(() => jest.useRealTimers());
   const prisma = { teamUsers: { findUnique: jest.fn() } };
   let access: TeamSocketAccessService;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    access = new TeamSocketAccessService(prisma as never);
+    access = new TeamSocketAccessService(
+      prisma as never,
+      {
+        assertSession: jest.fn().mockResolvedValue(undefined),
+        validateClaims: validateAccessClaims,
+      } as unknown as AccessTokenService,
+    );
+  });
+
+  it("disconnects idle sockets at token expiry and rejects subsequent commands", async () => {
+    jest.useFakeTimers({ doNotFake: ["performance"] });
+    const client = createClient();
+    client.data.authClaims.exp = Math.floor(Date.now() / 1000) + 2;
+    access.register(client, "team-a", "user-a", jest.fn());
+    jest.advanceTimersByTime(2000);
+    expect(client.disconnect).toHaveBeenCalledTimes(1);
+    await expect(access.authorize(client)).rejects.toThrow(WsException);
+    expect(prisma.teamUsers.findUnique).not.toHaveBeenCalled();
   });
 
   it("refreshes the role from current membership, not connection-time permissions", async () => {
@@ -84,13 +116,19 @@ describe("TeamSocketAccessService", () => {
     const refreshRole = jest.fn();
     access.register(client, "team-a", "user-a", refreshRole);
     let resolveLookup: (result: { role: string }) => void = () => {};
+    let markStarted: () => void;
+    const started = new Promise<void>((resolve) => {
+      markStarted = resolve;
+    });
     prisma.teamUsers.findUnique.mockImplementation(
       () =>
         new Promise((resolve) => {
           resolveLookup = resolve;
+          markStarted();
         }),
     );
     const authorization = access.authorize(client);
+    await started;
     access.revokeUser("team-a", "user-a");
     resolveLookup({ role: "ADMIN" });
     await expect(authorization).rejects.toThrow(WsException);

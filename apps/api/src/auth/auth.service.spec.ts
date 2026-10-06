@@ -4,6 +4,10 @@ jest.mock("src/prisma/prisma.service", () => ({ PrismaService: class {} }), {
   virtual: true,
 });
 
+jest.mock("./session/auth-session.service", () => ({
+  AuthSessionService: class {},
+}));
+
 describe("AuthService", () => {
   const googleUser = {
     id: "google-id",
@@ -33,18 +37,18 @@ describe("AuthService", () => {
     invite: { findMany: jest.fn() },
     teamUsers: { create: jest.fn() },
   };
-  const jwtService = { sign: jest.fn() };
+  const sessions = { create: jest.fn() };
   let service: AuthService;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new AuthService(jwtService as never, prismaService as never);
+    service = new AuthService(sessions as never, prismaService as never);
   });
 
   it("updates the name and avatar of an existing Google user", async () => {
     prismaService.user.findFirst.mockResolvedValue(existingUser);
     prismaService.user.update.mockResolvedValue(updatedUser);
-    jwtService.sign.mockReturnValue("token");
+    sessions.create.mockResolvedValue({ access_token: "token" });
 
     await service.googleAuth(googleUser);
 
@@ -55,16 +59,6 @@ describe("AuthService", () => {
         avatar_link: googleUser.picture,
       },
     });
-    expect(jwtService.sign).toHaveBeenCalledWith(
-      {
-        user: {
-          id: updatedUser.id,
-          nick: updatedUser.nick,
-          email: updatedUser.email,
-          google_id: googleUser.id,
-        },
-      },
-      { secret: process.env.JWT_SECRET },
-    );
+    expect(sessions.create).toHaveBeenCalledWith(updatedUser);
   });
 });

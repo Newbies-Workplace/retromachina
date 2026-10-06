@@ -78,6 +78,7 @@ model User {
   Task           Task[]
   Invite         Invite[]
   ReflectionCard ReflectionCard[]
+  AuthSessions   AuthSession[]
 }
 
 model Task {
@@ -138,4 +139,32 @@ enum Role {
   ADMIN
   USER
   OWNER
+}
+
+model AuthSession {
+  id            String             @id @default(uuid())
+  user_id       String
+  expires_at    DateTime
+  revoked_at    DateTime?
+  User          User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  RefreshTokens AuthRefreshToken[]
+
+  @@index([expires_at])
+}
+
+model AuthRefreshToken {
+  hash       String      @id @db.VarChar(64)
+  session_id String
+  used_at    DateTime?
+  Session    AuthSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+
+  @@index([session_id])
+}
+
+model OAuthState {
+  hash         String   @id @db.VarChar(64)
+  binding_hash String   @db.VarChar(64)
+  expires_at   DateTime
+
+  @@index([expires_at])
 }

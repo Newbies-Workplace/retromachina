@@ -18,7 +18,10 @@ async function bootstrap() {
     new NotFoundExceptionFilter(),
   );
   app.useWebSocketAdapter(new IoAdapter(app));
-  app.enableCors();
+  app.enableCors({
+    origin: new URL(process.env.CALLBACK_URL).origin,
+    credentials: true,
+  });
 
   await app.listen(3000);
 }

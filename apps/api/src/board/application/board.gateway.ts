@@ -22,6 +22,7 @@ import {
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import type { UserRole } from "shared/model/user/user.role";
 import { Server, Socket } from "socket.io";
+import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
@@ -273,11 +274,13 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private getUserFromJWT(client: Socket) {
     try {
-      const result = this.jwtService.verify(
+      const claims = verifyAccessToken(
+        this.jwtService,
         client.handshake.headers.authorization,
-        { secret: process.env.JWT_SECRET },
       );
-      return result.user;
+      client.data ??= {};
+      client.data.authClaims = claims;
+      return claims.user;
     } catch {
       this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
       return null;

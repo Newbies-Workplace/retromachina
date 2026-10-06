@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { ReflectionCard, Role, Team } from "generated/prisma/client";
 import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
 import {
@@ -11,12 +16,14 @@ import { JWTUser } from "src/auth/jwt/JWTUser";
 import { PrismaService } from "src/prisma/prisma.service";
 import { v4 as uuid } from "uuid";
 import { RetroGateway } from "../retro/application/retro.gateway";
+import { TeamSocketAccessService } from "../security/team-socket-access.service";
 
 @Injectable()
 export class TeamService {
   constructor(
     private prismaService: PrismaService,
     private retroGateway: RetroGateway,
+    private teamSocketAccessService: TeamSocketAccessService,
   ) {}
 
   async createTeam(user: JWTUser, createTeamDto: TeamRequest): Promise<Team> {
@@ -61,7 +68,8 @@ export class TeamService {
     teamId: string,
     requestUser: TeamUserRequest,
   ): Promise<void> {
-    // todo check for max role permissions
+    const callerMembership = await this.getAuthorizedManager(caller, teamId);
+    this.validateRole(requestUser.role);
 
     const user = await this.prismaService.user.findFirst({
       where: {
@@ -77,10 +85,22 @@ export class TeamService {
     });
 
     if (user) {
-      // todo do not overwrite own role
-
-      // update existing team user role
       if (user.TeamUsers.length > 0) {
+        const targetMembership = user.TeamUsers[0];
+        this.assertCanManageMember(
+          callerMembership.role,
+          caller.id,
+          user.id,
+          targetMembership.role,
+          requestUser.role,
+        );
+
+        // Repeating an existing role is an idempotent no-op. This preserves
+        // compatibility with clients that submit the selected role unchanged.
+        if (targetMembership.role === requestUser.role) {
+          return;
+        }
+
         await this.prismaService.teamUsers.update({
           where: {
             team_id_user_id: {
@@ -92,11 +112,13 @@ export class TeamService {
             role: requestUser.role,
           },
         });
+        this.teamSocketAccessService.revokeUser(teamId, user.id);
 
         return;
       }
 
       // add existing user to team
+      this.assertCanGrantRole(callerMembership.role, requestUser.role);
       await this.addUserToTeam(user.id, teamId, requestUser.role);
 
       return;
@@ -109,8 +131,13 @@ export class TeamService {
       },
     });
 
+    this.assertCanGrantRole(callerMembership.role, requestUser.role);
+
     // update existing invitation
     if (invitation) {
+      if (invitation.role === Role.OWNER) {
+        throw new ForbiddenException("Cannot modify an owner invitation");
+      }
       await this.prismaService.invite.update({
         where: {
           id: invitation.id,
@@ -140,6 +167,7 @@ export class TeamService {
     teamId: string,
     email: string,
   ): Promise<void> {
+    const callerMembership = await this.getAuthorizedManager(caller, teamId);
     const team = await this.prismaService.team.findUniqueOrThrow({
       where: {
         id: teamId,
@@ -157,21 +185,32 @@ export class TeamService {
     const users = team.TeamUser.map((tu) => tu.User);
     const invites = team.Invite;
 
-    // todo check for permissions
-
     const memberToRemove = users.find((u) => u.email === email);
     if (memberToRemove) {
-      if (memberToRemove.id === caller.id) {
-        throw new BadRequestException(
-          "User cannot remove himself from the team",
-        );
+      const targetMembership = team.TeamUser.find(
+        (membership) => membership.user_id === memberToRemove.id,
+      );
+      if (targetMembership?.role === Role.OWNER) {
+        throw new ForbiddenException("Cannot remove an owner");
       }
+      if (memberToRemove.id === caller.id) {
+        throw new ForbiddenException("Cannot remove yourself from the team");
+      }
+      this.assertCanManageMember(
+        callerMembership.role,
+        caller.id,
+        memberToRemove.id,
+        targetMembership?.role,
+      );
 
       await this.removeUserFromTeam(memberToRemove.id, team.id);
     }
 
     const inviteToRemove = invites.find((i) => i.email === email);
     if (inviteToRemove) {
+      if (inviteToRemove.role === Role.OWNER) {
+        throw new ForbiddenException("Cannot remove an owner invitation");
+      }
       await this.prismaService.invite.delete({
         where: {
           id: inviteToRemove.id,
@@ -189,6 +228,7 @@ export class TeamService {
         },
       },
     });
+    this.teamSocketAccessService.revokeUser(teamId, userId);
     await this.unassignUserFromTasks(userId, teamId);
 
     await this.retroGateway.handleTeamUserRemoved(teamId, userId);
@@ -226,6 +266,7 @@ export class TeamService {
         id: teamId,
       },
     });
+    this.teamSocketAccessService.revokeTeam(teamId);
 
     await this.retroGateway.handleTeamDeleted(teamId);
   }
@@ -246,24 +287,111 @@ export class TeamService {
 
   async editReflectionCard(
     reflectionCardId: string,
+    teamId: string,
+    userId: string,
     request: ReflectionCardRequest,
-  ) {
-    return await this.prismaService.reflectionCard.update({
+  ): Promise<ReflectionCard> {
+    const result = await this.prismaService.reflectionCard.updateMany({
       where: {
         id: reflectionCardId,
+        team_id: teamId,
+        user_id: userId,
       },
       data: {
         text: request.text,
       },
     });
-  }
+    if (result.count === 0) {
+      throw new NotFoundException("Reflection card not found");
+    }
 
-  async deleteReflectionCard(reflectionCardId: string) {
-    await this.prismaService.reflectionCard.delete({
+    return this.prismaService.reflectionCard.findFirstOrThrow({
       where: {
         id: reflectionCardId,
+        team_id: teamId,
+        user_id: userId,
       },
     });
+  }
+
+  async deleteReflectionCard(
+    reflectionCardId: string,
+    teamId: string,
+    userId: string,
+  ): Promise<void> {
+    const result = await this.prismaService.reflectionCard.deleteMany({
+      where: {
+        id: reflectionCardId,
+        team_id: teamId,
+        user_id: userId,
+      },
+    });
+    if (result.count === 0) {
+      throw new NotFoundException("Reflection card not found");
+    }
+  }
+
+  private async getAuthorizedManager(caller: JWTUser, teamId: string) {
+    const membership = await this.prismaService.teamUsers.findUnique({
+      where: {
+        team_id_user_id: {
+          team_id: teamId,
+          user_id: caller.id,
+        },
+      },
+    });
+
+    if (
+      !membership ||
+      (membership.role !== Role.ADMIN && membership.role !== Role.OWNER)
+    ) {
+      throw new ForbiddenException("Insufficient team permissions");
+    }
+
+    return membership;
+  }
+
+  private validateRole(role: unknown): asserts role is Role {
+    if (!Object.values(Role).includes(role as Role)) {
+      throw new BadRequestException("Invalid team member role");
+    }
+  }
+
+  private assertCanGrantRole(callerRole: Role, targetRole: Role) {
+    if (targetRole === Role.OWNER) {
+      throw new ForbiddenException("Cannot grant owner role");
+    }
+    if (
+      callerRole === Role.ADMIN &&
+      targetRole !== Role.USER &&
+      targetRole !== Role.ADMIN
+    ) {
+      throw new ForbiddenException("Insufficient team permissions");
+    }
+  }
+
+  private assertCanManageMember(
+    callerRole: Role,
+    callerId: string,
+    targetId: string,
+    currentTargetRole: Role | undefined,
+    requestedRole?: Role,
+  ) {
+    if (currentTargetRole === Role.OWNER) {
+      if (requestedRole === Role.OWNER) {
+        return;
+      }
+      throw new ForbiddenException("Cannot modify an owner");
+    }
+    if (callerId === targetId && requestedRole !== currentTargetRole) {
+      throw new ForbiddenException("Cannot modify your own role");
+    }
+    if (callerRole !== Role.OWNER && callerRole !== Role.ADMIN) {
+      throw new ForbiddenException("Insufficient team permissions");
+    }
+    if (requestedRole !== undefined) {
+      this.assertCanGrantRole(callerRole, requestedRole);
+    }
   }
 
   private async createTeamBoard(teamId: string) {

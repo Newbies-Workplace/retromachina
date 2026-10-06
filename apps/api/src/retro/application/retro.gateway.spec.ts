@@ -27,6 +27,11 @@ const createRoomUser = (role: User["role"]): User => ({
   writingInColumns: new Set(),
 });
 
+const createAccessService = () => ({
+  register: jest.fn(),
+  unregister: jest.fn(),
+});
+
 describe("retrospective restart recovery", () => {
   const columns = [
     {
@@ -58,7 +63,12 @@ describe("retrospective restart recovery", () => {
       },
     };
     persistence = new RetroRoomPersistence(database);
-    gateway = new RetroGateway(database, {} as any, persistence);
+    gateway = new RetroGateway(
+      database,
+      {} as any,
+      persistence,
+      createAccessService() as any,
+    );
     emit = jest.fn();
     gateway.server = { to: () => ({ emit }) } as any;
   });
@@ -106,6 +116,7 @@ describe("retrospective restart recovery", () => {
       database,
       {} as any,
       new RetroRoomPersistence(database),
+      createAccessService() as any,
     );
     await restarted.restoreRooms();
     const restored = restarted["retroRooms"].get("retro");
@@ -263,7 +274,12 @@ describe("RetroGateway column editing", () => {
   let emit: jest.Mock;
 
   beforeEach(() => {
-    gateway = new RetroGateway({} as never, {} as never, {} as never);
+    gateway = new RetroGateway(
+      {} as never,
+      {} as never,
+      {} as never,
+      createAccessService() as any,
+    );
     room = new RetroRoom("retro-id", "team-id", [
       createColumn("first"),
       createColumn("second"),
@@ -380,6 +396,111 @@ describe("RetroGateway column editing", () => {
     });
 
     expect(room.retroColumns[0].name).toBe("first");
+    expect(emit).not.toHaveBeenCalled();
+  });
+});
+
+describe("RetroGateway action point authorization", () => {
+  const client = { id: "socket-id", emit: jest.fn() } as any;
+  let gateway: RetroGateway;
+  let database: any;
+  let room: RetroRoom;
+  let emit: jest.Mock;
+  let persist: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    database = {
+      teamUsers: { findFirst: jest.fn(async () => ({ user_id: "owner-id" })) },
+      board: {
+        findUnique: jest.fn(async () => ({ default_column_id: "column-id" })),
+      },
+      task: {
+        create: jest.fn(async () => ({
+          id: "task-id",
+          description: "Follow up",
+          owner_id: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+        })),
+        update: jest.fn(),
+        delete: jest.fn(),
+      },
+    };
+    persist = jest.fn();
+    gateway = new RetroGateway(
+      database,
+      {} as any,
+      { persist, recoverRunningRooms: jest.fn() } as any,
+      createAccessService() as any,
+    );
+    room = new RetroRoom("retro-id", "team-id", [createColumn("column-id")]);
+    (gateway as any).retroRooms.set(room.id, room);
+    (gateway as any).users.set(client.id, {
+      user: { id: "actor-id" },
+      teamId: room.teamId,
+      roomId: room.id,
+    });
+    emit = jest.fn();
+    gateway.server = { to: jest.fn(() => ({ emit })) } as any;
+  });
+
+  it("allows an unassigned action point", async () => {
+    await gateway.handleAddTask(client, {
+      description: "Follow up",
+      ownerId: null,
+    } as any);
+
+    expect(database.teamUsers.findFirst).not.toHaveBeenCalled();
+    expect(database.task.create).toHaveBeenCalledWith({
+      data: {
+        description: "Follow up",
+        owner_id: null,
+        retro_id: room.id,
+        team_id: room.teamId,
+        column_id: "column-id",
+      },
+    });
+    expect(emit).toHaveBeenCalledWith("event_room_sync", expect.any(Object));
+  });
+
+  it("rejects an action point owner outside the team before writing", async () => {
+    database.teamUsers.findFirst.mockResolvedValue(null);
+    await gateway.handleAddTask(client, {
+      description: "Follow up",
+      ownerId: "foreign-user",
+    } as any);
+
+    expect(database.teamUsers.findFirst).toHaveBeenCalledWith({
+      where: { team_id: room.teamId, user_id: "foreign-user" },
+      select: { user_id: true },
+    });
+    expect(database.task.create).not.toHaveBeenCalled();
+    expect(emit).not.toHaveBeenCalled();
+    expect(client.emit).toHaveBeenCalledWith(
+      "error",
+      expect.objectContaining({ message: "Task command rejected" }),
+    );
+  });
+
+  it("scopes action point updates and deletes to both team and retrospective", async () => {
+    database.task.update.mockRejectedValue(new Error("missing"));
+    database.task.delete.mockRejectedValue(new Error("missing"));
+
+    await gateway.handleUpdateTask(client, {
+      taskId: "foreign-task",
+      description: "changed",
+      ownerId: null,
+    } as any);
+    await gateway.handleDeleteTask(client, { taskId: "foreign-task" } as any);
+
+    expect(database.task.update).toHaveBeenCalledWith({
+      data: { description: "changed", owner_id: null },
+      where: { id: "foreign-task", team_id: room.teamId, retro_id: room.id },
+    });
+    expect(database.task.delete).toHaveBeenCalledWith({
+      where: { id: "foreign-task", team_id: room.teamId, retro_id: room.id },
+    });
     expect(emit).not.toHaveBeenCalled();
   });
 });

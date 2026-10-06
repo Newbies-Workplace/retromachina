@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UseGuards } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
   type OnGatewayConnection,
@@ -16,6 +16,8 @@ import type {
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import { Server, Socket } from "socket.io";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TeamSocketGuard } from "../../security/team-socket.guard";
+import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 import { PokerRoom } from "../domain/model/pokerRoom.object";
 
 type ConnectedUser = {
@@ -24,6 +26,7 @@ type ConnectedUser = {
 };
 
 @Injectable()
+@UseGuards(TeamSocketGuard)
 @WebSocketGateway(3001, { cors: true, namespace: "poker" })
 export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -35,10 +38,19 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly access: TeamSocketAccessService,
   ) {}
 
   async handleConnection(client: Socket) {
-    const teamId = client.handshake.query.team_id as string;
+    const teamId = client.handshake.query.team_id;
+    if (typeof teamId !== "string" || teamId.trim().length === 0) {
+      this.doException(
+        client,
+        ErrorTypes.Unauthorized,
+        "Team must be provided",
+      );
+      return;
+    }
     const user = this.getUserFromJWT(client);
 
     if (!user) return;
@@ -81,6 +93,17 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     this.users.set(client.id, { roomId: room.id, userId: userQuery.id });
 
+    this.access.register(client, teamId, userQuery.id, (role) => {
+      const connected = room.connectedUsers.get(client.id);
+      if (connected) connected.role = role;
+    });
+    try {
+      await this.access.authorize(client);
+    } catch {
+      this.handleDisconnect(client);
+      this.doException(client, ErrorTypes.Unauthorized, "Team access denied");
+      return;
+    }
     await client.join(room.id);
     this.emitSync(room);
   }
@@ -124,6 +147,7 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
+    this.access.unregister(client);
     const connection = this.users.get(client.id);
     if (!connection) return;
 
@@ -144,6 +168,7 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {
+    this.access.unregister(client);
     this.users.delete(client.id);
     client.emit("error", { type, message });
     client.disconnect();

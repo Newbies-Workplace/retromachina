@@ -13,6 +13,7 @@ import type {
 import type { PokerCard, PokerDeckId } from "shared/model/poker/poker.types";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
+import { addAuthTokenChangedListener } from "@/api/auth-session";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import {
   PokerContext,
@@ -39,13 +40,24 @@ export const PokerContextProvider: React.FC<
   const [cardsRevealed, setCardsRevealed] = useState(false);
   const [selectedCard, setSelectedCard] = useState<PokerCard>();
   const [activeUsers, setActiveUsers] = useState<ActivePokerUser[]>([]);
+  const [authToken, setAuthToken] = useState(() =>
+    localStorage.getItem("Bearer"),
+  );
+
+  useEffect(
+    () =>
+      addAuthTokenChangedListener(() =>
+        setAuthToken(localStorage.getItem("Bearer")),
+      ),
+    [],
+  );
 
   useEffect(() => {
     const createdSocket = io(`${process.env.RETRO_WEB_SOCKET_URL}/poker`, {
       query: { team_id: teamId },
       extraHeaders: {
         // @ts-expect-error Socket.IO accepts the nullable localStorage result.
-        Authorization: window.localStorage.getItem("Bearer"),
+        Authorization: authToken,
       },
       reconnection: true,
       reconnectionAttempts: Number.POSITIVE_INFINITY,
@@ -112,7 +124,7 @@ export const PokerContextProvider: React.FC<
       createdSocket.off("error", handleSocketError);
       createdSocket.disconnect();
     };
-  }, [teamId, user?.id]);
+  }, [teamId, authToken, user?.id]);
 
   const selectDeck = useCallback((nextDeckId: PokerDeckId) => {
     const command: SelectPokerDeckCommand = { deckId: nextDeckId };

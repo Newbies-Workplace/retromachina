@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Test } from "@nestjs/testing";
 import { PORT_METADATA } from "@nestjs/websockets/constants";
 import { io, type Socket } from "socket.io-client";
+import { AccessTokenService } from "../auth/session/access-token.service";
 import { BoardGateway } from "../board/application/board.gateway";
 import { PokerGateway } from "../poker/application/poker.gateway";
 import { PrismaService } from "../prisma/prisma.service";
@@ -101,17 +102,36 @@ describe("team authorization through real Socket.IO gateways", () => {
       providers: [
         ...gateways,
         {
+          provide: AccessTokenService,
+          useValue: {
+            assertSession: jest.fn().mockResolvedValue(undefined),
+            validateClaims: jest.fn(),
+          },
+        },
+        {
           provide: JwtService,
           useValue: {
-            verify: () => ({ user: { id: "user-a", google_id: "user-a" } }),
+            verify: () => ({
+              exp: Math.floor(Date.now() / 1000) + 900,
+              sid: "session",
+              user: { id: "user-a", google_id: "user-a" },
+            }),
           },
         },
         {
           provide: RetroRoomPersistence,
-          useValue: { persist: jest.fn().mockResolvedValue(undefined) },
+          useValue: {
+            persist: jest.fn().mockResolvedValue(undefined),
+            markFinished: jest.fn().mockResolvedValue(undefined),
+          },
         },
       ],
     })
+      .overrideProvider(AccessTokenService)
+      .useValue({
+        assertSession: jest.fn().mockResolvedValue(undefined),
+        validateClaims: jest.fn(),
+      })
       .overrideProvider(PrismaService)
       .useValue(prisma)
       .compile();
@@ -157,6 +177,7 @@ describe("team authorization through real Socket.IO gateways", () => {
       reconnection: false,
       forceNew,
       transports: ["websocket"],
+      extraHeaders: { Authorization: "synthetic-token" },
       query: { retro_id: "retro-a", team_id: team },
     });
     clients.push(socket);
@@ -172,6 +193,36 @@ describe("team authorization through real Socket.IO gateways", () => {
     await ready;
     return socket;
   };
+
+  it.each([
+    "board",
+    "retro",
+    "poker",
+  ])("disconnects revoked %s recipients before sending a room broadcast", async (namespace) => {
+    const socket = await connect(namespace);
+    const event = jest.fn();
+    socket.on("revoked-broadcast", event);
+    app.get(AccessTokenService).assertSession = jest
+      .fn()
+      .mockRejectedValue(new Error("session revoked"));
+    const disconnected = once(socket, "disconnect");
+    const gateway = app.get(
+      { board: BoardGateway, retro: RetroGateway, poker: PokerGateway }[
+        namespace
+      ],
+    );
+    gateway.server.emit("revoked-broadcast", { private: true });
+    await disconnected;
+    expect(event).not.toHaveBeenCalled();
+  });
+
+  it("delivers close_room before disconnecting its authorized recipients", async () => {
+    const socket = await connect("retro");
+    const closing = once(socket, "event_close_room");
+    const gateway = app.get(RetroGateway);
+    await gateway.closeRoom(gateway["retroRooms"].get("retro-a"));
+    await closing;
+  });
 
   it.each([
     "board",

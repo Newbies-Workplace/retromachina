@@ -52,9 +52,9 @@ import {
   User as SocketUser,
 } from "shared/model/retro/retroRoom.interface";
 import type { WarmupState } from "shared/model/warmup/warmup";
-import { Server, Socket } from "socket.io";
+import { type Namespace, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
-import { JWTUser } from "../../auth/jwt/JWTUser";
+import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
@@ -73,7 +73,7 @@ type SocketId = string;
 @WebSocketGateway(3001, { cors: true, namespace: "retro" })
 export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server;
+  server: Namespace;
 
   private users = new Map<
     SocketId,
@@ -198,6 +198,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.retroRooms.delete(room.id);
     this.server.to(room.id).emit("event_close_room");
+    await this.accessService.flushBroadcasts(this.server.adapter);
     this.server.to(room.id).disconnectSockets(true);
   }
 
@@ -883,13 +884,15 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.disconnect();
   }
 
-  private getUserFromJWT(client: Socket): JWTUser | null {
+  private getUserFromJWT(client: Socket) {
     try {
-      const result = this.jwtService.verify(
+      const claims = verifyAccessToken(
+        this.jwtService,
         client.handshake.headers.authorization,
-        { secret: process.env.JWT_SECRET },
       );
-      return result.user;
+      client.data ??= {};
+      client.data.authClaims = claims;
+      return claims.user;
     } catch {
       this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
       return null;

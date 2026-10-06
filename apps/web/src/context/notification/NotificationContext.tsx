@@ -1,8 +1,9 @@
 import type React from "react";
-import { createContext, useEffect, useRef } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import type { RetroStartedEvent } from "shared/model/notification/notification.events";
 import { toast } from "sonner";
+import { addAuthTokenChangedListener } from "@/api/auth-session";
 import { useUser } from "@/context/user/UserContext.hook";
 
 const NotificationContext = createContext<null>(null);
@@ -32,6 +33,17 @@ export const NotificationContextProvider: React.FC<
   const navigate = useNavigate();
   const pathname = useRef(location.pathname);
   const navigateRef = useRef(navigate);
+  const [authToken, setAuthToken] = useState(() =>
+    localStorage.getItem("Bearer"),
+  );
+
+  useEffect(
+    () =>
+      addAuthTokenChangedListener(() =>
+        setAuthToken(localStorage.getItem("Bearer")),
+      ),
+    [],
+  );
 
   useEffect(() => {
     pathname.current = location.pathname;
@@ -42,7 +54,7 @@ export const NotificationContextProvider: React.FC<
   }, [navigate]);
 
   useEffect(() => {
-    const token = window.localStorage.getItem("Bearer");
+    const token = authToken;
     if (!user || !token) return;
 
     const controller = new AbortController();
@@ -131,7 +143,7 @@ export const NotificationContextProvider: React.FC<
 
     void connect();
     return () => controller.abort();
-  }, [user]);
+  }, [authToken, user]);
 
   return (
     <NotificationContext.Provider value={null}>

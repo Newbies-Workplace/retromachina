@@ -30,6 +30,7 @@ const createRoomUser = (role: User["role"]): User => ({
 const createAccessService = () => ({
   register: jest.fn(),
   unregister: jest.fn(),
+  flushBroadcasts: jest.fn().mockResolvedValue(undefined),
 });
 
 describe("retrospective restart recovery", () => {

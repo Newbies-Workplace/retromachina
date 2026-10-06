@@ -17,6 +17,7 @@ import type { TeamResponse } from "shared/model/team/team.response";
 import type { UserResponse } from "shared/model/user/user.response";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
+import { addAuthTokenChangedListener } from "@/api/auth-session";
 import { BoardService } from "@/api/Board.service";
 import { TeamService } from "@/api/Team.service";
 import { UserService } from "@/api/User.service";
@@ -72,6 +73,17 @@ export const BoardContextProvider: React.FC<
   const [team, setTeam] = useState<TeamResponse | null>(null);
   const [teamUsers, setTeamUsers] = useState<UserResponse[]>([]);
   const [activeUsers, setActiveUsers] = useState<ActiveBoardUser[]>([]);
+  const [authToken, setAuthToken] = useState(() =>
+    localStorage.getItem("Bearer"),
+  );
+
+  useEffect(
+    () =>
+      addAuthTokenChangedListener(() =>
+        setAuthToken(localStorage.getItem("Bearer")),
+      ),
+    [],
+  );
 
   const [filters, setFilters] = useState<BoardFilters>({
     showOnlyMyTasks: false,
@@ -94,7 +106,7 @@ export const BoardContextProvider: React.FC<
       },
       extraHeaders: {
         //@ts-expect-error
-        Authorization: window.localStorage.getItem("Bearer"),
+        Authorization: authToken,
       },
       reconnection: true,
       reconnectionAttempts: Number.POSITIVE_INFINITY,
@@ -170,7 +182,7 @@ export const BoardContextProvider: React.FC<
       createdSocket.off();
       createdSocket.disconnect();
     };
-  }, []);
+  }, [teamId, authToken]);
 
   const moveTask = (taskId: string, targetColumnId: string) => {
     const command: TaskUpdateCommand = {

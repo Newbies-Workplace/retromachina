@@ -169,10 +169,14 @@ describe("retrospective restart recovery", () => {
       const restored = gateway["retroRooms"].get(room.id);
       expect(restored.warmup.status).toBe("spinning");
       now += 3499;
-      expect(emit).not.toHaveBeenCalled();
-      now += 1;
       clearTimeout(scheduled.mock.results[0].value);
       await scheduled.mock.calls[0][0]();
+      expect(restored.warmup.status).toBe("spinning");
+      expect(scheduled).toHaveBeenLastCalledWith(expect.any(Function), 1);
+      expect(emit).not.toHaveBeenCalled();
+      now += 1;
+      clearTimeout(scheduled.mock.results[1].value);
+      await scheduled.mock.calls[1][0]();
       expect(restored.warmup.status).toBe("revealed");
       expect(emit).toHaveBeenCalledWith(
         "event_room_sync",

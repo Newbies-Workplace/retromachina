@@ -159,8 +159,8 @@ test.describe
       ).toBeVisible();
 
       await firstUser.page
-        .getByRole("banner")
-        .click({ position: { x: 5, y: 5 } });
+        .getByRole("button", { name: "Odkryj karty" })
+        .click();
       await expect(
         firstUser.page.getByText("Gramofon", { exact: true }),
       ).not.toBeVisible();

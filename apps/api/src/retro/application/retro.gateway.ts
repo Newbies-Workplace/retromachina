@@ -108,9 +108,13 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const room = this.retroRooms.get(roomId);
         if (!room || room.warmup?.spinEndsAt !== spinEndsAt) return;
         room.revealWarmupIfFinished();
+        if (room.warmup.status === "spinning") {
+          this.scheduleWarmupReveal(roomId, spinEndsAt);
+          return;
+        }
         await this.emitRoomSync(roomId, room);
       },
-      Math.max(0, spinEndsAt - Date.now()),
+      Math.max(1, spinEndsAt - Date.now()),
     );
   }
 

@@ -18,6 +18,14 @@ The format is: `<type>(<optional scope>): <description>`
 
 ## Develop
 
+Use Node.js 24.22.1 or a newer 24.x release and npm 11. Node.js 24.22.1 includes the fix for CVE-2026-111497.
+
+Select the project Node.js version before installing dependencies:
+```
+nvm install
+nvm use
+```
+
 To develop retromachine, run the following commands:
 
 Copy the .env.template file to .env and fill in the values:

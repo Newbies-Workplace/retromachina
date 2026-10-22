@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UseFilters, UseGuards } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
   type OnGatewayConnection,
@@ -8,7 +8,7 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import * as dayjs from "dayjs";
-import { User } from "generated/prisma/client";
+import { Task, User } from "generated/prisma/client";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import {
   AddCardToCardCommand,
@@ -56,14 +56,20 @@ import { Server, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
 import { JWTUser } from "../../auth/jwt/JWTUser";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TeamSocketGuard } from "../../security/team-socket.guard";
+import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 import { validateWarmupLink } from "../../warmup/warmup-links";
 import { RetroRoom } from "../domain/model/retroRoom.object";
 import { RetroRoomPersistence } from "../domain/retro-room.persistence";
-import { validate as validateRoomState } from "./roomstate.validator";
+import { RetroCommandGuard } from "./retro-command.guard";
+import { RetroWsExceptionFilter } from "./retro-ws-exception.filter";
+import { canTransition } from "./roomstate.validator";
 
 type SocketId = string;
 
 @Injectable()
+@UseGuards(TeamSocketGuard, RetroCommandGuard)
+@UseFilters(RetroWsExceptionFilter)
 @WebSocketGateway(3001, { cors: true, namespace: "retro" })
 export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -78,6 +84,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private prismaService: PrismaService,
     private jwtService: JwtService,
     private roomPersistence: RetroRoomPersistence,
+    private accessService: TeamSocketAccessService,
   ) {}
 
   async addRetroRoom(
@@ -195,8 +202,23 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleConnection(client: Socket) {
-    const retroId = client.handshake.query.retro_id as string;
+    const retroId = client.handshake.query.retro_id;
+    if (typeof retroId !== "string" || retroId.trim().length === 0) {
+      this.doException(
+        client,
+        ErrorTypes.Unauthorized,
+        "Invalid retrospective",
+      );
+      return;
+    }
     const user = this.getUserFromJWT(client);
+    if (
+      typeof user?.google_id !== "string" ||
+      user.google_id.trim().length === 0
+    ) {
+      this.doException(client, ErrorTypes.JwtError, "Invalid token user");
+      return;
+    }
     const room = this.retroRooms.get(retroId);
 
     if (!room) {
@@ -208,45 +230,63 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const userQuery = await this.prismaService.user.findFirst({
-      where: {
-        google_id: user.google_id,
-      },
-      include: {
-        TeamUsers: {
-          where: {
-            team_id: room.teamId,
+    try {
+      const userQuery = await this.prismaService.user.findFirst({
+        where: {
+          google_id: user.google_id,
+        },
+        include: {
+          TeamUsers: {
+            where: {
+              team_id: room.teamId,
+            },
           },
         },
-      },
-    });
+      });
 
-    if (!userQuery || userQuery.TeamUsers.length === 0) {
-      this.doException(
-        client,
-        ErrorTypes.UserNotFound,
-        `User (${user.google_id}) not found or is not a member of the retrospective team`,
-      );
-      return;
+      if (!userQuery || userQuery.TeamUsers.length === 0) {
+        this.doException(
+          client,
+          ErrorTypes.UserNotFound,
+          `User (${user.google_id}) not found or is not a member of the retrospective team`,
+        );
+        return;
+      }
+
+      const userRole = userQuery.TeamUsers.at(0).role;
+
+      room.addUser(client.id, userQuery, userRole);
+
+      this.users.set(client.id, {
+        user: userQuery,
+        teamId: room.teamId,
+        roomId: room.id,
+      });
+
+      this.accessService.register(client, room.teamId, userQuery.id, (role) => {
+        const roomUser = room.connectedUsers.get(client.id);
+        if (roomUser) roomUser.role = role;
+      });
+      try {
+        await this.accessService.authorize(client);
+      } catch {
+        room.removeUser(client.id, userQuery.id);
+        this.doException(client, ErrorTypes.Unauthorized, "Team access denied");
+        return;
+      }
+
+      client.join(retroId);
+
+      this.server.to(room.id).emit("event_room_sync", room.getRoomSyncData());
+    } catch {
+      this.handleDisconnect(client);
+      this.doException(client, ErrorTypes.Unauthorized, "Connection rejected");
     }
-
-    const userRole = userQuery.TeamUsers.at(0).role;
-
-    room.addUser(client.id, userQuery, userRole);
-
-    this.users.set(client.id, {
-      user: userQuery,
-      teamId: room.teamId,
-      roomId: room.id,
-    });
-
-    client.join(retroId);
-
-    this.server.to(room.id).emit("event_room_sync", room.getRoomSyncData());
   }
 
   @SubscribeMessage("command_ready")
   async handleReady(client: Socket, { readyState }: UpdateReadyStateCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -260,6 +300,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_start_warmup_draw")
   async handleStartWarmupDraw(client: Socket, _: StartWarmupDrawCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id)?.roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room?.connectedUsers.get(client.id);
@@ -279,6 +320,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     payload: UpdateWarmupRoomUrlCommand,
   ) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id)?.roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room?.connectedUsers.get(client.id);
@@ -300,6 +342,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_complete_warmup")
   async handleCompleteWarmup(client: Socket, _: CompleteWarmupCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id)?.roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room?.connectedUsers.get(client.id);
@@ -313,6 +356,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     { isVisible }: ChangeSlotMachineVisibilityCommand,
   ) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -328,6 +372,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_draw_slot_machine")
   async handleDrawSlotMachine(client: Socket, _: DrawMachineCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
@@ -347,6 +392,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     { creatingTaskState }: UpdateCreatingTaskStateCommand,
   ) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -360,6 +406,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_create_card")
   async handleNewCard(client: Socket, payload: CreateCardCommand) {
+    if (!this.getCommandContext(client)) return;
     if (payload.text.trim().length === 0) return;
     if (payload.text.length > 1000) payload.text = payload.text.slice(0, 1000);
 
@@ -367,10 +414,13 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
-    const card = payload as unknown as Card;
-    card.id = uuid();
-    card.authorId = roomUser.userId;
-    card.parentCardId = null;
+    const card: Card = {
+      id: uuid(),
+      text: payload.text,
+      columnId: payload.columnId,
+      authorId: roomUser.userId,
+      parentCardId: null,
+    };
 
     const column = room.retroColumns.find(
       (column) => column.id === card.columnId,
@@ -385,6 +435,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_update_card")
   async handleUpdateCard(client: Socket, payload: UpdateCardCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -406,6 +457,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_delete_card")
   async handleDeleteCard(client: Socket, { cardId }: DeleteCardCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -426,6 +478,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_write_state")
   async handleWriteState(client: Socket, payload: UpdateWriteStateCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -449,6 +502,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_change_column_name")
   handleChangeColumnName(client: Socket, payload: ChangeColumnNameCommand) {
+    if (!this.getCommandContext(client)) return;
     const context = this.getColumnEditContext(client);
     if (!context) return;
 
@@ -469,6 +523,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     payload: ChangeColumnDescriptionCommand,
   ) {
+    if (!this.getCommandContext(client)) return;
     const context = this.getColumnEditContext(client);
     if (!context) return;
 
@@ -488,6 +543,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_reorder_columns")
   handleReorderColumns(client: Socket, payload: ReorderColumnsCommand) {
+    if (!this.getCommandContext(client)) return;
     const context = this.getColumnEditContext(client);
     if (!context) return;
     if (
@@ -504,18 +560,16 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_room_state")
   async handleRoomState(client: Socket, payload: UpdateRoomStateCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    const isValid = validateRoomState(payload.roomState);
-    if (!isValid) {
-      this.doException(
-        client,
-        ErrorTypes.InvalidRoomState,
-        `Invalid room state value (${payload.roomState})`,
-      );
+    const roomUser = room.connectedUsers.get(client.id);
+    if (
+      !this.hasAdminPrivileges(roomUser) ||
+      !canTransition(room, payload.roomState)
+    )
       return;
-    }
 
     room.changeState(payload.roomState);
 
@@ -524,9 +578,12 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_timer_change")
   async handleChangeTimer(client: Socket, payload: ChangeTimerCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
+    if (!this.hasAdminPrivileges(room.connectedUsers.get(client.id))) return;
+    if (room.timerEnds === payload.timestamp) return;
     room.timerEnds = payload.timestamp;
 
     const event: TimerChangedEvent = {
@@ -539,6 +596,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_vote_on_card")
   async handleVoteOnCard(client: Socket, payload: AddCardVoteCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -562,6 +620,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_remove_vote_on_card")
   async handleRemoveVoteOnCard(client: Socket, payload: RemoveCardVoteCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -575,6 +634,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     payload: ChangeVoteAmountCommand,
   ) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -589,10 +649,11 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_card_add_to_card")
   async handleCardAddToCard(client: Socket, payload: AddCardToCardCommand) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    room.addCardToCard(payload.parentCardId, payload.cardId);
+    if (!room.addCardToCard(payload.parentCardId, payload.cardId)) return;
     await this.emitRoomSync(roomId, room);
   }
 
@@ -601,15 +662,17 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     payload: MoveCardToColumnCommand,
   ) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    room.moveCardToColumn(payload.cardId, payload.columnId);
+    if (!room.moveCardToColumn(payload.cardId, payload.columnId)) return;
     await this.emitRoomSync(roomId, room);
   }
 
   @SubscribeMessage("command_close_room")
   async handleCloseRoom(client: Socket) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
@@ -623,18 +686,41 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_create_action_point")
   async handleAddTask(client: Socket, payload: CreateTaskCommand) {
-    if (payload.description.trim().length === 0) {
+    if (!this.getCommandContext(client)) return;
+    if (
+      typeof payload?.description !== "string" ||
+      payload.description.trim().length === 0
+    ) {
       return;
     }
 
-    const roomId = this.users.get(client.id).roomId;
+    const userEntry = this.users.get(client.id);
+    if (
+      !userEntry ||
+      (payload?.ownerId !== null &&
+        (typeof payload?.ownerId !== "string" ||
+          payload.ownerId.trim().length === 0))
+    ) {
+      this.rejectTaskCommand(client);
+      return;
+    }
+    const roomId = userEntry.roomId;
     const room = this.retroRooms.get(roomId);
+    if (
+      !room ||
+      (payload?.ownerId !== null &&
+        !(await this.isTeamMember(room.teamId, payload.ownerId)))
+    ) {
+      this.rejectTaskCommand(client);
+      return;
+    }
 
     const board = await this.prismaService.board.findUnique({
       where: {
         team_id: room.teamId,
       },
     });
+    if (!board) return;
     const task = await this.prismaService.task.create({
       data: {
         description: payload.description,
@@ -651,12 +737,27 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_delete_action_point")
   async handleDeleteTask(client: Socket, payload: DeleteTaskCommand) {
-    const roomId = this.users.get(client.id).roomId;
+    if (!this.getCommandContext(client)) return;
+    const userEntry = this.users.get(client.id);
+    if (
+      !userEntry ||
+      typeof payload?.taskId !== "string" ||
+      payload.taskId.trim().length === 0
+    ) {
+      this.rejectTaskCommand(client);
+      return;
+    }
+    const roomId = userEntry.roomId;
     const room = this.retroRooms.get(roomId);
-
-    await this.prismaService.task.delete({
-      where: { id: payload.taskId },
-    });
+    if (!room) return;
+    try {
+      await this.prismaService.task.delete({
+        where: { id: payload.taskId, team_id: room.teamId, retro_id: room.id },
+      });
+    } catch {
+      this.rejectTaskCommand(client);
+      return;
+    }
 
     room.deleteTask(payload.taskId);
     await this.emitRoomSync(roomId, room);
@@ -664,16 +765,43 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("command_update_action_point")
   async handleUpdateTask(client: Socket, payload: UpdateTaskCommand) {
-    const roomId = this.users.get(client.id).roomId;
+    if (!this.getCommandContext(client)) return;
+    const userEntry = this.users.get(client.id);
+    if (
+      !userEntry ||
+      typeof payload?.taskId !== "string" ||
+      payload.taskId.trim().length === 0 ||
+      typeof payload?.description !== "string" ||
+      (payload?.ownerId !== null &&
+        (typeof payload?.ownerId !== "string" ||
+          payload.ownerId.trim().length === 0))
+    ) {
+      this.rejectTaskCommand(client);
+      return;
+    }
+    const roomId = userEntry.roomId;
     const room = this.retroRooms.get(roomId);
-
-    const task = await this.prismaService.task.update({
-      data: {
-        description: payload.description,
-        owner_id: payload.ownerId,
-      },
-      where: { id: payload.taskId },
-    });
+    if (
+      !room ||
+      (payload?.ownerId !== null &&
+        !(await this.isTeamMember(room.teamId, payload.ownerId)))
+    ) {
+      this.rejectTaskCommand(client);
+      return;
+    }
+    let task: Task;
+    try {
+      task = await this.prismaService.task.update({
+        data: {
+          description: payload.description,
+          owner_id: payload.ownerId,
+        },
+        where: { id: payload.taskId, team_id: room.teamId, retro_id: room.id },
+      });
+    } catch {
+      this.rejectTaskCommand(client);
+      return;
+    }
 
     room.updateTask(task);
     await this.emitRoomSync(roomId, room);
@@ -684,14 +812,16 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client: Socket,
     payload: ChangeCurrentDiscussCardCommand,
   ) {
+    if (!this.getCommandContext(client)) return;
     const roomId = this.users.get(client.id).roomId;
     const room = this.retroRooms.get(roomId);
 
-    room.changeDiscussionCard(payload.cardId);
+    if (!room.changeDiscussionCard(payload.cardId)) return;
     await this.emitRoomSync(roomId, room);
   }
 
   async handleDisconnect(client: Socket) {
+    this.accessService.unregister(client);
     const user = this.users.get(client.id);
     if (!user) {
       return;
@@ -706,8 +836,6 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     room.removeUser(client.id, user.user.id);
 
-    client.disconnect(true);
-
     this.server.to(roomId).emit("event_room_sync", room.getRoomSyncData());
   }
 
@@ -717,6 +845,15 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const snapshot = JSON.parse(JSON.stringify(data));
     await this.roomPersistence.persist(room);
     this.server.to(roomId).emit("event_room_sync", snapshot);
+  }
+
+  private getCommandContext(client: Socket) {
+    const entry = this.users.get(client.id);
+    if (!entry) return null;
+    const room = this.retroRooms.get(entry.roomId);
+    const roomUser = room?.connectedUsers.get(client.id);
+    if (!room || !roomUser) return null;
+    return { entry, room, roomUser };
   }
 
   private getColumnEditContext(client: Socket) {
@@ -736,6 +873,7 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {
+    this.accessService.unregister(client);
     this.users.delete(client.id);
 
     client.emit("error", {
@@ -745,18 +883,35 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.disconnect();
   }
 
-  private getUserFromJWT(client: Socket): JWTUser {
+  private getUserFromJWT(client: Socket): JWTUser | null {
     try {
       const result = this.jwtService.verify(
         client.handshake.headers.authorization,
         { secret: process.env.JWT_SECRET },
       );
       return result.user;
-    } catch (error) {
-      if (error.name === "JsonWebTokenError") {
-        this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
-      }
+    } catch {
+      this.doException(client, ErrorTypes.JwtError, "JWT must be provided!");
+      return null;
     }
+  }
+
+  private async isTeamMember(teamId: string, userId: string) {
+    try {
+      return !!(await this.prismaService.teamUsers.findFirst({
+        where: { team_id: teamId, user_id: userId },
+        select: { user_id: true },
+      }));
+    } catch {
+      return false;
+    }
+  }
+
+  private rejectTaskCommand(client: Socket) {
+    client.emit("error", {
+      type: ErrorTypes.Unauthorized,
+      message: "Task command rejected",
+    });
   }
 
   private hasAdminPrivileges(user: SocketUser): boolean {

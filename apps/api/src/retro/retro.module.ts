@@ -6,6 +6,8 @@ import { NotificationModule } from "../notification/notification.module";
 import { RetroController } from "./application/retro.controller";
 import { RetroGateway } from "./application/retro.gateway";
 import { RetroSchedules } from "./application/retro.schedules";
+import { RetroCommandGuard } from "./application/retro-command.guard";
+import { RetroWsExceptionFilter } from "./application/retro-ws-exception.filter";
 import { RetroService } from "./domain/retro.service";
 import { RetroRoomPersistence } from "./domain/retro-room.persistence";
 
@@ -14,6 +16,8 @@ import { RetroRoomPersistence } from "./domain/retro-room.persistence";
   providers: [
     RetroService,
     RetroGateway,
+    RetroCommandGuard,
+    RetroWsExceptionFilter,
     RetroSchedules,
     RetroRoomPersistence,
     AuthAbilityFactory,

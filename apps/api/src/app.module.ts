@@ -6,6 +6,7 @@ import { InvitesModule } from "./invites/invites.module";
 import { PokerModule } from "./poker/poker.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { RetroModule } from "./retro/retro.module";
+import { SecurityModule } from "./security/security.module";
 import { TaskModule } from "./task/task.module";
 import { TeamModule } from "./team/team.module";
 import { UserModule } from "./user/user.module";
@@ -17,6 +18,7 @@ import { UserModule } from "./user/user.module";
     }),
     AuthModule,
     PrismaModule,
+    SecurityModule,
     UserModule,
     TeamModule,
     TaskModule,

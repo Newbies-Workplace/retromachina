@@ -28,6 +28,6 @@ export const RequireAuth: React.FC<RequireAuthProps> = ({
     return <>{fallback}</>;
   }
 
-  setRedirectPath(pathname);
+  setRedirectPath(window.location.origin + pathname);
   return <Navigate to={"/signin"} />;
 };

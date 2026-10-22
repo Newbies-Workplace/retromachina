@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from "@nestjs/common";
 import { ReflectionCard, Role, Team } from "generated/prisma/client";
 import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
 import {
@@ -11,6 +16,7 @@ import { JWTUser } from "src/auth/jwt/JWTUser";
 import { PrismaService } from "src/prisma/prisma.service";
 import { v4 as uuid } from "uuid";
 import { RetroGateway } from "../retro/application/retro.gateway";
+import { teamSlug } from "./team-slug";
 
 @Injectable()
 export class TeamService {
@@ -20,24 +26,47 @@ export class TeamService {
   ) {}
 
   async createTeam(user: JWTUser, createTeamDto: TeamRequest): Promise<Team> {
-    const team = await this.prismaService.team.create({
-      data: {
-        name: createTeamDto.name,
-        invite_key: createTeamDto.invite_key,
-      },
-    });
-
-    await this.prismaService.teamUsers.create({
-      data: {
-        team_id: team.id,
-        user_id: user.id,
-        role: "OWNER",
-      },
-    });
-
-    await this.createTeamBoard(team.id);
-
-    return team;
+    const name = createTeamDto.name.trim();
+    if (!name) throw new BadRequestException("Team name cannot be empty");
+    const organizationId = createTeamDto.organization_id || null;
+    const baseSlug = teamSlug(name);
+    for (let suffix = 1; ; suffix++) {
+      const slug = suffix === 1 ? baseSlug : `${baseSlug}-${suffix}`;
+      try {
+        return await this.prismaService.$transaction(async (tx) => {
+          if (organizationId)
+            await this.requireOrganizationManager(tx, user.id, organizationId);
+          const backlogId = uuid();
+          return tx.team.create({
+            data: {
+              name,
+              slug,
+              organization_id: organizationId,
+              invite_key: createTeamDto.invite_key,
+              TeamUser: { create: { user_id: user.id, role: Role.OWNER } },
+              Board: {
+                create: {
+                  default_column_id: backlogId,
+                  BoardColumns: {
+                    create: [
+                      { id: backlogId, name: "To do", order: 0 },
+                      { id: uuid(), name: "In progress", order: 1 },
+                      { id: uuid(), name: "Freezed", order: 1 },
+                      { id: uuid(), name: "Done", order: 3 },
+                    ],
+                  },
+                },
+              },
+            },
+          });
+        });
+      } catch (error) {
+        if (organizationId && this.isSlugConflict(error)) continue;
+        if ((error as { code?: string }).code === "P2002")
+          throw new ConflictException("Team invite key is already taken");
+        throw error;
+      }
+    }
   }
 
   async editTeam(
@@ -45,15 +74,88 @@ export class TeamService {
     team: Team,
     editTeamDto: EditTeamRequest,
   ): Promise<Team> {
-    return this.prismaService.team.update({
+    const name = editTeamDto.name.trim();
+    if (!name) throw new BadRequestException("Team name cannot be empty");
+    const organizationId =
+      editTeamDto.organization_id === undefined
+        ? team.organization_id
+        : editTeamDto.organization_id;
+    const moving = organizationId !== team.organization_id;
+    for (let suffix = 1; ; suffix++) {
+      const slug = suffix === 1 ? team.slug : `${team.slug}-${suffix}`;
+      try {
+        return await this.prismaService.$transaction(async (tx) => {
+          if (moving) {
+            const membership = await tx.teamUsers.findUnique({
+              where: {
+                team_id_user_id: { team_id: team.id, user_id: user.id },
+              },
+            });
+            if (membership?.role !== Role.OWNER)
+              throw new ForbiddenException(
+                "Only the team owner can move a team",
+              );
+            if (organizationId)
+              await this.requireOrganizationManager(
+                tx,
+                user.id,
+                organizationId,
+              );
+          }
+          return tx.team.update({
+            where: { id: team.id },
+            data: {
+              name,
+              organization_id: organizationId,
+              slug,
+              invite_key: editTeamDto.invite_key || null,
+            },
+          });
+        });
+      } catch (error) {
+        if (moving && organizationId && this.isSlugConflict(error)) continue;
+        if ((error as { code?: string }).code === "P2002")
+          throw new ConflictException("Team invite key is already taken");
+        throw error;
+      }
+    }
+  }
+
+  private isSlugConflict(error: unknown) {
+    const conflict = error as {
+      code?: string;
+      meta?: {
+        target?: unknown;
+        driverAdapterError?: { cause?: { constraint?: { index?: string } } };
+      };
+    };
+    return (
+      conflict.code === "P2002" &&
+      JSON.stringify(
+        conflict.meta?.target ??
+          conflict.meta?.driverAdapterError?.cause?.constraint?.index ??
+          "",
+      ).includes("slug")
+    );
+  }
+
+  private async requireOrganizationManager(
+    tx: Pick<PrismaService, "organizationUsers">,
+    userId: string,
+    organizationId: string,
+  ) {
+    const membership = await tx.organizationUsers.findUnique({
       where: {
-        id: team.id,
-      },
-      data: {
-        name: editTeamDto.name,
-        invite_key: editTeamDto.invite_key || null,
+        organization_id_user_id: {
+          organization_id: organizationId,
+          user_id: userId,
+        },
       },
     });
+    if (!membership || membership.role === Role.USER)
+      throw new ForbiddenException(
+        "Organization administrator role is required",
+      );
   }
 
   async putTeamMember(
@@ -262,41 +364,6 @@ export class TeamService {
     await this.prismaService.reflectionCard.delete({
       where: {
         id: reflectionCardId,
-      },
-    });
-  }
-
-  private async createTeamBoard(teamId: string) {
-    const backlogId = uuid();
-
-    await this.prismaService.board.create({
-      data: {
-        team_id: teamId,
-        default_column_id: backlogId,
-        BoardColumns: {
-          create: [
-            {
-              id: backlogId,
-              name: "To do",
-              order: 0,
-            },
-            {
-              id: uuid(),
-              name: "In progress",
-              order: 1,
-            },
-            {
-              id: uuid(),
-              name: "Freezed",
-              order: 1,
-            },
-            {
-              id: uuid(),
-              name: "Done",
-              order: 3,
-            },
-          ],
-        },
       },
     });
   }

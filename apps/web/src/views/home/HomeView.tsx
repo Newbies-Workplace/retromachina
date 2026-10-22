@@ -10,8 +10,11 @@ import { useUser } from "@/context/user/UserContext.hook";
 import { useReflectionCardStore } from "@/store/useReflectionCardStore";
 import { ReflectionCardsShelf } from "@/views/retro_active/components/toolbox/ReflectionCardsShelf";
 
-export const HomeView: React.FC = () => {
+export const HomeView: React.FC<{ teamId?: string }> = ({ teamId }) => {
   const { user } = useUser();
+  const teams = teamId
+    ? user?.teams.filter((team) => team.id === teamId)
+    : user?.teams;
   const { fetchReflectionCards } = useReflectionCardStore();
   const [reflectionCardsShelfTeamId, setReflectionCardsShelfTeamId] =
     useState<string>();
@@ -27,13 +30,13 @@ export const HomeView: React.FC = () => {
       <AnimatedBackground
         contentClassName={"flex w-full max-w-6xl justify-center"}
       >
-        {user?.teams?.length === 0 && <EmptyState />}
+        {teams?.length === 0 && <EmptyState />}
 
-        {user?.teams?.length !== 0 && (
+        {teams?.length !== 0 && (
           <div
             className={"flex w-full flex-col gap-4 px-3 py-6 sm:px-6 sm:py-8"}
           >
-            {user?.teams?.map((team) => (
+            {teams?.map((team) => (
               <TeamCard
                 key={team.id}
                 teamId={team.id}

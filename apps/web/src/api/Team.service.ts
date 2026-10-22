@@ -95,6 +95,15 @@ const deleteWarmup = async (teamId: string, warmupId: string): Promise<void> =>
   axiosInstance.delete(`teams/${teamId}/warmups/${warmupId}`);
 
 export const TeamService = {
+  resolveTeam: (
+    organizationSlug: string,
+    teamSlug: string,
+  ): Promise<TeamResponse> =>
+    axiosInstance
+      .get(
+        `teams/resolve/${encodeURIComponent(organizationSlug)}/${encodeURIComponent(teamSlug)}`,
+      )
+      .then((res) => res.data),
   getTeamById,
   getTeamByInviteKey,
   putTeamMember,

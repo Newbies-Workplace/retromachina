@@ -6,9 +6,12 @@ const testTeamNamePattern =
 test("removes all teams named as UUIDs", async ({ firstUser }) => {
   const { page } = firstUser;
   const storageState = await page.context().storageState();
-  const accessToken = storageState.origins
-    .find((origin) => origin.origin === "http://localhost:8080")
-    ?.localStorage.find(({ name }) => name === "Bearer")?.value;
+  const accessToken =
+    storageState.cookies.find((cookie) => cookie.name === "retro_session")
+      ?.value ??
+    storageState.origins
+      .find((origin) => origin.origin === "http://localhost:8080")
+      ?.localStorage.find(({ name }) => name === "Bearer")?.value;
 
   if (!accessToken) {
     throw new Error("First E2E user has no API access token");

@@ -13,6 +13,7 @@ import type {
 import type { PokerCard, PokerDeckId } from "shared/model/poker/poker.types";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
+import { getAccessToken } from "@/api/session-token";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import {
   PokerContext,
@@ -44,8 +45,7 @@ export const PokerContextProvider: React.FC<
     const createdSocket = io(`${process.env.RETRO_WEB_SOCKET_URL}/poker`, {
       query: { team_id: teamId },
       extraHeaders: {
-        // @ts-expect-error Socket.IO accepts the nullable localStorage result.
-        Authorization: window.localStorage.getItem("Bearer"),
+        Authorization: getAccessToken(),
       },
       reconnection: true,
       reconnectionAttempts: Number.POSITIVE_INFINITY,

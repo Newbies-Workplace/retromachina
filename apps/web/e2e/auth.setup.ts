@@ -7,7 +7,7 @@ import {
 } from "../playwright/fixtures";
 
 type StoredAuth = {
-  cookies: unknown[];
+  cookies: Array<{ name: string; value: string }>;
   origins: Array<{
     origin: string;
     localStorage: Array<{ name: string; value: string }>;
@@ -28,7 +28,9 @@ function refreshToken(file: string) {
   const localhost = auth.origins.find(
     ({ origin }) => origin === "http://localhost:8080",
   );
-  const bearer = localhost?.localStorage.find(({ name }) => name === "Bearer");
+  const bearer =
+    auth.cookies.find(({ name }) => name === "retro_session") ??
+    localhost?.localStorage.find(({ name }) => name === "Bearer");
   const payload = bearer ? jwt.decode(bearer.value) : null;
 
   if (
@@ -42,10 +44,22 @@ function refreshToken(file: string) {
     );
   }
 
-  bearer.value = jwt.sign({ user: payload.user }, secret);
-
-  // Google session cookies are not needed after the application JWT exists.
-  auth.cookies = [];
+  const token = jwt.sign({ user: payload.user }, secret, { expiresIn: "30d" });
+  const cookie = {
+    name: "retro_session",
+    value: token,
+    domain: "localhost",
+    path: "/api/rest/v1",
+    expires: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
+    httpOnly: true,
+    secure: false,
+    sameSite: "Lax",
+  };
+  auth.cookies = [cookie];
+  for (const origin of auth.origins)
+    origin.localStorage = origin.localStorage.filter(
+      ({ name }) => name !== "Bearer",
+    );
   fs.writeFileSync(file, JSON.stringify(auth));
 }
 

@@ -3,6 +3,7 @@ import { createContext, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import type { RetroStartedEvent } from "shared/model/notification/notification.events";
 import { toast } from "sonner";
+import { getAccessToken } from "@/api/session-token";
 import { useUser } from "@/context/user/UserContext.hook";
 
 const NotificationContext = createContext<null>(null);
@@ -42,7 +43,7 @@ export const NotificationContextProvider: React.FC<
   }, [navigate]);
 
   useEffect(() => {
-    const token = window.localStorage.getItem("Bearer");
+    const token = getAccessToken();
     if (!user || !token) return;
 
     const controller = new AbortController();

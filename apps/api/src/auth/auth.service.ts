@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma/prisma.service";
 import { GoogleUser } from "./google/GoogleUser";
+import type { JWTUser } from "./jwt/JWTUser";
 
 @Injectable()
 export class AuthService {
@@ -9,6 +10,20 @@ export class AuthService {
     private jwtService: JwtService,
     private prismaService: PrismaService,
   ) {}
+
+  sessionToken(user: Pick<JWTUser, "id" | "nick" | "email" | "google_id">) {
+    return this.jwtService.sign(
+      {
+        user: {
+          id: user.id,
+          nick: user.nick,
+          email: user.email,
+          google_id: user.google_id,
+        },
+      },
+      { secret: process.env.JWT_SECRET, expiresIn: "30d" },
+    );
+  }
 
   async googleAuth(user: GoogleUser) {
     const nick = `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`;
@@ -61,16 +76,6 @@ export class AuthService {
       });
     }
 
-    return this.jwtService.sign(
-      {
-        user: {
-          id: queryUser.id,
-          nick: queryUser.nick,
-          email: queryUser.email,
-          google_id: user.id,
-        },
-      },
-      { secret: process.env.JWT_SECRET },
-    );
+    return this.sessionToken(queryUser);
   }
 }

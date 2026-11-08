@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma/prisma.service";
 import { GoogleUser } from "./google/GoogleUser";
+import { AuthSessionService } from "./session/auth-session.service";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
+    private sessions: AuthSessionService,
     private prismaService: PrismaService,
   ) {}
 
@@ -61,16 +61,6 @@ export class AuthService {
       });
     }
 
-    return this.jwtService.sign(
-      {
-        user: {
-          id: queryUser.id,
-          nick: queryUser.nick,
-          email: queryUser.email,
-          google_id: user.id,
-        },
-      },
-      { secret: process.env.JWT_SECRET },
-    );
+    return this.sessions.create(queryUser);
   }
 }

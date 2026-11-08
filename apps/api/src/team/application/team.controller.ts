@@ -211,18 +211,6 @@ export class TeamController {
     @Param("id") teamId: string,
     @Body() request: TeamUserRequest,
   ): Promise<void> {
-    const team = await this.prismaService.team.findUniqueOrThrow({
-      where: {
-        id: teamId,
-      },
-    });
-    const ability = this.abilityFactory.create(user);
-
-    ForbiddenError.from(ability).throwUnlessCan(
-      "update",
-      subject("Team", team),
-    );
-
     await this.teamService.putTeamMember(user, teamId, request);
   }
 
@@ -233,18 +221,6 @@ export class TeamController {
     @Param("id") teamId: string,
     @Param("email") email: string,
   ): Promise<void> {
-    const team = await this.prismaService.team.findUniqueOrThrow({
-      where: {
-        id: teamId,
-      },
-    });
-    const ability = this.abilityFactory.create(user);
-
-    ForbiddenError.from(ability).throwUnlessCan(
-      "update",
-      subject("Team", team),
-    );
-
     await this.teamService.deleteTeamMember(user, teamId, email);
   }
 
@@ -401,6 +377,8 @@ export class TeamController {
 
     const editedCard = await this.teamService.editReflectionCard(
       reflectionCardId,
+      teamId,
+      user.id,
       request,
     );
 
@@ -423,6 +401,10 @@ export class TeamController {
 
     ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
 
-    await this.teamService.deleteReflectionCard(reflectionCardId);
+    await this.teamService.deleteReflectionCard(
+      reflectionCardId,
+      teamId,
+      user.id,
+    );
   }
 }

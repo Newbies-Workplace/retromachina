@@ -302,21 +302,21 @@ export class RetroRoom {
     }
   }
 
-  addCardToCard(parentCardId: string, cardId: string) {
-    const card = this.cards.find((it) => it.id === cardId); //this.pushCardToEnd(cardId);
-    if (!card) {
-      return;
+  addCardToCard(parentCardId: string, cardId: string): boolean {
+    const card = this.cards.find((it) => it.id === cardId);
+    const parentCard = this.cards.find((it) => it.id === parentCardId);
+    if (
+      !card ||
+      !parentCard ||
+      !this.retroColumns.some((column) => column.id === parentCard.columnId) ||
+      card.id === parentCardId ||
+      card.parentCardId === parentCardId ||
+      parentCard.parentCardId !== null
+    ) {
+      return false;
     }
 
-    // disable moving group onto itself
-    if (card.parentCardId === parentCardId || card.id === parentCardId) {
-      return;
-    }
-
-    const parentCard = this.cards.find((card) => card.id === parentCardId);
-    const childCards = this.cards.filter(
-      (card) => card.parentCardId === cardId,
-    );
+    const childCards = this.cards.filter((it) => it.parentCardId === cardId);
 
     for (const childCard of childCards) {
       this.pushCardToEnd(childCard.id);
@@ -326,6 +326,7 @@ export class RetroRoom {
 
     card.parentCardId = parentCardId;
     card.columnId = parentCard.columnId;
+    return true;
   }
 
   addVote(userId: string, parentCardId: string) {
@@ -339,11 +340,15 @@ export class RetroRoom {
     this.tasks.push(task);
   }
 
-  moveCardToColumn(cardId: string, columnId: string) {
-    const card = this.pushCardToEnd(cardId);
-    if (!card) {
-      return;
+  moveCardToColumn(cardId: string, columnId: string): boolean {
+    if (
+      !this.cards.some((card) => card.id === cardId) ||
+      !this.retroColumns.some((column) => column.id === columnId)
+    ) {
+      return false;
     }
+    const card = this.pushCardToEnd(cardId);
+    if (!card) return false;
     card.columnId = columnId;
 
     if (!card.parentCardId) {
@@ -356,6 +361,7 @@ export class RetroRoom {
     }
 
     card.parentCardId = null;
+    return true;
   }
 
   deleteTask(taskId: string) {
@@ -389,24 +395,24 @@ export class RetroRoom {
     });
   }
 
-  changeDiscussionCard(cardId: string) {
+  changeDiscussionCard(cardId: string): boolean {
+    const card = this.cards.find((item) => item.id === cardId);
+    if (
+      !card ||
+      card.parentCardId !== null ||
+      cardId === this.discussionCardId
+    ) {
+      return false;
+    }
     this.discussionCardId = cardId;
     this.clearUsersReady();
+    return true;
   }
 
-  pushCardToEnd(cardId: string): Card {
-    let card: Card;
-    let cardIndex: number;
-
-    for (let i = 0; i < this.cards.length; i++) {
-      if (this.cards[i].id === cardId) {
-        card = this.cards[i];
-        cardIndex = i;
-        break;
-      }
-    }
-
-    this.cards.splice(cardIndex, 1);
+  pushCardToEnd(cardId: string): Card | undefined {
+    const cardIndex = this.cards.findIndex((item) => item.id === cardId);
+    if (cardIndex === -1) return undefined;
+    const [card] = this.cards.splice(cardIndex, 1);
     this.cards.push(card);
 
     return card;
@@ -438,7 +444,7 @@ export class RetroRoom {
       })
       .sort((a, b) => b.votes - a.votes);
 
-    this.discussionCardId = sortedCards[0].parentCardId;
+    this.discussionCardId = sortedCards[0]?.parentCardId ?? null;
   }
 
   drawMachine() {

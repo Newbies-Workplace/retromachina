@@ -3,7 +3,7 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { FilePlusIcon, TrashIcon } from "lucide-react";
+import { FilePlusIcon, LockIcon, TrashIcon } from "lucide-react";
 import { domAnimation, LazyMotion, m } from "motion/react";
 import React, {
   createRef,
@@ -151,11 +151,22 @@ export const ReflectionCardsShelf: React.FC<{
               {reflectionCards.length === 0 && !isCreatingNewReflectionCard && (
                 <div
                   className={
-                    "flex justify-center items-center h-full w-full border-2 border-dashed rounded-xl text-center"
+                    "flex flex-col gap-1 justify-center items-center h-full w-full border-2 border-dashed rounded-xl px-4 text-center"
                   }
                 >
-                  Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
-                  zapisać ją na później!
+                  <span>
+                    Stwórz nową wrzutkę lub przeciągnij tu istniejącą kartę aby
+                    zapisać ją na później!
+                  </span>
+                  <span
+                    className={
+                      "flex items-center gap-1.5 text-muted-foreground text-sm"
+                    }
+                  >
+                    <LockIcon className={"size-3.5 shrink-0"} />
+                    Wrzutki widzisz tylko Ty — reszta zespołu zobaczy kartę
+                    dopiero, gdy przeciągniesz ją na tablicę.
+                  </span>
                 </div>
               )}
 

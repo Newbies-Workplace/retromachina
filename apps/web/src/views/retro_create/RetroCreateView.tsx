@@ -1,6 +1,5 @@
 import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
 import { EraserIcon, PlusIcon, RefreshCwIcon, Share2Icon } from "lucide-react";
-import * as qs from "query-string";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router";
@@ -12,7 +11,6 @@ import type {
   WarmupSelection,
 } from "shared/model/warmup/warmup";
 import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
 import { RetroService } from "@/api/Retro.service";
 import { getRandomTemplate } from "@/api/RetroTemplate.service";
 import { TeamService } from "@/api/Team.service";
@@ -35,6 +33,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useUser } from "@/context/user/UserContext.hook";
+import { uuidv4 } from "@/lib/uuid";
 import { WarmupChooser } from "./WarmupChooser";
 
 export interface Column {
@@ -52,8 +51,7 @@ const MAX_COLUMNS = 6;
 
 export const RetroCreateView: React.FC = () => {
   const [clicked, setClicked] = useState(false);
-  const params = qs.parse(location.search);
-  const teamId: string = params.teamId as string;
+  const teamId = new URLSearchParams(location.search).get("teamId") ?? "";
   const { user } = useUser();
   const navigate = useNavigate();
   const hasTeamAccess = Boolean(

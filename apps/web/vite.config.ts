@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import EnvironmentPlugin from "vite-plugin-environment";
-import { svgrComponent } from "vite-plugin-svgr-component";
+import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
@@ -11,12 +11,17 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tailwindcss(),
-      svgrComponent(),
+      // `import Icon from "./icon.svg"` yields a React component (see
+      // src/types/svg.d.ts); `?inline` imports stay data URLs.
+      svgr({ include: "**/*.svg", svgrOptions: { exportType: "default" } }),
       EnvironmentPlugin("all", { prefix: "RETRO_WEB" }),
     ],
     resolve: {
+      // Hoisted dependencies (e.g. react-router) must use the app's React,
+      // not another copy that other workspace tools pull into the root.
+      dedupe: ["react", "react-dom"],
       alias: {
-        "@": path.resolve(__dirname, "src"),
+        "@": path.resolve(import.meta.dirname, "src"),
       },
     },
     optimizeDeps: {
@@ -27,8 +32,9 @@ export default defineConfig(() => {
     root: "src",
     build: {
       outDir: "../dist",
+      emptyOutDir: true,
       // Generated for debugging, but not referenced from the served bundles.
-      sourcemap: "hidden",
+      sourcemap: "hidden" as const,
       commonjsOptions: {
         include: [/node_modules/, /packages\/shared/],
       },

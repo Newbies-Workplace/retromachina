@@ -4,7 +4,6 @@ import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { TaskResponse } from "shared/model/task/task.response";
-import { v4 as uuidv4 } from "uuid";
 import {
   Card,
   CardActions,
@@ -28,6 +27,7 @@ import {
 import { useBoard } from "@/context/board/BoardContext.hook";
 import { useUser } from "@/context/user/UserContext.hook";
 import { useTeamRole } from "@/hooks/useTeamRole";
+import { uuidv4 } from "@/lib/uuid";
 
 export const TeamBoardView: React.FC = () => {
   const {

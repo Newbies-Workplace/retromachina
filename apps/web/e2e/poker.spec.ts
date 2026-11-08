@@ -1,5 +1,5 @@
+import { randomUUID as uuid } from "node:crypto";
 import * as fs from "node:fs";
-import { v4 as uuid } from "uuid";
 import {
   expect,
   firstAuthFile,

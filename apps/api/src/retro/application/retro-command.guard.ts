@@ -6,7 +6,7 @@ import {
 import { Reflector } from "@nestjs/core";
 import { WsException } from "@nestjs/websockets";
 import { MESSAGE_METADATA } from "@nestjs/websockets/constants";
-
+import { MAX_VOTES_PER_USER } from "shared/model/retro/retro.commands";
 import { validate as isRoomState } from "./roomstate.validator";
 
 const MAX_DATE_TIMESTAMP = 8_640_000_000_000_000;
@@ -91,7 +91,8 @@ const COMMAND_VALIDATORS: Record<string, Validator> = {
   command_vote_on_card: hasFields(stringField("parentCardId")),
   command_remove_vote_on_card: hasFields(stringField("parentCardId")),
   command_change_vote_amount: hasFields({
-    votesAmount: safeCount,
+    votesAmount: (value: unknown) =>
+      safeCount(value) && value <= MAX_VOTES_PER_USER,
   }),
   command_card_add_to_card: hasFields({
     ...stringField("parentCardId"),

@@ -602,6 +602,10 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
+    if (room.roomState !== "vote") {
+      return;
+    }
+
     const userVotes = room.votes.filter(
       (vote) => vote.voterId === roomUser.userId,
     ).length;
@@ -626,7 +630,13 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
-    room.removeVote(roomUser.userId, payload.parentCardId);
+    if (room.roomState !== "vote") {
+      return;
+    }
+
+    if (!room.removeVote(roomUser.userId, payload.parentCardId)) {
+      return;
+    }
     await this.emitRoomSync(roomId, room);
   }
 

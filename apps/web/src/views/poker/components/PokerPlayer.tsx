@@ -38,7 +38,7 @@ export const PokerPlayer: React.FC<PokerPlayerProps> = ({
               avatarUrl={user.avatarLink}
               name={user.nick}
             >
-              {user.selectedCard !== null && <AvatarStatus />}
+              {user.hasSelectedCard && <AvatarStatus />}
             </UserAvatar>
           }
         />

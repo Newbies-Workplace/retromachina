@@ -8,6 +8,9 @@ import type { UserRole } from "shared/model/user/user.role";
 
 type SocketId = string;
 
+// Own keys only, so names such as "constructor" are not accepted as decks.
+const POKER_DECK_IDS: readonly string[] = Object.keys(POKER_DECKS);
+
 export type PokerRoomUser = {
   userId: string;
   nick: string;
@@ -50,26 +53,27 @@ export class PokerRoom {
     }
   }
 
-  selectDeck(deckId: PokerDeckId) {
-    if (!(deckId in POKER_DECKS)) return false;
+  selectDeck(deckId: unknown) {
+    if (typeof deckId !== "string" || !POKER_DECK_IDS.includes(deckId))
+      return false;
 
-    this.deckId = deckId;
+    this.deckId = deckId as PokerDeckId;
     this.cardsRevealed = false;
     this.selectedCards.clear();
     this.revealedCards.clear();
     return true;
   }
 
-  selectCard(userId: string, card: PokerCard | null) {
+  selectCard(userId: string, card: unknown) {
     if (card === null) {
       this.selectedCards.set(userId, null);
       return true;
     }
 
     const deck = POKER_DECKS[this.deckId] as readonly string[];
-    if (!deck.includes(card)) return false;
+    if (typeof card !== "string" || !deck.includes(card)) return false;
 
-    this.selectedCards.set(userId, card);
+    this.selectedCards.set(userId, card as PokerCard);
     return true;
   }
 
@@ -89,7 +93,11 @@ export class PokerRoom {
     }
   }
 
-  getRoomSyncData(): PokerSyncEvent {
+  /**
+   * Builds the sync event for one viewer. Before the reveal only the viewer's
+   * own card is included, so other estimates cannot be read from the socket.
+   */
+  getRoomSyncData(viewerUserId: string): PokerSyncEvent {
     const uniqueUsers = new Map(
       Array.from(this.connectedUsers.values()).map((user) => [
         user.userId,
@@ -105,7 +113,11 @@ export class PokerRoom {
         nick: user.nick,
         avatarLink: user.avatarLink,
         role: user.role,
-        selectedCard: this.selectedCards.get(user.userId) ?? null,
+        hasSelectedCard: (this.selectedCards.get(user.userId) ?? null) !== null,
+        selectedCard:
+          user.userId === viewerUserId
+            ? (this.selectedCards.get(user.userId) ?? null)
+            : null,
         revealedCard: this.revealedCards.get(user.userId) ?? null,
       })),
     };

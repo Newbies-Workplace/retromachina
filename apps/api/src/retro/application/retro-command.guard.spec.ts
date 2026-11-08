@@ -95,6 +95,12 @@ describe("validateRetroCommand", () => {
       validateRetroCommand("command_change_vote_amount", { votesAmount: 1.5 }),
     ).toBe(false);
     expect(
+      validateRetroCommand("command_change_vote_amount", { votesAmount: 99 }),
+    ).toBe(true);
+    expect(
+      validateRetroCommand("command_change_vote_amount", { votesAmount: 100 }),
+    ).toBe(false);
+    expect(
       validateRetroCommand("command_change_vote_amount", {
         votesAmount: Number.MAX_SAFE_INTEGER + 1,
       }),

@@ -19,7 +19,12 @@ import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot([DEFAULT_THROTTLE]),
+    ThrottlerModule.forRoot({
+      throttlers: [DEFAULT_THROTTLE],
+      // End-to-end runs send every request from one address; see
+      // apps/web/playwright.config.ts. Never set this in production.
+      skipIf: () => process.env.RATE_LIMIT_DISABLED === "true",
+    }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
     }),

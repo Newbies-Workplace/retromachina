@@ -36,33 +36,19 @@ jobs:
     - name: Install Playwright Browsers
       run: cd apps/web && npx playwright install --with-deps chromium
 
+    # Test users and their sessions are created by e2e/auth.setup.ts, so no
+    # Google auth state or seeded users are needed.
     - name: Prepare test variables
-      run: |
-        echo "$DOTENV" > .env
-        mkdir -p apps/web/playwright/.auth
-        echo "$E2E_FIRST_AUTH" > apps/web/playwright/.auth/first-user.json
-        echo "$E2E_SECOND_AUTH" > apps/web/playwright/.auth/second-user.json
+      run: echo "$DOTENV" > .env
       shell: bash
       env:
         DOTENV: ${{ secrets.DOTENV }}
-        E2E_FIRST_AUTH: ${{ secrets.E2E_FIRST_AUTH }}
-        E2E_SECOND_AUTH: ${{ secrets.E2E_SECOND_AUTH }}
 
     - name: Build the app
       run: npm run build
 
     - name: Run migrations
       run: npm run migrate:deploy --workspace=api
-
-    - name: Insert test users manually
-      run: |
-        touch insert.sql
-        echo "$E2E_INSERT_SQL" > insert.sql
-        mysql --host="127.0.0.1" --port=3306 --user="root" --database="retro" --password="retro" < insert.sql
-        echo "Inserted users:"
-        mysql --host="127.0.0.1" --port=3306 --user="root" --database="retro" --password="retro" -e "SELECT * FROM User;"
-      env:
-        E2E_INSERT_SQL: ${{ vars.E2E_INSERT_SQL }}
 
     - name: Run Playwright tests
       run: npm test --workspace=web

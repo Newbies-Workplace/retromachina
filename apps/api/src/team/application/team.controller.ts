@@ -12,6 +12,7 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { Role } from "generated/prisma/client";
 import { ReflectionCardRequest } from "shared/model/team/reflectionCard.request";
 import { ReflectionCardResponse } from "shared/model/team/reflectionCard.response";
@@ -32,6 +33,7 @@ import { JwtGuard } from "src/auth/jwt/jwt.guard";
 import { User } from "src/auth/jwt/jwtuser.decorator";
 import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { PrismaService } from "../../prisma/prisma.service";
+import { SENSITIVE_THROTTLE } from "../../security/http-throttler.guard";
 import {
   getEffectiveWarmups,
   validateWarmupLink,
@@ -251,6 +253,7 @@ export class TeamController {
     return toTeamResponse(updatedTeam, { includeInviteKey: true });
   }
 
+  @Throttle(SENSITIVE_THROTTLE)
   @UseGuards(JwtGuard)
   @Post("link_invite/:inviteKey/accept")
   @HttpCode(204)
@@ -272,6 +275,7 @@ export class TeamController {
     await this.teamService.addUserToTeam(user.id, team.id, Role.USER);
   }
 
+  @Throttle(SENSITIVE_THROTTLE)
   @UseGuards(JwtGuard)
   @Get()
   async getTeamByInviteKey(

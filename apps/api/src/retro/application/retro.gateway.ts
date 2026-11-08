@@ -1,3 +1,4 @@
+import { randomUUID as uuid } from "node:crypto";
 import { Injectable, UseFilters, UseGuards } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
@@ -53,7 +54,6 @@ import {
 } from "shared/model/retro/retroRoom.interface";
 import type { WarmupState } from "shared/model/warmup/warmup";
 import { type Namespace, Socket } from "socket.io";
-import { v4 as uuid } from "uuid";
 import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
 import { gatewayCors } from "../../security/gateway-cors";

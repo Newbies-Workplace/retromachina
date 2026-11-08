@@ -53,6 +53,18 @@ export class OAuthStateService {
     return result.count === 1;
   }
 
+  // GoogleGuard always passes an explicit state created by begin(), so Passport
+  // never needs to generate one; refuse instead of issuing an unbound state.
+  store(...args: unknown[]): void {
+    const callback = args.at(-1) as (
+      error: Error | null,
+      state?: string,
+    ) => void;
+    callback(
+      new Error("OAuth state must be created by OAuthStateService.begin"),
+    );
+  }
+
   // Passport calls verify BEFORE exchanging the authorization code.
   verify(
     request: Request,

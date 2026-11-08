@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, type VerifyCallback } from "passport-google-oauth20";
+import type { StateStore } from "passport-oauth2";
 import { OAuthStateService } from "../session/oauth-state.service";
 
 @Injectable()
@@ -10,7 +11,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_SECRET,
       callbackURL: process.env.CALLBACK_URL,
-      store: states,
+      // Structurally compatible; only verify() is used (see OAuthStateService).
+      store: states as unknown as StateStore,
       scope: ["email", "profile"],
     });
   }

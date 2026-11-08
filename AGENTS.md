@@ -21,7 +21,7 @@ Use Node 26+ (see `.nvmrc`) and npm 11. Copy `.env.template` to `.env` before lo
 - `npm run dev`: run all services; the web app uses `http://localhost:8080`.
 - `npm run build`: generate Prisma artifacts and build all workspaces.
 - `npm test`: run workspace test tasks, including Playwright end-to-end tests.
-- `npm exec --workspace=api -- jest`: run backend unit tests directly.
+- `npm test --workspace=api`: run backend unit tests (wraps Jest with `--experimental-vm-modules`, needed for the ESM-only NestJS 12 packages).
 - `npm run format`: apply Biome formatting, import organization, and lint fixes.
 - `npm run storybook --workspace=web`: launch the component catalog on port 6006.
 

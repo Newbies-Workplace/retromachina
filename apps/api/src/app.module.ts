@@ -1,11 +1,17 @@
 import { Module } from "@nestjs/common";
-import { JwtModule } from "@nestjs/jwt/dist";
+import { APP_GUARD } from "@nestjs/core";
+import { JwtModule } from "@nestjs/jwt";
+import { ThrottlerModule } from "@nestjs/throttler";
 import { AuthModule } from "./auth/auth.module";
 import { BoardModule } from "./board/board.module";
 import { InvitesModule } from "./invites/invites.module";
 import { PokerModule } from "./poker/poker.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { RetroModule } from "./retro/retro.module";
+import {
+  DEFAULT_THROTTLE,
+  HttpThrottlerGuard,
+} from "./security/http-throttler.guard";
 import { SecurityModule } from "./security/security.module";
 import { TaskModule } from "./task/task.module";
 import { TeamModule } from "./team/team.module";
@@ -13,6 +19,7 @@ import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([DEFAULT_THROTTLE]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
     }),
@@ -27,5 +34,6 @@ import { UserModule } from "./user/user.module";
     InvitesModule,
     PokerModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: HttpThrottlerGuard }],
 })
 export class AppModule {}

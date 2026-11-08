@@ -1,6 +1,8 @@
 import { Controller, Get, Response, UseGuards } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import type { Response as ExpressResponse } from "express";
 import { User } from "src/auth/jwt/jwtuser.decorator";
+import { SENSITIVE_THROTTLE } from "../security/http-throttler.guard";
 import { AuthService } from "./auth.service";
 import { GoogleUser } from "./google/GoogleUser";
 import { GoogleGuard } from "./google/google.guard";
@@ -11,6 +13,7 @@ import {
   setRefreshCookie,
 } from "./session/auth-cookies";
 
+@Throttle(SENSITIVE_THROTTLE)
 @Controller("google")
 export class AuthController {
   constructor(private authService: AuthService) {}

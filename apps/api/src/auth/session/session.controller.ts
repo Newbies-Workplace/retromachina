@@ -1,5 +1,7 @@
 import { Controller, Post, Req, Res } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import type { Request, Response } from "express";
+import { SENSITIVE_THROTTLE } from "../../security/http-throttler.guard";
 import {
   AUTH_COOKIE_PATH,
   assertBrowserRequest,
@@ -10,6 +12,7 @@ import {
 } from "./auth-cookies";
 import { AuthSessionService } from "./auth-session.service";
 
+@Throttle(SENSITIVE_THROTTLE)
 @Controller("auth")
 export class SessionController {
   constructor(private readonly sessions: AuthSessionService) {}

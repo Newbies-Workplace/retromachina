@@ -1,5 +1,6 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import helmet from "helmet";
 import { AppModule } from "./app.module";
@@ -16,7 +17,12 @@ morgan.token("path", (req: { originalUrl?: string; url?: string }) =>
 );
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Production runs behind a reverse proxy on a private Docker network. Trust
+  // forwarded client IPs only from private hops, so the rate limiter sees real
+  // clients without letting public callers spoof X-Forwarded-For.
+  app.set("trust proxy", "loopback, linklocal, uniquelocal");
 
   app.use(helmet());
   app.use(

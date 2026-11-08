@@ -1,3 +1,4 @@
+import { randomUUID as uuid } from "node:crypto";
 import {
   BadRequestException,
   ForbiddenException,
@@ -14,7 +15,6 @@ import {
 } from "shared/model/team/team.request";
 import { JWTUser } from "src/auth/jwt/JWTUser";
 import { PrismaService } from "src/prisma/prisma.service";
-import { v4 as uuid } from "uuid";
 import { RetroGateway } from "../retro/application/retro.gateway";
 import { TeamSocketAccessService } from "../security/team-socket-access.service";
 

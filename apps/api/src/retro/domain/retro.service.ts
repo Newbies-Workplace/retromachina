@@ -1,3 +1,4 @@
+import { randomUUID as uuid } from "node:crypto";
 import {
   BadRequestException,
   Injectable,
@@ -6,7 +7,6 @@ import {
 import { RetroCreateRequest } from "shared/model/retro/retro.request";
 import type { WarmupState } from "shared/model/warmup/warmup";
 import { PrismaService } from "src/prisma/prisma.service";
-import { v4 as uuid } from "uuid";
 import { getEffectiveWarmups } from "../../warmup/warmup-links";
 import { RetroGateway } from "../application/retro.gateway";
 import { RetroRoom } from "./model/retroRoom.object";

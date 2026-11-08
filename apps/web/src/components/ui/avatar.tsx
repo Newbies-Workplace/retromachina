@@ -13,13 +13,15 @@ function Avatar({
 }) {
   return (
     <AvatarPrimitive.Root
-      data-slot="avatar"
       data-size={size}
       className={cn(
         "size-8 rounded-full after:rounded-full data-[size=xl]:size-15 data-[size=lg]:size-10 data-[size=sm]:size-6 group/avatar relative flex shrink-0 select-none after:absolute after:inset-0 after:border after:border-border after:mix-blend-darken dark:after:mix-blend-lighten",
         className,
       )}
       {...props}
+      // After the spread: wrappers such as TooltipTrigger (render prop) pass
+      // their own data-slot, which would break AvatarGroup's ring selectors.
+      data-slot="avatar"
     />
   );
 }

@@ -38,7 +38,9 @@ export const RetroArchiveView = () => {
       <Navbar />
       <ResponsivePageLayout>
         <PageCard className="max-w-6xl">
-          <PageCardHeader className={"text-2xl"}>Archiwum</PageCardHeader>
+          <PageCardHeader className={"text-2xl"} data-testid="archive-header">
+            Archiwum
+          </PageCardHeader>
 
           <PageCardContent
             className={

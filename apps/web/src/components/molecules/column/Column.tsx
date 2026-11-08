@@ -27,6 +27,7 @@ export const Column: React.FC<React.PropsWithChildren<ColumnProps>> = ({
 }) => {
   return (
     <div
+      data-testid="column"
       className={cn(
         "flex flex-col items-stretch gap-3 min-w-[280px] px-1 py-3 h-full",
         className,

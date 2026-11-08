@@ -280,6 +280,8 @@ const ActionPointsSection: React.FC = () => {
                     <Button
                       size={"icon"}
                       variant={"destructive"}
+                      aria-label={"Usuń action point"}
+                      data-testid="card-delete"
                       onClick={() => deleteTask(actionPoint.id)}
                     >
                       <TrashIcon className={"size-4"} />

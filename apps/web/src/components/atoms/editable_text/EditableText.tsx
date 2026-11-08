@@ -119,6 +119,7 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
       return (
         <textarea
           aria-label="Edit text"
+          data-testid="editable-text-input"
           ref={(el) => el?.focus()}
           className={cn(
             "word-break whitespace-pre-line w-full h-full text-sm scrollbar resize-none p-0 outline-none",
@@ -146,6 +147,7 @@ export const EditableText = forwardRef<EditableTextRef, EditableTextProps>(
 
     return (
       <span
+        data-testid="editable-text"
         className={cn(
           "word-break whitespace-pre-line w-full h-full text-sm scrollbar",
           editable && "cursor-pointer",

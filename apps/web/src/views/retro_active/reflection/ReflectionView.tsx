@@ -187,6 +187,8 @@ export const ReflectionView: React.FC = () => {
                               <Button
                                 size={"icon"}
                                 variant={"destructive"}
+                                aria-label={"Usuń kartę"}
+                                data-testid="card-delete"
                                 onClick={() => deleteCard(card.id)}
                               >
                                 <TrashIcon className={"size-4"} />

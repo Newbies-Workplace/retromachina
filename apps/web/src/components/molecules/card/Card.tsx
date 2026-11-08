@@ -95,6 +95,7 @@ const CardInner: React.FC<CardProps> = ({
           key={id}
           style={style}
           layoutId={id}
+          data-testid="card"
           className={cn(
             "relative flex justify-between gap-2 min-h-[142px] max-h-[142px] min-w-[225px] bg-white dark:bg-card border border-border p-3 rounded-xl h-full shadow-sm",
             className,
@@ -107,7 +108,12 @@ const CardInner: React.FC<CardProps> = ({
 
           <div className={"flex flex-col select-none gap-2"}>
             {isEditingText ? (
-              <Button size={"icon"} onClick={handleSaveClick}>
+              <Button
+                size={"icon"}
+                onClick={handleSaveClick}
+                aria-label={"Zapisz kartę"}
+                data-testid="card-save"
+              >
                 <SaveIcon className={"size-4"} />
               </Button>
             ) : (

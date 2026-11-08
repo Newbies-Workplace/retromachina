@@ -105,6 +105,8 @@ export const TeamBoardView: React.FC = () => {
                 <span className={"text-sm"}>Tylko moje</span>
 
                 <Switch
+                  aria-label={"Tylko moje"}
+                  data-testid="only-mine-switch"
                   checked={filters.showOnlyMyTasks}
                   onCheckedChange={() => {
                     setFilters({
@@ -116,7 +118,11 @@ export const TeamBoardView: React.FC = () => {
               </div>
 
               {isOwner && (
-                <Button size={"sm"} onClick={onEditClick}>
+                <Button
+                  size={"sm"}
+                  onClick={onEditClick}
+                  data-testid="edit-board"
+                >
                   Edytuj
                 </Button>
               )}
@@ -168,6 +174,8 @@ export const TeamBoardView: React.FC = () => {
               headerRight={
                 <Button
                   size={"icon"}
+                  aria-label={"Dodaj zadanie"}
+                  data-testid="board-add-task"
                   onClick={() => onCreateCardClick(column.id)}
                 >
                   <PlusIcon className={"size-4"} />
@@ -274,6 +282,8 @@ export const TeamBoardView: React.FC = () => {
                             <Button
                               size={"icon"}
                               variant={"destructive"}
+                              aria-label={"Usuń zadanie"}
+                              data-testid="card-delete"
                               onClick={() => deleteTask(task.id)}
                             >
                               <TrashIcon className={"size-4"} />

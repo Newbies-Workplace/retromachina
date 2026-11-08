@@ -57,9 +57,9 @@ test("can't accept invitation when user is already a team member", async ({
 
   await secondUser.page.goto(invitationLink);
 
-  await secondUser.page
-    .getByText("Jesteś już członkiem tego zespołu")
-    .isVisible();
+  await expect(
+    secondUser.page.getByText("Jesteś już członkiem tego zespołu"),
+  ).toBeVisible();
 });
 
 test("can't accept removed invitation", async ({ firstUser, secondUser }) => {

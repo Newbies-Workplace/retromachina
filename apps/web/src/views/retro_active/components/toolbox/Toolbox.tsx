@@ -263,7 +263,10 @@ export const Toolbox: React.FC = () => {
 
   if (isVotingVisible) {
     toolbarSlots[TOOLBAR_SLOT.summary] = (
-      <div className="flex size-full items-center justify-center rounded bg-background text-center wrap-break-word">
+      <div
+        data-testid="votes-left"
+        className="flex size-full items-center justify-center rounded bg-background text-center wrap-break-word"
+      >
         {`${userVotes}/${maxVotes}`}
         <br />
         {pluralText(maxVotes, {
@@ -298,6 +301,7 @@ export const Toolbox: React.FC = () => {
               variant="destructive"
               className="size-full"
               aria-label="Zakończ retrospektywę"
+              data-testid="finish-retro"
               onClick={onFinishRetroPress}
             />
           }

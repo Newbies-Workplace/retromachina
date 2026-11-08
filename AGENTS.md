@@ -14,7 +14,7 @@ Keep feature code in its owning workspace; put cross-app contracts in `packages/
 
 ## Build, Test, and Development Commands
 
-Use Node 24+ and npm 11. Copy `.env.template` to `.env` before local development.
+Use Node 26+ (see `.nvmrc`) and npm 11. Copy `.env.template` to `.env` before local development.
 
 - `npm ci`: install lockfile-defined dependencies.
 - `docker compose -f .docker/docker-compose.local.yaml up retro-db -d`: start MariaDB locally.

@@ -18,7 +18,7 @@ The format is: `<type>(<optional scope>): <description>`
 
 ## Develop
 
-Use Node.js 24.22.1 or a newer 24.x release and npm 11. Node.js 24.22.1 includes the fix for CVE-2026-111497.
+Use Node.js 26.13.0 (the 26.x LTS line, see `.nvmrc`) or a newer 26.x release and npm 11.
 
 Select the project Node.js version before installing dependencies:
 ```

@@ -1,4 +1,4 @@
-FROM node:24.22.1 AS builder
+FROM node:26.13.0 AS builder
 
 ARG RETRO_WEB_API_URL
 ARG RETRO_WEB_SOCKET_URL
@@ -12,7 +12,7 @@ RUN npm ci
 RUN if [ -n "$APP_VERSION" ]; then npm pkg set "version=${APP_VERSION#v}" --workspace=web; fi
 RUN npm run build
 
-FROM node:24.22.1-alpine as retro-api
+FROM node:26.13.0-alpine as retro-api
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ USER node
 
 CMD [ "npm", "run", "start:migrate:prod" ]
 
-FROM node:24.22.1-alpine as retro-web
+FROM node:26.13.0-alpine as retro-web
 
 WORKDIR /app
 

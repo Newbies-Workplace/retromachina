@@ -16,12 +16,15 @@ FROM node:24.22.1-alpine as retro-api
 
 WORKDIR /app
 
-COPY --from=builder /build/node_modules ./node_modules
-COPY --from=builder /build/apps/api/package*.json ./
-COPY --from=builder /build/apps/api/prisma.config.ts ./
-COPY --from=builder /build/apps/api/dist ./dist
-COPY --from=builder /build/apps/api/prisma ./prisma
-COPY --from=builder /build/packages/shared/.dist ./node_modules/shared
+# Prisma writes engine files under node_modules during `migrate deploy`,
+# so the runtime user must own the copied files.
+
+COPY --chown=node:node --from=builder /build/node_modules ./node_modules
+COPY --chown=node:node --from=builder /build/apps/api/package*.json ./
+COPY --chown=node:node --from=builder /build/apps/api/prisma.config.ts ./
+COPY --chown=node:node --from=builder /build/apps/api/dist ./dist
+COPY --chown=node:node --from=builder /build/apps/api/prisma ./prisma
+COPY --chown=node:node --from=builder /build/packages/shared/.dist ./node_modules/shared
 
 EXPOSE 3000
 

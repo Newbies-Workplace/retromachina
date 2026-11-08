@@ -14,6 +14,8 @@ RUN npm run build
 
 FROM node:24.22.1-alpine as retro-api
 
+WORKDIR /app
+
 COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/apps/api/package*.json ./
 COPY --from=builder /build/apps/api/prisma.config.ts ./
@@ -22,6 +24,8 @@ COPY --from=builder /build/apps/api/prisma ./prisma
 COPY --from=builder /build/packages/shared/.dist ./node_modules/shared
 
 EXPOSE 3000
+
+USER node
 
 CMD [ "npm", "run", "start:migrate:prod" ]
 
@@ -38,4 +42,6 @@ COPY --from=builder /build/apps/web/package*.json ./
 COPY --from=builder /build/apps/web/server.js ./
 COPY --from=builder /build/apps/web/dist/ ./dist
 
-CMD node server.js
+USER node
+
+CMD [ "node", "server.js" ]

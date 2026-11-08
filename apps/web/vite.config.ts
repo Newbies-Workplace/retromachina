@@ -27,7 +27,8 @@ export default defineConfig(() => {
     root: "src",
     build: {
       outDir: "../dist",
-      sourcemap: true,
+      // Generated for debugging, but not referenced from the served bundles.
+      sourcemap: "hidden",
       commonjsOptions: {
         include: [/node_modules/, /packages\/shared/],
       },

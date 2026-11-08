@@ -20,8 +20,8 @@
     "@commitlint/config-conventional": "^20.4.3",
     "husky": "9.1.7",
     "lint-staged": "^15.2.0",
-    "react-doctor": "^0.7.8",
-    "turbo": "^2.0.6"
+    "react-doctor": "^0.9.22",
+    "turbo": "^2.11.10"
   },
   "lint-staged": {
     "**.{js,ts,jsx,tsx,json}": [

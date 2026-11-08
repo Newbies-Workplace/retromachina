@@ -62,7 +62,9 @@ export class RetroRoomPersistence {
 
   async markFinished(roomId: string): Promise<void> {
     await this.pendingWrites.get(roomId)?.catch(() => undefined);
-    await this.prismaService.retrospective.update({
+    // updateMany: the retro may already be gone (team deletion cascades),
+    // which must not turn closing the room into an error.
+    await this.prismaService.retrospective.updateMany({
       where: { id: roomId },
       data: { is_running: false },
     });

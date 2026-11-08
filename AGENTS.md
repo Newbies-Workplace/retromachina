@@ -31,7 +31,7 @@ Write TypeScript with two-space indentation and let Biome enforce formatting and
 
 ## Testing Guidelines
 
-Backend Jest tests live beside source as `*.spec.ts`. Playwright tests use `apps/web/e2e/*.spec.ts`; reusable interactions belong in page objects or helpers. Add regression coverage for changed behavior, including relevant failure cases. No numeric coverage threshold is enforced. Playwright requires the local database and valid environment/auth fixtures.
+Backend Jest tests live beside source as `*.spec.ts`. Playwright tests use `apps/web/e2e/*.spec.ts`; reusable interactions belong in page objects or helpers. Add regression coverage for changed behavior, including relevant failure cases. No numeric coverage threshold is enforced. Playwright needs only the local database (migrated with `npm run migrate:deploy --workspace=api`) and `.env` with `JWT_SECRET`: `e2e/auth.setup.ts` creates two test users (`e2e-first@retromachina.test`, `e2e-second@retromachina.test`) and their sessions directly in a local database, so no Google sign-in is involved. Run the suite with `npm test --workspace=web` (it starts the dev servers with API rate limiting disabled) and remove leftover UUID-named test teams with `npm run test:cleanup --workspace=web`.
 
 ## Commit & Pull Request Guidelines
 

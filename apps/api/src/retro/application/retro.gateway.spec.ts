@@ -61,6 +61,7 @@ describe("retrospective restart recovery", () => {
         findMany: jest.fn(async () => [
           { id: "retro", team_id: "team", room_state: saved },
         ]),
+        updateMany: jest.fn(async () => ({ count: 0 })),
       },
     };
     persistence = new RetroRoomPersistence(database);
@@ -235,11 +236,11 @@ describe("retrospective restart recovery", () => {
     expect(gateway["retroRooms"].has("missing")).toBe(false);
     expect(gateway["retroRooms"].has("corrupted")).toBe(false);
     expect(gateway["retroRooms"].has("valid")).toBe(true);
-    expect(database.retrospective.update).toHaveBeenCalledWith({
+    expect(database.retrospective.updateMany).toHaveBeenCalledWith({
       where: { id: "missing" },
       data: { is_running: false },
     });
-    expect(database.retrospective.update).toHaveBeenCalledWith({
+    expect(database.retrospective.updateMany).toHaveBeenCalledWith({
       where: { id: "corrupted" },
       data: { is_running: false },
     });
@@ -259,10 +260,25 @@ describe("retrospective restart recovery", () => {
 
     await gateway.closeRoom(room);
 
-    expect(database.retrospective.update).toHaveBeenCalledWith({
+    expect(database.retrospective.updateMany).toHaveBeenCalledWith({
       where: { id: room.id },
       data: { is_running: false },
     });
+    expect(gateway["retroRooms"].has(room.id)).toBe(false);
+    expect(disconnectSockets).toHaveBeenCalledWith(true);
+  });
+
+  it("closes a room whose retrospective was already deleted with its team", async () => {
+    const room = new RetroRoom("retro", "team", columns);
+    gateway["retroRooms"].set(room.id, room);
+    const disconnectSockets = jest.fn();
+    gateway.server = {
+      to: () => ({ emit, disconnectSockets }),
+    } as any;
+    database.retrospective.updateMany.mockResolvedValue({ count: 0 });
+
+    await expect(gateway.handleTeamDeleted("team")).resolves.toBeUndefined();
+
     expect(gateway["retroRooms"].has(room.id)).toBe(false);
     expect(disconnectSockets).toHaveBeenCalledWith(true);
   });

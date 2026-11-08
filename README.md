@@ -50,6 +50,19 @@ npm run dev
 
 App will be available at http://localhost:8080
 
+### End-to-end tests
+
+Playwright does not use Google sign-in. With the database running and migrated,
+the setup step creates two local test users and their sessions:
+```
+npm run migrate:deploy --workspace=api
+npm exec --workspace=web -- playwright install chromium
+npm test --workspace=web
+```
+
+The setup refuses to run against a non-local `DATABASE_HOST`. Leftover test
+teams can be removed with `npm run test:cleanup --workspace=web`.
+
 ## Production
 
 ### Backups

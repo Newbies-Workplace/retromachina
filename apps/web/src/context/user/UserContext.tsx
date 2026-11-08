@@ -1,10 +1,17 @@
 import { AxiosError } from "axios";
 import type React from "react";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import type { AuthParams } from "shared/model/auth/Auth.interface";
 import type { UserWithTeamsResponse } from "shared/model/user/user.response";
 import { AuthService } from "@/api/Auth.service";
-import { axiosInstance } from "@/api/AxiosInstance";
+import {
+  addAuthTokenChangedListener,
+  clearSession,
+  getSessionGeneration,
+  initializeSession,
+  logoutSession,
+  setSession,
+} from "@/api/auth-session";
 import { UserService } from "@/api/User.service";
 import { DISABLED_KEY, VERSION_KEY } from "@/store/useChangelogStore";
 
@@ -30,26 +37,38 @@ export const UserContext = createContext<UserContext>({
   },
 });
 
-export const UserContextProvider: React.FC<any> = ({ children }) => {
+export const UserContextProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const [user, setUser] = useState<UserWithTeamsResponse | null>(null);
   const [isFetchingUser, setIsFetchingUser] = useState(true);
+  const [tokenRevision, setTokenRevision] = useState(0);
 
   useEffect(() => {
-    const token = localStorage.getItem("Bearer");
-
-    if (token && !user) {
-      refreshUser();
-    } else {
-      setIsFetchingUser(false);
-    }
+    return addAuthTokenChangedListener(() =>
+      setTokenRevision((revision) => revision + 1),
+    );
   }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
+    const requestGeneration = getSessionGeneration();
+    const requestToken = localStorage.getItem("Bearer");
     try {
       setIsFetchingUser(true);
       const response = await UserService.getMyUser();
-      setUser(response);
+      if (
+        getSessionGeneration() === requestGeneration &&
+        localStorage.getItem("Bearer") === requestToken
+      ) {
+        setUser(response);
+      }
     } catch (error) {
+      if (
+        getSessionGeneration() !== requestGeneration ||
+        localStorage.getItem("Bearer") !== requestToken
+      ) {
+        return;
+      }
       if ((error as AxiosError)?.status === 401) {
         setUser(null);
       } else {
@@ -58,37 +77,57 @@ export const UserContextProvider: React.FC<any> = ({ children }) => {
     } finally {
       setIsFetchingUser(false);
     }
-  };
+  }, []);
 
-  const login = (params: AuthParams) => {
-    return AuthService.loginGoogle(params)
-      .then((res) => {
-        localStorage.setItem("Bearer", res.access_token);
+  useEffect(() => {
+    let active = true;
+    void initializeSession().then((token) => {
+      if (active && token) void refreshUser();
+      else if (active) setIsFetchingUser(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, [refreshUser]);
 
-        axiosInstance.defaults.headers.Authorization = `Bearer ${res.access_token}`;
-        setIsFetchingUser(true);
-        UserService.getMyUser()
-          .then((response) => {
-            setUser(response);
-          })
-          .finally(() => {
-            setIsFetchingUser(false);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  useEffect(() => {
+    if (tokenRevision === 0) return;
+    if (localStorage.getItem("Bearer")) void refreshUser();
+    else setUser(null);
+  }, [refreshUser, tokenRevision]);
 
-  const logout = async () => {
+  const login = useCallback(async (params: AuthParams) => {
+    const session = await AuthService.loginGoogle(params);
+    setSession(session);
+    const loginGeneration = getSessionGeneration();
+    setIsFetchingUser(true);
+    try {
+      const response = await UserService.getMyUser();
+      if (
+        getSessionGeneration() === loginGeneration &&
+        localStorage.getItem("Bearer") === session.access_token
+      ) {
+        setUser(response);
+      }
+    } finally {
+      setIsFetchingUser(false);
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
     const version = localStorage.getItem(VERSION_KEY);
     const changelogDisabled = localStorage.getItem(DISABLED_KEY);
-    window.localStorage.clear();
-    if (version !== null) localStorage.setItem(VERSION_KEY, version);
-    if (changelogDisabled !== null)
-      localStorage.setItem(DISABLED_KEY, changelogDisabled);
-    setUser(null);
-  };
+    try {
+      await logoutSession();
+    } finally {
+      window.localStorage.clear();
+      if (version !== null) localStorage.setItem(VERSION_KEY, version);
+      if (changelogDisabled !== null)
+        localStorage.setItem(DISABLED_KEY, changelogDisabled);
+      clearSession();
+      setUser(null);
+    }
+  }, []);
 
   return (
     <UserContext.Provider

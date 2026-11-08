@@ -1,6 +1,7 @@
 import { Role } from "generated/prisma/client";
 
 export type JWTUser = {
+  auth?: import("../session/access-token.service").AccessClaims;
   id: string;
   nick: string;
   email: string;

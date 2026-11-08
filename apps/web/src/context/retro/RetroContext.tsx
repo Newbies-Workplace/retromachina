@@ -57,6 +57,7 @@ import type { WarmupState } from "shared/model/warmup/warmup";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { addAuthTokenChangedListener } from "@/api/auth-session";
 import { UserService } from "@/api/User.service";
 import { CardMoveAction } from "@/components/molecules/dragndrop/dragndrop";
 import { SLOT_MACHINE_ANIMATION_DURATION } from "@/components/organisms/slot_machine/SlotMachine";
@@ -200,6 +201,9 @@ export const RetroContextProvider: React.FC<
   React.PropsWithChildren<RetroContextParams>
 > = ({ children, retroId }) => {
   const { user } = useUser();
+  const [authToken, setAuthToken] = useState(() =>
+    localStorage.getItem("Bearer"),
+  );
   const navigate = useNavigate();
 
   const timeOffset = useRef<number>(0);
@@ -231,6 +235,14 @@ export const RetroContextProvider: React.FC<
   const [warmup, setWarmup] = useState<WarmupState | null>(null);
   const [autoReadyDraw, setAutoReadyDraw] = useState(0);
 
+  useEffect(
+    () =>
+      addAuthTokenChangedListener(() =>
+        setAuthToken(localStorage.getItem("Bearer")),
+      ),
+    [],
+  );
+
   const setReady = useCallback((ready: boolean) => {
     const command: UpdateReadyStateCommand = {
       readyState: ready,
@@ -261,7 +273,7 @@ export const RetroContextProvider: React.FC<
       },
       extraHeaders: {
         //@ts-expect-error
-        Authorization: window.localStorage.getItem("Bearer"),
+        Authorization: authToken,
       },
       forceNew: true,
       reconnection: true,
@@ -420,7 +432,7 @@ export const RetroContextProvider: React.FC<
       createdSocket.off("event_close_room");
       createdSocket.disconnect();
     };
-  }, [retroId, user?.id, navigate, handleTimerChanged]);
+  }, [retroId, user?.id, navigate, handleTimerChanged, authToken]);
 
   useEffect(() => {
     if (autoReadyDraw === 0) return;

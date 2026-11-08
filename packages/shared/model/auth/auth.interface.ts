@@ -8,4 +8,5 @@ export interface AuthParams {
 
 export interface AuthResponse {
   access_token: string;
+  expires_at: number;
 }

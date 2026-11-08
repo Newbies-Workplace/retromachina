@@ -6,7 +6,6 @@ import { Navigate, useNavigate, useParams } from "react-router";
 import type { BoardResponse } from "shared/model/board/board.response";
 import type { BoardColumnDto } from "shared/model/board/editBoard.dto";
 import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
 import { BoardService } from "@/api/Board.service";
 import { BoardCreator } from "@/components/molecules/board_creator/BoardCreator";
 import { BoardCreatorColumn } from "@/components/molecules/board_creator/BoardCreatorColumn";
@@ -18,6 +17,7 @@ import {
 import Navbar from "@/components/organisms/navbar/Navbar";
 import { ResponsivePageLayout } from "@/components/organisms/responsive_page_layout/ResponsivePageLayout";
 import { Button } from "@/components/ui/button";
+import { uuidv4 } from "@/lib/uuid";
 
 const MAX_COLUMNS = 6;
 

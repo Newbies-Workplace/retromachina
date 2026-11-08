@@ -1,4 +1,4 @@
-import { v4 as uuid } from "uuid";
+import { randomUUID as uuid } from "node:crypto";
 import { expect, test } from "../playwright/fixtures";
 import { HomePage } from "./pages/HomePage";
 import { RetroActivePage } from "./pages/RetroActivePage";

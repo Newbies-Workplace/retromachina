@@ -1,10 +1,17 @@
 import { Team } from "generated/prisma/client";
 import { TeamResponse } from "shared/model/team/team.response";
 
-export const toTeamResponse = async (team: Team): Promise<TeamResponse> => {
+/**
+ * The invite key lets anyone join the team, so it is only returned to users
+ * who can manage the team (ADMIN/OWNER).
+ */
+export const toTeamResponse = async (
+  team: Team,
+  { includeInviteKey = false }: { includeInviteKey?: boolean } = {},
+): Promise<TeamResponse> => {
   return {
     id: team.id,
     name: team.name,
-    invite_key: team.invite_key,
+    ...(includeInviteKey ? { invite_key: team.invite_key } : {}),
   };
 };

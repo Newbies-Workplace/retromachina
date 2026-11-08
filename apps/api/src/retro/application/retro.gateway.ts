@@ -56,6 +56,7 @@ import { type Namespace, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
 import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
+import { gatewayCors } from "../../security/gateway-cors";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 import { validateWarmupLink } from "../../warmup/warmup-links";
@@ -70,7 +71,7 @@ type SocketId = string;
 @Injectable()
 @UseGuards(TeamSocketGuard, RetroCommandGuard)
 @UseFilters(RetroWsExceptionFilter)
-@WebSocketGateway(3001, { cors: true, namespace: "retro" })
+@WebSocketGateway(3001, { cors: gatewayCors, namespace: "retro" })
 export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Namespace;

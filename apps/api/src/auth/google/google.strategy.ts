@@ -25,6 +25,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     done(null, {
       id,
       email: emails[0].value,
+      emailVerified:
+        emails[0].verified === true || profile._json?.email_verified === true,
       firstName: name.givenName,
       lastName: name.familyName,
       picture: photos[0].value,

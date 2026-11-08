@@ -24,12 +24,13 @@ import type { UserRole } from "shared/model/user/user.role";
 import { Server, Socket } from "socket.io";
 import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
+import { gatewayCors } from "../../security/gateway-cors";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 
 @Injectable()
 @UseGuards(TeamSocketGuard)
-@WebSocketGateway(3001, { cors: true, namespace: "board" })
+@WebSocketGateway(3001, { cors: gatewayCors, namespace: "board" })
 export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;

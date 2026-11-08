@@ -29,6 +29,7 @@
     "express": "^4.21.2",
     "express-history-api-fallback": "^2.2.1",
     "firebase": "^9.23.0",
+    "helmet": "^8.3.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.12",

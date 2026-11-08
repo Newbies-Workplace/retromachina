@@ -12,6 +12,7 @@ describe("AuthService", () => {
   const googleUser = {
     id: "google-id",
     email: "user@example.com",
+    emailVerified: true,
     firstName: "New",
     lastName: "Name",
     picture: "https://example.com/new-avatar.jpg",
@@ -34,7 +35,7 @@ describe("AuthService", () => {
       create: jest.fn(),
       update: jest.fn(),
     },
-    invite: { findMany: jest.fn() },
+    invite: { findMany: jest.fn(), delete: jest.fn() },
     teamUsers: { create: jest.fn() },
   };
   const sessions = { create: jest.fn() };
@@ -60,5 +61,35 @@ describe("AuthService", () => {
       },
     });
     expect(sessions.create).toHaveBeenCalledWith(updatedUser);
+  });
+
+  it("accepts pending invites for a new user with a verified email", async () => {
+    prismaService.user.findFirst.mockResolvedValue(null);
+    prismaService.user.create.mockResolvedValue(existingUser);
+    prismaService.invite.findMany.mockResolvedValue([
+      { id: "invite", team_id: "team", role: "USER" },
+    ]);
+
+    await service.googleAuth(googleUser);
+
+    expect(prismaService.teamUsers.create).toHaveBeenCalledWith({
+      data: { team_id: "team", user_id: existingUser.id, role: "USER" },
+    });
+    expect(prismaService.invite.delete).toHaveBeenCalledWith({
+      where: { id: "invite" },
+    });
+  });
+
+  it("ignores pending invites when Google did not verify the email", async () => {
+    prismaService.user.findFirst.mockResolvedValue(null);
+    prismaService.user.create.mockResolvedValue(existingUser);
+    prismaService.invite.findMany.mockResolvedValue([
+      { id: "invite", team_id: "team", role: "ADMIN" },
+    ]);
+
+    await service.googleAuth({ ...googleUser, emailVerified: false });
+
+    expect(prismaService.invite.findMany).not.toHaveBeenCalled();
+    expect(prismaService.teamUsers.create).not.toHaveBeenCalled();
   });
 });

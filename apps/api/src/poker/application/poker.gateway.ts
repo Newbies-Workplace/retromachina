@@ -17,6 +17,7 @@ import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import { Server, Socket } from "socket.io";
 import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
+import { gatewayCors } from "../../security/gateway-cors";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 import { PokerRoom } from "../domain/model/pokerRoom.object";
@@ -31,7 +32,7 @@ type ConnectedUser = {
 
 @Injectable()
 @UseGuards(TeamSocketGuard)
-@WebSocketGateway(3001, { cors: true, namespace: "poker" })
+@WebSocketGateway(3001, { cors: gatewayCors, namespace: "poker" })
 export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;

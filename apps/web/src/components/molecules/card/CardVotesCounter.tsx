@@ -38,6 +38,10 @@ const CardVotesCounter: React.FC<CounterProps> = ({
       )}
     >
       <MinusIcon
+        role="button"
+        aria-label="Usuń głos"
+        aria-disabled={count <= 0}
+        data-testid="vote-remove"
         onClick={onMinusClick}
         className={cn("cursor-pointer size-8", {
           "*:fill-[#888888]": count <= 0,
@@ -45,6 +49,7 @@ const CardVotesCounter: React.FC<CounterProps> = ({
       />
 
       <span
+        data-testid="vote-count"
         className={cn("flex justify-center items-center size-8 rounded-full", {
           "bg-primary": count > 0,
         })}
@@ -53,6 +58,10 @@ const CardVotesCounter: React.FC<CounterProps> = ({
       </span>
 
       <PlusIcon
+        role="button"
+        aria-label="Dodaj głos"
+        aria-disabled={!canIncrement}
+        data-testid="vote-add"
         onClick={onPlusClick}
         className={cn("cursor-pointer size-8", {
           "*:fill-[#888888]": !canIncrement,

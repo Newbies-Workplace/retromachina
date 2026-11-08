@@ -69,6 +69,7 @@ export function ToolboxNavigation({
                   className="h-full grow p-0"
                   size="sm"
                   aria-label="Poprzedni etap"
+                  data-testid="prev-stage"
                   disabled
                 />
               }
@@ -105,6 +106,7 @@ export function ToolboxNavigation({
                 className="h-full grow p-0"
                 size="sm"
                 aria-label="Poprzedni etap"
+                data-testid="prev-stage"
                 disabled={prevDisabled}
                 onClick={prevRoomState}
               />
@@ -120,6 +122,7 @@ export function ToolboxNavigation({
               <Button
                 className="h-full grow p-0"
                 aria-label="Następny etap"
+                data-testid="next-stage"
                 disabled={nextDisabled}
                 onClick={nextRoomState}
               />
@@ -147,6 +150,7 @@ export function ToolboxReadyControl({
             <Button
               className="grow w-full"
               aria-label={ready ? "Cofnij gotowość" : "Oznacz jako gotowy"}
+              data-testid="ready-toggle"
               onClick={() => setReady(!ready)}
             />
           }
@@ -177,6 +181,7 @@ export function ToolboxVoteControl({
             <Button
               className="size-full"
               aria-label="Ustaw liczbę głosów"
+              data-testid="vote-limit"
               onClick={() => setOpenVote(true)}
             />
           }
@@ -202,16 +207,23 @@ export function ToolboxVoteControl({
             <Button
               className="grow"
               size="sm"
+              aria-label="Zmniejsz liczbę głosów"
+              data-testid="vote-limit-decrease"
               onClick={() => maxVotes > 0 && setMaxVotesAmount(maxVotes - 1)}
             >
               -
             </Button>
-            <div className="flex h-[30px] min-w-[50px] items-center justify-center rounded bg-background">
+            <div
+              data-testid="vote-limit-value"
+              className="flex h-[30px] min-w-[50px] items-center justify-center rounded bg-background"
+            >
               {maxVotes}
             </div>
             <Button
               className="grow"
               size="sm"
+              aria-label="Zwiększ liczbę głosów"
+              data-testid="vote-limit-increase"
               disabled={maxVotes >= MAX_VOTES_PER_USER}
               onClick={() =>
                 maxVotes < MAX_VOTES_PER_USER && setMaxVotesAmount(maxVotes + 1)

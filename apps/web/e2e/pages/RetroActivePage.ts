@@ -10,20 +10,28 @@ export class RetroActivePage {
   readonly slotMachineToggleLocator: Locator;
   readonly slotMachineTitleLocator: Locator;
   readonly slotMachineLeverLocator: Locator;
+  /** Reflection-phase columns (draggable wrappers). */
   readonly columnsLocator: Locator;
+  readonly prevStageButtonLocator: Locator;
+  readonly finishRetroButtonLocator: Locator;
+  readonly votesLeftLocator: Locator;
+  readonly timerDisplayLocator: Locator;
+  /** Columns in every phase (reflection, group, vote). */
+  readonly anyColumnLocator: Locator;
+  readonly cardsLocator: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.cardInputsLocator = page.getByTestId("card-input");
     this.readyProgressLocator = page.getByRole("progressbar");
-    // Icon-only toolbar controls currently have no accessible names.
-    const toolbar = this.readyProgressLocator.locator("..").locator("..");
-    this.nextStageButtonLocator = page.getByRole("button", {
-      name: "Następny etap",
-    });
-    this.readyButtonLocator = toolbar.getByRole("button").filter({
-      has: page.locator(".lucide-check"),
-    });
+    this.nextStageButtonLocator = page.getByTestId("next-stage");
+    this.prevStageButtonLocator = page.getByTestId("prev-stage");
+    this.finishRetroButtonLocator = page.getByTestId("finish-retro");
+    this.readyButtonLocator = page.getByTestId("ready-toggle");
+    this.votesLeftLocator = page.getByTestId("votes-left");
+    this.timerDisplayLocator = page.getByTestId("timer-display");
+    this.anyColumnLocator = page.getByTestId("column");
+    this.cardsLocator = page.getByTestId("card");
     this.slotMachineToggleLocator = page.getByRole("button", {
       name: "Otwórz losowanie",
     });
@@ -41,6 +49,31 @@ export class RetroActivePage {
 
   async nextStage() {
     await this.nextStageButtonLocator.click();
+  }
+
+  async prevStage() {
+    await this.prevStageButtonLocator.click();
+  }
+
+  /** Goes to the next phase and waits until the URL reflects it. */
+  async gotoStage(stage: "group" | "vote" | "discuss") {
+    await this.nextStage();
+    await expect(this.page).toHaveURL(new RegExp(`/retro/.+/${stage}`));
+  }
+
+  async finishRetro() {
+    await this.finishRetroButtonLocator.click();
+    await this.page.getByTestId("confirm-dialog-yes").click();
+    await expect(this.page).toHaveURL(/\/retro\/.+\/summary/);
+  }
+
+  /** Cards inside the column at `columnIndex` (works in every phase). */
+  cardsInColumn(columnIndex: number) {
+    return this.anyColumnLocator.nth(columnIndex).getByTestId("card");
+  }
+
+  cardWithText(text: string) {
+    return this.cardsLocator.filter({ hasText: text });
   }
 
   async getColumnTitles() {

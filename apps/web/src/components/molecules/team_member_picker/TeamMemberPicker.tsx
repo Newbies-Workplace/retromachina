@@ -118,7 +118,8 @@ export const TeamMemberPicker: React.FC<UserPickerProps> = ({ teamId }) => {
 
         {email.length > 0 && (
           <XIcon
-            data-testid={"remove-user"}
+            data-testid={"clear-user-email"}
+            aria-label={"Wyczyść email"}
             className={"min-w-4 min-h-4 cursor-pointer"}
             onClick={() => {
               setEmail("");
@@ -155,6 +156,8 @@ const TeamMember: React.FC<UserProps> = ({
 }) => {
   return (
     <div
+      data-testid="team-member-row"
+      data-email={email}
       className={
         "flex grow items-center bg-secondary/50 w-full gap-2.5 min-h-10 p-1.5 rounded-md shadow-sm [line-break:anywhere]"
       }
@@ -164,14 +167,17 @@ const TeamMember: React.FC<UserProps> = ({
       <span className={"grow"}>{email}</span>
 
       <Select
-        data-testid={"role-select"}
         value={role}
         onValueChange={onRoleChange}
         itemToStringLabel={(role) =>
           USER_ROLES.find((r) => r.value === role)?.label || role
         }
       >
-        <SelectTrigger disabled={!onRoleChange}>
+        <SelectTrigger
+          disabled={!onRoleChange}
+          aria-label={"Rola"}
+          data-testid="member-role-select"
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -190,6 +196,7 @@ const TeamMember: React.FC<UserProps> = ({
       {!!onDelete && (
         <Button
           data-testid={"remove-user"}
+          aria-label={"Usuń członka"}
           size={"icon"}
           onClick={onDelete}
           variant={"destructive"}

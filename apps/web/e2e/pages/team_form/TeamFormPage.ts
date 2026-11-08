@@ -1,4 +1,4 @@
-import { Locator } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import { Page } from "playwright-core";
 
 export class TeamFormPage {
@@ -36,7 +36,7 @@ export class TeamFormPage {
       "remove-invitation-link",
     );
 
-    this.roleSelectorLocator = this.page.getByTestId("role-selector");
+    this.roleSelectorLocator = this.page.getByTestId("member-role-select");
     this.userRemoveLocator = this.page.getByTestId("remove-user");
 
     this.newEmailLocator = this.page.getByTestId("new-user-email");
@@ -75,6 +75,43 @@ export class TeamFormPage {
     await this.removeInvitationLinkLocator.click();
 
     await this.page.getByTestId("confirm-dialog-yes").click();
+  }
+
+  /**
+   * Waits until the team's members are rendered. The page is occasionally stuck
+   * on its loading state after client-side navigation, so reload before failing.
+   */
+  async waitForMembers() {
+    await expect(async () => {
+      try {
+        await expect(
+          this.page.getByTestId("team-member-row").first(),
+        ).toBeVisible({ timeout: 5_000 });
+      } catch (e) {
+        await this.page.reload();
+        throw e;
+      }
+    }).toPass({ timeout: 25_000 });
+  }
+
+  memberRow(email: string) {
+    return this.page.locator(
+      `[data-testid="team-member-row"][data-email="${email}"]`,
+    );
+  }
+
+  async addMember(email: string) {
+    await this.newEmailLocator.fill(email);
+    await this.newEmailLocator.press("Enter");
+  }
+
+  async changeMemberRole(email: string, roleLabel: string) {
+    await this.memberRow(email).getByTestId("member-role-select").click();
+    await this.page.getByRole("option", { name: roleLabel }).click();
+  }
+
+  async removeMember(email: string) {
+    await this.memberRow(email).getByTestId("remove-user").click();
   }
 
   async saveTeam() {

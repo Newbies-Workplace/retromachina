@@ -68,6 +68,8 @@ export const Timer: React.FC<TimerProps> = ({
         variant === "end" && "bg-destructive text-background border-background",
         onClick && "cursor-pointer hover:opacity-70",
       )}
+      data-testid="timer-display"
+      role={onClick ? "button" : undefined}
       onClick={onClick}
     >
       {timeText}

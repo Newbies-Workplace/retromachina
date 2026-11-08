@@ -66,7 +66,7 @@ export const RetroSummaryView = () => {
 
       <ResponsivePageLayout>
         <PageCard className="max-w-6xl">
-          <PageCardHeader>
+          <PageCardHeader data-testid="summary-header">
             Retro {dayjs(retro?.date).format("DD.MM.YYYY")}
           </PageCardHeader>
 

@@ -82,6 +82,7 @@ export const CardAuthor: React.FC<CardAuthorProps> = ({
 
       <div
         ref={userPickerButtonRef}
+        data-testid="card-author"
         className={cn(
           "flex items-center gap-2 p-0.5 rounded-md",
           editable && "cursor-pointer hover:bg-accent/30",

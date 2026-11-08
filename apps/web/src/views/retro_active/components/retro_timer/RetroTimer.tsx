@@ -56,7 +56,12 @@ export const RetroTimer: React.FC = () => {
   return (
     <NavbarAction>
       {isAdmin && (
-        <Button onClick={onQuickAddTime} size={"icon"}>
+        <Button
+          onClick={onQuickAddTime}
+          size={"icon"}
+          aria-label={"Dodaj 30 sekund"}
+          data-testid="timer-add-30"
+        >
           +30
         </Button>
       )}
@@ -74,6 +79,8 @@ export const RetroTimer: React.FC = () => {
           }}
           size={"icon"}
           variant={"destructive"}
+          aria-label={"Wyczyść timer"}
+          data-testid="timer-clear"
         >
           <XIcon className={"size-4"} />
         </Button>
@@ -168,6 +175,8 @@ const TimerSetModal: React.FC<{
           </span>
           <input
             ref={minInputRef}
+            aria-label="Minuty"
+            data-testid="timer-minutes"
             maxLength={2}
             className={
               "flex w-11 h-full rounded-lg focus:outline-none text-end"
@@ -200,6 +209,8 @@ const TimerSetModal: React.FC<{
           </span>
           <input
             ref={secInputRef}
+            aria-label="Sekundy"
+            data-testid="timer-seconds"
             maxLength={2}
             className={"flex w-9 h-full rounded-lg focus:outline-none text-end"}
             value={seconds.toString()}
@@ -222,7 +233,13 @@ const TimerSetModal: React.FC<{
         </div>
       </div>
 
-      <Button size="sm" onClick={onSaveTimerClick} className={"w-full"}>
+      <Button
+        size="sm"
+        onClick={onSaveTimerClick}
+        className={"w-full"}
+        aria-label="Ustaw timer"
+        data-testid="timer-save"
+      >
         <CheckIcon className={"size-6"} />
       </Button>
     </div>

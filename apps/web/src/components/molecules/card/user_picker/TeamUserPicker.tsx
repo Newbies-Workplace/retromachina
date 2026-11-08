@@ -27,6 +27,7 @@ export const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
           onClick={() => {
             onUserPicked(null);
           }}
+          data-testid="user-picker-option"
           type="button"
         >
           <UserAvatar size={"sm"} />
@@ -44,6 +45,7 @@ export const TeamUserPicker: React.FC<TeamUserPickerProps> = ({
             onClick={() => {
               onUserPicked(user.id);
             }}
+            data-testid="user-picker-option"
             type="button"
           >
             <UserAvatar size={"sm"} avatarUrl={user.avatar} name={user.name} />

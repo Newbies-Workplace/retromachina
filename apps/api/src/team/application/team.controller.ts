@@ -155,7 +155,7 @@ export class TeamController {
 
     const team = await this.teamService.createTeam(user, request);
 
-    return toTeamResponse(team);
+    return toTeamResponse(team, { includeInviteKey: true });
   }
 
   @Get(":id")
@@ -176,7 +176,9 @@ export class TeamController {
 
     ForbiddenError.from(ability).throwUnlessCan("read", subject("Team", team));
 
-    return toTeamResponse(team);
+    return toTeamResponse(team, {
+      includeInviteKey: ability.can("update", subject("Team", team)),
+    });
   }
 
   @UseGuards(JwtGuard)
@@ -201,7 +203,7 @@ export class TeamController {
 
     const updatedTeam = await this.teamService.editTeam(user, team, request);
 
-    return toTeamResponse(updatedTeam);
+    return toTeamResponse(updatedTeam, { includeInviteKey: true });
   }
 
   @UseGuards(JwtGuard)
@@ -246,7 +248,7 @@ export class TeamController {
 
     const updatedTeam = await this.teamService.editTeamInviteKey(team, request);
 
-    return toTeamResponse(updatedTeam);
+    return toTeamResponse(updatedTeam, { includeInviteKey: true });
   }
 
   @UseGuards(JwtGuard)

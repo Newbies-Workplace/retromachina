@@ -56,6 +56,7 @@ import { type Namespace, Socket } from "socket.io";
 import { v4 as uuid } from "uuid";
 import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
+import { gatewayCors } from "../../security/gateway-cors";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 import { validateWarmupLink } from "../../warmup/warmup-links";
@@ -70,7 +71,7 @@ type SocketId = string;
 @Injectable()
 @UseGuards(TeamSocketGuard, RetroCommandGuard)
 @UseFilters(RetroWsExceptionFilter)
-@WebSocketGateway(3001, { cors: true, namespace: "retro" })
+@WebSocketGateway(3001, { cors: gatewayCors, namespace: "retro" })
 export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Namespace;
@@ -602,6 +603,10 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
+    if (room.roomState !== "vote") {
+      return;
+    }
+
     const userVotes = room.votes.filter(
       (vote) => vote.voterId === roomUser.userId,
     ).length;
@@ -626,7 +631,13 @@ export class RetroGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.retroRooms.get(roomId);
     const roomUser = room.connectedUsers.get(client.id);
 
-    room.removeVote(roomUser.userId, payload.parentCardId);
+    if (room.roomState !== "vote") {
+      return;
+    }
+
+    if (!room.removeVote(roomUser.userId, payload.parentCardId)) {
+      return;
+    }
     await this.emitRoomSync(roomId, room);
   }
 

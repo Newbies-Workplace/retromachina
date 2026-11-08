@@ -20,6 +20,7 @@ import { AuthAbilityFactory } from "../../auth/auth.ability";
 import { NotificationService } from "../../notification/notification.service";
 import { RetroService } from "../domain/retro.service";
 import { toRetroResponse } from "./retro.converter";
+import { validateRetroCreateRequest } from "./retro-create.validator";
 
 @Controller("retros")
 export class RetroController {
@@ -86,8 +87,9 @@ export class RetroController {
   @UseGuards(JwtGuard)
   async createRetro(
     @User() user: JWTUser,
-    @Body() request: RetroCreateRequest,
+    @Body() body: RetroCreateRequest,
   ): Promise<RetroResponse> {
+    const request = validateRetroCreateRequest(body);
     const team = await this.prismaService.team.findUniqueOrThrow({
       where: {
         id: request.teamId,

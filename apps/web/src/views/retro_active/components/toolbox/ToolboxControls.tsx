@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import type { Ref } from "react";
 import { useCallback, useRef, useState } from "react";
+import { MAX_VOTES_PER_USER } from "shared/model/retro/retro.commands";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -211,7 +212,10 @@ export function ToolboxVoteControl({
             <Button
               className="grow"
               size="sm"
-              onClick={() => setMaxVotesAmount(maxVotes + 1)}
+              disabled={maxVotes >= MAX_VOTES_PER_USER}
+              onClick={() =>
+                maxVotes < MAX_VOTES_PER_USER && setMaxVotesAmount(maxVotes + 1)
+              }
             >
               +
             </Button>

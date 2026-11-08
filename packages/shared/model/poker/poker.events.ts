@@ -6,6 +6,9 @@ export interface ActivePokerUser {
   nick: string;
   avatarLink: string;
   role: UserRole;
+  /** Whether the user picked a card; visible to everyone before the reveal. */
+  hasSelectedCard: boolean;
+  /** Only sent to the user who picked it; null for other users. */
   selectedCard: PokerCard | null;
   revealedCard: PokerCard | null;
 }

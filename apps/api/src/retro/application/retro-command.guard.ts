@@ -6,7 +6,7 @@ import {
 import { Reflector } from "@nestjs/core";
 import { WsException } from "@nestjs/websockets";
 import { MESSAGE_METADATA } from "@nestjs/websockets/constants";
-
+import { MAX_VOTES_PER_USER } from "shared/model/retro/retro.commands";
 import { validate as isRoomState } from "./roomstate.validator";
 
 const MAX_DATE_TIMESTAMP = 8_640_000_000_000_000;
@@ -21,8 +21,15 @@ function isPlainObject(value: unknown): value is RecordValue {
   return prototype === Object.prototype || prototype === null;
 }
 
+/** Upper bound for any text sent over the retro socket (cards, names, tasks). */
+export const MAX_COMMAND_TEXT_LENGTH = 5000;
+
+function boundedString(value: unknown): value is string {
+  return typeof value === "string" && value.length <= MAX_COMMAND_TEXT_LENGTH;
+}
+
 function nonemptyString(value: unknown): value is string {
-  return typeof value === "string" && value.trim().length > 0;
+  return boundedString(value) && value.trim().length > 0;
 }
 
 function safeCount(value: unknown): value is number {
@@ -71,7 +78,7 @@ const COMMAND_VALIDATORS: Record<string, Validator> = {
   }),
   command_change_column_description: hasFields({
     ...stringField("columnId"),
-    description: (value: unknown) => typeof value === "string",
+    description: boundedString,
   }),
   command_reorder_columns: hasFields({
     ...stringField("fromColumnId"),
@@ -91,7 +98,8 @@ const COMMAND_VALIDATORS: Record<string, Validator> = {
   command_vote_on_card: hasFields(stringField("parentCardId")),
   command_remove_vote_on_card: hasFields(stringField("parentCardId")),
   command_change_vote_amount: hasFields({
-    votesAmount: safeCount,
+    votesAmount: (value: unknown) =>
+      safeCount(value) && value <= MAX_VOTES_PER_USER,
   }),
   command_card_add_to_card: hasFields({
     ...stringField("parentCardId"),
@@ -109,7 +117,7 @@ const COMMAND_VALIDATORS: Record<string, Validator> = {
   command_delete_action_point: hasFields(stringField("taskId")),
   command_update_action_point: hasFields({
     ...stringField("taskId"),
-    description: (value: unknown) => typeof value === "string",
+    description: boundedString,
     ownerId: (value: unknown) => value === null || nonemptyString(value),
   }),
   command_change_discussion_card: hasFields(stringField("cardId")),

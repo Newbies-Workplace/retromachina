@@ -368,11 +368,13 @@ export class RetroRoom {
     this.tasks = this.tasks.filter((task) => task.id !== taskId);
   }
 
-  removeVote(userId: string, parentCardId: string) {
+  removeVote(userId: string, parentCardId: string): boolean {
     const voteIndex = this.votes.findIndex(
       (vote) => vote.parentCardId === parentCardId && vote.voterId === userId,
     );
+    if (voteIndex === -1) return false;
     this.votes.splice(voteIndex, 1);
+    return true;
   }
 
   changeState(roomState: RoomState) {

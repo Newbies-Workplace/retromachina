@@ -59,6 +59,8 @@ export interface RemoveCardVoteCommand {
   parentCardId: string;
 }
 
+export const MAX_VOTES_PER_USER = 99;
+
 export interface ChangeVoteAmountCommand {
   votesAmount: number;
 }

@@ -28,11 +28,14 @@ export class AuthService {
         },
       });
 
-      const invites = await this.prismaService.invite.findMany({
-        where: {
-          email: user.email,
-        },
-      });
+      // Only a verified Google address proves ownership of an invited email.
+      const invites = user.emailVerified
+        ? await this.prismaService.invite.findMany({
+            where: {
+              email: user.email,
+            },
+          })
+        : [];
 
       for (const invite of invites) {
         await this.prismaService.teamUsers.create({

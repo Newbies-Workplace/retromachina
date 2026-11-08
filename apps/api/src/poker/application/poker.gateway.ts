@@ -17,9 +17,13 @@ import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import { Server, Socket } from "socket.io";
 import { verifyAccessToken } from "../../auth/session/access-token.service";
 import { PrismaService } from "../../prisma/prisma.service";
+import { gatewayCors } from "../../security/gateway-cors";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 import { PokerRoom } from "../domain/model/pokerRoom.object";
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 type ConnectedUser = {
   roomId: string;
@@ -28,7 +32,7 @@ type ConnectedUser = {
 
 @Injectable()
 @UseGuards(TeamSocketGuard)
-@WebSocketGateway(3001, { cors: true, namespace: "poker" })
+@WebSocketGateway(3001, { cors: gatewayCors, namespace: "poker" })
 export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -115,7 +119,8 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage("command_select_deck")
   handleSelectDeck(client: Socket, payload: SelectPokerDeckCommand) {
     const room = this.getClientRoom(client);
-    if (!room || !room.selectDeck(payload.deckId)) return;
+    if (!room || !isPlainObject(payload) || !room.selectDeck(payload.deckId))
+      return;
 
     this.emitSync(room);
   }
@@ -124,7 +129,7 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleSelectCard(client: Socket, payload: SelectPokerCardCommand) {
     const connection = this.users.get(client.id);
     const room = this.getClientRoom(client);
-    if (!connection || !room) return;
+    if (!connection || !room || !isPlainObject(payload)) return;
 
     if (!room.selectCard(connection.userId, payload.card)) return;
 
@@ -168,7 +173,11 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   private emitSync(room: PokerRoom) {
-    this.server.to(room.id).emit("event_poker_sync", room.getRoomSyncData());
+    for (const [socketId, user] of room.connectedUsers) {
+      this.server
+        .to(socketId)
+        .emit("event_poker_sync", room.getRoomSyncData(user.userId));
+    }
   }
 
   private doException(client: Socket, type: ErrorTypes, message: string) {

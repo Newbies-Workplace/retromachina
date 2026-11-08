@@ -1,18 +1,31 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { IoAdapter } from "@nestjs/platform-socket.io";
+import helmet from "helmet";
 import { AppModule } from "./app.module";
 import { ForbiddenExceptionFilter } from "./common/ForbiddenExceptionFilter";
 import { NotFoundExceptionFilter } from "./common/NotFoundExceptionFilter";
 
 const morgan = require("morgan");
 
+// Invite keys and other identifiers travel in query strings; keep them out of logs.
+morgan.token("path", (req: { originalUrl?: string; url?: string }) =>
+  (req.originalUrl ?? req.url ?? "")
+    .split("?")[0]
+    .replace(/\/link_invite\/[^/]+/, "/link_invite/:inviteKey"),
+);
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(morgan("tiny"));
+  app.use(helmet());
+  app.use(
+    morgan(":method :path :status :res[content-length] - :response-time ms"),
+  );
   app.setGlobalPrefix("api/rest/v1");
-  app.useGlobalPipes(new ValidationPipe());
+  // Strip properties without validation decorators. Not forbidding them keeps
+  // clients that send whole response objects (e.g. board edit) working.
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalFilters(
     new ForbiddenExceptionFilter(),
     new NotFoundExceptionFilter(),

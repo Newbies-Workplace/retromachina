@@ -25,14 +25,15 @@ export class TaskController {
   @Get()
   async getTasks(
     @User() user: JWTUser,
-    @Query() query: { team_id?: string; retro_id?: string },
+    @Query() query: { team_id?: unknown; retro_id?: unknown },
   ): Promise<TaskResponse[]> {
     const ability = this.abilityFactory.create(user);
 
-    if (query.retro_id && query.retro_id.length !== 0) {
+    // Repeated query params arrive as arrays; accept only single strings.
+    if (typeof query.retro_id === "string" && query.retro_id.length !== 0) {
       return this.getRetroTasks(ability, query.retro_id);
     }
-    if (query.team_id && query.team_id.length !== 0) {
+    if (typeof query.team_id === "string" && query.team_id.length !== 0) {
       return this.getTeamTasks(ability, query.team_id);
     }
 

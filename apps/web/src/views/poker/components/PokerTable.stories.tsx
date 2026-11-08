@@ -20,6 +20,7 @@ const InteractivePokerTableStory = () => {
 
         return {
           ...user,
+          hasSelectedCard: true,
           selectedCard: card,
           revealedCard: card,
         };
@@ -33,6 +34,7 @@ const InteractivePokerTableStory = () => {
       cardsRevealed: false,
       users: args.users.map((user) => ({
         ...user,
+        hasSelectedCard: false,
         selectedCard: null,
         revealedCard: null,
       })),
@@ -81,6 +83,7 @@ const createPokerUsers = (count: number): ActivePokerUser[] => {
       nick: `Użytkownik ${index + 1}`,
       avatarLink: "",
       role: "USER",
+      hasSelectedCard: true,
       selectedCard: card,
       revealedCard: index % 5 === 0 ? null : card,
     };

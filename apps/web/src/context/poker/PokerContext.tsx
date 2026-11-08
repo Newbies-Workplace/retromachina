@@ -76,7 +76,7 @@ export const PokerContextProvider: React.FC<
     const handlePokerSync = (event: PokerSyncEvent) => {
       let shouldPlaySound = false;
       for (const activeUser of event.users) {
-        if (activeUser.selectedCard === null) continue;
+        if (!activeUser.hasSelectedCard) continue;
         if (!playersWithSelection.has(activeUser.userId)) {
           playersWithSelection.add(activeUser.userId);
           shouldPlaySound = hasSynced;
@@ -85,7 +85,7 @@ export const PokerContextProvider: React.FC<
       hasSynced = true;
       if (shouldPlaySound) {
         const everyoneSelected = event.users.every(
-          (activeUser) => activeUser.selectedCard !== null,
+          (activeUser) => activeUser.hasSelectedCard,
         );
         const playReadinessSound = async () => {
           const repetitions = everyoneSelected ? 3 : 1;

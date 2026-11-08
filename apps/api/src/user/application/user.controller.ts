@@ -42,7 +42,10 @@ export class UserController {
     });
 
     const teams = userWithTeams.TeamUsers.map(async (teamUser) => {
-      const team = await toTeamResponse(teamUser.Team);
+      const team = await toTeamResponse(teamUser.Team, {
+        includeInviteKey:
+          teamUser.role === "OWNER" || teamUser.role === "ADMIN",
+      });
       return {
         ...team,
         role: teamUser.role,

@@ -1,8 +1,14 @@
 import type React from "react";
-import GoogleButton from "react-google-button";
+import GoogleButtonImport from "react-google-button";
 import { Navigate } from "react-router";
 import { AnimatedBackground } from "@/components/organisms/animated_background/AnimatedBackground";
 import { useUser } from "@/context/user/UserContext.hook";
+
+// react-google-button ships CommonJS only (even its "module" build), so Vite 8
+// resolves the default import to the exports object instead of the component.
+const GoogleButton =
+  (GoogleButtonImport as unknown as { default?: typeof GoogleButtonImport })
+    .default ?? GoogleButtonImport;
 
 export const SignInView: React.FC = () => {
   const href = `${process.env.RETRO_WEB_API_URL}google/redirect`;

@@ -7,6 +7,15 @@ export interface Release {
 // Newest first. Use stable major.minor.patch versions; see docs/changelog.md.
 export const releases: Release[] = [
   {
+    version: "1.30.0",
+    title: "Własne talie w Pokerze",
+    changes: [
+      "Każdy zespół może dodać własną talię kart do Planning Pokera — wystarczy podać nazwę i karty oddzielone przecinkami",
+      "Talie zespołu można edytować i usuwać, a zmiany od razu widzą wszyscy przy stole",
+      "Poker zapamiętuje ostatnio wybraną talię zespołu i używa jej przy kolejnych wejściach",
+    ],
+  },
+  {
     version: "1.28.0",
     title: "Planning Poker",
     changes: [

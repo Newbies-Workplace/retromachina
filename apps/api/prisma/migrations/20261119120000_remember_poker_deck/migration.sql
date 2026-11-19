@@ -1,0 +1,1 @@
+ALTER TABLE `Team` ADD COLUMN `poker_deck_id` VARCHAR(191) NULL;

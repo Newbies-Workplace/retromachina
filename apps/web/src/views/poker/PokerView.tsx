@@ -10,11 +10,11 @@ import { useUser } from "@/context/user/UserContext.hook";
 import { DeckPicker } from "@/views/poker/components/DeckPicker";
 import { PokerTable } from "@/views/poker/components/PokerTable";
 import { PokerToolbar } from "@/views/poker/components/PokerToolbar";
-import { pokerDecks } from "@/views/poker/components/pokerDecks";
 
 export const PokerView: React.FC = () => {
   const {
-    deckId,
+    teamId,
+    deck,
     cardsRevealed,
     selectedCard,
     activeUsers,
@@ -24,8 +24,6 @@ export const PokerView: React.FC = () => {
     clearTable,
   } = usePoker();
   const { user } = useUser();
-  const selectedDeck =
-    pokerDecks.find((deck) => deck.id === deckId) ?? pokerDecks[1];
   const cardVoteCounts = cardsRevealed
     ? getCardVoteCounts(activeUsers)
     : undefined;
@@ -36,7 +34,11 @@ export const PokerView: React.FC = () => {
         topContent={
           <>
             <NavbarAction>
-              <DeckPicker selectedDeckId={deckId} onDeckChange={selectDeck} />
+              <DeckPicker
+                teamId={teamId}
+                selectedDeck={deck}
+                onDeckChange={selectDeck}
+              />
             </NavbarAction>
             <GramophoneAction />
           </>
@@ -57,7 +59,7 @@ export const PokerView: React.FC = () => {
           />
 
           <PokerToolbar
-            cards={selectedDeck.values}
+            cards={deck.cards}
             selectedCard={selectedCard}
             cardVoteCounts={cardVoteCounts}
             onCardSelect={selectCard}

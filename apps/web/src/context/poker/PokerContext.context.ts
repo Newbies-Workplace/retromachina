@@ -1,10 +1,21 @@
 import { createContext } from "react";
 import type { ActivePokerUser } from "shared/model/poker/poker.events";
-import type { PokerCard, PokerDeckId } from "shared/model/poker/poker.types";
+import {
+  getDefaultPokerDeck,
+  type PokerCard,
+  type PokerDeck,
+  type PokerDeckId,
+} from "shared/model/poker/poker.types";
+
+export const INITIAL_POKER_DECK: PokerDeck = getDefaultPokerDeck() ?? {
+  id: "standard",
+  name: "Talia zwykła",
+  cards: [],
+};
 
 export type PokerContextValue = {
   teamId: string;
-  deckId: PokerDeckId;
+  deck: PokerDeck;
   cardsRevealed: boolean;
   selectedCard?: PokerCard;
   activeUsers: ActivePokerUser[];
@@ -16,7 +27,7 @@ export type PokerContextValue = {
 
 export const PokerContext = createContext<PokerContextValue>({
   teamId: "",
-  deckId: "standard",
+  deck: INITIAL_POKER_DECK,
   cardsRevealed: false,
   activeUsers: [],
   selectDeck: () => {},

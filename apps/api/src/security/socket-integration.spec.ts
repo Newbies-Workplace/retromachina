@@ -52,6 +52,9 @@ describe("team authorization through real Socket.IO gateways", () => {
     teamUsers: { findUnique: jest.fn(), findFirst: jest.fn() },
     boardColumn: { findFirst: jest.fn() },
     task: { update: jest.fn(), delete: jest.fn(), create: jest.fn() },
+    // The poker gateway loads and stores the team's last deck.
+    team: { findUnique: jest.fn(), updateMany: jest.fn() },
+    pokerDeck: { findFirst: jest.fn() },
   };
 
   beforeEach(async () => {
@@ -73,6 +76,9 @@ describe("team authorization through real Socket.IO gateways", () => {
       };
     };
     prisma.user.findUnique.mockImplementation(lookupUser);
+    prisma.team.findUnique.mockResolvedValue({ poker_deck_id: null });
+    prisma.team.updateMany.mockResolvedValue({ count: 1 });
+    prisma.pokerDeck.findFirst.mockResolvedValue(null);
     prisma.user.findFirst.mockImplementation(lookupUser);
     prisma.teamUsers.findUnique.mockImplementation(({ where }) => {
       const key = where.team_id_user_id;

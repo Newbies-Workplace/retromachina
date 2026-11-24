@@ -10,12 +10,17 @@ import type {
   ActivePokerUser,
   PokerSyncEvent,
 } from "shared/model/poker/poker.events";
-import type { PokerCard, PokerDeckId } from "shared/model/poker/poker.types";
+import type {
+  PokerCard,
+  PokerDeck,
+  PokerDeckId,
+} from "shared/model/poker/poker.types";
 import io, { type Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { addAuthTokenChangedListener } from "@/api/auth-session";
 import readySingleSound from "@/assets/sounds/ready-single.wav";
 import {
+  INITIAL_POKER_DECK,
   PokerContext,
   type PokerContextValue,
 } from "@/context/poker/PokerContext.context";
@@ -36,7 +41,7 @@ export const PokerContextProvider: React.FC<
     playAudioRef.current = playAudio;
   }, [playAudio]);
   const socket = useRef<Socket>(undefined);
-  const [deckId, setDeckId] = useState<PokerDeckId>("standard");
+  const [deck, setDeck] = useState<PokerDeck>(INITIAL_POKER_DECK);
   const [cardsRevealed, setCardsRevealed] = useState(false);
   const [selectedCard, setSelectedCard] = useState<PokerCard>();
   const [activeUsers, setActiveUsers] = useState<ActivePokerUser[]>([]);
@@ -100,7 +105,7 @@ export const PokerContextProvider: React.FC<
           // Browsers can block audio until the user interacts with the page.
         });
       }
-      setDeckId(event.deckId);
+      setDeck(event.deck);
       setCardsRevealed(event.cardsRevealed);
       setActiveUsers(event.users);
       setSelectedCard(
@@ -149,7 +154,7 @@ export const PokerContextProvider: React.FC<
   const contextValue = useMemo<PokerContextValue>(
     () => ({
       teamId,
-      deckId,
+      deck,
       cardsRevealed,
       selectedCard,
       activeUsers,
@@ -162,7 +167,7 @@ export const PokerContextProvider: React.FC<
       activeUsers,
       cardsRevealed,
       clearTable,
-      deckId,
+      deck,
       revealCards,
       selectCard,
       selectDeck,

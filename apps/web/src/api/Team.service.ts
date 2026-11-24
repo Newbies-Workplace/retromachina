@@ -1,4 +1,8 @@
 import type { InviteResponse } from "shared/model/invite/Invite.response";
+import type {
+  PokerDeckRequest,
+  PokerDeckResponse,
+} from "shared/model/poker/poker.types";
 import {
   EditTeamInviteRequest,
   TeamRequest,
@@ -94,6 +98,29 @@ const updateWarmup = async (
 const deleteWarmup = async (teamId: string, warmupId: string): Promise<void> =>
   axiosInstance.delete(`teams/${teamId}/warmups/${warmupId}`);
 
+const getPokerDecks = async (teamId: string): Promise<PokerDeckResponse[]> =>
+  axiosInstance.get(`teams/${teamId}/poker_decks`).then((res) => res.data);
+
+const createPokerDeck = async (
+  teamId: string,
+  deck: PokerDeckRequest,
+): Promise<PokerDeckResponse> =>
+  axiosInstance
+    .post(`teams/${teamId}/poker_decks`, deck)
+    .then((res) => res.data);
+
+const updatePokerDeck = async (
+  teamId: string,
+  deckId: string,
+  deck: PokerDeckRequest,
+): Promise<PokerDeckResponse> =>
+  axiosInstance
+    .put(`teams/${teamId}/poker_decks/${deckId}`, deck)
+    .then((res) => res.data);
+
+const deletePokerDeck = async (teamId: string, deckId: string): Promise<void> =>
+  axiosInstance.delete(`teams/${teamId}/poker_decks/${deckId}`);
+
 export const TeamService = {
   getTeamById,
   getTeamByInviteKey,
@@ -109,4 +136,8 @@ export const TeamService = {
   createWarmup,
   updateWarmup,
   deleteWarmup,
+  getPokerDecks,
+  createPokerDeck,
+  updatePokerDeck,
+  deletePokerDeck,
 };

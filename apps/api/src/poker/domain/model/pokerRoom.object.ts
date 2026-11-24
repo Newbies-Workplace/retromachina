@@ -1,15 +1,25 @@
 import type { PokerSyncEvent } from "shared/model/poker/poker.events";
 import {
-  POKER_DECKS,
+  getDefaultPokerDeck,
   type PokerCard,
+  type PokerDeck,
   type PokerDeckId,
 } from "shared/model/poker/poker.types";
 import type { UserRole } from "shared/model/user/user.role";
 
 type SocketId = string;
 
-// Own keys only, so names such as "constructor" are not accepted as decks.
-const POKER_DECK_IDS: readonly string[] = Object.keys(POKER_DECKS);
+const copyDeck = ({ id, name, cards }: PokerDeck): PokerDeck => ({
+  id,
+  name,
+  cards: [...cards],
+});
+
+const defaultDeck = (): PokerDeck => {
+  const deck = getDefaultPokerDeck();
+  if (!deck) throw new Error("Default poker deck is missing");
+  return copyDeck(deck);
+};
 
 export type PokerRoomUser = {
   userId: string;
@@ -20,7 +30,7 @@ export type PokerRoomUser = {
 
 export class PokerRoom {
   connectedUsers: Map<SocketId, PokerRoomUser> = new Map();
-  deckId: PokerDeckId = "standard";
+  deck: PokerDeck = defaultDeck();
   cardsRevealed = false;
   selectedCards: Map<string, PokerCard | null> = new Map();
   revealedCards: Map<string, PokerCard | null> = new Map();
@@ -53,14 +63,37 @@ export class PokerRoom {
     }
   }
 
-  selectDeck(deckId: unknown) {
-    if (typeof deckId !== "string" || !POKER_DECK_IDS.includes(deckId))
-      return false;
-
-    this.deckId = deckId as PokerDeckId;
+  /** Switches to an already validated deck and starts a fresh round. */
+  selectDeck(deck: PokerDeck) {
+    this.deck = copyDeck(deck);
     this.cardsRevealed = false;
     this.selectedCards.clear();
     this.revealedCards.clear();
+  }
+
+  /**
+   * Applies an edit of the active deck. Picks that are no longer in the deck
+   * are dropped; the rest of the round is kept. Returns whether anything changed.
+   */
+  updateDeck(deck: PokerDeck) {
+    if (deck.id !== this.deck.id) return false;
+
+    this.deck = copyDeck(deck);
+    for (const cards of [this.selectedCards, this.revealedCards]) {
+      for (const [userId, card] of cards) {
+        if (card !== null && !this.deck.cards.includes(card)) {
+          cards.set(userId, null);
+        }
+      }
+    }
+    return true;
+  }
+
+  /** Falls back to the default deck when the active deck was deleted. */
+  removeDeck(deckId: PokerDeckId) {
+    if (deckId !== this.deck.id) return false;
+
+    this.selectDeck(defaultDeck());
     return true;
   }
 
@@ -70,10 +103,10 @@ export class PokerRoom {
       return true;
     }
 
-    const deck = POKER_DECKS[this.deckId] as readonly string[];
-    if (typeof card !== "string" || !deck.includes(card)) return false;
+    if (typeof card !== "string" || !this.deck.cards.includes(card))
+      return false;
 
-    this.selectedCards.set(userId, card as PokerCard);
+    this.selectedCards.set(userId, card);
     return true;
   }
 
@@ -106,7 +139,7 @@ export class PokerRoom {
     );
 
     return {
-      deckId: this.deckId,
+      deck: copyDeck(this.deck),
       cardsRevealed: this.cardsRevealed,
       users: Array.from(uniqueUsers.values()).map((user) => ({
         userId: user.userId,

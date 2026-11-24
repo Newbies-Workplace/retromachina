@@ -1,5 +1,5 @@
 import type { UserRole } from "../user/user.role";
-import type { PokerCard, PokerDeckId } from "./poker.types";
+import type { PokerCard, PokerDeck } from "./poker.types";
 
 export interface ActivePokerUser {
   userId: string;
@@ -14,7 +14,8 @@ export interface ActivePokerUser {
 }
 
 export interface PokerSyncEvent {
-  deckId: PokerDeckId;
+  /** Snapshot of the active deck, so clients need no extra request to render it. */
+  deck: PokerDeck;
   cardsRevealed: boolean;
   users: ActivePokerUser[];
 }

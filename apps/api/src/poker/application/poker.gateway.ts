@@ -13,6 +13,7 @@ import type {
   SelectPokerCardCommand,
   SelectPokerDeckCommand,
 } from "shared/model/poker/poker.commands";
+import type { PokerDeck } from "shared/model/poker/poker.types";
 import { ErrorTypes } from "shared/model/retro/ErrorTypes";
 import { Server, Socket } from "socket.io";
 import { verifyAccessToken } from "../../auth/session/access-token.service";
@@ -21,6 +22,11 @@ import { gatewayCors } from "../../security/gateway-cors";
 import { TeamSocketGuard } from "../../security/team-socket.guard";
 import { TeamSocketAccessService } from "../../security/team-socket-access.service";
 import { PokerRoom } from "../domain/model/pokerRoom.object";
+import {
+  findPokerDeck,
+  findRememberedPokerDeck,
+  rememberPokerDeck,
+} from "../poker-decks";
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -91,8 +97,7 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const room = this.rooms.get(teamId) ?? new PokerRoom(teamId);
-    this.rooms.set(teamId, room);
+    const room = await this.getOrOpenRoom(teamId);
     room.addUser(client.id, {
       userId: userQuery.id,
       nick: userQuery.nick,
@@ -117,11 +122,51 @@ export class PokerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage("command_select_deck")
-  handleSelectDeck(client: Socket, payload: SelectPokerDeckCommand) {
+  async handleSelectDeck(client: Socket, payload: SelectPokerDeckCommand) {
     const room = this.getClientRoom(client);
-    if (!room || !isPlainObject(payload) || !room.selectDeck(payload.deckId))
-      return;
+    if (!room || !isPlainObject(payload)) return;
 
+    const deck = await findPokerDeck(
+      this.prismaService,
+      room.id,
+      payload.deckId,
+    );
+    // The client may have left while the deck was being loaded.
+    if (!deck || this.getClientRoom(client) !== room) return;
+
+    room.selectDeck(deck);
+    this.emitSync(room);
+    await rememberPokerDeck(this.prismaService, room.id, deck.id);
+  }
+
+  /**
+   * Returns the team's open room or opens a new one with the deck the team
+   * used last, so the choice survives the room closing when everybody leaves.
+   */
+  private async getOrOpenRoom(teamId: string) {
+    const openRoom = this.rooms.get(teamId);
+    if (openRoom) return openRoom;
+
+    const deck = await findRememberedPokerDeck(this.prismaService, teamId);
+    // Another connection may have opened the room while the deck was loading.
+    const room = this.rooms.get(teamId) ?? new PokerRoom(teamId);
+    if (deck && !this.rooms.has(teamId)) room.selectDeck(deck);
+    this.rooms.set(teamId, room);
+    return room;
+  }
+
+  /** Pushes an edited team deck to the room if the team is playing with it. */
+  notifyDeckUpdated(teamId: string, deck: PokerDeck) {
+    const room = this.rooms.get(teamId);
+    if (room?.updateDeck(deck)) this.emitSync(room);
+  }
+
+  /** Moves the room back to the default deck if its active deck was deleted. */
+  notifyDeckRemoved(teamId: string, deckId: string) {
+    const room = this.rooms.get(teamId);
+    if (!room?.removeDeck(deckId)) return;
+
+    this.server.to(room.id).emit("event_poker_table_cleared");
     this.emitSync(room);
   }
 

@@ -9,11 +9,13 @@ datasource db {
 }
 
 model Team {
-  id         String   @id @default(uuid())
-  name       String
-  invite_key String?  @unique
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+  id            String   @id @default(uuid())
+  name          String
+  invite_key    String?  @unique
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now()) @updatedAt
+  /// Last deck chosen at the poker table: a default deck id or a PokerDeck id.
+  poker_deck_id String?
 
   TeamUser       TeamUsers[]
   Task           Task[]
@@ -22,6 +24,7 @@ model Team {
   Board          Board?
   ReflectionCard ReflectionCard[]
   WarmupLink     WarmupLink[]
+  PokerDeck      PokerDeck[]
 }
 
 model WarmupLink {
@@ -32,6 +35,18 @@ model WarmupLink {
   url         String  @db.Text
 
   Team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+}
+
+model PokerDeck {
+  id         String   @id @default(uuid())
+  team_id    String
+  name       String
+  cards      Json
+  created_at DateTime @default(now())
+
+  Team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@index([team_id])
 }
 
 model TeamUsers {

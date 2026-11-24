@@ -20,6 +20,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -45,6 +46,10 @@ export const DeckPicker: React.FC<DeckPickerProps> = ({
   const [decks, setDecks] =
     useState<readonly PokerDeckResponse[]>(DEFAULT_POKER_DECKS);
   const [editor, setEditor] = useState<EditorState>({ mode: "list" });
+  const [deckToDelete, setDeckToDelete] = useState<PokerDeckResponse | null>(
+    null,
+  );
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const refresh = useCallback(
     () =>
@@ -66,11 +71,15 @@ export const DeckPicker: React.FC<DeckPickerProps> = ({
   };
 
   const deleteDeck = async (deck: PokerDeckResponse) => {
+    setIsDeleting(true);
     try {
       await TeamService.deletePokerDeck(teamId, deck.id);
       toast.success(`Usunięto talię „${deck.name}”`);
     } catch {
       toast.error("Nie udało się usunąć talii");
+    } finally {
+      setIsDeleting(false);
+      setDeckToDelete(null);
     }
     await refresh();
   };
@@ -168,7 +177,7 @@ export const DeckPicker: React.FC<DeckPickerProps> = ({
                           aria-label={`Usuń talię ${deck.name}`}
                           size="icon-sm"
                           variant="destructive"
-                          onClick={() => deleteDeck(deck)}
+                          onClick={() => setDeckToDelete(deck)}
                         >
                           <Trash2Icon />
                         </Button>
@@ -190,6 +199,42 @@ export const DeckPicker: React.FC<DeckPickerProps> = ({
             </div>
           </>
         )}
+
+        <Dialog
+          open={deckToDelete !== null}
+          onOpenChange={(open) => {
+            if (!open && !isDeleting) setDeckToDelete(null);
+          }}
+        >
+          <DialogContent showCloseButton={false} forceOverlay>
+            <DialogHeader className="bg-destructive text-foreground">
+              <DialogTitle>Usunąć talię?</DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="text-foreground">
+              Talia „{deckToDelete?.name}” zostanie usunięta dla całego zespołu.
+              Tej operacji nie można cofnąć.
+            </DialogDescription>
+            <DialogFooter>
+              <Button
+                data-testid="deck-delete-cancel"
+                variant="outline"
+                disabled={isDeleting}
+                onClick={() => setDeckToDelete(null)}
+              >
+                Anuluj
+              </Button>
+              <Button
+                data-testid="deck-delete-confirm"
+                variant="destructive"
+                disabled={isDeleting}
+                onClick={() => deckToDelete && deleteDeck(deckToDelete)}
+              >
+                <Trash2Icon data-icon="inline-start" />
+                Usuń talię
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   );

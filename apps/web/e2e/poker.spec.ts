@@ -494,6 +494,30 @@ test.describe
       await expect(poker.deckOption(deckName)).toHaveCount(0);
     });
 
+    test("keeps a deck when its deletion is cancelled", async ({
+      firstUser,
+    }) => {
+      const team = await createTeam(firstUserToken);
+      const page = firstUser.page;
+      const poker = new PokerPage(page);
+      const deckName = "Zostaje";
+      await poker.goto(team.id);
+
+      await poker.createDeck(deckName, "1, 2");
+      await poker.requestDeckDeletion(deckName);
+      await expect(poker.deckDeleteConfirmation).toContainText(deckName);
+
+      await page.getByTestId("deck-delete-cancel").click();
+      await expect(poker.deckDeleteConfirmation).not.toBeVisible();
+      // The picker stays open with the deck still in it.
+      await expect(poker.deckOption(deckName)).toBeVisible();
+
+      await page.keyboard.press("Escape");
+      await page.reload();
+      await poker.openDeckPicker();
+      await expect(poker.deckOption(deckName)).toBeVisible();
+    });
+
     test("keeps the active deck when another deck is deleted", async ({
       firstUser,
     }) => {

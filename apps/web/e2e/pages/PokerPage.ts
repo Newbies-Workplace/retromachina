@@ -116,9 +116,21 @@ export class PokerPage {
     await this.page.keyboard.press("Escape");
   }
 
-  async deleteDeck(name: string) {
+  get deckDeleteConfirmation() {
+    return this.page.getByRole("dialog", { name: "Usunąć talię?" });
+  }
+
+  /** Opens the picker and asks to delete a deck, leaving the confirmation open. */
+  async requestDeckDeletion(name: string) {
     await this.page.getByTestId("deck-picker").click();
     await this.page.getByRole("button", { name: `Usuń talię ${name}` }).click();
+    await expect(this.deckDeleteConfirmation).toBeVisible();
+  }
+
+  async deleteDeck(name: string) {
+    await this.requestDeckDeletion(name);
+    await this.page.getByTestId("deck-delete-confirm").click();
+    await expect(this.deckDeleteConfirmation).not.toBeVisible();
     await expect(
       this.page.getByRole("button", { name: `Usuń talię ${name}` }),
     ).not.toBeVisible();
